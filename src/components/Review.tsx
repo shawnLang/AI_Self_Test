@@ -1,0 +1,630 @@
+import React, { useState } from 'react';
+import { Check, Trash2, AlertCircle, List, LayoutGrid, Image as ImageIcon, CheckSquare, ChevronLeft, ChevronRight } from 'lucide-react';
+
+export default function Review({ initialTaskId = null }: { initialTaskId?: number | null }) {
+  const [viewMode, setViewMode] = useState<'list' | 'grid' | 'gallery'>('grid');
+  const [items, setItems] = useState<any[]>([]);
+  const [activeItemId, setActiveItemId] = useState<string | null>(null);
+  const [taskOptions, setTaskOptions] = useState<any[]>([]);
+  const [selectedTaskId, setSelectedTaskId] = useState<string>(initialTaskId ? String(initialTaskId) : '');
+  const [consistencyFilter, setConsistencyFilter] = useState<'all' | 'matched' | 'mismatched'>('all');
+  const [previewItem, setPreviewItem] = useState<any | null>(null);
+
+  const fetchTaskOptions = async () => {
+    try {
+      const res = await fetch('/api/reviews/completed-tasks');
+      const data = await res.json();
+      setTaskOptions(data || []);
+      if (Array.isArray(data) && data.length > 0) {
+        const initialId = initialTaskId ? String(initialTaskId) : '';
+        const hasInitial = initialId ? data.some((task: any) => String(task.id) === initialId) : false;
+        setSelectedTaskId((current) => {
+          if (current && data.some((task: any) => String(task.id) === current)) return current;
+          if (hasInitial) return initialId;
+          return String(data[0].id);
+        });
+      } else {
+        setSelectedTaskId('');
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const fetchReviews = async (taskId = selectedTaskId) => {
+    try {
+      if (!taskId) {
+        setItems([]);
+        setActiveItemId(null);
+        return;
+      }
+
+      const query = `?taskId=${taskId}`;
+      const res = await fetch(`/api/reviews${query}`);
+      const data = await res.json();
+      setItems(data);
+      if (data.length > 0) {
+        const hasActive = data.some((x: any) => x.id === activeItemId);
+        if (!hasActive) setActiveItemId(data[0].id);
+      } else {
+        setActiveItemId(null);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchTaskOptions();
+  }, []);
+
+  React.useEffect(() => {
+    if (selectedTaskId) {
+      fetchReviews(selectedTaskId);
+    }
+  }, [selectedTaskId]);
+
+  const handleConfirm = async (id: string) => {
+    try {
+      await fetch('/api/reviews/confirm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: [id] })
+      });
+      fetchReviews();
+    } catch (e) { console.error(e); }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await fetch(`/api/reviews/${id}`, { method: 'DELETE' });
+      fetchReviews();
+    } catch (e) { console.error(e); }
+  };
+
+  const handleBatchDelete = async () => {
+    if (!filteredItems.length) return;
+    if (!window.confirm('确定要批量删除当前筛选下的全部复核数据吗？此操作不可恢复。')) {
+      return;
+    }
+    try {
+      await fetch('/api/reviews/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: filteredItems.map(i => i.id) })
+      });
+      fetchReviews();
+    } catch (e) { console.error(e); }
+  };
+
+  const handleBatchConfirm = async () => {
+    if (!filteredItems.length) return;
+    try {
+      await fetch('/api/reviews/confirm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: filteredItems.map(i => i.id) })
+      });
+      fetchReviews();
+    } catch (e) { console.error(e); }
+  };
+
+  const openPreview = (item: any) => {
+    setPreviewItem(item);
+  };
+
+  const closePreview = () => {
+    setPreviewItem(null);
+  };
+
+  const normalizeCompareValue = (value: string) => String(value || '').trim().toLowerCase().replace(/\s+/g, '');
+
+  const getCompareTokens = (value: string) => {
+    const trimmed = String(value || '').trim();
+    if (!trimmed) return [];
+
+    const parts = trimmed
+      .split(/[、,，;；|/]+/)
+      .map(normalizeCompareValue)
+      .filter(Boolean);
+
+    return parts.length > 0 ? parts : [normalizeCompareValue(trimmed)];
+  };
+
+  const isResultMatched = (item: any) => {
+    const aiValue = normalizeCompareValue(item.aiResult || '');
+    if (!aiValue || aiValue.startsWith('识别失败:')) return false;
+
+    const originalTokens = getCompareTokens(item.originalResult || '');
+    if (originalTokens.length === 0) return false;
+
+    return originalTokens.some((token) => token === aiValue || token.includes(aiValue) || aiValue.includes(token));
+  };
+
+  const filteredItems = items.filter((item) => {
+    const matched = isResultMatched(item);
+    if (consistencyFilter === 'matched') return matched;
+    if (consistencyFilter === 'mismatched') return !matched;
+    return true;
+  });
+
+  const matchedCount = items.filter((item) => isResultMatched(item)).length;
+  const mismatchedCount = items.length - matchedCount;
+  const totalCount = items.length;
+
+  React.useEffect(() => {
+    if (filteredItems.length === 0) {
+      setActiveItemId(null);
+      return;
+    }
+
+    const stillExists = filteredItems.some((item) => item.id === activeItemId);
+    if (!stillExists) {
+      setActiveItemId(filteredItems[0].id);
+    }
+  }, [filteredItems, activeItemId]);
+
+  const getActiveIndex = () => filteredItems.findIndex((item) => item.id === activeItemId);
+
+  const switchGalleryItem = (direction: 'prev' | 'next') => {
+    if (filteredItems.length <= 1) return;
+
+    const currentIndex = getActiveIndex();
+    const safeIndex = currentIndex >= 0 ? currentIndex : 0;
+    const nextIndex = direction === 'prev'
+      ? Math.max(0, safeIndex - 1)
+      : Math.min(filteredItems.length - 1, safeIndex + 1);
+
+    if (nextIndex !== safeIndex) {
+      setActiveItemId(filteredItems[nextIndex].id);
+    }
+  };
+
+  React.useEffect(() => {
+    if (viewMode !== 'gallery' || filteredItems.length <= 1 || previewItem) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      const tagName = target?.tagName;
+      const isEditable = target?.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(tagName || '');
+      if (isEditable) return;
+
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        switchGalleryItem('prev');
+      }
+
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        switchGalleryItem('next');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [viewMode, filteredItems, activeItemId, previewItem]);
+
+  const renderMedia = (item: any, className: string) => {
+    if (item.mediaType === 'video') {
+      return <video src={item.mediaUrl || item.imageUrl} className={className} controls muted playsInline preload="metadata" />;
+    }
+    return <img src={item.imageUrl} alt="Thumbnail" className={className} referrerPolicy="no-referrer" />;
+  };
+
+  const renderListView = () => (
+    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden transition-colors">
+      <table className="w-full text-left border-collapse">
+        <thead>
+          <tr className="bg-gray-50 dark:bg-gray-900/50 border-b border-gray-200 dark:border-gray-700">
+            <th className="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">缩略图</th>
+            <th className="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">任务</th>
+            <th className="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">原有系统</th>
+            <th className="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">AI 多模态模型</th>
+            <th className="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">对比结果</th>
+            <th className="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase text-right">操作</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+          {filteredItems.map(item => {
+            const matched = isResultMatched(item);
+            return (
+            <tr key={item.id} className={`hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors ${matched ? 'border-l-4 border-l-green-500' : 'border-l-4 border-l-red-500'}`}>
+              <td className="px-4 py-3 whitespace-nowrap">
+                <div className="w-12 h-12 rounded overflow-hidden bg-gray-100 dark:bg-gray-900">
+                  {item.mediaType === 'video' ? (
+                    renderMedia(item, 'w-full h-full object-cover')
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => openPreview(item)}
+                      className="w-full h-full cursor-zoom-in"
+                      title="查看大图"
+                    >
+                      {renderMedia(item, 'w-full h-full object-cover')}
+                    </button>
+                  )}
+                </div>
+              </td>
+              <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
+                <div className="flex items-center gap-2">
+                  <span>{item.taskName || '--'}</span>
+                  {matched && (
+                    <span className="inline-flex items-center rounded-md bg-green-600 px-2 py-0.5 text-xs font-bold text-white">
+                      结果一致
+                    </span>
+                  )}
+                </div>
+              </td>
+              <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                <div className="flex items-center gap-1 text-red-600 dark:text-red-400">
+                  <AlertCircle className="w-4 h-4" /> {item.originalResult}
+                </div>
+              </td>
+              <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
+                  <Check className="w-4 h-4" /> {item.aiResult}
+                </div>
+              </td>
+              <td className="px-4 py-3 whitespace-nowrap text-sm">
+                <span className={`inline-flex items-center rounded-md px-2.5 py-1 font-medium ${matched ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'}`}>
+                  {matched ? '结果一致' : '结果不一致'}
+                </span>
+              </td>
+              <td className="px-4 py-3 whitespace-nowrap text-right space-x-2">
+                <button onClick={() => handleConfirm(item.id)} className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 text-sm font-medium">确认</button>
+                <button onClick={() => handleDelete(item.id)} className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 text-sm font-medium">删除</button>
+              </td>
+            </tr>
+          )})}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  const renderGridView = () => (
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      {filteredItems.map((item) => {
+        const matched = isResultMatched(item);
+        return (
+        <div key={item.id} className={`bg-white dark:bg-gray-800 rounded-xl border-2 shadow-sm overflow-hidden flex flex-col transition-colors ${matched ? 'border-green-500 dark:border-green-400' : 'border-red-500 dark:border-red-400'}`}>
+          <div className="w-full h-48 bg-gray-100 dark:bg-gray-900 relative">
+            {item.mediaType === 'video' ? (
+              renderMedia(item, 'w-full h-full object-cover')
+            ) : (
+              <button
+                type="button"
+                onClick={() => openPreview(item)}
+                className="w-full h-full cursor-zoom-in text-left"
+                title="查看大图"
+              >
+                {renderMedia(item, 'w-full h-full object-cover')}
+              </button>
+            )}
+            <div className="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded backdrop-blur-sm">
+              {item.taskName || item.id}
+            </div>
+            {matched && (
+              <div className="absolute top-2 right-2 bg-green-600 text-white text-xs font-bold px-2.5 py-1 rounded">
+                结果一致
+              </div>
+            )}
+          </div>
+          
+          <div className="p-5 flex-1 flex flex-col justify-between">
+            <div>
+              <div className="mb-4">
+                <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold mb-1">原有系统</p>
+                <div className="flex items-center gap-2 text-sm bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 px-3 py-2 rounded-md border border-red-100 dark:border-red-900/30">
+                  <AlertCircle className="w-4 h-4" />
+                  {item.originalResult}
+                </div>
+              </div>
+              
+              <div>
+                <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold mb-1">AI 多模态模型</p>
+                <div className="flex items-center gap-2 text-sm bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 px-3 py-2 rounded-md border border-green-100 dark:border-green-900/30">
+                  <Check className="w-4 h-4" />
+                  {item.aiResult}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-2 mt-6">
+              <button 
+                onClick={() => handleConfirm(item.id)}
+                className="flex-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+              >
+                <Check className="w-4 h-4" />
+                确认并更新
+              </button>
+              <button 
+                onClick={() => handleDelete(item.id)}
+                className="px-4 bg-gray-50 dark:bg-gray-700 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 border border-gray-200 dark:border-gray-600 hover:border-red-200 dark:hover:border-red-800 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center"
+                title="删除记录"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )})}
+    </div>
+  );
+
+  const renderGalleryView = () => {
+    const activeItem = filteredItems.find(i => i.id === activeItemId) || filteredItems[0];
+    if (!activeItem) return null;
+    const activeIndex = filteredItems.findIndex(i => i.id === activeItem.id);
+    const hasPrevious = activeIndex > 0;
+    const hasNext = activeIndex < filteredItems.length - 1;
+    const matched = isResultMatched(activeItem);
+
+    return (
+      <div className="flex flex-col lg:flex-row gap-6 h-[640px]">
+        <div className={`flex-1 flex flex-col gap-4 bg-white dark:bg-gray-800 p-4 rounded-xl border-2 shadow-sm transition-colors ${matched ? 'border-green-500 dark:border-green-400' : 'border-red-500 dark:border-red-400'}`}>
+          <div className="flex-1 bg-gray-100 dark:bg-gray-900 rounded-lg overflow-hidden relative flex items-center justify-center">
+            {activeItem.mediaType === 'video' ? (
+              <video src={activeItem.mediaUrl || activeItem.imageUrl} className="max-w-full max-h-full object-contain" controls playsInline />
+            ) : (
+              <button
+                type="button"
+                onClick={() => openPreview(activeItem)}
+                className="w-full h-full flex items-center justify-center cursor-zoom-in"
+                title="查看大图"
+              >
+                <img src={activeItem.imageUrl} alt="Active" className="max-w-full max-h-full object-contain" referrerPolicy="no-referrer" />
+              </button>
+            )}
+            <div className="absolute top-4 left-4 bg-black/60 text-white text-sm px-3 py-1.5 rounded backdrop-blur-sm">
+              {activeItem.taskName || activeItem.id}
+            </div>
+            {matched && (
+              <div className="absolute top-4 right-4 bg-green-600 text-white text-sm font-bold px-3 py-1.5 rounded">
+                结果一致
+              </div>
+            )}
+            {filteredItems.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => switchGalleryItem('prev')}
+                  disabled={!hasPrevious}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 disabled:opacity-35 disabled:cursor-not-allowed transition-colors"
+                  title="上一个文件"
+                  aria-label="上一个文件"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => switchGalleryItem('next')}
+                  disabled={!hasNext}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 disabled:opacity-35 disabled:cursor-not-allowed transition-colors"
+                  title="下一个文件"
+                  aria-label="下一个文件"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
+              </>
+            )}
+          </div>
+          <div className="flex gap-2 overflow-x-auto pb-2">
+            {filteredItems.map(item => (
+              <button 
+                key={item.id} 
+                onClick={() => setActiveItemId(item.id)}
+                className={`flex-shrink-0 w-24 h-16 rounded-md overflow-hidden border-2 transition-colors ${
+                  activeItemId === item.id
+                    ? (isResultMatched(item) ? 'border-green-500 dark:border-green-400' : 'border-red-500 dark:border-red-400')
+                    : 'border-transparent opacity-60 hover:opacity-100'
+                }`}
+              >
+                {item.mediaType === 'video' ? (
+                  <video src={item.mediaUrl || item.imageUrl} className="w-full h-full object-cover" muted playsInline preload="metadata" />
+                ) : (
+                  <img src={item.imageUrl} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+        
+        <div className="w-full lg:w-80 flex flex-col gap-4">
+          <div className={`bg-white dark:bg-gray-800 p-6 rounded-xl border-2 shadow-sm flex-1 flex flex-col transition-colors ${matched ? 'border-green-500 dark:border-green-400' : 'border-red-500 dark:border-red-400'}`}>
+            <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">识别详情</h3>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-6">任务：{activeItem.taskName || '--'}</p>
+            <div className="mb-4">
+              <span className={`inline-flex items-center rounded-md px-3 py-1 text-sm font-bold ${matched ? 'bg-green-600 text-white' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'}`}>
+                {matched ? '结果一致' : '结果不一致'}
+              </span>
+            </div>
+            
+            <div className="space-y-6 flex-1">
+              <div>
+                <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold mb-2">原有系统</p>
+                <div className="flex items-center gap-2 text-sm bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg border border-red-100 dark:border-red-900/30">
+                  <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                  <span className="font-medium">{activeItem.originalResult}</span>
+                </div>
+              </div>
+              
+              <div>
+                <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold mb-2">AI 多模态模型</p>
+                <div className="flex items-center gap-2 text-sm bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 px-4 py-3 rounded-lg border border-green-100 dark:border-green-900/30">
+                  <Check className="w-5 h-5 flex-shrink-0" />
+                  <span className="font-medium">{activeItem.aiResult}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3 mt-6">
+              <button 
+                onClick={() => handleConfirm(activeItem.id)}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+              >
+                <Check className="w-5 h-5" />
+                确认并更新
+              </button>
+              <button 
+                onClick={() => handleDelete(activeItem.id)}
+                className="w-full bg-white dark:bg-gray-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 border border-gray-200 dark:border-gray-700 hover:border-red-200 dark:hover:border-red-800 py-3 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+              >
+                <Trash2 className="w-5 h-5" />
+                删除记录
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="p-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">结果复核</h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">复核并确认 AI 多模态模型的识别结果。</p>
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <select
+            value={selectedTaskId}
+            onChange={(e) => setSelectedTaskId(e.target.value)}
+            className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm"
+          >
+            {taskOptions.map(task => (
+              <option key={task.id} value={String(task.id)}>{task.name}</option>
+            ))}
+          </select>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setConsistencyFilter('all')}
+              className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                consistencyFilter === 'all'
+                  ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900'
+                  : 'bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300'
+              }`}
+            >
+              全部 {totalCount}
+            </button>
+            <button
+              type="button"
+              onClick={() => setConsistencyFilter('matched')}
+              className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                consistencyFilter === 'matched'
+                  ? 'bg-green-600 text-white'
+                  : 'bg-white dark:bg-gray-800 border border-green-300 dark:border-green-700 text-green-700 dark:text-green-300'
+              }`}
+            >
+              一致 {matchedCount}
+            </button>
+            <button
+              type="button"
+              onClick={() => setConsistencyFilter('mismatched')}
+              className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                consistencyFilter === 'mismatched'
+                  ? 'bg-red-600 text-white'
+                  : 'bg-white dark:bg-gray-800 border border-red-300 dark:border-red-700 text-red-700 dark:text-red-300'
+              }`}
+            >
+              不一致 {mismatchedCount}
+            </button>
+          </div>
+
+          <div className="flex bg-gray-100 dark:bg-gray-800 p-1 rounded-lg border border-gray-200 dark:border-gray-700">
+            <button 
+              onClick={() => setViewMode('list')}
+              className={`p-1.5 rounded-md transition-colors ${viewMode === 'list' ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'}`}
+              title="列表视图"
+            >
+              <List className="w-4 h-4" />
+            </button>
+            <button 
+              onClick={() => setViewMode('grid')}
+              className={`p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'}`}
+              title="图标视图"
+            >
+              <LayoutGrid className="w-4 h-4" />
+            </button>
+            <button 
+              onClick={() => setViewMode('gallery')}
+              className={`p-1.5 rounded-md transition-colors ${viewMode === 'gallery' ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'}`}
+              title="画廊视图"
+            >
+              <ImageIcon className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-1"></div>
+
+          <button onClick={handleBatchDelete} className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            批量删除
+          </button>
+          <button onClick={handleBatchConfirm} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            批量确认
+          </button>
+        </div>
+      </div>
+
+      {filteredItems.length === 0 ? (
+        <div className="py-16 text-center text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 border-dashed transition-colors">
+          <CheckSquare className="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600 mb-3" />
+          <p className="text-lg font-medium text-gray-900 dark:text-white">{items.length === 0 ? '全部处理完毕！' : '暂无匹配结果'}</p>
+          <p>当前筛选下没有匹配的复核数据。</p>
+        </div>
+      ) : (
+        <>
+          {viewMode === 'list' && renderListView()}
+          {viewMode === 'grid' && renderGridView()}
+          {viewMode === 'gallery' && renderGalleryView()}
+        </>
+      )}
+
+      {previewItem && (
+        <div
+          className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4"
+          onClick={closePreview}
+        >
+          <div
+            className="relative w-full max-w-6xl max-h-[92vh] rounded-xl bg-black border border-white/20 p-3"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={closePreview}
+              className="absolute right-3 top-3 z-10 h-8 w-8 rounded-full bg-black/60 text-white hover:bg-black/80 text-lg leading-none"
+              aria-label="关闭预览"
+            >
+              ×
+            </button>
+
+            <div className="text-white text-sm mb-3 pr-10 truncate">
+              {previewItem.taskName || previewItem.id}
+            </div>
+
+            <div className="w-full h-[78vh] flex items-center justify-center">
+              {previewItem.mediaType === 'video' ? (
+                <video
+                  src={previewItem.mediaUrl || previewItem.imageUrl}
+                  className="max-h-full max-w-full rounded-md"
+                  controls
+                  autoPlay
+                  playsInline
+                />
+              ) : (
+                <img
+                  src={previewItem.imageUrl}
+                  className="max-h-full max-w-full object-contain rounded-md"
+                  alt="预览"
+                  referrerPolicy="no-referrer"
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
