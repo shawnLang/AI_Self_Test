@@ -1,0 +1,10 @@
+global-exclude *.c
+
+# 包内的所有必要文件
+recursive-include aiSelfTest/alembic *.py
+recursive-include aiSelfTest/alembic *.mako
+include aiSelfTest/alembic.ini
+recursive-include aiSelfTest/static *
+
+prune .*/
+prune **/__pycache__/

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowLeft, Search, CheckSquare, Square, Play, Image as ImageIcon, ZoomIn } from 'lucide-react';
-import { classifyOptions, defaultTaskFilters } from '../constants/taskFilters';
+import { classifyOptions, defaultTaskFilters, fileBmpOptions, normalizeTaskFiltersForForm, resolveApiFileBmpValue } from '../constants/taskFilters';
 
 const classifyLabelMap: Record<number, string> = {
   1: '确种',
@@ -17,7 +17,7 @@ const classifyColorMap: Record<number, string> = {
 };
 
 export default function DataQuery({ taskId, onBack }: { taskId: number, onBack: () => void }) {
-  const [formData, setFormData] = useState({ ...defaultTaskFilters });
+  const [formData, setFormData] = useState(() => normalizeTaskFiltersForForm(defaultTaskFilters));
 
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -31,10 +31,7 @@ export default function DataQuery({ taskId, onBack }: { taskId: number, onBack: 
         const response = await fetch(`/api/tasks/${taskId}`);
         const data = await response.json().catch(() => ({}));
         if (!response.ok) return;
-        setFormData({
-          ...defaultTaskFilters,
-          ...(data.filters || {})
-        });
+        setFormData(normalizeTaskFiltersForForm(data.filters || {}));
       } catch (e) {
         console.error(e);
       }
@@ -64,13 +61,16 @@ export default function DataQuery({ taskId, onBack }: { taskId: number, onBack: 
         finalPayload.classifyList = formData.classifyList;
       }
       if (formData.startTime) {
-        finalPayload.startTime = `${formData.startTime} 00:00:00`;
+        finalPayload.startTime = formData.startTime;
       }
       if (formData.endTime) {
-        finalPayload.endTime = `${formData.endTime} 23:59:59`;
+        finalPayload.endTime = formData.endTime;
       }
       if (formData.fileBmp !== 'all') {
-        finalPayload.fileBmp = [Number(formData.fileBmp)];
+        const apiFileBmpValue = resolveApiFileBmpValue(formData.fileBmp);
+        if (apiFileBmpValue !== null) {
+          finalPayload.fileBmp = [apiFileBmpValue];
+        }
       }
       if (formData.uploadType !== 'all') {
         finalPayload.uploadType = [Number(formData.uploadType)];
@@ -246,9 +246,9 @@ export default function DataQuery({ taskId, onBack }: { taskId: number, onBack: 
               className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-colors dark:text-white"
             >
               <option value="all">不限制</option>
-              <option value={0}>图片</option>
-              <option value={1}>视频</option>
-              <option value={2}>音频</option>
+              {fileBmpOptions.map((option) => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
             </select>
           </div>
           

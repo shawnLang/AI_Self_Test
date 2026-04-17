@@ -1,10 +1,9 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import {defineConfig, loadEnv} from 'vite';
+import {defineConfig} from 'vite';
 
-export default defineConfig(({mode}) => {
-  const env = loadEnv(mode, '.', '');
+export default defineConfig(() => {
   return {
     plugins: [react(), tailwindcss()],
     resolve: {
@@ -12,14 +11,19 @@ export default defineConfig(({mode}) => {
         '@': path.resolve(__dirname, '.'),
       },
     },
+    build: {
+      outDir: path.resolve(__dirname, '../aiSelfTest/aiSelfTest/static'),
+      emptyOutDir: true,
+    },
     server: {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
       // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',
       watch: {
-        ignored: ['**/.omx/**', '**/server/db/**'],
+        ignored: ['../.omx/**', '../.aiSelfTest/**', '../logs/**'],
       },
       proxy: {
+        // Python/FastAPI backend served by `npm run dev:api` or `aiSelfTest`.
         '/api': 'http://localhost:3001'
       }
     },

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Check, Trash2, AlertCircle, List, LayoutGrid, Image as ImageIcon, CheckSquare, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Check, Trash2, List, LayoutGrid, Image as ImageIcon, CheckSquare, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function Review({ initialTaskId = null }: { initialTaskId?: number | null }) {
   const [viewMode, setViewMode] = useState<'list' | 'grid' | 'gallery'>('grid');
@@ -66,11 +66,17 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
 
   const handleConfirm = async (id: string) => {
     try {
-      await fetch('/api/reviews/confirm', {
+      const response = await fetch('/api/reviews/confirm', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ids: [id] })
       });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || Number(data.failureCount || 0) > 0) {
+        const failed = Array.isArray(data.results) ? data.results.filter((item: any) => item.status === 'failed') : [];
+        const message = failed.map((item: any) => item.message).filter(Boolean).join('\n') || data.error || '确认回写失败';
+        window.alert(message);
+      }
       fetchReviews();
     } catch (e) { console.error(e); }
   };
@@ -100,11 +106,15 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
   const handleBatchConfirm = async () => {
     if (!filteredItems.length) return;
     try {
-      await fetch('/api/reviews/confirm', {
+      const response = await fetch('/api/reviews/confirm', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ids: filteredItems.map(i => i.id) })
       });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || Number(data.failureCount || 0) > 0) {
+        window.alert(`批量确认完成：成功 ${Number(data.successCount || 0)} 条，失败 ${Number(data.failureCount || 0)} 条。失败项仍保留在待复核列表。`);
+      }
       fetchReviews();
     } catch (e) { console.error(e); }
   };
@@ -132,6 +142,11 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
   };
 
   const isResultMatched = (item: any) => {
+    const rows = getReviewRows(item);
+    if (Array.isArray(item.reviewRows)) {
+      return rows.length > 0 && rows.every((row: any) => row.decision === 'keep' && row.willSubmit);
+    }
+
     const aiValue = normalizeCompareValue(item.aiResult || '');
     if (!aiValue || aiValue.startsWith('识别失败:')) return false;
 
@@ -211,6 +226,97 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
     return <img src={item.imageUrl} alt="Thumbnail" className={className} referrerPolicy="no-referrer" />;
   };
 
+  function getReviewRows(item: any) {
+    if (Array.isArray(item.reviewRows)) return item.reviewRows;
+    const aiValue = normalizeCompareValue(item.aiResult || '');
+    const originalTokens = getCompareTokens(item.originalResult || '');
+    const matched = Boolean(aiValue) && !aiValue.startsWith('识别失败:') && originalTokens.some((token) => token === aiValue || token.includes(aiValue) || aiValue.includes(token));
+    return [{
+      originalName: item.originalResult,
+      aiName: item.aiResult,
+      decision: matched ? 'keep' : 'rename',
+      willSubmit: Boolean(item.aiResult),
+      groundingStatus: 'legacy',
+      legacy: true
+    }];
+  }
+
+  const getDecisionLabel = (row: any) => {
+    if (row.decision === 'keep') return '提交';
+    if (row.decision === 'rename') return '改名提交';
+    if (row.decision === 'exclude') return '排除';
+    return '错误';
+  };
+
+  const getDecisionClass = (row: any) => {
+    if (row.decision === 'keep') return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300';
+    if (row.decision === 'rename') return 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300';
+    if (row.decision === 'exclude') return 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300';
+    return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300';
+  };
+
+  const renderSummaryBadges = (item: any) => (
+    <div className="flex flex-wrap gap-2 text-xs">
+      <span className="rounded-full bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 px-2 py-1">
+        将提交 {Number(item.submitCount || 0)} 条
+      </span>
+      <span className="rounded-full bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 px-2 py-1">
+        排除 {Number(item.excludedCount || 0)} 条
+      </span>
+      {item.willSubmitEmptyArray && (
+        <span className="rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300 px-2 py-1">
+          空数组提交
+        </span>
+      )}
+      {item.remoteError && (
+        <span className="rounded-full bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 px-2 py-1">
+          远端更新失败/可重试
+        </span>
+      )}
+    </div>
+  );
+
+  const renderReviewRows = (item: any, compact = false) => {
+    const rows = getReviewRows(item);
+    if (rows.length === 0) {
+      return (
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-700 dark:border-amber-900/40 dark:bg-amber-900/20 dark:text-amber-300">
+          大模型未保留可提交物种，确认后将提交空数组。
+        </div>
+      );
+    }
+
+    return (
+      <div className={`space-y-2 ${compact ? 'text-xs' : 'text-sm'}`}>
+        {rows.map((row: any, index: number) => (
+          <div key={`${row.recordId ?? index}-${index}`} className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 p-3">
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+              <span className="font-medium text-gray-900 dark:text-gray-100">结果 {index + 1}</span>
+              <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${getDecisionClass(row)}`}>
+                {getDecisionLabel(row)}
+              </span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div>
+                <span className="block text-[11px] text-gray-500 dark:text-gray-400 mb-0.5">原结果</span>
+                <span className="text-red-700 dark:text-red-300">{row.originalName || '--'}</span>
+              </div>
+              <div>
+                <span className="block text-[11px] text-gray-500 dark:text-gray-400 mb-0.5">大模型</span>
+                <span className="text-green-700 dark:text-green-300">{row.aiName || (row.decision === 'exclude' ? '无' : '--')}</span>
+              </div>
+            </div>
+            {(row.groundingStatus || row.errorMessage) && (
+              <div className="mt-2 text-[11px] text-gray-500 dark:text-gray-400">
+                定位：{row.groundingStatus || '--'}{row.errorMessage ? `；${row.errorMessage}` : ''}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   const renderListView = () => (
     <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden transition-colors">
       <table className="w-full text-left border-collapse">
@@ -246,24 +352,20 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
                 </div>
               </td>
               <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                <div className="flex items-center gap-2">
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
                   <span>{item.taskName || '--'}</span>
                   {matched && (
                     <span className="inline-flex items-center rounded-md bg-green-600 px-2 py-0.5 text-xs font-bold text-white">
                       结果一致
                     </span>
                   )}
+                  </div>
+                  {renderSummaryBadges(item)}
                 </div>
               </td>
-              <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                <div className="flex items-center gap-1 text-red-600 dark:text-red-400">
-                  <AlertCircle className="w-4 h-4" /> {item.originalResult}
-                </div>
-              </td>
-              <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
-                  <Check className="w-4 h-4" /> {item.aiResult}
-                </div>
+              <td className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400" colSpan={2}>
+                {renderReviewRows(item, true)}
               </td>
               <td className="px-4 py-3 whitespace-nowrap text-sm">
                 <span className={`inline-flex items-center rounded-md px-2.5 py-1 font-medium ${matched ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'}`}>
@@ -313,20 +415,14 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
           <div className="p-5 flex-1 flex flex-col justify-between">
             <div>
               <div className="mb-4">
-                <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold mb-1">原有系统</p>
-                <div className="flex items-center gap-2 text-sm bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 px-3 py-2 rounded-md border border-red-100 dark:border-red-900/30">
-                  <AlertCircle className="w-4 h-4" />
-                  {item.originalResult}
-                </div>
+                {renderSummaryBadges(item)}
               </div>
-              
-              <div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold mb-1">AI 多模态模型</p>
-                <div className="flex items-center gap-2 text-sm bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 px-3 py-2 rounded-md border border-green-100 dark:border-green-900/30">
-                  <Check className="w-4 h-4" />
-                  {item.aiResult}
+              {renderReviewRows(item, true)}
+              {item.remoteError && (
+                <div className="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-900/40 dark:bg-red-900/20 dark:text-red-300">
+                  {item.remoteError}
                 </div>
-              </div>
+              )}
             </div>
 
             <div className="flex gap-2 mt-6">
@@ -438,23 +534,17 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
                 {matched ? '结果一致' : '结果不一致'}
               </span>
             </div>
+            <div className="mb-4">
+              {renderSummaryBadges(activeItem)}
+            </div>
             
-            <div className="space-y-6 flex-1">
-              <div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold mb-2">原有系统</p>
-                <div className="flex items-center gap-2 text-sm bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg border border-red-100 dark:border-red-900/30">
-                  <AlertCircle className="w-5 h-5 flex-shrink-0" />
-                  <span className="font-medium">{activeItem.originalResult}</span>
+            <div className="space-y-4 flex-1 overflow-y-auto pr-1">
+              {renderReviewRows(activeItem)}
+              {activeItem.remoteError && (
+                <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-900/40 dark:bg-red-900/20 dark:text-red-300">
+                  {activeItem.remoteError}
                 </div>
-              </div>
-              
-              <div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold mb-2">AI 多模态模型</p>
-                <div className="flex items-center gap-2 text-sm bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 px-4 py-3 rounded-lg border border-green-100 dark:border-green-900/30">
-                  <Check className="w-5 h-5 flex-shrink-0" />
-                  <span className="font-medium">{activeItem.aiResult}</span>
-                </div>
-              </div>
+              )}
             </div>
 
             <div className="flex flex-col gap-3 mt-6">

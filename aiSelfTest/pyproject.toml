@@ -1,0 +1,56 @@
+# 项目构建需要的依赖
+[build-system]
+requires = ["setuptools", "wheel", "Cython >= 3.0.0", "build", "smbprotocol"]
+build-backend = "setuptools.build_meta"
+
+# 项目数据
+[project]
+name = "aiSelfTest" # 项目名称
+dynamic = ["version"] # 版本号 动态使用
+# 依赖库
+dependencies = [
+    "loguru",
+    "opencv-python",
+    "fastapi",
+    "uvicorn",
+    "sqlmodel",
+    "alembic",
+    "pillow",
+    "sqlalchemy",
+    "numpy",
+    "requests",
+]
+requires-python = ">=3.10" # Python 最低版本
+authors = []
+maintainers = []
+description = "人工智能自检系统"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    'Intended Audience :: Developers',
+    'Programming Language :: Python :: 3',
+    'Natural Language :: Chinese (Simplified)',
+    'Topic :: Utilities',
+]
+
+# 创建可执行脚本
+[project.scripts]
+aiSelfTest = "aiSelfTest:main"
+
+
+
+[tool.setuptools]
+include-package-data = true
+
+# 包含非 Python 文件（alembic 配置、静态文件等）
+[tool.setuptools.package-data]
+aiSelfTest = [
+    "alembic.ini",
+    "alembic/**/*.py",
+    "alembic/**/*.mako",
+    "static/**/*"
+]
+# 动态指定版本号
+[tool.setuptools.dynamic]
+version = { attr = "aiSelfTest.version.__version__" }
+[tool.setuptools.packages]
+find = { }

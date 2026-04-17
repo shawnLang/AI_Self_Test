@@ -4,7 +4,9 @@
 
 ## 1. 系统概览
 
-本项目是一个“人工智能自检”Web 应用：前端使用 Vite、React 和 Tailwind CSS，后端使用 Express，数据存储使用 SQLite（`better-sqlite3`）。系统围绕“项目接入、任务配置、三方数据查询、AI 多模态识别、结果复核”展开。
+本项目是一个“人工智能自检”Web 应用：前端项目位于 `aiSelfTestUi/`，使用 Vite、React 和 Tailwind CSS；后端包位于 `aiSelfTest/`，使用 Python、FastAPI、SQLModel、Alembic、SQLite 和 loguru。系统围绕“项目接入、任务配置、三方数据查询、AI 多模态识别、结果复核”展开。
+
+生产环境只运行 `aiSelfTest`，由 FastAPI 同时提供 `/api/*` 接口和前端静态页面。开发环境在 `aiSelfTestUi/` 中运行 Vite dev server，并把 `/api` 代理到 Python 后端。
 
 主要数据流：
 
@@ -70,7 +72,7 @@
 - 画廊视图支持上一项/下一项切换，并绑定左右方向键。
 - 支持图片和视频预览。
 - 支持单条确认、单条删除、批量确认和批量删除。
-- 当前“确认并更新”在后端表现为将复核记录状态更新为 `confirmed`，未看到回写第三方系统的接口调用。
+- 当前“确认并更新”会通过后端回写第三方系统 `/openApi/icFile/aiPollingResult`，成功后将复核记录状态更新为 `confirmed`，失败则保留为待处理并记录远端错误。
 
 ### 2.8 多模态模型管理
 
@@ -127,9 +129,11 @@
 | `reviews` | 存储 AI 识别后的复核记录，包括媒体地址、原系统结果、AI 结果、任务信息、文件 ID、媒体类型和创建时间。 |
 | `multimodal_models` | 存储多模态模型配置，包括模型名、接口地址、API Key、状态、检测到的模型列表和更新时间。 |
 
+数据库由 Alembic 管理初始 schema。新架构不会迁移或备份旧 `server/db/database.sqlite*` 数据。
+
 ## 5. 外部集成
 
-- 客户端数据接口：后端会访问外部项目的 `/auth/login`、`/auth/refresh` 和 `/openApi/icFile/findFilePage`。
+- 客户端数据接口：后端会访问外部项目的 `/auth/login`、`/auth/refresh`、`/openApi/icFile/findFilePage`、`/openApi/icFile/getResultByFileId1` 和 `/openApi/icFile/aiPollingResult`。
 - 鉴权处理：支持使用保存的 `access_token`，过期时尝试刷新，刷新失败则重新登录；查询失败时会尝试 Bearer token 兼容模式。
 - 媒体地址解析：根据外部 API 地址拼接 `/weed/{fileUrl}`，并通过文件扩展名推断图片或视频。
 - AI 识别接口：默认使用 OpenAI Chat Completions 风格的请求体，发送 `model`、`messages`、`temperature` 和 `max_tokens`。
@@ -140,5 +144,7 @@
 - 自动执行模式和执行间隔已保存并展示，但当前代码未看到后台定时调度循环；实际执行入口主要是“立即执行”和“查询数据并执行”。
 - 后端 API 当前未实现应用级登录鉴权，默认认为访问者可信。
 - 项目和模型配置会保存账号、密码或 API Key，请将 SQLite 数据库视为敏感本地状态。
-- `server/db/` 中的 SQLite 文件是运行数据，不应作为通用源代码资产。
+- loguru 日志会完整记录请求、响应、外部调用、模型调用和异常。日志可能包含账号、密码、API Key、token、媒体 URL、模型响应和业务数据，请将 `logs/` 视为敏感本地状态。
+- Python 后端使用 SQLite 单机、单进程、单写者约束；不承诺多 worker 横向扩展。
+- 启动时会把遗留 `running` 任务恢复为失败终态：`active=0`、`execution_status='failed'`、`last_error='process interrupted before completion'`。
 - “设置”入口目前是 UI 占位。

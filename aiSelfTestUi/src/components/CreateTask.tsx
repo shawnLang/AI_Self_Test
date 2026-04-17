@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { classifyOptions, defaultTaskFilters, intervalOptions, type TaskFilterFormData } from '../constants/taskFilters';
+import { classifyOptions, defaultTaskFilters, fileBmpOptions, intervalOptions, type TaskFilterFormData } from '../constants/taskFilters';
 
 type ExecutionMode = 'auto' | 'manual';
 
@@ -233,9 +233,9 @@ export default function CreateTask({ onBack }: { onBack: () => void }) {
                   className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-colors dark:text-white"
                 >
                   <option value="all">不限制</option>
-                  <option value="0">图片</option>
-                  <option value="1">视频</option>
-                  <option value="2">音频</option>
+                  {fileBmpOptions.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
                 </select>
               </div>
 
@@ -355,7 +355,7 @@ export default function CreateTask({ onBack }: { onBack: () => void }) {
                 </li>
                 <li className="flex justify-between">
                   <span>文件格式:</span>
-                  <span className="font-medium text-gray-900 dark:text-white">{formData.filters.fileBmp === '0' ? '图片' : formData.filters.fileBmp === '1' ? '视频' : formData.filters.fileBmp === '2' ? '音频' : '不限制'}</span>
+                  <span className="font-medium text-gray-900 dark:text-white">{formData.filters.fileBmp === 'image' ? '图片' : formData.filters.fileBmp === 'video' ? '视频' : formData.filters.fileBmp === 'audio' ? '音频' : '不限制'}</span>
                 </li>
                 <li className="flex justify-between">
                   <span>识别类型:</span>
