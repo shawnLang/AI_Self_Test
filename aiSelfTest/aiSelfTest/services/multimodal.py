@@ -8,11 +8,11 @@ from typing import Any
 import requests
 from sqlmodel import Session, select
 
-from ..config import get_settings
-from ..db.models import MultimodalModel
-from ..db.session import session_scope
-from ..logging import log_event
-from .utils import normalize_endpoint_url, now_iso, trim_trailing_slash
+from aiSelfTest.config import get_settings
+from aiSelfTest.db.models import MultimodalModel
+from aiSelfTest.db.session import session_scope
+from aiSelfTest.logging import log_event
+from aiSelfTest.services.utils import normalize_endpoint_url, now_iso, trim_trailing_slash
 
 
 def build_auth_headers(api_key: str) -> dict[str, str]:

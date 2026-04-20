@@ -5,8 +5,8 @@ from __future__ import annotations
 from alembic import command
 from alembic.config import Config
 
-from .config import Settings
-from .logging import log_event
+from aiSelfTest.config import Settings
+from aiSelfTest.logging import log_event
 
 
 def run_migrations(settings: Settings) -> None:

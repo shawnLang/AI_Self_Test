@@ -1,7 +1,7 @@
 """Database package."""
 
-from .models import Client, MultimodalModel, Review, Task
-from .session import get_engine, get_session, session_scope
+from aiSelfTest.db.models import Client, MultimodalModel, Review, Task
+from aiSelfTest.db.session import get_engine, get_session, session_scope
 
 __all__ = [
     "Client",

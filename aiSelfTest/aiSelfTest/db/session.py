@@ -9,7 +9,7 @@ from sqlalchemy import event
 from sqlalchemy.pool import NullPool
 from sqlmodel import Session, create_engine
 
-from ..config import Settings, get_settings
+from aiSelfTest.config import Settings, get_settings
 
 _engine = None
 

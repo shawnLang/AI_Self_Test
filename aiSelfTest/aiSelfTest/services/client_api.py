@@ -8,10 +8,10 @@ from typing import Any
 import requests
 from sqlmodel import Session
 
-from ..config import get_settings
-from ..db.models import Client
-from ..logging import log_event
-from .utils import trim_trailing_slash
+from aiSelfTest.config import get_settings
+from aiSelfTest.db.models import Client
+from aiSelfTest.logging import log_event
+from aiSelfTest.services.utils import trim_trailing_slash
 
 
 def _safe_json(response: requests.Response) -> Any:

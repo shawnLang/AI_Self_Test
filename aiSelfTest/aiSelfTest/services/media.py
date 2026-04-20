@@ -8,9 +8,9 @@ from typing import Any
 import requests
 from PIL import Image
 
-from ..config import get_settings
-from ..logging import summarize_attachment
-from .utils import resolve_media_url, to_data_url
+from aiSelfTest.config import get_settings
+from aiSelfTest.logging import summarize_attachment
+from aiSelfTest.services.utils import resolve_media_url, to_data_url
 
 
 def normalize_bounding_box(record: dict[str, Any]) -> dict[str, int] | None:
@@ -78,6 +78,22 @@ def normalize_crop_box(source: dict[str, Any], box: dict[str, int]) -> dict[str,
     return safe_box
 
 
+_BBOX_EXPAND_RATIO = 0.2
+
+
+def expand_bounding_box(box: dict[str, int], ratio: float = _BBOX_EXPAND_RATIO) -> dict[str, int]:
+    pad_x = int(box["width"] * ratio)
+    pad_y = int(box["height"] * ratio)
+    return {
+        "minx": box["minx"] - pad_x,
+        "miny": box["miny"] - pad_y,
+        "maxx": box["maxx"] + pad_x,
+        "maxy": box["maxy"] + pad_y,
+        "width": box["width"] + pad_x * 2,
+        "height": box["height"] + pad_y * 2,
+    }
+
+
 def build_record_grounding(record: dict[str, Any], source: dict[str, Any]) -> dict[str, Any]:
     box = normalize_bounding_box(record)
     if not box:
@@ -87,7 +103,7 @@ def build_record_grounding(record: dict[str, Any], source: dict[str, Any]) -> di
             "errorMessage": "recordData 缺少有效 bbox 坐标",
         }
     try:
-        safe_box = normalize_crop_box(source, box)
+        safe_box = normalize_crop_box(source, expand_bounding_box(box))
         image: Image.Image = source["image"]
         cropped = image.crop((safe_box["minx"], safe_box["miny"], safe_box["maxx"], safe_box["maxy"]))
         output = BytesIO()

@@ -8,22 +8,20 @@ import json
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlmodel import Session, select
 
-from ..db.models import MultimodalModel
-from ..db.session import get_session
-from ..services.multimodal import (
+from aiSelfTest.db.models import MultimodalModel
+from aiSelfTest.db.session import get_session
+from aiSelfTest.services.multimodal import (
     chat_with_multimodal_model,
     detect_remote_models,
-    ensure_default_model_registered,
     map_multimodal_model,
 )
-from ..services.utils import normalize_endpoint_url, now_iso
+from aiSelfTest.services.utils import normalize_endpoint_url, now_iso
 
 router = APIRouter(prefix="/api/multimodal-models", tags=["multimodal-models"])
 
 
 @router.get("")
 def list_models(session: Session = Depends(get_session)):
-    ensure_default_model_registered()
     rows = session.exec(select(MultimodalModel).order_by(MultimodalModel.updated_at.desc(), MultimodalModel.id.desc())).all()
     return [map_multimodal_model(row) for row in rows]
 

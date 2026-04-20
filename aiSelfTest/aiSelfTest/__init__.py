@@ -6,9 +6,10 @@ import sys
 
 import uvicorn
 
-from .app import create_app
-from .config import get_settings
-from .version import __version__
+from aiSelfTest.app import create_app
+from aiSelfTest.config import get_settings
+from aiSelfTest.version import __version__
+
 
 
 def main() -> None:
@@ -21,7 +22,6 @@ def main() -> None:
             host=settings.host,
             port=settings.port,
             log_config=None,
-            workers=1,
         )
     except Exception as exc:  # pragma: no cover - uvicorn owns most failures.
         print(f"aiSelfTest failed to start: {exc}", file=sys.stderr)

@@ -12,10 +12,10 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 
-from .config import Settings, get_settings
-from .db.session import configure_engine
-from .logging import log_error, log_event, setup_logging
-from .migrations import run_migrations
+from aiSelfTest.config import Settings, get_settings
+from aiSelfTest.db.session import configure_engine
+from aiSelfTest.logging import log_error, log_event, setup_logging
+from aiSelfTest.migrations import run_migrations
 
 
 def _cache_headers(path: Path) -> dict[str, str]:

@@ -13,13 +13,13 @@ from typing import Any
 import requests
 from sqlmodel import Session, select
 
-from ..config import get_settings
-from ..db.models import Client, Review, Task
-from ..db.session import session_scope
-from ..logging import log_error, log_event
-from .client_api import request_client_api
-from .media import build_record_grounding, load_grounding_source
-from .utils import (
+from aiSelfTest.config import get_settings
+from aiSelfTest.db.models import Client, Review, Task
+from aiSelfTest.db.session import session_scope
+from aiSelfTest.logging import log_error, log_event
+from aiSelfTest.services.client_api import request_client_api
+from aiSelfTest.services.media import build_record_grounding, load_grounding_source
+from aiSelfTest.services.utils import (
     REVIEW_SCHEMA_VERSION,
     build_original_result,
     get_record_name,
@@ -316,7 +316,7 @@ def build_record_model_message_content(detail: dict[str, Any], record: dict[str,
     text = "\n".join(
         [
             "你是一个动物分类专家，请只判断当前裁剪区域中的目标。",
-            "如果裁剪区域中没有可识别物种，请返回“无”。",
+            "如果裁剪区域中没有可识别物种，请返回“无”,物种名使用中文。",
             '只返回一行 JSON，不要返回其他文字：{"species":"物种名或无"}',
             f"文件ID: {detail.get('id', '未知')}",
             f"原识别名称: {original_name}",
@@ -346,7 +346,7 @@ def call_omlx_with_content(content: list[dict[str, Any]], max_tokens: int = 180)
         result = response.json()
     except Exception:
         result = {"rawText": response.text}
-    log_event("model_gateway", "omlx recognition completed", status=response.status_code)
+    log_event("model_gateway", "omlx recognition completed", status=response.status_code, url=settings.omlx_api_url, model=settings.omlx_model, result=result)
     if not response.ok:
         message = result.get("error", {}).get("message") if isinstance(result.get("error"), dict) else result.get("message", f"HTTP {response.status_code}")
         raise RuntimeError(f"oMLX 调用失败: {message}")

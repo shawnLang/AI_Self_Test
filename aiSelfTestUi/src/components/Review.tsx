@@ -226,6 +226,90 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
     return <img src={item.imageUrl} alt="Thumbnail" className={className} referrerPolicy="no-referrer" />;
   };
 
+  const BBOX_COLORS: Record<string, string> = {
+    keep: 'border-green-400',
+    rename: 'border-amber-400',
+    exclude: 'border-gray-400',
+    error: 'border-red-400',
+  };
+  const BBOX_LABEL_COLORS: Record<string, string> = {
+    keep: 'bg-green-500',
+    rename: 'bg-amber-500',
+    exclude: 'bg-gray-500',
+    error: 'bg-red-500',
+  };
+
+  const renderImageWithBboxOverlay = (item: any, options?: { contain?: boolean }) => {
+    const rows = Array.isArray(item.reviewRows) ? item.reviewRows : [];
+    const validRows = rows.filter((row: any) => {
+      const b = row.bbox;
+      const s = row.groundingMeta?.sourceSize;
+      return b && s && s.width > 0 && s.height > 0 && b.maxx > b.minx && b.maxy > b.miny;
+    });
+
+    const renderBboxes = (rows: any[]) => rows.flatMap((row: any, index: number) => {
+      const b = row.bbox;
+      const s = row.groundingMeta.sourceSize;
+      const borderClass = BBOX_COLORS[row.decision] ?? 'border-blue-400';
+      const labelClass = BBOX_LABEL_COLORS[row.decision] ?? 'bg-blue-500';
+      const toPercent = (box: any) => ({
+        left: (box.minx / s.width) * 100,
+        top: (box.miny / s.height) * 100,
+        width: ((box.maxx - box.minx) / s.width) * 100,
+        height: ((box.maxy - box.miny) / s.height) * 100,
+      });
+      const orig = toPercent(b);
+      const elems = [
+        <div
+          key={`bbox-${index}`}
+          className={`absolute border-2 ${borderClass} pointer-events-none`}
+          style={{ left: `${orig.left}%`, top: `${orig.top}%`, width: `${orig.width}%`, height: `${orig.height}%` }}
+        >
+          <span className={`absolute -top-4 left-0 ${labelClass} text-white text-[10px] font-bold px-1 leading-4 rounded-sm`}>
+            {index + 1}
+          </span>
+        </div>
+      ];
+      const cropBox = row.groundingMeta?.cropBox;
+      if (cropBox && cropBox.maxx > cropBox.minx && cropBox.maxy > cropBox.miny) {
+        const crop = toPercent(cropBox);
+        elems.push(
+          <div
+            key={`crop-${index}`}
+            className={`absolute border-2 border-dashed ${borderClass} pointer-events-none opacity-60`}
+            style={{ left: `${crop.left}%`, top: `${crop.top}%`, width: `${crop.width}%`, height: `${crop.height}%` }}
+          />
+        );
+      }
+      return elems;
+    });
+
+    if (options?.contain) {
+      // 用 aspect-ratio wrapper 使图片精确填满自身比例，bbox % 坐标在 wrapper 内完全准确
+      const sourceSize = validRows[0]?.groundingMeta?.sourceSize;
+      const aspectRatio = sourceSize ? `${sourceSize.width}/${sourceSize.height}` : undefined;
+      return (
+        <div className="w-full h-full flex items-center justify-center overflow-hidden">
+          <div
+            className="relative"
+            style={aspectRatio ? { aspectRatio, maxWidth: '100%', maxHeight: '100%' } : { width: '100%', height: '100%' }}
+          >
+            <img src={item.imageUrl} alt="Thumbnail" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+            {renderBboxes(validRows)}
+          </div>
+        </div>
+      );
+    }
+
+    // 自然模式：图片以原始宽高比伸展，bbox % 坐标完全对齐
+    return (
+      <div className="relative w-full">
+        <img src={item.imageUrl} alt="Thumbnail" className="w-full h-auto block" referrerPolicy="no-referrer" />
+        {renderBboxes(validRows)}
+      </div>
+    );
+  };
+
   function getReviewRows(item: any) {
     if (Array.isArray(item.reviewRows)) return item.reviewRows;
     const aiValue = normalizeCompareValue(item.aiResult || '');
@@ -336,17 +420,17 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
             return (
             <tr key={item.id} className={`hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors ${matched ? 'border-l-4 border-l-green-500' : 'border-l-4 border-l-red-500'}`}>
               <td className="px-4 py-3 whitespace-nowrap">
-                <div className="w-12 h-12 rounded overflow-hidden bg-gray-100 dark:bg-gray-900">
+                <div className="w-16 rounded overflow-hidden bg-gray-100 dark:bg-gray-900 flex-shrink-0">
                   {item.mediaType === 'video' ? (
                     renderMedia(item, 'w-full h-full object-cover')
                   ) : (
                     <button
                       type="button"
                       onClick={() => openPreview(item)}
-                      className="w-full h-full cursor-zoom-in"
+                      className="w-full cursor-zoom-in"
                       title="查看大图"
                     >
-                      {renderMedia(item, 'w-full h-full object-cover')}
+                      {renderImageWithBboxOverlay(item)}
                     </button>
                   )}
                 </div>
@@ -389,17 +473,17 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
         const matched = isResultMatched(item);
         return (
         <div key={item.id} className={`bg-white dark:bg-gray-800 rounded-xl border-2 shadow-sm overflow-hidden flex flex-col transition-colors ${matched ? 'border-green-500 dark:border-green-400' : 'border-red-500 dark:border-red-400'}`}>
-          <div className="w-full h-48 bg-gray-100 dark:bg-gray-900 relative">
+          <div className="w-full bg-gray-100 dark:bg-gray-900 relative">
             {item.mediaType === 'video' ? (
-              renderMedia(item, 'w-full h-full object-cover')
+              renderMedia(item, 'w-full h-auto')
             ) : (
               <button
                 type="button"
                 onClick={() => openPreview(item)}
-                className="w-full h-full cursor-zoom-in text-left"
+                className="w-full cursor-zoom-in text-left"
                 title="查看大图"
               >
-                {renderMedia(item, 'w-full h-full object-cover')}
+                {renderImageWithBboxOverlay(item)}
               </button>
             )}
             <div className="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded backdrop-blur-sm">
@@ -456,65 +540,54 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
     const matched = isResultMatched(activeItem);
 
     return (
-      <div className="flex flex-col lg:flex-row gap-6 h-[640px]">
-        <div className={`flex-1 flex flex-col gap-4 bg-white dark:bg-gray-800 p-4 rounded-xl border-2 shadow-sm transition-colors ${matched ? 'border-green-500 dark:border-green-400' : 'border-red-500 dark:border-red-400'}`}>
-          <div className="flex-1 bg-gray-100 dark:bg-gray-900 rounded-lg overflow-hidden relative flex items-center justify-center">
+      <div className="flex flex-col lg:flex-row gap-4" style={{ height: 'calc(100vh - 220px)', minHeight: '480px' }}>
+        {/* 左侧：图片 + 缩略图条 */}
+        <div className={`flex-1 flex flex-col gap-3 bg-white dark:bg-gray-800 p-4 rounded-xl border-2 shadow-sm transition-colors min-w-0 ${matched ? 'border-green-500 dark:border-green-400' : 'border-red-500 dark:border-red-400'}`}>
+          <div className="flex-1 bg-gray-100 dark:bg-gray-900 rounded-lg overflow-hidden relative min-h-0">
             {activeItem.mediaType === 'video' ? (
-              <video src={activeItem.mediaUrl || activeItem.imageUrl} className="max-w-full max-h-full object-contain" controls playsInline />
+              <video src={activeItem.mediaUrl || activeItem.imageUrl} className="w-full h-full object-contain" controls playsInline />
             ) : (
               <button
                 type="button"
                 onClick={() => openPreview(activeItem)}
-                className="w-full h-full flex items-center justify-center cursor-zoom-in"
+                className="w-full h-full cursor-zoom-in"
                 title="查看大图"
               >
-                <img src={activeItem.imageUrl} alt="Active" className="max-w-full max-h-full object-contain" referrerPolicy="no-referrer" />
+                {renderImageWithBboxOverlay(activeItem, { contain: true })}
               </button>
             )}
-            <div className="absolute top-4 left-4 bg-black/60 text-white text-sm px-3 py-1.5 rounded backdrop-blur-sm">
+            <div className="absolute top-3 left-3 bg-black/60 text-white text-xs px-2 py-1 rounded backdrop-blur-sm pointer-events-none">
               {activeItem.taskName || activeItem.id}
             </div>
             {matched && (
-              <div className="absolute top-4 right-4 bg-green-600 text-white text-sm font-bold px-3 py-1.5 rounded">
+              <div className="absolute top-3 right-3 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded pointer-events-none">
                 结果一致
               </div>
             )}
             {filteredItems.length > 1 && (
               <>
-                <button
-                  type="button"
-                  onClick={() => switchGalleryItem('prev')}
-                  disabled={!hasPrevious}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 disabled:opacity-35 disabled:cursor-not-allowed transition-colors"
-                  title="上一个文件"
-                  aria-label="上一个文件"
-                >
-                  <ChevronLeft className="w-6 h-6" />
+                <button type="button" onClick={() => switchGalleryItem('prev')} disabled={!hasPrevious}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 h-9 w-9 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 disabled:opacity-35 disabled:cursor-not-allowed transition-colors"
+                  title="上一个" aria-label="上一个">
+                  <ChevronLeft className="w-5 h-5" />
                 </button>
-                <button
-                  type="button"
-                  onClick={() => switchGalleryItem('next')}
-                  disabled={!hasNext}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 disabled:opacity-35 disabled:cursor-not-allowed transition-colors"
-                  title="下一个文件"
-                  aria-label="下一个文件"
-                >
-                  <ChevronRight className="w-6 h-6" />
+                <button type="button" onClick={() => switchGalleryItem('next')} disabled={!hasNext}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 h-9 w-9 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 disabled:opacity-35 disabled:cursor-not-allowed transition-colors"
+                  title="下一个" aria-label="下一个">
+                  <ChevronRight className="w-5 h-5" />
                 </button>
               </>
             )}
           </div>
-          <div className="flex gap-2 overflow-x-auto pb-2">
+          {/* 缩略图条 */}
+          <div className="flex gap-2 overflow-x-auto flex-shrink-0 pb-1">
             {filteredItems.map(item => (
-              <button 
-                key={item.id} 
-                onClick={() => setActiveItemId(item.id)}
-                className={`flex-shrink-0 w-24 h-16 rounded-md overflow-hidden border-2 transition-colors ${
+              <button key={item.id} onClick={() => setActiveItemId(item.id)}
+                className={`flex-shrink-0 w-20 h-14 rounded-md overflow-hidden border-2 transition-colors ${
                   activeItemId === item.id
                     ? (isResultMatched(item) ? 'border-green-500 dark:border-green-400' : 'border-red-500 dark:border-red-400')
                     : 'border-transparent opacity-60 hover:opacity-100'
-                }`}
-              >
+                }`}>
                 {item.mediaType === 'video' ? (
                   <video src={item.mediaUrl || item.imageUrl} className="w-full h-full object-cover" muted playsInline preload="metadata" />
                 ) : (
@@ -524,45 +597,36 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
             ))}
           </div>
         </div>
-        
-        <div className="w-full lg:w-80 flex flex-col gap-4">
-          <div className={`bg-white dark:bg-gray-800 p-6 rounded-xl border-2 shadow-sm flex-1 flex flex-col transition-colors ${matched ? 'border-green-500 dark:border-green-400' : 'border-red-500 dark:border-red-400'}`}>
-            <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">识别详情</h3>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-6">任务：{activeItem.taskName || '--'}</p>
-            <div className="mb-4">
-              <span className={`inline-flex items-center rounded-md px-3 py-1 text-sm font-bold ${matched ? 'bg-green-600 text-white' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'}`}>
+
+        {/* 右侧：识别详情（内部可滚动，整体不超出视口） */}
+        <div className={`w-full lg:w-72 flex flex-col bg-white dark:bg-gray-800 rounded-xl border-2 shadow-sm transition-colors overflow-hidden ${matched ? 'border-green-500 dark:border-green-400' : 'border-red-500 dark:border-red-400'}`}>
+          <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+            <h3 className="text-base font-semibold text-gray-900 dark:text-white">识别详情</h3>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 truncate">任务：{activeItem.taskName || '--'}</p>
+            <div className="flex flex-wrap gap-2 mt-2">
+              <span className={`inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-bold ${matched ? 'bg-green-600 text-white' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'}`}>
                 {matched ? '结果一致' : '结果不一致'}
               </span>
-            </div>
-            <div className="mb-4">
               {renderSummaryBadges(activeItem)}
             </div>
-            
-            <div className="space-y-4 flex-1 overflow-y-auto pr-1">
-              {renderReviewRows(activeItem)}
-              {activeItem.remoteError && (
-                <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-900/40 dark:bg-red-900/20 dark:text-red-300">
-                  {activeItem.remoteError}
-                </div>
-              )}
-            </div>
-
-            <div className="flex flex-col gap-3 mt-6">
-              <button 
-                onClick={() => handleConfirm(activeItem.id)}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
-              >
-                <Check className="w-5 h-5" />
-                确认并更新
-              </button>
-              <button 
-                onClick={() => handleDelete(activeItem.id)}
-                className="w-full bg-white dark:bg-gray-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 border border-gray-200 dark:border-gray-700 hover:border-red-200 dark:hover:border-red-800 py-3 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
-              >
-                <Trash2 className="w-5 h-5" />
-                删除记录
-              </button>
-            </div>
+          </div>
+          <div className="flex-1 overflow-y-auto p-4 space-y-3 min-h-0">
+            {renderReviewRows(activeItem)}
+            {activeItem.remoteError && (
+              <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-900/40 dark:bg-red-900/20 dark:text-red-300">
+                {activeItem.remoteError}
+              </div>
+            )}
+          </div>
+          <div className="p-4 flex flex-col gap-2 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
+            <button onClick={() => handleConfirm(activeItem.id)}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
+              <Check className="w-4 h-4" />确认并更新
+            </button>
+            <button onClick={() => handleDelete(activeItem.id)}
+              className="w-full bg-white dark:bg-gray-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 border border-gray-200 dark:border-gray-700 hover:border-red-200 dark:hover:border-red-800 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
+              <Trash2 className="w-4 h-4" />删除记录
+            </button>
           </div>
         </div>
       </div>
@@ -694,22 +758,19 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
               {previewItem.taskName || previewItem.id}
             </div>
 
-            <div className="w-full h-[78vh] flex items-center justify-center">
+            <div className="w-full max-h-[78vh] flex items-center justify-center overflow-auto">
               {previewItem.mediaType === 'video' ? (
                 <video
                   src={previewItem.mediaUrl || previewItem.imageUrl}
-                  className="max-h-full max-w-full rounded-md"
+                  className="max-h-[78vh] max-w-full rounded-md"
                   controls
                   autoPlay
                   playsInline
                 />
               ) : (
-                <img
-                  src={previewItem.imageUrl}
-                  className="max-h-full max-w-full object-contain rounded-md"
-                  alt="预览"
-                  referrerPolicy="no-referrer"
-                />
+                <div className="w-full">
+                  {renderImageWithBboxOverlay(previewItem)}
+                </div>
               )}
             </div>
           </div>

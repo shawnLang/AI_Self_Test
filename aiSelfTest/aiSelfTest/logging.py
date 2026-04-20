@@ -10,7 +10,7 @@ from typing import Any
 
 from loguru import logger
 
-from .config import Settings
+from aiSelfTest.config import Settings
 
 
 def setup_logging(settings: Settings) -> None:

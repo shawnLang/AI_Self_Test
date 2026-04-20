@@ -6,9 +6,9 @@ from typing import Any
 
 from sqlmodel import Session, select
 
-from ..db.models import Client, Review, Task
-from .client_api import assert_client_api_ok, request_client_api
-from .utils import (
+from aiSelfTest.db.models import Client, Review, Task
+from aiSelfTest.services.client_api import assert_client_api_ok, request_client_api
+from aiSelfTest.services.utils import (
     get_record_name,
     is_same_species,
     is_submittable_species,

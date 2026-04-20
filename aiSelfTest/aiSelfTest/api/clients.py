@@ -7,8 +7,8 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlmodel import Session, select
 
-from ..db.models import Client, Task
-from ..db.session import get_session
+from aiSelfTest.db.models import Client, Task
+from aiSelfTest.db.session import get_session
 
 router = APIRouter(prefix="/api/clients", tags=["clients"])
 

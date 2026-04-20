@@ -5,9 +5,9 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlmodel import Session, select
 
-from ..db.models import Review
-from ..db.session import get_session
-from ..services.reviews import completed_tasks, confirm_reviews, map_review
+from aiSelfTest.db.models import Review
+from aiSelfTest.db.session import get_session
+from aiSelfTest.services.reviews import completed_tasks, confirm_reviews, map_review
 
 router = APIRouter(prefix="/api/reviews", tags=["reviews"])
 

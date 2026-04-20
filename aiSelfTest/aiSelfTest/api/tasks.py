@@ -9,9 +9,9 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlmodel import Session, select
 
-from ..db.models import Client, Review, Task
-from ..db.session import get_session
-from ..services.tasks import (
+from aiSelfTest.db.models import Client, Review, Task
+from aiSelfTest.db.session import get_session
+from aiSelfTest.services.tasks import (
     fetch_task_query_results_scoped,
     map_task,
     request_stop,

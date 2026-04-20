@@ -6,8 +6,8 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import func
 from sqlmodel import Session, select
 
-from ..db.models import Review, Task
-from ..db.session import get_session
+from aiSelfTest.db.models import Review, Task
+from aiSelfTest.db.session import get_session
 
 router = APIRouter(prefix="/api/dashboard", tags=["dashboard"])
 

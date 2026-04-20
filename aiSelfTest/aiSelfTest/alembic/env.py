@@ -15,7 +15,7 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 if "clients" not in SQLModel.metadata.tables:
-    for module_name in ("aiSelfTest.db.models", "aiSelfTest.aiSelfTest.db.models"):
+    for module_name in ("aiSelfTest.db.models", "aiSelfTest.db.models"):
         try:
             importlib.import_module(module_name)
             break
