@@ -1,7 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Cpu, Edit2, KeyRound, Link2, Plus, RefreshCw, Trash2, X } from 'lucide-react';
+import { fetchApi } from '../utils/api';
 
 const MASKED_SECRET_PLACEHOLDER = '********';
+type ModelStatus = '启用' | '停用';
 
 type MultimodalModel = {
   id: number;
@@ -9,17 +11,28 @@ type MultimodalModel = {
   endpointUrl: string;
   apiKey: string;
   apiKeyConfigured?: boolean;
-  status: string;
+  status: ModelStatus;
   detectedModels: string[];
   lastDetectedAt?: string | null;
+};
+
+type MultimodalModelListData = {
+  items: MultimodalModel[];
+};
+
+type MultimodalModelDetectData = {
+  models: string[];
+  detectedUrl: string;
+  recommendedModel: string;
 };
 
 const createEmptyForm = () => ({
   modelName: '',
   endpointUrl: '',
   apiKey: '',
-  status: 'active',
-  detectedModels: [] as string[]
+  status: '启用' as ModelStatus,
+  detectedModels: [] as string[],
+  detectedModelsUpdated: false
 });
 
 export default function MultimodalModels() {
@@ -43,9 +56,8 @@ export default function MultimodalModels() {
 
   const fetchModels = async () => {
     try {
-      const response = await fetch('/api/multimodal-models');
-      const data = await response.json();
-      setModels(Array.isArray(data) ? data : []);
+      const data = await fetchApi<MultimodalModelListData>('/api/multimodal-models/list');
+      setModels(data.items);
     } catch (error) {
       console.error(error);
     }
@@ -62,7 +74,7 @@ export default function MultimodalModels() {
     setDetectInfo('');
 
     try {
-      const response = await fetch('/api/multimodal-models/detect', {
+      const data = await fetchApi<MultimodalModelDetectData>('/api/multimodal-models/detect', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -70,15 +82,12 @@ export default function MultimodalModels() {
           apiKey: formData.apiKey
         })
       });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok) {
-        throw new Error(data.error || data.message || '模型自动检索失败');
-      }
 
       const detectedModels = Array.isArray(data.models) ? data.models : [];
       setFormData((prev) => ({
         ...prev,
         detectedModels,
+        detectedModelsUpdated: true,
         modelName: detectedModels.includes(prev.modelName) ? prev.modelName : (detectedModels[0] || prev.modelName)
       }));
       setDetectInfo(detectedModels.length > 0 ? `已从 ${data.detectedUrl || '接口'} 检索到 ${detectedModels.length} 个模型。` : '接口可访问，但未返回模型列表。');
@@ -106,8 +115,9 @@ export default function MultimodalModels() {
         modelName: item.modelName,
         endpointUrl: item.endpointUrl,
         apiKey: item.apiKey,
-        status: item.status || 'active',
-        detectedModels: Array.isArray(item.detectedModels) ? item.detectedModels : []
+        status: item.status || '启用',
+        detectedModels: Array.isArray(item.detectedModels) ? item.detectedModels : [],
+        detectedModelsUpdated: false
       });
       setDetectInfo(
         item.apiKeyConfigured
@@ -140,18 +150,14 @@ export default function MultimodalModels() {
     setSaving(true);
 
     try {
-      const response = await fetch(editingId ? `/api/multimodal-models/${editingId}` : '/api/multimodal-models', {
+      await fetchApi(editingId ? `/api/multimodal-models/update/${editingId}` : '/api/multimodal-models/create', {
         method: editingId ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok) {
-        throw new Error(data.error || data.message || '保存失败');
-      }
 
       closeModal();
-      fetchModels();
+      await fetchModels();
     } catch (error) {
       setDetectError((error as Error).message || '保存失败');
     } finally {
@@ -163,8 +169,8 @@ export default function MultimodalModels() {
     if (!window.confirm('确定删除这条多模态模型配置吗？')) return;
 
     try {
-      await fetch(`/api/multimodal-models/${id}`, { method: 'DELETE' });
-      fetchModels();
+      await fetchApi(`/api/multimodal-models/delete/${id}`, { method: 'DELETE' });
+      await fetchModels();
     } catch (error) {
       console.error(error);
     }
@@ -225,11 +231,11 @@ export default function MultimodalModels() {
                 </td>
                 <td className="px-6 py-4">
                   <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${
-                    item.status === 'active'
+                    item.status === '启用'
                       ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300'
                       : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
                   }`}>
-                    {item.status === 'active' ? '启用' : '停用'}
+                    {item.status}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
@@ -270,7 +276,11 @@ export default function MultimodalModels() {
                   <input
                     type="url"
                     value={formData.endpointUrl}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, endpointUrl: e.target.value }))}
+                    onChange={(e) => setFormData((prev) => ({
+                      ...prev,
+                      endpointUrl: e.target.value,
+                      detectedModelsUpdated: false
+                    }))}
                     placeholder="例如：https://xxx/v1/chat/completions"
                     required
                     className="w-full pl-10 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 rounded-lg px-3 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-colors"
@@ -285,7 +295,11 @@ export default function MultimodalModels() {
                   <input
                     type="password"
                     value={formData.apiKey}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, apiKey: e.target.value }))}
+                    onChange={(e) => setFormData((prev) => ({
+                      ...prev,
+                      apiKey: e.target.value,
+                      detectedModelsUpdated: false
+                    }))}
                     placeholder="输入访问密码或 API Key"
                     required
                     className="w-full pl-10 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 rounded-lg px-3 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-colors"
@@ -338,8 +352,8 @@ export default function MultimodalModels() {
                   onChange={(e) => setFormData((prev) => ({ ...prev, status: e.target.value }))}
                   className="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 rounded-lg px-3 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-colors"
                 >
-                  <option value="active">启用</option>
-                  <option value="disabled">停用</option>
+                  <option value="启用">启用</option>
+                  <option value="停用">停用</option>
                 </select>
               </div>
 

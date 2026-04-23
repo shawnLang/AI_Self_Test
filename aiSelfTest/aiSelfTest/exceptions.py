@@ -36,7 +36,12 @@ def get_field_display_name(field: str) -> str:
         "name": "名称",
         "description": "描述",
         "apiUrl": "API 地址",
+        "endpointUrl": "模型地址",
         "account": "账号",
+        "modelName": "模型名称",
+        "apiKey": "API Key",
+        "detectedModels": "已探测模型",
+        "messages": "消息列表",
         "status": "状态",
     }
     return field_map.get(field, field)

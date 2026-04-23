@@ -13,6 +13,7 @@ from pydantic import ValidationError
 
 from aiSelfTest.api.client import router as client_router
 from aiSelfTest.api.dashboard import router as dashboard_router
+from aiSelfTest.api.multimodal_model import router as multimodal_model_router
 from aiSelfTest.config import get_settings
 from aiSelfTest.database import init_db
 from aiSelfTest.exceptions import (
@@ -69,6 +70,7 @@ def create_app() -> FastAPI:
 
     app.include_router(client_router, prefix="/api")
     app.include_router(dashboard_router, prefix="/api")
+    app.include_router(multimodal_model_router, prefix="/api")
 
     @app.get("/")
     async def root() -> dict[str, str]:

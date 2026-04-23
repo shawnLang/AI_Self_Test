@@ -18,15 +18,10 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-if "clients" not in SQLModel.metadata.tables:
+if "client" not in SQLModel.metadata.tables:
     # 迁移环境执行时可能尚未显式导入模型模块，这里主动加载一次，
     # 确保 SQLModel 元数据中包含所有表定义。
-    for module_name in ("aiSelfTest.db.models", "aiSelfTest.db.models"):
-        try:
-            importlib.import_module(module_name)
-            break
-        except ModuleNotFoundError:
-            continue
+    importlib.import_module("aiSelfTest.models")
 
 target_metadata = SQLModel.metadata
 
