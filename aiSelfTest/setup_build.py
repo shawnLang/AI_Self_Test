@@ -1,4 +1,8 @@
-"""构建并打包项目的辅助脚本。"""
+"""构建并打包项目的辅助脚本。
+
+该脚本会把源码复制到临时打包目录，再调用 ``build_utils``
+ 中的构建流程生成可分发产物。
+"""
 import importlib.util
 import os
 import shutil
@@ -19,7 +23,7 @@ package_path = root_path / package_name
 build_py_path = root_path / 'build_utils.py'
 build_utils = None
 if not build_py_path.exists():
-    # 抛出运行错误异常
+    # 打包流程依赖统一的构建工具模块，缺失时直接中断。
     raise RuntimeError(f"build_utils.py 路径不存在 : {build_py_path}")
 
 spec = importlib.util.spec_from_file_location("build_utils", build_py_path)
@@ -29,11 +33,14 @@ spec.loader.exec_module(build_utils)
 
 
 def run() -> None:
-    """执行项目打包流程。"""
+    """执行项目打包流程。
+
+    流程包括清理旧的打包目录、复制源码以及调用实际构建逻辑。
+    """
     if package_path.exists():
         shutil.rmtree(package_path)
     os.makedirs(package_path)
-    # 复制文件到打包目录
+    # 先生成一份干净的打包工作目录，再由 build_utils 继续处理。
     build_utils.mv_to_packages(root_path, package_path, ignore_folders, ignore_files)
     build_utils.setup_build(package_path)
 

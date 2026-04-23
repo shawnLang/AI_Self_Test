@@ -1,11 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Cpu, Edit2, KeyRound, Link2, Plus, RefreshCw, Trash2, X } from 'lucide-react';
 
+const MASKED_SECRET_PLACEHOLDER = '********';
+
 type MultimodalModel = {
   id: number;
   modelName: string;
   endpointUrl: string;
   apiKey: string;
+  apiKeyConfigured?: boolean;
   status: string;
   detectedModels: string[];
   lastDetectedAt?: string | null;
@@ -30,7 +33,11 @@ export default function MultimodalModels() {
   const [saving, setSaving] = useState(false);
 
   const hasDetectInputs = useMemo(
-    () => Boolean(formData.endpointUrl.trim() && formData.apiKey.trim()),
+    () => Boolean(
+      formData.endpointUrl.trim() &&
+      formData.apiKey.trim() &&
+      formData.apiKey.trim() !== MASKED_SECRET_PLACEHOLDER
+    ),
     [formData.endpointUrl, formData.apiKey]
   );
 
@@ -102,7 +109,13 @@ export default function MultimodalModels() {
         status: item.status || 'active',
         detectedModels: Array.isArray(item.detectedModels) ? item.detectedModels : []
       });
-      setDetectInfo(item.detectedModels?.length ? `已缓存 ${item.detectedModels.length} 个模型候选。` : '');
+      setDetectInfo(
+        item.apiKeyConfigured
+          ? '当前已配置访问密钥；若需重新检索模型，请重新输入真实 API Key。'
+          : item.detectedModels?.length
+            ? `已缓存 ${item.detectedModels.length} 个模型候选。`
+            : ''
+      );
     } else {
       setEditingId(null);
       setFormData(createEmptyForm());
