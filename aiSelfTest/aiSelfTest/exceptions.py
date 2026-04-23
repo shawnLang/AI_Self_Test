@@ -43,6 +43,9 @@ def get_field_display_name(field: str) -> str:
         "detectedModels": "已探测模型",
         "messages": "消息列表",
         "status": "状态",
+        "remark": "备注",
+        "text": "提示词",
+        "format": "解析格式",
     }
     return field_map.get(field, field)
 

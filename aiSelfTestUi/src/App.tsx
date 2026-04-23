@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, Users, ListTodo, Activity, CheckSquare, Settings, Moon, Sun, Cpu, MessageSquare } from 'lucide-react';
+import { LayoutDashboard, Users, ListTodo, Activity, CheckSquare, Settings, Moon, Sun, Cpu, MessageSquare, FileText } from 'lucide-react';
 import Dashboard from './components/Dashboard';
 import Clients from './components/Clients';
 import Tasks from './components/Tasks';
@@ -8,8 +8,9 @@ import DataQuery from './components/DataQuery';
 import Review from './components/Review';
 import MultimodalModels from './components/MultimodalModels';
 import MultimodalChat from './components/MultimodalChat';
+import PromptConfigs from './components/PromptConfigs';
 
-type View = 'dashboard' | 'clients' | 'tasks' | 'create-task' | 'data-query' | 'review' | 'multimodal-models' | 'multimodal-chat';
+type View = 'dashboard' | 'clients' | 'tasks' | 'create-task' | 'data-query' | 'review' | 'multimodal-models' | 'multimodal-chat' | 'prompt-configs';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<View>('dashboard');
@@ -39,6 +40,7 @@ export default function App() {
       case 'review': return <Review initialTaskId={selectedReviewTaskId} />;
       case 'multimodal-models': return <MultimodalModels />;
       case 'multimodal-chat': return <MultimodalChat onOpenModelManager={() => setCurrentView('multimodal-models')} />;
+      case 'prompt-configs': return <PromptConfigs />;
       default: return <Dashboard />;
     }
   };
@@ -60,6 +62,7 @@ export default function App() {
           <NavItem icon={<CheckSquare />} label="结果复核" active={currentView === 'review'} onClick={() => { setSelectedReviewTaskId(null); setCurrentView('review'); }} />
           <NavItem icon={<Cpu />} label="模型管理" active={currentView === 'multimodal-models'} onClick={() => setCurrentView('multimodal-models')} />
           <NavItem icon={<MessageSquare />} label="模型测试" active={currentView === 'multimodal-chat'} onClick={() => setCurrentView('multimodal-chat')} />
+          <NavItem icon={<FileText />} label="提示词配置" active={currentView === 'prompt-configs'} onClick={() => setCurrentView('prompt-configs')} />
         </nav>
         <div className="p-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
           <button 
