@@ -1,6 +1,7 @@
 """数据库连接与会话管理。"""
 from typing import Generator
 
+import aiSelfTest.models  # noqa: F401
 from loguru import logger
 from sqlalchemy import event
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine

@@ -1,80 +1,88 @@
 """FastAPI 应用入口。"""
-from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from __future__ import annotations
+
+from contextlib import asynccontextmanager
+from uuid import uuid4
+
+from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 from pydantic import ValidationError
 
+from aiSelfTest.api.client import router as client_router
+from aiSelfTest.api.dashboard import router as dashboard_router
+from aiSelfTest.config import get_settings
+from aiSelfTest.database import init_db
+from aiSelfTest.exceptions import (
+    AppException,
+    app_exception_handler,
+    pydantic_validation_exception_handler,
+    validation_exception_handler,
+)
+from aiSelfTest.version import __version__
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """应用生命周期管理。"""
-    # 启动时
-    logger.info("启动 FastAPI 应用...")
 
-    # yield
+    settings = get_settings()
+    settings.data_dir.mkdir(parents=True, exist_ok=True)
+    settings.log_dir.mkdir(parents=True, exist_ok=True)
 
-    # 关闭时
-    logger.info("关闭 FastAPI 应用...")
-
-
-# 创建 FastAPI 应用
-app = FastAPI(
-    title="AI自检平台",
-    description="AI自检平台后端 API",
-    version="1.0.0",
-    lifespan=lifespan
-)
-
-# 注册全局异常处理器
-app.add_exception_handler(RequestValidationError, validation_exception_handler)
-app.add_exception_handler(ValidationError, pydantic_validation_exception_handler)
-
-# CORS 中间件（开发环境）
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],  # 前端开发服务器地址
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# 注册路由
-app.include_router(auth.router, prefix="/api/v1")
-app.include_router(users.router, prefix="/api/v1")
-app.include_router(roles.router, prefix="/api/v1")
-app.include_router(species.router, prefix="/api/v1")
-app.include_router(project.router, prefix="/api/v1")
-app.include_router(dataset.router, prefix="/api/v1")
-app.include_router(training.router, prefix="/api/v1")
-app.include_router(agents.router, prefix="/api/v1")
-app.include_router(system.router, prefix="/api/v1")
+    logger.info("启动 aiSelfTest FastAPI 应用...")
+    init_db()
+    yield
+    logger.info("关闭 aiSelfTest FastAPI 应用...")
 
 
-@app.get("/")
-async def root():
-    """根路径。"""
-    return {
-        "message": "AI自检平台 API",
-        "version": "1.0.0",
-        "docs": "/docs"
-    }
+def create_app() -> FastAPI:
+    """创建并配置 FastAPI 应用。"""
 
-
-@app.get("/health")
-async def health_check():
-    """健康检查。"""
-    return {"status": "ok"}
-
-
-if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run(
-        "aiSelfTest.main:app",
-        host="0.0.0.0",
-        port=3001,
-        reload=True
+    app = FastAPI(
+        title="AI 自检平台",
+        description="AI 自检平台后端 API",
+        version=__version__,
+        lifespan=lifespan,
     )
+
+    app.add_exception_handler(RequestValidationError, validation_exception_handler)
+    app.add_exception_handler(ValidationError, pydantic_validation_exception_handler)
+    app.add_exception_handler(AppException, app_exception_handler)
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["http://localhost:5173", "http://localhost:3000"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    @app.middleware("http")
+    async def request_id_middleware(request: Request, call_next):
+        request_id = request.headers.get("X-Request-ID", str(uuid4()))
+        response = await call_next(request)
+        response.headers["X-Request-ID"] = request_id
+        return response
+
+    app.include_router(client_router, prefix="/api")
+    app.include_router(dashboard_router, prefix="/api")
+
+    @app.get("/")
+    async def root() -> dict[str, str]:
+        return {
+            "message": "AI 自检平台 API",
+            "version": __version__,
+            "docs": "/docs",
+        }
+
+    @app.get("/health")
+    async def health_check() -> dict[str, str]:
+        return {"status": "ok"}
+
+    return app
+
+
+app = create_app()

@@ -31,17 +31,6 @@
 
 用途：保存上游客户端平台连接配置与认证缓存。
 
-核心字段：
-
-- `id`
-- `name` 项目名称
-- `api_url`  api地址
-- `account` 账号
-- `password` 密码
-- `status` 状态 (启用,停用)
-- `access_token` token
-- `refresh_token` 刷新token
-- `expires_in` 过期时间
 
 功能需求：
 
@@ -53,13 +42,6 @@
 ### 3.2 Config
 用途：模型提示词配置 保存用于给大模型的提示词。
 
-核心字段：
-
-- `id`
-- `name` 提示词名称
-- `remark` 备注
-- `text` 提示词
-- `format` 数据解析格式选项
 
 功能需求：
 
@@ -69,23 +51,6 @@
 
 用途：保存任务定义、筛选条件、执行配置与执行进度。
 
-核心字段：
-
-- `id` 
-- `name` 任务名称
-- `client_id` 关联的客户端id
-- `interval`  执行间隔 (每小时,每6小时,每12小时,每天)
-- `filters_json` 筛选条件json (识别分类,关键词,物种名称,文件格式,识别类型,上传类型,开始时间,结束时间)
-- `execution_mode` 执行方式(自动,手动)
-- `auto_confirm` 自动确认
-- `active` 活跃
-- `execution_status` 执行状态
-- `total_count` 总数
-- `processed_count` 处理次数
-- `started_at` 开始时间
-- `finished_at` 完成时间
-- `last_error` 最后错误
-- `config_id` 选择的提示词和解析格式
 
 功能需求：
 
@@ -98,37 +63,6 @@
 
 用途：保存单个文件级信息,状态。
 
-核心字段：
-
-- `id`
-- `task_id` 任务id
-- `device_name` 设备名称
-- `name` 文件名称
-- `file_num` 文件编号
-- `file_extension` 文件扩展后缀名
-- `file_url` 文件url
-- `file_fid` 文件fid
-- `sp_name_list` 识别名称结果
-- `classify` 识别类型 1.确种、2有效、3空拍、4处理中
-- `file_bmp` 文件格式(1图片、2视频、3音频)
-- `result_file_data` 视频识别结果数据文件url
-- `id_type` 识别类型(0.ai、1.人工、2.专家)
-- `status` 流程状态
-- `updated_at` 更新时间
-- `create_at` 创建时间
-- `down_state` 是否下载
-- `down_error` 下载错误
-- `file_path` 保存路径
-- `llm_state` 大模型状态
-- `llm_error` 大模型错误
-- `llm_at` 大模型识别时间
-- `confirm_state` 确认状态
-- `confirmed_at` 确认时间
-- `remote_state` 远端提交状态
-- `remote_error` 远端提交错误
-- `remote_at` 远端提交时间
-- `train_state` 提交训练状态,用于不一致的
-- `train_at` 提交训练时间
 
 功能需求：
 
@@ -141,36 +75,11 @@
 
 用途：保存单个文件级的识别信息。
 
-核心字段：
-
-- `id`
-- `task_item_id` 任务item id
-- `name` 原始识别名称
-- `score` 原始识别率
-- `track_ids` 个体轨迹ids
-- `sp_amount` 识别物种个体数(视频才有合并的数量)
-- `minx` 左上角x
-- `miny` 左上角y
-- `maxx` 右下角x
-- `maxy` 右下角y
-- `llm_name` 大模型识别名称
-- `status` 状态(删除,新增,修改)
 
 ### 3.6 MultimodalModel
 
 用途：保存多模态模型网关配置。
 
-核心字段：
-
-- `id`
-- `model_name` 模型名称
-- `endpoint_url` 地址
-- `api_key` key
-- `status` 状态(启用,停用)
-- `detected_models_json` 检测到的模型 JSON 格式文件
-- `last_detected_at` 最后检测时间
-- `created_at` 创建时间
-- `updated_at` 更新时间
 
 功能需求：
 
@@ -224,17 +133,6 @@
 
 客户端列表和详情返回时应包含：
 
-- `id`
-- `name`
-- `apiUrl`
-- `account`
-- `status`
-- 脱敏后的 `password`
-- `passwordConfigured`
-- 认证状态摘要：
-  - `hasAccessToken`
-  - `hasRefreshToken`
-  - `expiresIn`
 
 ### 5.3 上游认证流程
 
@@ -582,13 +480,3 @@
 - 记录上游客户端调用日志。
 - 记录模型网关调用日志。
 - 关键错误必须保留可读错误信息。
-
-## 16. 大模型使用约束
-
-如果把本文档交给大模型继续开发，模型应默认遵守以下约束：
-
-- 优先复用现有 `application/`、`services/`、`db/` 分层。
-- 改动任务执行逻辑时，不得破坏“单文件失败不拖垮整批任务”的原则。
-- 改动 Review 回写逻辑时，不得破坏 `detail_snapshot_json` 回放机制。
-- 改动客户端调用逻辑时，不得破坏 token 复用、刷新、重登与 Bearer 回退兼容。
-- 改动模型网关逻辑时，不得破坏多候选端点、多认证头和多响应结构兼容。

@@ -15,14 +15,14 @@ class ClientStatusType(str, Enum):
 class Client(SQLModel, table=True):
     """第三方客户端连接配置与令牌缓存。"""
 
-    __tablename__ = "Client"
+    __tablename__ = "client"
 
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(max_length=200, description="项目名称")
     api_url: str = Field(max_length=1000, description="api地址")
     account: str = Field(max_length=50, description="账号")
-    password: str = Field(max_length=50, description="密码")
-    status: str = Field(default=ClientStatusType.Enable.value,max_length=10, description="状态")
-    access_token: Optional[str] = Field(default=None, max_length=50, description="token")
-    refresh_token: Optional[str] = Field(default=None, max_length=50, description="刷新token")
+    password: str = Field(max_length=200, description="密码")
+    status: str = Field(default=ClientStatusType.Enable.value, max_length=10, description="状态")
+    access_token: Optional[str] = Field(default=None, max_length=4000, description="token")
+    refresh_token: Optional[str] = Field(default=None, max_length=4000, description="刷新token")
     expires_in: Optional[int] = Field(default=None, description="过期时间")

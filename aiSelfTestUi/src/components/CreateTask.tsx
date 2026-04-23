@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { classifyOptions, defaultTaskFilters, fileBmpOptions, intervalOptions, type TaskFilterFormData } from '../constants/taskFilters';
+import type { ClientItem, ClientListData } from '../types/client';
+import { fetchApi } from '../utils/api';
 
 type ExecutionMode = 'auto' | 'manual';
 
@@ -16,7 +18,7 @@ const labelClass = 'block text-sm font-medium text-gray-700 dark:text-gray-300 m
 const inputClass = 'w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors';
 
 export default function CreateTask({ onBack }: { onBack: () => void }) {
-  const [clients, setClients] = useState<any[]>([]);
+  const [clients, setClients] = useState<ClientItem[]>([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState<{
@@ -34,14 +36,14 @@ export default function CreateTask({ onBack }: { onBack: () => void }) {
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        const res = await fetch('/api/clients');
-        const data = await res.json();
-        setClients(Array.isArray(data) ? data : []);
-        if (Array.isArray(data) && data.length > 0) {
-          setFormData((prev) => ({ ...prev, clientId: String(data[0].id) }));
+        const data = await fetchApi<ClientListData>('/api/clients/list');
+        setClients(data.items);
+        if (data.items.length > 0) {
+          setFormData((prev) => ({ ...prev, clientId: String(data.items[0].id) }));
         }
       } catch (e) {
         console.error(e);
+        setError((e as Error).message || '客户端列表加载失败');
       }
     };
     fetchClients();
@@ -123,7 +125,7 @@ export default function CreateTask({ onBack }: { onBack: () => void }) {
         </button>
         <div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">创建新任务</h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">先配置项目、定时器和筛选条件，后续执行会按这套条件进行。</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">先配置客户端、定时器和筛选条件，后续执行会按这套条件进行。</p>
         </div>
       </div>
 
@@ -134,10 +136,10 @@ export default function CreateTask({ onBack }: { onBack: () => void }) {
             <section className="space-y-4">
               <div className="flex items-center gap-3">
                 <span className="w-8 h-8 rounded-full bg-blue-600 text-white text-sm font-semibold flex items-center justify-center">1</span>
-                <h3 className={sectionTitleClass}>选择项目</h3>
+                <h3 className={sectionTitleClass}>选择客户端</h3>
               </div>
               <div>
-                <label className={labelClass}>项目</label>
+                <label className={labelClass}>客户端</label>
                 <select
                   value={formData.clientId}
                   onChange={(e) => setFormData({ ...formData, clientId: e.target.value })}
@@ -330,8 +332,8 @@ export default function CreateTask({ onBack }: { onBack: () => void }) {
           
           <div className="flex-1 space-y-6">
             <div>
-              <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold mb-1">目标项目</p>
-              <div className="text-base text-gray-900 dark:text-gray-100 font-medium">{selectedClient?.name || '未选择'}</div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold mb-1">目标客户端</p>
+              <div className="text-base text-gray-900 dark:text-gray-100 font-medium">{selectedClient?.name || '未选择客户端'}</div>
             </div>
             
             <div>

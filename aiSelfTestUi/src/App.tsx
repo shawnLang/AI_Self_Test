@@ -55,7 +55,7 @@ export default function App() {
         </div>
         <nav className="flex-1 p-4 space-y-1">
           <NavItem icon={<LayoutDashboard />} label="总览" active={currentView === 'dashboard'} onClick={() => setCurrentView('dashboard')} />
-          <NavItem icon={<Users />} label="项目管理" active={currentView === 'clients'} onClick={() => setCurrentView('clients')} />
+          <NavItem icon={<Users />} label="客户端管理" active={currentView === 'clients'} onClick={() => setCurrentView('clients')} />
           <NavItem icon={<ListTodo />} label="任务管理" active={currentView === 'tasks'} onClick={() => setCurrentView('tasks')} />
           <NavItem icon={<CheckSquare />} label="结果复核" active={currentView === 'review'} onClick={() => { setSelectedReviewTaskId(null); setCurrentView('review'); }} />
           <NavItem icon={<Cpu />} label="模型管理" active={currentView === 'multimodal-models'} onClick={() => setCurrentView('multimodal-models')} />

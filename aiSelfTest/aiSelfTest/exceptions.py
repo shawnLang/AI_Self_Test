@@ -8,6 +8,16 @@ from loguru import logger
 from pydantic import ValidationError
 
 
+class AppException(Exception):
+    """统一业务异常。"""
+
+    def __init__(self, *, code: int, message: str, status_code: int) -> None:
+        self.code = code
+        self.message = message
+        self.status_code = status_code
+        super().__init__(message)
+
+
 def get_field_display_name(field: str) -> str:
     """获取字段的中文显示名称。"""
     field_map = {
@@ -25,6 +35,9 @@ def get_field_display_name(field: str) -> str:
         "detail": "详情",
         "name": "名称",
         "description": "描述",
+        "apiUrl": "API 地址",
+        "account": "账号",
+        "status": "状态",
     }
     return field_map.get(field, field)
 
@@ -124,4 +137,21 @@ async def pydantic_validation_exception_handler(
             "message": detail,
             "data": None
         }
+    )
+
+
+async def app_exception_handler(
+    request: Request,
+    exc: AppException,
+) -> JSONResponse:
+    """处理统一业务异常。"""
+
+    logger.warning(f"业务处理失败: {exc.message}, path={request.url.path}")
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "code": exc.code,
+            "message": exc.message,
+            "data": None,
+        },
     )

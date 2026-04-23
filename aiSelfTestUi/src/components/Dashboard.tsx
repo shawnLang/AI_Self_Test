@@ -1,27 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { Activity, CheckCircle2, AlertCircle, Clock } from 'lucide-react';
+import { fetchApi } from '../utils/api';
+
+
+type DashboardStats = {
+  activeTasks: number;
+  processedToday: number;
+  pendingReviews: number;
+  anomalies: number;
+  recentActivities: Array<{
+    id: number;
+    name: string;
+    status: string;
+    processedCount: number;
+    totalCount: number;
+    finishedAt: string;
+  }>;
+};
+
+
+const emptyStats: DashboardStats = {
+  activeTasks: 0,
+  processedToday: 0,
+  pendingReviews: 0,
+  anomalies: 0,
+  recentActivities: []
+};
 
 export default function Dashboard() {
-  const [stats, setStats] = useState({
-    activeTasks: 0,
-    processedToday: 0,
-    pendingReviews: 0,
-    anomalies: 0,
-    recentActivities: [] as Array<{
-      id: number,
-      name: string,
-      status: string,
-      processedCount: number,
-      totalCount: number,
-      finishedAt: string
-    }>
-  });
+  const [stats, setStats] = useState<DashboardStats>(emptyStats);
 
   useEffect(() => {
-    fetch('/api/dashboard/stats')
-      .then(res => res.json())
+    fetchApi<DashboardStats>('/api/dashboard/stats')
       .then(data => setStats(data))
-      .catch(e => console.error(e));
+      .catch(e => {
+        console.error(e);
+        setStats(emptyStats);
+      });
   }, []);
 
   return (
