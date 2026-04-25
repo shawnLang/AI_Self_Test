@@ -4,7 +4,6 @@ import {
   confirmReviewItems,
   deleteReviewItems,
   type ReviewItem,
-  type ReviewTaskOption,
 } from '../api/taskItems';
 import {
   useCompletedReviewTasks,
@@ -47,7 +46,7 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
       const data = await confirmReviewItems([id]);
       if (Number(data.failureCount || 0) > 0) {
         const failed = Array.isArray(data.results) ? data.results.filter((item) => item.status === 'failed') : [];
-        const message = failed.map((item) => item.message).filter(Boolean).join('\n') || data.error || '确认回写失败';
+        const message = failed.map((item) => item.message).filter(Boolean).join('\n') || '确认回写失败';
         window.alert(message);
       }
       await invalidateReviews(selectedTaskId);
@@ -285,7 +284,7 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
       )}
       {item.remoteError && (
         <span className="rounded-full bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 px-2 py-1">
-          远端更新失败/可重试
+          远端提交失败/可重试
         </span>
       )}
     </div>
@@ -296,7 +295,7 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
     if (rows.length === 0) {
       return (
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-700 dark:border-amber-900/40 dark:bg-amber-900/20 dark:text-amber-300">
-          大模型未保留可提交物种，确认后将提交空数组。
+          大模型未保留待提交物种；确认只更新 TaskItem 确认状态。
         </div>
       );
     }
