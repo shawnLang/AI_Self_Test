@@ -252,6 +252,7 @@ def test_task_item_delete_action_does_not_delete_source_task_item(
     )
 
     assert response.status_code == 200
+    db_session.expire_all()
     assert db_session.exec(
         select(task_item_model).where(task_item_model.id == task_item.id)
     ).one_or_none() is not None
