@@ -207,7 +207,9 @@ export function submitTaskItem(taskItemId: number): Promise<TaskItemActionData> 
 
 export async function listReviewTaskOptions(): Promise<ReviewTaskOption[]> {
   const tasks = await listTasks();
-  return tasks.map((task) => ({ id: task.id, name: task.name }));
+  return tasks
+    .filter((task) => task.execution_status === '结束')
+    .map((task) => ({ id: task.id, name: task.name }));
 }
 
 export async function listTaskItemReviewItems(taskId: string): Promise<ReviewItem[]> {

@@ -249,7 +249,7 @@ class TaskItemDetailData(BaseModel):
     ) -> "TaskItemDetailData":
         media_type: MediaTypeValue = "video" if row.file_bmp == 2 else "image"
         submit_count = len([item for item in review_rows if item.status in {"新增", "修改", "删除"}])
-        exclude_count = 0
+        exclude_count = len([item for item in review_rows if item.status == "删除"])
         return cls(
             id=row.id or 0,
             task_id=row.task_id,
