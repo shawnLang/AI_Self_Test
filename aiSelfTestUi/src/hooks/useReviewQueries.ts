@@ -1,22 +1,22 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { listCompletedReviewTasks, listReviews } from '../api/review';
+import { listReviewTaskOptions, listTaskItemReviewItems } from '../api/taskItems';
 
 export const reviewKeys = {
-  tasks: ['review-completed-tasks'] as const,
-  reviews: (taskId: string) => ['review-items', taskId] as const,
+  tasks: ['task-item-review-tasks'] as const,
+  reviews: (taskId: string) => ['task-item-review-items', taskId] as const,
 };
 
 export function useCompletedReviewTasks() {
   return useQuery({
     queryKey: reviewKeys.tasks,
-    queryFn: listCompletedReviewTasks,
+    queryFn: listReviewTaskOptions,
   });
 }
 
 export function useReviews(taskId: string) {
   return useQuery({
     queryKey: reviewKeys.reviews(taskId),
-    queryFn: () => listReviews(taskId),
+    queryFn: () => listTaskItemReviewItems(taskId),
     enabled: Boolean(taskId),
   });
 }

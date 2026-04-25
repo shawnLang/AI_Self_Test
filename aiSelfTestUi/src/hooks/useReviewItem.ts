@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { ReviewItem } from '../api/review';
+import type { ReviewItem } from '../api/taskItems';
 
 export type ConsistencyFilter = 'all' | 'matched' | 'mismatched';
 

@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { Check, Trash2, List, LayoutGrid, Image as ImageIcon, CheckSquare, ChevronLeft, ChevronRight } from 'lucide-react';
 import {
-  confirmReviews,
-  deleteReview,
-  deleteReviews,
+  confirmReviewItems,
+  deleteReviewItems,
   type ReviewItem,
-  type ReviewTaskOption,
-} from '../api/review';
+} from '../api/taskItems';
 import {
   useCompletedReviewTasks,
   useInvalidateReviews,
@@ -45,10 +43,10 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
 
   const handleConfirm = async (id: string) => {
     try {
-      const data = await confirmReviews([id]);
+      const data = await confirmReviewItems([id]);
       if (Number(data.failureCount || 0) > 0) {
         const failed = Array.isArray(data.results) ? data.results.filter((item) => item.status === 'failed') : [];
-        const message = failed.map((item) => item.message).filter(Boolean).join('\n') || data.error || '确认回写失败';
+        const message = failed.map((item) => item.message).filter(Boolean).join('\n') || '确认回写失败';
         window.alert(message);
       }
       await invalidateReviews(selectedTaskId);
@@ -57,18 +55,28 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
 
   const handleDelete = async (id: string) => {
     try {
-      await deleteReview(id);
+      const item = items.find((current) => String(current.id) === id);
+      const rowsByItemId = item ? { [id]: getTaskItemDataIds(item) } : {};
+      const data = await deleteReviewItems([id], rowsByItemId);
+      if (Number(data.failureCount || 0) > 0) {
+        const failed = data.results.find((result) => result.status === 'failed');
+        window.alert(failed?.message || '复核差异移除失败');
+      }
       await invalidateReviews(selectedTaskId);
     } catch (e) { console.error(e); }
   };
 
   const handleBatchDelete = async () => {
     if (!filteredItems.length) return;
-    if (!window.confirm('确定要批量删除当前筛选下的全部复核数据吗？此操作不可恢复。')) {
+    if (!window.confirm('确定要批量移除当前筛选下的复核差异吗？此操作不会删除源 TaskItem 或源媒体。')) {
       return;
     }
     try {
-      await deleteReviews(filteredItems.map(i => String(i.id)));
+      const rowsByItemId = Object.fromEntries(filteredItems.map((item) => [String(item.id), getTaskItemDataIds(item)]));
+      const data = await deleteReviewItems(filteredItems.map(i => String(i.id)), rowsByItemId);
+      if (Number(data.failureCount || 0) > 0) {
+        window.alert(`批量移除完成：成功 ${Number(data.successCount || 0)} 条，失败 ${Number(data.failureCount || 0)} 条。`);
+      }
       await invalidateReviews(selectedTaskId);
       await invalidateTasks();
     } catch (e) { console.error(e); }
@@ -77,7 +85,7 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
   const handleBatchConfirm = async () => {
     if (!filteredItems.length) return;
     try {
-      const data = await confirmReviews(filteredItems.map(i => String(i.id)));
+      const data = await confirmReviewItems(filteredItems.map(i => String(i.id)));
       if (Number(data.failureCount || 0) > 0) {
         window.alert(`批量确认完成：成功 ${Number(data.successCount || 0)} 条，失败 ${Number(data.failureCount || 0)} 条。失败项仍保留在待复核列表。`);
       }
@@ -92,6 +100,10 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
   const closePreview = () => {
     setPreviewItem(null);
   };
+
+  const getTaskItemDataIds = (item: ReviewItem) => getReviewRows(item)
+    .map((row: any) => Number(row.recordId))
+    .filter((id: number) => Number.isFinite(id) && id > 0);
 
   const {
     filteredItems,
@@ -244,8 +256,8 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
   };
 
   const getDecisionLabel = (row: any) => {
-    if (row.decision === 'keep') return '提交';
-    if (row.decision === 'rename') return '改名提交';
+    if (row.decision === 'keep') return '保留';
+    if (row.decision === 'rename') return '改名';
     if (row.decision === 'exclude') return '排除';
     return '错误';
   };
@@ -260,19 +272,19 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
   const renderSummaryBadges = (item: any) => (
     <div className="flex flex-wrap gap-2 text-xs">
       <span className="rounded-full bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 px-2 py-1">
-        将提交 {Number(item.submitCount || 0)} 条
+        待提交 {Number(item.submitCount || 0)} 条
       </span>
       <span className="rounded-full bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 px-2 py-1">
         排除 {Number(item.excludedCount || 0)} 条
       </span>
       {item.willSubmitEmptyArray && (
         <span className="rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300 px-2 py-1">
-          空数组提交
+          无待提交差异
         </span>
       )}
       {item.remoteError && (
         <span className="rounded-full bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 px-2 py-1">
-          远端更新失败/可重试
+          远端提交失败/可重试
         </span>
       )}
     </div>
@@ -283,7 +295,7 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
     if (rows.length === 0) {
       return (
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-700 dark:border-amber-900/40 dark:bg-amber-900/20 dark:text-amber-300">
-          大模型未保留可提交物种，确认后将提交空数组。
+          大模型未保留待提交物种；确认只更新 TaskItem 确认状态。
         </div>
       );
     }
@@ -376,7 +388,7 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
               </td>
               <td className="px-4 py-3 whitespace-nowrap text-right space-x-2">
                 <button onClick={() => handleConfirm(String(item.id))} className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 text-sm font-medium">确认</button>
-                <button onClick={() => handleDelete(String(item.id))} className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 text-sm font-medium">删除</button>
+                <button onClick={() => handleDelete(String(item.id))} className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 text-sm font-medium">移除差异</button>
               </td>
             </tr>
           )})}
@@ -433,12 +445,12 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
                 className="flex-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
               >
                 <Check className="w-4 h-4" />
-                确认并更新
+                确认
               </button>
               <button 
                 onClick={() => handleDelete(String(item.id))}
                 className="px-4 bg-gray-50 dark:bg-gray-700 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 border border-gray-200 dark:border-gray-600 hover:border-red-200 dark:hover:border-red-800 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center"
-                title="删除记录"
+                title="移除复核差异"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
@@ -539,11 +551,11 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
           <div className="p-4 flex flex-col gap-2 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
             <button onClick={() => handleConfirm(String(activeItem.id))}
               className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
-              <Check className="w-4 h-4" />确认并更新
+              <Check className="w-4 h-4" />确认
             </button>
             <button onClick={() => handleDelete(String(activeItem.id))}
               className="w-full bg-white dark:bg-gray-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 border border-gray-200 dark:border-gray-700 hover:border-red-200 dark:hover:border-red-800 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
-              <Trash2 className="w-4 h-4" />删除记录
+              <Trash2 className="w-4 h-4" />移除复核差异
             </button>
           </div>
         </div>
@@ -555,8 +567,8 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
     <div className="p-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">结果复核</h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">复核并确认 AI 多模态模型的识别结果。</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">结果复核（TaskItem Actions）</h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">基础确认页：确认只更新 TaskItem 确认状态，不触发远端提交；移除差异不删除源 TaskItem。</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <select
@@ -632,7 +644,7 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
           <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-1"></div>
 
           <button onClick={handleBatchDelete} className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-            批量删除
+            批量移除差异
           </button>
           <button onClick={handleBatchConfirm} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
             批量确认
