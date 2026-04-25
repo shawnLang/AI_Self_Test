@@ -155,6 +155,8 @@ def list_task_items(
     *,
     task_id: int,
     media_type: str | None = None,
+    status: str | None = None,
+    confirm_state: str | None = None,
     page: int = 1,
     page_size: int = 20,
 ) -> TaskItemListData:
@@ -167,6 +169,11 @@ def list_task_items(
         query = query.where(TaskItem.file_bmp == 1)
     elif media_type == "video":
         query = query.where(TaskItem.file_bmp == 2)
+
+    if status:
+        query = query.where(TaskItem.status == status)
+    if confirm_state:
+        query = query.where(TaskItem.confirm_state == confirm_state)
 
     rows = session.exec(query.order_by(TaskItem.id.desc())).all()
     items = [TaskItemListRow.from_model(row) for row in rows]
@@ -246,6 +253,13 @@ def submit_task_item(
     """提交 TaskItem。"""
 
     task_item = _get_task_item_or_raise(session, payload.task_item_id)
+    if task_item.confirm_state == "rejected":
+        raise AppException(
+            code=ErrorCode.PARAM_INVALID,
+            message="已拒绝的任务项不能提交",
+            status_code=400,
+        )
+
     task_item.remote_state = "success"
     task_item.remote_at = datetime.now()
     task_item.updated_at = datetime.now()
