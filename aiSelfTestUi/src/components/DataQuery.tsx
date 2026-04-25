@@ -1,359 +1,210 @@
-import React, { useEffect, useState } from 'react';
-import { ArrowLeft, Search, CheckSquare, Square, Play, Image as ImageIcon, ZoomIn } from 'lucide-react';
-import { classifyOptions, defaultTaskFilters, fileBmpOptions, normalizeTaskFiltersForForm, resolveApiFileBmpValue } from '../constants/taskFilters';
-import { fetchApi } from '../utils/api';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { ArrowLeft, CheckCircle2, Clock, Image as ImageIcon, Play, RefreshCw, Video, XCircle, ZoomIn } from 'lucide-react';
+import {
+  getTaskDetail,
+  listTaskItems,
+  runTaskNow,
+  type MediaType,
+  type TaskItemListRow,
+  type TaskSummary,
+} from '../api/taskItems';
 
-type TaskDetailData = {
-  filters?: Record<string, unknown>;
+const mediaTypeLabel: Record<MediaType, string> = {
+  image: '图片',
+  video: '视频',
 };
 
-type TaskItemListData = {
-  items: Array<{
-    id: number;
-    media_type: 'image' | 'video';
-    name: string;
-    file_url: string;
-    status: string;
-  }>;
-  total: number;
+const intervalLabelMap: Record<number, string> = {
+  1: '每小时',
+  6: '每 6 小时',
+  12: '每 12 小时',
+  24: '每天',
+  168: '每周',
 };
 
-const classifyLabelMap: Record<number, string> = {
-  1: '确种',
-  2: '有效',
-  3: '空拍',
-  4: '处理中'
-};
-
-const classifyColorMap: Record<number, string> = {
-  1: 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800',
-  2: 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800',
-  3: 'bg-gray-100 text-gray-700 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700',
-  4: 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800'
-};
+type MediaFilter = MediaType | 'all';
+type StatusFilter = 'all' | 'pending' | 'confirmed' | 'submitted' | 'failed';
 
 export default function DataQuery({ taskId, onBack }: { taskId: number, onBack: () => void }) {
-  const [formData, setFormData] = useState(() => normalizeTaskFiltersForForm(defaultTaskFilters));
-
-  const [results, setResults] = useState<any[]>([]);
+  const [task, setTask] = useState<TaskSummary | null>(null);
+  const [items, setItems] = useState<TaskItemListRow[]>([]);
+  const [total, setTotal] = useState(0);
+  const [mediaFilter, setMediaFilter] = useState<MediaFilter>('all');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [loading, setLoading] = useState(false);
-  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
-  const [queryError, setQueryError] = useState('');
-  const [previewItem, setPreviewItem] = useState<any | null>(null);
+  const [running, setRunning] = useState(false);
+  const [error, setError] = useState('');
+  const [previewItem, setPreviewItem] = useState<TaskItemListRow | null>(null);
+
+  const loadWorkspace = useCallback(async () => {
+    if (!taskId) return;
+
+    setLoading(true);
+    setError('');
+    try {
+      const [taskDetail, itemData] = await Promise.all([
+        getTaskDetail(taskId),
+        listTaskItems({ taskId, mediaType: mediaFilter, page: 1, pageSize: 100 }),
+      ]);
+      setTask(taskDetail);
+      setItems(itemData.items);
+      setTotal(itemData.total);
+    } catch (e) {
+      console.error(e);
+      setError((e as Error).message || '任务工作区加载失败');
+      setItems([]);
+      setTotal(0);
+    } finally {
+      setLoading(false);
+    }
+  }, [taskId, mediaFilter]);
 
   useEffect(() => {
-    const fetchTaskFilters = async () => {
-      try {
-        const data = await fetchApi<TaskDetailData>(`/api/tasks/detail/${taskId}`);
-        setFormData(normalizeTaskFiltersForForm(data.filters || {}));
-      } catch (e) {
-        console.error(e);
-      }
-    };
+    loadWorkspace();
+  }, [loadWorkspace]);
 
-    if (taskId) {
-      fetchTaskFilters();
-    }
-  }, [taskId]);
+  const filteredItems = useMemo(() => items.filter((item) => matchStatusFilter(item, statusFilter)), [items, statusFilter]);
 
-  const handleSearch = async () => {
-    setLoading(true);
-    setQueryError('');
+  const handleRunTask = async () => {
+    setRunning(true);
+    setError('');
     try {
-      const params = new URLSearchParams({
-        task_id: String(taskId),
-        page: String(formData.current || 1),
-        page_size: String(formData.size || 50),
-      });
-      if (formData.fileBmp !== 'all') {
-        const apiFileBmpValue = resolveApiFileBmpValue(formData.fileBmp);
-        if (apiFileBmpValue === 1) params.set('media_type', 'image');
-        if (apiFileBmpValue === 2) params.set('media_type', 'video');
-      }
-
-      const data = await fetchApi<TaskItemListData>(`/api/task-items/list?${params.toString()}`);
-      setResults(data.items.map((item) => ({
-        id: item.id,
-        name: item.name,
-        spNameList: item.status,
-        classify: item.status === '核查' ? 1 : 4,
-        fileTime: '--',
-        fileUrl: item.file_url,
-        coverUrl: item.file_url,
-        mediaType: item.media_type,
-        mediaUrl: item.file_url,
-        deName: '--',
-      })));
-      setSelectedIds(new Set()); // Reset selection on new search
-    } catch(e) {
-      setResults([]);
-      setQueryError((e as Error).message || '任务项加载失败，请稍后重试。');
+      await runTaskNow(taskId);
+      await loadWorkspace();
+    } catch (e) {
       console.error(e);
-    }
-    setLoading(false);
-  };
-
-  const handleSelectAll = () => {
-    if (selectedIds.size === results.length) {
-      setSelectedIds(new Set()); // deselect all
-    } else {
-      setSelectedIds(new Set(results.map(r => r.id))); // select all
+      setError((e as Error).message || '立即执行任务失败');
+    } finally {
+      setRunning(false);
     }
   };
 
-  const toggleSelect = (id: number) => {
-    const newSet = new Set(selectedIds);
-    if (newSet.has(id)) newSet.delete(id);
-    else newSet.add(id);
-    setSelectedIds(newSet);
-  };
-
-  const toggleClassify = (value: number) => {
-    setFormData(prev => {
-      const exists = prev.classifyList.includes(value);
-      const nextClassifyList = exists
-        ? prev.classifyList.filter(v => v !== value)
-        : [...prev.classifyList, value];
-      return { ...prev, classifyList: nextClassifyList };
-    });
-  };
-
-  const handleExecute = async () => {
-    try {
-      await fetchApi(`/api/tasks/action-run/${taskId}`, {
-        method: 'POST',
-      });
-      onBack(); // Go back to task management after starting
-    } catch(e) {
-      console.error(e);
-      alert(`执行失败：${(e as Error).message || '未知错误'}`);
-    }
-  };
-
-  const openPreview = (item: any) => {
-    setPreviewItem(item);
-  };
-
-  const closePreview = () => {
-    setPreviewItem(null);
-  };
+  const taskFilters = task?.filters;
 
   return (
     <div className="p-8 flex flex-col h-full">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-4">
-          <button onClick={onBack} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+      <div className="flex flex-col gap-4 mb-6 xl:flex-row xl:items-start xl:justify-between">
+        <div className="flex items-start gap-4">
+          <button onClick={onBack} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors" aria-label="返回任务列表">
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">任务详情与任务项工作区</h2>
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">任务详情 / TaskItem 工作区</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              当前页面读取正式 Task 与 TaskItem 契约；筛选条件来自任务定义，执行入口统一走任务动作。
+            </p>
+          </div>
         </div>
-        <button 
-          onClick={handleExecute}
-          className="px-6 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors bg-green-600 hover:bg-green-700 text-white shadow-md"
-        >
-          <Play className="w-4 h-4" />
-          立即执行任务
-        </button>
+
+        <div className="flex flex-wrap gap-3">
+          <button
+            type="button"
+            onClick={loadWorkspace}
+            disabled={loading}
+            className="px-4 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-60"
+          >
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            刷新任务项
+          </button>
+          <button
+            type="button"
+            onClick={handleRunTask}
+            disabled={running}
+            className="px-6 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors bg-green-600 hover:bg-green-700 text-white shadow-md disabled:bg-green-400"
+          >
+            <Play className="w-4 h-4" />
+            {running ? '执行中...' : '立即执行任务'}
+          </button>
+        </div>
       </div>
 
-      {/* Filter Header */}
-      <div className="bg-white dark:bg-gray-800 p-5 md:p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm mb-6 transition-colors">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-x-6 gap-y-5 items-end">
-          
-          <div className="md:col-span-2 xl:col-span-2">
-            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">识别分类 (Classify List)</label>
+      {error && (
+        <div className="mb-4 rounded-lg border border-red-200 bg-red-50 text-red-700 dark:border-red-900/40 dark:bg-red-900/20 dark:text-red-300 px-4 py-3 text-sm">
+          {error}
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 mb-6">
+        <section className="xl:col-span-2 bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm transition-colors">
+          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{task?.name || `任务 #${taskId}`}</h3>
+              <div className="flex flex-wrap gap-3 text-sm text-gray-500 dark:text-gray-400 mt-2">
+                <span>项目 #{task?.client_id ?? '--'}</span>
+                <span>提示词配置 #{task?.config_id ?? '--'}</span>
+                <span>{task ? intervalLabelMap[task.interval_hours] || `${task.interval_hours} 小时` : '--'}</span>
+                <span>{task?.execution_mode === 'auto' ? '自动执行' : '手动执行'}</span>
+                <span>{task?.auto_confirm ? '自动确认' : '人工确认'}</span>
+              </div>
+            </div>
             <div className="flex flex-wrap gap-2">
-              {classifyOptions.map(option => {
-                const checked = formData.classifyList.includes(option.value);
-                return (
-                  <button
-                    key={option.value}
-                    type="button"
-                    onClick={() => toggleClassify(option.value)}
-                    className={`px-3 py-1.5 rounded-md text-sm border transition-colors ${
-                      checked
-                        ? 'bg-blue-50 border-blue-500 text-blue-700 dark:bg-blue-900/30 dark:border-blue-400 dark:text-blue-300'
-                        : 'bg-gray-50 border-gray-300 text-gray-600 dark:bg-gray-900 dark:border-gray-600 dark:text-gray-300'
-                    }`}
-                  >
-                    {checked ? '☑' : '☐'} {option.label}
-                  </button>
-                );
-              })}
+              <StatusBadge label={`状态：${task?.execution_status || '--'}`} tone={task?.execution_status === '失败' ? 'red' : task?.active ? 'green' : 'gray'} />
+              <StatusBadge label={`进度：${task?.processed_count ?? 0}/${task?.total_count ?? 0}`} tone="blue" />
             </div>
           </div>
-          
-          <div className="col-span-1">
-            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">关键词 (Keyword)</label>
-            <input type="text" placeholder="输入关键字..." value={formData.keyword} onChange={e => setFormData({...formData, keyword: e.target.value})} className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-colors dark:text-white" />
-          </div>
-          
-          <div className="col-span-1">
-            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">物种名称 (SpName)</label>
-            <input type="text" placeholder="如：鸟类..." value={formData.spName} onChange={e => setFormData({...formData, spName: e.target.value})} className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-colors dark:text-white" />
-          </div>
-          
-          <div className="col-span-1">
-            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">文件格式</label>
-            <select 
-              value={formData.fileBmp}
-              onChange={e => setFormData({...formData, fileBmp: e.target.value})}
-              className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-colors dark:text-white"
-            >
-              <option value="all">不限制</option>
-              {fileBmpOptions.map((option) => (
-                <option key={option.value} value={option.value}>{option.label}</option>
-              ))}
-            </select>
-          </div>
-          
-          <div className="col-span-1">
-            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">识别类型</label>
-            <select 
-              value={formData.idType} 
-              onChange={e => setFormData({...formData, idType: e.target.value})} 
-              className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-colors dark:text-white"
-            >
-              <option value="all">不限制</option>
-              <option value={0}>AI 识别</option>
-              <option value={1}>人工识别</option>
-            </select>
-          </div>
-          
-          <div className="col-span-1">
-            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">上传类型</label>
-            <select 
-              value={formData.uploadType}
-              onChange={e => setFormData({...formData, uploadType: e.target.value})}
-              className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-colors dark:text-white"
-            >
-              <option value="all">不限制</option>
-              <option value={0}>监测设备上传</option>
-              <option value={1}>移动打卡</option>
-              <option value={2}>后台录入</option>
-            </select>
-          </div>
-          
-          <div className="col-span-1">
-            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">开始时间</label>
-            <input type="date" value={formData.startTime} onChange={e => setFormData({...formData, startTime: e.target.value})} className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-colors dark:text-white" />
-          </div>
-          
-          <div className="col-span-1">
-            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">结束时间</label>
-            <input type="date" value={formData.endTime} onChange={e => setFormData({...formData, endTime: e.target.value})} className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-colors dark:text-white" />
-          </div>
-          
-          <div className="col-span-1 flex flex-col justify-end">
-            <button onClick={handleSearch} disabled={loading} className="w-full h-[38px] bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors disabled:bg-blue-400">
-              <Search className="w-4 h-4" />
-              {loading ? '查询中...' : '查询'}
-            </button>
-          </div>
 
-        </div>
+          {task?.last_error && (
+            <div className="mt-4 rounded-lg border border-orange-200 bg-orange-50 text-orange-700 dark:border-orange-900/40 dark:bg-orange-900/20 dark:text-orange-300 px-4 py-3 text-sm">
+              {task.last_error}
+            </div>
+          )}
+        </section>
+
+        <section className="bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm transition-colors">
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">任务保存筛选条件</h3>
+          <div className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+            <FilterLine label="分类" value={formatList(taskFilters?.classify_list)} />
+            <FilterLine label="关键词" value={taskFilters?.keyword || '--'} />
+            <FilterLine label="物种" value={taskFilters?.sp_name || '--'} />
+            <FilterLine label="时间" value={`${taskFilters?.start_at || '--'} ~ ${taskFilters?.end_at || '--'}`} />
+            <FilterLine label="媒体" value={formatList(taskFilters?.media_types.map((item) => mediaTypeLabel[item]))} />
+          </div>
+        </section>
       </div>
 
-      {/* Results View */}
-      <div className="flex-1 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden flex flex-col transition-colors">
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/80">
-          <h3 className="font-semibold text-gray-700 dark:text-gray-200">
-            任务项列表 {results.length > 0 && <span className="ml-2 font-normal text-sm bg-gray-200 dark:bg-gray-700 px-2 py-0.5 rounded-full">{results.length} 项</span>}
-          </h3>
-          {results.length > 0 && (
-            <button onClick={handleSelectAll} className="text-sm flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors font-medium">
-              {selectedIds.size === results.length ? <CheckSquare className="w-4 h-4" /> : <Square className="w-4 h-4" />}
-              {selectedIds.size === results.length ? '取消全选' : '全选此页'}
-            </button>
-          )}
-        </div>
-        
-        <div className="p-4 flex-1 overflow-auto">
-          {results.length === 0 ? (
-           <div className="h-full flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 py-12">
-             <ImageIcon className="w-12 h-12 mb-4 opacity-50" />
-             {queryError && <p className="mb-2 text-red-500 dark:text-red-400">{queryError}</p>}
-             <p>暂无数据记录，请调整顶部的筛选条件并点击查询。</p>
-           </div>
-          ) : (
-            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {results.map(item => {
-                const isSelected = selectedIds.has(item.id);
-                const classifyLabel = classifyLabelMap[Number(item.classify)] || '未知';
-                const classifyColorClass = classifyColorMap[Number(item.classify)] || 'bg-gray-100 text-gray-700 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700';
-                const speciesName = item.spNameList?.trim() || '--';
-                return (
-                  <div 
-                    key={item.id} 
-                    onClick={() => toggleSelect(item.id)}
-                    className={`relative p-2 border-2 rounded-xl cursor-pointer overflow-hidden transition-all duration-200 group ${
-                      isSelected ? 'border-blue-500 bg-blue-50/30 dark:bg-blue-900/10' : 'border-gray-100 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
-                    }`}
-                  >
-                    <div
-                      className="aspect-video w-full bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden relative border border-gray-200 dark:border-gray-700"
-                      onDoubleClick={(e) => {
-                        e.stopPropagation();
-                        openPreview(item);
-                      }}
-                    >
-                      {item.mediaUrl && item.mediaType === 'video' ? (
-                        <video
-                          src={item.mediaUrl}
-                          className="w-full h-full object-cover"
-                          preload="metadata"
-                          muted
-                          playsInline
-                        />
-                      ) : item.mediaUrl ? (
-                        <img src={item.mediaUrl} className="w-full h-full object-cover" alt="封面" />
-                      ) : item.coverUrl ? (
-                        <img src={item.coverUrl} className="w-full h-full object-cover" alt="封面" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <ImageIcon className="w-8 h-8 text-gray-300 dark:text-gray-600" />
-                        </div>
-                      )}
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden flex flex-col transition-colors flex-1 min-h-0">
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex flex-col gap-3 bg-gray-50/50 dark:bg-gray-800/80 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <h3 className="font-semibold text-gray-700 dark:text-gray-200">
+              TaskItem 列表 <span className="ml-2 font-normal text-sm bg-gray-200 dark:bg-gray-700 px-2 py-0.5 rounded-full">{filteredItems.length} / {total} 项</span>
+            </h3>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">这里展示已落库任务项，不再实时查询并下发旧任务数据。</p>
+          </div>
 
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openPreview(item);
-                        }}
-                        className="absolute top-2 right-2 p-1.5 rounded-md bg-black/55 text-white hover:bg-black/75 transition-colors"
-                        title="预览"
-                        aria-label="预览"
-                      >
-                        <ZoomIn className="w-4 h-4" />
-                      </button>
-                      
-                      {/* Checkbox overlay indicator */}
-                      <div className={`absolute top-2 left-2 p-1 rounded-md transition-colors ${isSelected ? 'bg-blue-500 text-white' : 'bg-white/80 text-gray-400 dark:bg-gray-800/80 group-hover:text-gray-600'}`}>
-                        {isSelected ? <CheckSquare className="w-5 h-5" /> : <Square className="w-5 h-5" />}
-                      </div>
-                    </div>
-                    
-                    <div className="mt-3 px-1">
-                      <div
-                        className="flex items-center gap-2 text-sm text-gray-900 dark:text-gray-100"
-                        title={`分类：${classifyLabel}    物种：${speciesName}`}
-                      >
-                        <span className={`inline-flex shrink-0 items-center rounded-md border px-2 py-0.5 text-xs font-semibold ${classifyColorClass}`}>
-                          分类：{classifyLabel}
-                        </span>
-                        <span className="truncate font-medium">
-                          物种：{speciesName}
-                        </span>
-                      </div>
-                      <div className="flex flex-col text-xs text-gray-500 dark:text-gray-400 mt-1 gap-0.5">
-                        <span className="truncate">设备: {item.deName || '未知'}</span>
-                        <span>时间: {item.fileTime || '--'}</span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+          <div className="flex flex-wrap gap-2">
+            <select
+              value={mediaFilter}
+              onChange={(e) => setMediaFilter(e.target.value as MediaFilter)}
+              className="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:text-white"
+            >
+              <option value="all">全部媒体</option>
+              <option value="image">仅图片</option>
+              <option value="video">仅视频</option>
+            </select>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
+              className="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:text-white"
+            >
+              <option value="all">全部状态</option>
+              <option value="pending">待处理/待确认</option>
+              <option value="confirmed">已确认</option>
+              <option value="submitted">已提交</option>
+              <option value="failed">异常</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="p-4 flex-1 overflow-auto">
+          {loading ? (
+            <EmptyState icon={<RefreshCw className="w-12 h-12 mb-4 opacity-50 animate-spin" />} title="正在加载任务项..." description="请稍候" />
+          ) : filteredItems.length === 0 ? (
+            <EmptyState icon={<ImageIcon className="w-12 h-12 mb-4 opacity-50" />} title="暂无 TaskItem" description="请先执行任务，或调整媒体/状态筛选。" />
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+              {filteredItems.map((item) => (
+                <TaskItemCard key={item.id} item={item} onPreview={() => setPreviewItem(item)} />
+              ))}
             </div>
           )}
         </div>
@@ -362,7 +213,7 @@ export default function DataQuery({ taskId, onBack }: { taskId: number, onBack: 
       {previewItem && (
         <div
           className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4"
-          onClick={closePreview}
+          onClick={() => setPreviewItem(null)}
         >
           <div
             className="relative w-full max-w-6xl max-h-[92vh] rounded-xl bg-black border border-white/20 p-3"
@@ -370,7 +221,7 @@ export default function DataQuery({ taskId, onBack }: { taskId: number, onBack: 
           >
             <button
               type="button"
-              onClick={closePreview}
+              onClick={() => setPreviewItem(null)}
               className="absolute right-3 top-3 z-10 h-8 w-8 rounded-full bg-black/60 text-white hover:bg-black/80 text-lg leading-none"
               aria-label="关闭预览"
             >
@@ -378,13 +229,13 @@ export default function DataQuery({ taskId, onBack }: { taskId: number, onBack: 
             </button>
 
             <div className="text-white text-sm mb-3 pr-10 truncate">
-              {previewItem.spNameList?.trim() || previewItem.name || '媒体预览'}
+              {previewItem.name || '媒体预览'} · TaskItem #{previewItem.id}
             </div>
 
             <div className="w-full h-[78vh] flex items-center justify-center">
-              {previewItem.mediaType === 'video' ? (
+              {previewItem.media_type === 'video' ? (
                 <video
-                  src={previewItem.mediaUrl}
+                  src={previewItem.file_url}
                   className="max-h-full max-w-full rounded-md"
                   controls
                   autoPlay
@@ -392,7 +243,7 @@ export default function DataQuery({ taskId, onBack }: { taskId: number, onBack: 
                 />
               ) : (
                 <img
-                  src={previewItem.mediaUrl || previewItem.coverUrl}
+                  src={previewItem.file_url}
                   className="max-h-full max-w-full object-contain rounded-md"
                   alt="预览"
                 />
@@ -403,4 +254,106 @@ export default function DataQuery({ taskId, onBack }: { taskId: number, onBack: 
       )}
     </div>
   );
+}
+
+function TaskItemCard({ item, onPreview }: { item: TaskItemListRow; onPreview: () => void }) {
+  const failed = isFailedItem(item);
+  const confirmed = isConfirmedItem(item);
+  const submitted = item.remote_state === 'success';
+
+  return (
+    <article className="relative p-3 border rounded-xl overflow-hidden transition-all duration-200 bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600">
+      <div className="aspect-video w-full bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden relative border border-gray-200 dark:border-gray-700">
+        {item.file_url && item.media_type === 'video' ? (
+          <video src={item.file_url} className="w-full h-full object-cover" preload="metadata" muted playsInline />
+        ) : item.file_url ? (
+          <img src={item.file_url} className="w-full h-full object-cover" alt={item.name || 'TaskItem'} />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <ImageIcon className="w-8 h-8 text-gray-300 dark:text-gray-600" />
+          </div>
+        )}
+
+        <button
+          type="button"
+          onClick={onPreview}
+          className="absolute top-2 right-2 p-1.5 rounded-md bg-black/55 text-white hover:bg-black/75 transition-colors"
+          title="预览"
+          aria-label="预览"
+        >
+          <ZoomIn className="w-4 h-4" />
+        </button>
+
+        <span className="absolute top-2 left-2 inline-flex items-center gap-1 rounded-md bg-black/55 px-2 py-1 text-xs text-white">
+          {item.media_type === 'video' ? <Video className="w-3 h-3" /> : <ImageIcon className="w-3 h-3" />}
+          {mediaTypeLabel[item.media_type]}
+        </span>
+      </div>
+
+      <div className="mt-3 px-1">
+        <div className="flex items-center justify-between gap-2">
+          <h4 className="truncate text-sm font-semibold text-gray-900 dark:text-gray-100" title={item.name}>{item.name || `TaskItem #${item.id}`}</h4>
+          <span className="text-xs text-gray-500 dark:text-gray-400 shrink-0">#{item.id}</span>
+        </div>
+        <div className="mt-2 flex flex-wrap gap-2">
+          <StatusBadge label={item.status || '未开始'} tone={failed ? 'red' : 'gray'} />
+          <StatusBadge label={item.down_state ? '已下载' : '待下载'} tone={item.down_state ? 'green' : 'gray'} />
+          <StatusBadge label={`识别：${item.llm_state || 'pending'}`} tone={item.llm_state === 'success' ? 'green' : 'blue'} />
+          <StatusBadge label={confirmed ? '已确认' : '待确认'} tone={confirmed ? 'green' : 'gray'} />
+          <StatusBadge label={submitted ? '已提交' : `提交：${item.remote_state || 'pending'}`} tone={submitted ? 'green' : 'blue'} />
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function EmptyState({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
+  return (
+    <div className="h-full flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 py-12">
+      {icon}
+      <p className="text-base font-medium text-gray-600 dark:text-gray-300">{title}</p>
+      <p className="text-sm mt-1">{description}</p>
+    </div>
+  );
+}
+
+function StatusBadge({ label, tone }: { label: string; tone: 'gray' | 'blue' | 'green' | 'red' }) {
+  const classes = {
+    gray: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
+    blue: 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
+    green: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300',
+    red: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300',
+  }[tone];
+
+  return <span className={`rounded-full px-2 py-1 text-xs font-medium ${classes}`}>{label}</span>;
+}
+
+function FilterLine({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-start justify-between gap-3">
+      <span className="text-gray-400 dark:text-gray-500 shrink-0">{label}</span>
+      <span className="text-right break-all">{value || '--'}</span>
+    </div>
+  );
+}
+
+function formatList(values: Array<string | number> | undefined) {
+  if (!values || values.length === 0) return '--';
+  return values.join('、');
+}
+
+function matchStatusFilter(item: TaskItemListRow, filter: StatusFilter) {
+  if (filter === 'all') return true;
+  if (filter === 'confirmed') return isConfirmedItem(item);
+  if (filter === 'submitted') return item.remote_state === 'success';
+  if (filter === 'failed') return isFailedItem(item);
+  return !isConfirmedItem(item) && item.remote_state !== 'success';
+}
+
+function isConfirmedItem(item: TaskItemListRow) {
+  return item.confirm_state === 'manual_confirmed' || item.confirm_state === 'auto_confirmed';
+}
+
+function isFailedItem(item: TaskItemListRow) {
+  return [item.status, item.llm_state, item.confirm_state, item.remote_state].some((value) => String(value || '').includes('失败') || String(value || '').toLowerCase() === 'failed');
 }
