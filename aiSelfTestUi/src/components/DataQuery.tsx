@@ -256,7 +256,7 @@ export default function DataQuery({ taskId, onBack }: { taskId: number, onBack: 
   );
 }
 
-function TaskItemCard({ item, onPreview }: { item: TaskItemListRow; onPreview: () => void }) {
+function TaskItemCard({ item, onPreview }: { key?: React.Key; item: TaskItemListRow; onPreview: () => void }) {
   const failed = isFailedItem(item);
   const confirmed = isConfirmedItem(item);
   const submitted = item.remote_state === 'success';
