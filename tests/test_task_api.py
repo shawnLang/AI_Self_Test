@@ -131,6 +131,19 @@ def test_create_task_validates_interval_hours(app_client: TestClient) -> None:
     assert body["code"] == 1001
 
 
+def test_create_task_rejects_non_canonical_execution_mode(app_client: TestClient) -> None:
+    client_id, config_id = _create_client_and_config(app_client)
+
+    response = app_client.post(
+        "/api/tasks/create",
+        json=_create_task_payload(client_id, config_id, execution_mode="自动"),
+    )
+
+    assert response.status_code == 400
+    body = response.json()
+    assert body["code"] == 1001
+
+
 def test_update_task_persists_schedule_and_filters(app_client: TestClient) -> None:
     client_id, config_id = _create_client_and_config(app_client)
     create_response = app_client.post(

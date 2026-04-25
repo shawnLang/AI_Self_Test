@@ -140,6 +140,8 @@ def run_legacy_task_execute_route(
 def list_task_items_route(
     task_id: int = Query(gt=0),
     media_type: str | None = Query(default=None),
+    status: str | None = Query(default=None),
+    confirm_state: str | None = Query(default=None),
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=20, ge=1, le=200),
     session: Session = Depends(get_session),
@@ -148,6 +150,8 @@ def list_task_items_route(
         session,
         task_id=task_id,
         media_type=media_type,
+        status=status,
+        confirm_state=confirm_state,
         page=page,
         page_size=page_size,
     )

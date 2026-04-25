@@ -65,4 +65,4 @@ def test_lifespan_runs_alembic_migrations(
     )
 
     version = db_session.exec(text("select version_num from alembic_version")).one()
-    assert version[0] == "20260425_0001"
+    assert version[0] == "20260425_0002"
