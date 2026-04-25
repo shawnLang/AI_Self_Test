@@ -2,6 +2,25 @@
 
 This file provides guidance to codex when working with code in this repository.
 
+# python 环境
+
+本项目使用 `uv` 管理 Python 环境、依赖与命令执行。
+
+## uv 操作规范
+
+- 初始化或同步环境：`uv sync`
+- 运行 Python 脚本：`uv run python <script.py>`
+- 运行项目命令：`uv run <command>`
+- 运行测试：`uv run pytest`
+- 运行指定测试：`uv run pytest <test_path>`
+- 添加运行依赖：`uv add <package>`
+- 添加开发依赖：`uv add --dev <package>`
+- 移除依赖：`uv remove <package>`
+- 更新锁文件：`uv lock`
+
+除非有明确原因，不要直接使用 `pip install`、`python`、`pytest` 等绕过 `uv`
+环境的命令。需要执行 Python 相关命令时，优先使用 `uv run`。
+
 # 开发规范
 
 ## Python 开发规范
