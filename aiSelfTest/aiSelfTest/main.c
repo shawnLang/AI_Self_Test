@@ -1527,7 +1527,7 @@ struct __pyx_obj_10aiSelfTest_4main___pyx_scope_struct_1_request_id_middleware;
 struct __pyx_obj_10aiSelfTest_4main___pyx_scope_struct_2_root;
 struct __pyx_obj_10aiSelfTest_4main___pyx_scope_struct_3_health_check;
 
-/* "aiSelfTest/main.py":31
+/* "aiSelfTest/main.py":35
  * 
  * 
  * @asynccontextmanager             # <<<<<<<<<<<<<<
@@ -1538,10 +1538,11 @@ struct __pyx_obj_10aiSelfTest_4main___pyx_scope_struct__lifespan {
   PyObject_HEAD
   PyObject *__pyx_v_app;
   PyObject *__pyx_v_settings;
+  PyObject *__pyx_v_task_scheduler;
 };
 
 
-/* "aiSelfTest/main.py":67
+/* "aiSelfTest/main.py":79
  *     )
  * 
  *     @app.middleware("http")             # <<<<<<<<<<<<<<
@@ -1561,7 +1562,7 @@ struct __pyx_obj_10aiSelfTest_4main___pyx_scope_struct_1_request_id_middleware {
 };
 
 
-/* "aiSelfTest/main.py":83
+/* "aiSelfTest/main.py":95
  *     app.include_router(review_router, prefix="/api", tags=[""])
  * 
  *     @app.get("/")             # <<<<<<<<<<<<<<
@@ -1573,7 +1574,7 @@ struct __pyx_obj_10aiSelfTest_4main___pyx_scope_struct_2_root {
 };
 
 
-/* "aiSelfTest/main.py":91
+/* "aiSelfTest/main.py":103
  *         }
  * 
  *     @app.get("/health")             # <<<<<<<<<<<<<<
@@ -1989,12 +1990,59 @@ static int __Pyx_VectorcallBuilder_AddArgStr(const char *key, PyObject *value, P
 static PyObject *__Pyx_Object_VectorcallMethod_CallFromBuilder(PyObject *name, PyObject *const *args, size_t nargsf, PyObject *kwnames);
 #endif
 
-/* GetException.proto (used by pep479) */
+/* PyObjectDelAttr.proto (used by PyObjectSetAttrStr) */
+#if CYTHON_COMPILING_IN_LIMITED_API && __PYX_LIMITED_VERSION_HEX < 0x030d0000
+#define __Pyx_PyObject_DelAttr(o, n) PyObject_SetAttr(o, n, NULL)
+#else
+#define __Pyx_PyObject_DelAttr(o, n) PyObject_DelAttr(o, n)
+#endif
+
+/* PyObjectSetAttrStr.proto */
+#if CYTHON_USE_TYPE_SLOTS
+#define __Pyx_PyObject_DelAttrStr(o,n) __Pyx_PyObject_SetAttrStr(o, n, NULL)
+static CYTHON_INLINE int __Pyx_PyObject_SetAttrStr(PyObject* obj, PyObject* attr_name, PyObject* value);
+#else
+#define __Pyx_PyObject_DelAttrStr(o,n)   __Pyx_PyObject_DelAttr(o,n)
+#define __Pyx_PyObject_SetAttrStr(o,n,v) PyObject_SetAttr(o,n,v)
+#endif
+
+/* PyObjectFastCallMethod.proto */
+#if CYTHON_VECTORCALL && PY_VERSION_HEX >= 0x03090000
+#define __Pyx_PyObject_FastCallMethod(name, args, nargsf) PyObject_VectorcallMethod(name, args, nargsf, NULL)
+#else
+static PyObject *__Pyx_PyObject_FastCallMethod(PyObject *name, PyObject *const *args, size_t nargsf);
+#endif
+
+/* GetException.proto */
 #if CYTHON_FAST_THREAD_STATE
 #define __Pyx_GetException(type, value, tb)  __Pyx__GetException(__pyx_tstate, type, value, tb)
 static int __Pyx__GetException(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb);
 #else
 static int __Pyx_GetException(PyObject **type, PyObject **value, PyObject **tb);
+#endif
+
+/* SwapException.proto */
+#if CYTHON_FAST_THREAD_STATE
+#define __Pyx_ExceptionSwap(type, value, tb)  __Pyx__ExceptionSwap(__pyx_tstate, type, value, tb)
+static CYTHON_INLINE void __Pyx__ExceptionSwap(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb);
+#else
+static CYTHON_INLINE void __Pyx_ExceptionSwap(PyObject **type, PyObject **value, PyObject **tb);
+#endif
+
+/* GetTopmostException.proto (used by SaveResetException) */
+#if CYTHON_USE_EXC_INFO_STACK && CYTHON_FAST_THREAD_STATE
+static _PyErr_StackItem * __Pyx_PyErr_GetTopmostException(PyThreadState *tstate);
+#endif
+
+/* SaveResetException.proto */
+#if CYTHON_FAST_THREAD_STATE
+#define __Pyx_ExceptionSave(type, value, tb)  __Pyx__ExceptionSave(__pyx_tstate, type, value, tb)
+static CYTHON_INLINE void __Pyx__ExceptionSave(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb);
+#define __Pyx_ExceptionReset(type, value, tb)  __Pyx__ExceptionReset(__pyx_tstate, type, value, tb)
+static CYTHON_INLINE void __Pyx__ExceptionReset(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb);
+#else
+#define __Pyx_ExceptionSave(type, value, tb)   PyErr_GetExcInfo(type, value, tb)
+#define __Pyx_ExceptionReset(type, value, tb)  PyErr_SetExcInfo(type, value, tb)
 #endif
 
 /* pep479.proto */
@@ -2003,13 +2051,6 @@ static void __Pyx_Generator_Replace_StopIteration(int in_async_gen);
 /* PyObject_Unicode.proto */
 #define __Pyx_PyObject_Unicode(obj)\
     (likely(PyUnicode_CheckExact(obj)) ? __Pyx_NewRef(obj) : PyObject_Str(obj))
-
-/* PyObjectFastCallMethod.proto */
-#if CYTHON_VECTORCALL && PY_VERSION_HEX >= 0x03090000
-#define __Pyx_PyObject_FastCallMethod(name, args, nargsf) PyObject_VectorcallMethod(name, args, nargsf, NULL)
-#else
-static PyObject *__Pyx_PyObject_FastCallMethod(PyObject *name, PyObject *const *args, size_t nargsf);
-#endif
 
 /* PyObjectLookupSpecial.proto */
 #if CYTHON_USE_PYTYPE_LOOKUP && CYTHON_USE_TYPE_SLOTS
@@ -2056,30 +2097,6 @@ static int __pyx_CommonTypesMetaclass_init(PyObject *module);
 
 /* RaiseException.export */
 static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject *cause);
-
-/* GetTopmostException.proto (used by SaveResetException) */
-#if CYTHON_USE_EXC_INFO_STACK && CYTHON_FAST_THREAD_STATE
-static _PyErr_StackItem * __Pyx_PyErr_GetTopmostException(PyThreadState *tstate);
-#endif
-
-/* SaveResetException.proto (used by CoroutineBase) */
-#if CYTHON_FAST_THREAD_STATE
-#define __Pyx_ExceptionSave(type, value, tb)  __Pyx__ExceptionSave(__pyx_tstate, type, value, tb)
-static CYTHON_INLINE void __Pyx__ExceptionSave(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb);
-#define __Pyx_ExceptionReset(type, value, tb)  __Pyx__ExceptionReset(__pyx_tstate, type, value, tb)
-static CYTHON_INLINE void __Pyx__ExceptionReset(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb);
-#else
-#define __Pyx_ExceptionSave(type, value, tb)   PyErr_GetExcInfo(type, value, tb)
-#define __Pyx_ExceptionReset(type, value, tb)  PyErr_SetExcInfo(type, value, tb)
-#endif
-
-/* SwapException.proto (used by CoroutineBase) */
-#if CYTHON_FAST_THREAD_STATE
-#define __Pyx_ExceptionSwap(type, value, tb)  __Pyx__ExceptionSwap(__pyx_tstate, type, value, tb)
-static CYTHON_INLINE void __Pyx__ExceptionSwap(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb);
-#else
-static CYTHON_INLINE void __Pyx_ExceptionSwap(PyObject **type, PyObject **value, PyObject **tb);
-#endif
 
 /* CallTypeTraverse.proto (used by CoroutineBase) */
 #if !CYTHON_USE_TYPE_SPECS || (!CYTHON_COMPILING_IN_LIMITED_API && PY_VERSION_HEX < 0x03090000)
@@ -2564,7 +2581,7 @@ int __pyx_module_is_main_aiSelfTest__main = 0;
 /* #### Code section: string_decls ### */
 static const char __pyx_k_FastAPI_2[] = "FastAPI \345\272\224\347\224\250\345\205\245\345\217\243\343\200\202";
 /* #### Code section: decls ### */
-static PyObject *__pyx_pf_10aiSelfTest_4main_lifespan(CYTHON_UNUSED PyObject *__pyx_self, CYTHON_UNUSED PyObject *__pyx_v_app); /* proto */
+static PyObject *__pyx_pf_10aiSelfTest_4main_lifespan(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_app); /* proto */
 static PyObject *__pyx_pf_10aiSelfTest_4main_10create_app_request_id_middleware(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_request, PyObject *__pyx_v_call_next); /* proto */
 static PyObject *__pyx_pf_10aiSelfTest_4main_10create_app_3root(CYTHON_UNUSED PyObject *__pyx_self); /* proto */
 static PyObject *__pyx_pf_10aiSelfTest_4main_10create_app_6health_check(CYTHON_UNUSED PyObject *__pyx_self); /* proto */
@@ -2606,7 +2623,7 @@ typedef struct {
   __Pyx_CachedCFunction __pyx_umethod_PyDict_Type_values;
   PyObject *__pyx_tuple[1];
   PyObject *__pyx_codeobj_tab[5];
-  PyObject *__pyx_string_tab[138];
+  PyObject *__pyx_string_tab[145];
 /* #### Code section: module_state_contents ### */
 /* CommonTypesMetaclass.module_state_decls */
 PyTypeObject *__pyx_CommonTypesMetaclassType;
@@ -2738,99 +2755,106 @@ static __pyx_mstatetype * const __pyx_mstate_global = &__pyx_mstate_global_stati
 #define __pyx_n_u_aiSelfTest_database __pyx_string_tab[42]
 #define __pyx_n_u_aiSelfTest_exceptions __pyx_string_tab[43]
 #define __pyx_n_u_aiSelfTest_main __pyx_string_tab[44]
-#define __pyx_n_u_aiSelfTest_version __pyx_string_tab[45]
-#define __pyx_n_u_allow_credentials __pyx_string_tab[46]
-#define __pyx_n_u_allow_headers __pyx_string_tab[47]
-#define __pyx_n_u_allow_methods __pyx_string_tab[48]
-#define __pyx_n_u_allow_origins __pyx_string_tab[49]
-#define __pyx_n_u_app __pyx_string_tab[50]
-#define __pyx_n_u_app_exception_handler __pyx_string_tab[51]
-#define __pyx_n_u_asynccontextmanager __pyx_string_tab[52]
-#define __pyx_n_u_asyncio_coroutines __pyx_string_tab[53]
-#define __pyx_n_u_await __pyx_string_tab[54]
-#define __pyx_n_u_call_next __pyx_string_tab[55]
-#define __pyx_n_u_client_router __pyx_string_tab[56]
-#define __pyx_n_u_cline_in_traceback __pyx_string_tab[57]
-#define __pyx_n_u_close __pyx_string_tab[58]
-#define __pyx_n_u_config_router __pyx_string_tab[59]
-#define __pyx_n_u_contextlib __pyx_string_tab[60]
-#define __pyx_n_u_contextualize __pyx_string_tab[61]
-#define __pyx_n_u_cors_origins __pyx_string_tab[62]
-#define __pyx_n_u_create_app __pyx_string_tab[63]
-#define __pyx_n_u_create_app_locals_health_check __pyx_string_tab[64]
-#define __pyx_n_u_create_app_locals_request_id_mid __pyx_string_tab[65]
-#define __pyx_n_u_create_app_locals_root __pyx_string_tab[66]
-#define __pyx_n_u_dashboard_router __pyx_string_tab[67]
-#define __pyx_n_u_data_dir __pyx_string_tab[68]
-#define __pyx_n_u_description __pyx_string_tab[69]
-#define __pyx_n_u_docs __pyx_string_tab[70]
-#define __pyx_n_u_enter __pyx_string_tab[71]
-#define __pyx_n_u_exist_ok __pyx_string_tab[72]
-#define __pyx_n_u_exit __pyx_string_tab[73]
-#define __pyx_n_u_fastapi __pyx_string_tab[74]
-#define __pyx_n_u_fastapi_exceptions __pyx_string_tab[75]
-#define __pyx_n_u_fastapi_middleware_cors __pyx_string_tab[76]
-#define __pyx_n_u_func __pyx_string_tab[77]
-#define __pyx_n_u_get __pyx_string_tab[78]
-#define __pyx_n_u_get_settings __pyx_string_tab[79]
-#define __pyx_n_u_headers __pyx_string_tab[80]
-#define __pyx_n_u_health_check __pyx_string_tab[81]
-#define __pyx_n_u_http __pyx_string_tab[82]
-#define __pyx_n_u_include_router __pyx_string_tab[83]
-#define __pyx_n_u_info __pyx_string_tab[84]
-#define __pyx_n_u_is_coroutine __pyx_string_tab[85]
-#define __pyx_n_u_items __pyx_string_tab[86]
-#define __pyx_n_u_lifespan __pyx_string_tab[87]
-#define __pyx_n_u_log_dir __pyx_string_tab[88]
-#define __pyx_n_u_logger __pyx_string_tab[89]
-#define __pyx_n_u_loguru __pyx_string_tab[90]
-#define __pyx_n_u_main __pyx_string_tab[91]
-#define __pyx_n_u_message __pyx_string_tab[92]
-#define __pyx_n_u_middleware __pyx_string_tab[93]
-#define __pyx_n_u_mkdir __pyx_string_tab[94]
-#define __pyx_n_u_module __pyx_string_tab[95]
-#define __pyx_n_u_multimodal_model_router __pyx_string_tab[96]
-#define __pyx_n_u_name __pyx_string_tab[97]
-#define __pyx_n_u_next __pyx_string_tab[98]
-#define __pyx_n_u_ok __pyx_string_tab[99]
-#define __pyx_n_u_parents __pyx_string_tab[100]
-#define __pyx_n_u_pop __pyx_string_tab[101]
-#define __pyx_n_u_prefix __pyx_string_tab[102]
-#define __pyx_n_u_pydantic __pyx_string_tab[103]
-#define __pyx_n_u_pydantic_validation_exception_ha __pyx_string_tab[104]
-#define __pyx_n_u_qualname __pyx_string_tab[105]
-#define __pyx_n_u_request __pyx_string_tab[106]
-#define __pyx_n_u_request_id __pyx_string_tab[107]
-#define __pyx_n_u_request_id_middleware __pyx_string_tab[108]
-#define __pyx_n_u_response __pyx_string_tab[109]
-#define __pyx_n_u_return __pyx_string_tab[110]
-#define __pyx_n_u_review_router __pyx_string_tab[111]
-#define __pyx_n_u_root __pyx_string_tab[112]
-#define __pyx_n_u_router __pyx_string_tab[113]
-#define __pyx_n_u_run_migrations __pyx_string_tab[114]
-#define __pyx_n_u_send __pyx_string_tab[115]
-#define __pyx_n_u_set_name __pyx_string_tab[116]
-#define __pyx_n_u_setdefault __pyx_string_tab[117]
-#define __pyx_n_u_settings __pyx_string_tab[118]
-#define __pyx_n_u_status __pyx_string_tab[119]
-#define __pyx_n_u_tags __pyx_string_tab[120]
-#define __pyx_n_u_task_item_router __pyx_string_tab[121]
-#define __pyx_n_u_task_router __pyx_string_tab[122]
-#define __pyx_n_u_test __pyx_string_tab[123]
-#define __pyx_n_u_throw __pyx_string_tab[124]
-#define __pyx_n_u_title __pyx_string_tab[125]
-#define __pyx_n_u_uuid __pyx_string_tab[126]
-#define __pyx_n_u_uuid4 __pyx_string_tab[127]
-#define __pyx_n_u_validation_exception_handler __pyx_string_tab[128]
-#define __pyx_n_u_value __pyx_string_tab[129]
-#define __pyx_n_u_values __pyx_string_tab[130]
-#define __pyx_n_u_version __pyx_string_tab[131]
-#define __pyx_n_u_version_2 __pyx_string_tab[132]
-#define __pyx_kp_b_iso88591_A __pyx_string_tab[133]
-#define __pyx_kp_b_iso88591_A_2 __pyx_string_tab[134]
-#define __pyx_kp_b_iso88591_A_3 __pyx_string_tab[135]
-#define __pyx_kp_b_iso88591_A_a_A_Q_6a_Q_q_QnA_a_l_A_aq_aq __pyx_string_tab[136]
-#define __pyx_kp_b_iso88591__12 __pyx_string_tab[137]
+#define __pyx_n_u_aiSelfTest_services_task_schedul __pyx_string_tab[45]
+#define __pyx_n_u_aiSelfTest_version __pyx_string_tab[46]
+#define __pyx_n_u_allow_credentials __pyx_string_tab[47]
+#define __pyx_n_u_allow_headers __pyx_string_tab[48]
+#define __pyx_n_u_allow_methods __pyx_string_tab[49]
+#define __pyx_n_u_allow_origins __pyx_string_tab[50]
+#define __pyx_n_u_app __pyx_string_tab[51]
+#define __pyx_n_u_app_exception_handler __pyx_string_tab[52]
+#define __pyx_n_u_asynccontextmanager __pyx_string_tab[53]
+#define __pyx_n_u_asyncio_coroutines __pyx_string_tab[54]
+#define __pyx_n_u_await __pyx_string_tab[55]
+#define __pyx_n_u_call_next __pyx_string_tab[56]
+#define __pyx_n_u_client_router __pyx_string_tab[57]
+#define __pyx_n_u_cline_in_traceback __pyx_string_tab[58]
+#define __pyx_n_u_close __pyx_string_tab[59]
+#define __pyx_n_u_config_router __pyx_string_tab[60]
+#define __pyx_n_u_contextlib __pyx_string_tab[61]
+#define __pyx_n_u_contextualize __pyx_string_tab[62]
+#define __pyx_n_u_cors_origins __pyx_string_tab[63]
+#define __pyx_n_u_create_app __pyx_string_tab[64]
+#define __pyx_n_u_create_app_locals_health_check __pyx_string_tab[65]
+#define __pyx_n_u_create_app_locals_request_id_mid __pyx_string_tab[66]
+#define __pyx_n_u_create_app_locals_root __pyx_string_tab[67]
+#define __pyx_n_u_create_task_scheduler __pyx_string_tab[68]
+#define __pyx_n_u_dashboard_router __pyx_string_tab[69]
+#define __pyx_n_u_data_dir __pyx_string_tab[70]
+#define __pyx_n_u_description __pyx_string_tab[71]
+#define __pyx_n_u_docs __pyx_string_tab[72]
+#define __pyx_n_u_enter __pyx_string_tab[73]
+#define __pyx_n_u_exist_ok __pyx_string_tab[74]
+#define __pyx_n_u_exit __pyx_string_tab[75]
+#define __pyx_n_u_fastapi __pyx_string_tab[76]
+#define __pyx_n_u_fastapi_exceptions __pyx_string_tab[77]
+#define __pyx_n_u_fastapi_middleware_cors __pyx_string_tab[78]
+#define __pyx_n_u_func __pyx_string_tab[79]
+#define __pyx_n_u_get __pyx_string_tab[80]
+#define __pyx_n_u_get_settings __pyx_string_tab[81]
+#define __pyx_n_u_headers __pyx_string_tab[82]
+#define __pyx_n_u_health_check __pyx_string_tab[83]
+#define __pyx_n_u_http __pyx_string_tab[84]
+#define __pyx_n_u_include_router __pyx_string_tab[85]
+#define __pyx_n_u_info __pyx_string_tab[86]
+#define __pyx_n_u_is_coroutine __pyx_string_tab[87]
+#define __pyx_n_u_items __pyx_string_tab[88]
+#define __pyx_n_u_lifespan __pyx_string_tab[89]
+#define __pyx_n_u_log_dir __pyx_string_tab[90]
+#define __pyx_n_u_logger __pyx_string_tab[91]
+#define __pyx_n_u_loguru __pyx_string_tab[92]
+#define __pyx_n_u_main __pyx_string_tab[93]
+#define __pyx_n_u_message __pyx_string_tab[94]
+#define __pyx_n_u_middleware __pyx_string_tab[95]
+#define __pyx_n_u_mkdir __pyx_string_tab[96]
+#define __pyx_n_u_module __pyx_string_tab[97]
+#define __pyx_n_u_multimodal_model_router __pyx_string_tab[98]
+#define __pyx_n_u_name __pyx_string_tab[99]
+#define __pyx_n_u_next __pyx_string_tab[100]
+#define __pyx_n_u_ok __pyx_string_tab[101]
+#define __pyx_n_u_parents __pyx_string_tab[102]
+#define __pyx_n_u_pop __pyx_string_tab[103]
+#define __pyx_n_u_prefix __pyx_string_tab[104]
+#define __pyx_n_u_pydantic __pyx_string_tab[105]
+#define __pyx_n_u_pydantic_validation_exception_ha __pyx_string_tab[106]
+#define __pyx_n_u_qualname __pyx_string_tab[107]
+#define __pyx_n_u_request __pyx_string_tab[108]
+#define __pyx_n_u_request_id __pyx_string_tab[109]
+#define __pyx_n_u_request_id_middleware __pyx_string_tab[110]
+#define __pyx_n_u_response __pyx_string_tab[111]
+#define __pyx_n_u_return __pyx_string_tab[112]
+#define __pyx_n_u_review_router __pyx_string_tab[113]
+#define __pyx_n_u_root __pyx_string_tab[114]
+#define __pyx_n_u_router __pyx_string_tab[115]
+#define __pyx_n_u_run_migrations __pyx_string_tab[116]
+#define __pyx_n_u_send __pyx_string_tab[117]
+#define __pyx_n_u_set_global_task_scheduler __pyx_string_tab[118]
+#define __pyx_n_u_set_name __pyx_string_tab[119]
+#define __pyx_n_u_setdefault __pyx_string_tab[120]
+#define __pyx_n_u_settings __pyx_string_tab[121]
+#define __pyx_n_u_shutdown __pyx_string_tab[122]
+#define __pyx_n_u_start __pyx_string_tab[123]
+#define __pyx_n_u_state __pyx_string_tab[124]
+#define __pyx_n_u_status __pyx_string_tab[125]
+#define __pyx_n_u_tags __pyx_string_tab[126]
+#define __pyx_n_u_task_item_router __pyx_string_tab[127]
+#define __pyx_n_u_task_router __pyx_string_tab[128]
+#define __pyx_n_u_task_scheduler __pyx_string_tab[129]
+#define __pyx_n_u_test __pyx_string_tab[130]
+#define __pyx_n_u_throw __pyx_string_tab[131]
+#define __pyx_n_u_title __pyx_string_tab[132]
+#define __pyx_n_u_uuid __pyx_string_tab[133]
+#define __pyx_n_u_uuid4 __pyx_string_tab[134]
+#define __pyx_n_u_validation_exception_handler __pyx_string_tab[135]
+#define __pyx_n_u_value __pyx_string_tab[136]
+#define __pyx_n_u_values __pyx_string_tab[137]
+#define __pyx_n_u_version __pyx_string_tab[138]
+#define __pyx_n_u_version_2 __pyx_string_tab[139]
+#define __pyx_kp_b_iso88591_A __pyx_string_tab[140]
+#define __pyx_kp_b_iso88591_A_2 __pyx_string_tab[141]
+#define __pyx_kp_b_iso88591_A_3 __pyx_string_tab[142]
+#define __pyx_kp_b_iso88591_A_a_A_Q_6a_Q_q_QnA_a_l_A_aq_aq __pyx_string_tab[143]
+#define __pyx_kp_b_iso88591__12 __pyx_string_tab[144]
 /* #### Code section: module_state_clear ### */
 #if CYTHON_USE_MODULE_STATE
 static CYTHON_SMALL_CODE int __pyx_m_clear(PyObject *m) {
@@ -2855,7 +2879,7 @@ static CYTHON_SMALL_CODE int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_type_10aiSelfTest_4main___pyx_scope_struct_3_health_check);
   for (int i=0; i<1; ++i) { Py_CLEAR(clear_module_state->__pyx_tuple[i]); }
   for (int i=0; i<5; ++i) { Py_CLEAR(clear_module_state->__pyx_codeobj_tab[i]); }
-  for (int i=0; i<138; ++i) { Py_CLEAR(clear_module_state->__pyx_string_tab[i]); }
+  for (int i=0; i<145; ++i) { Py_CLEAR(clear_module_state->__pyx_string_tab[i]); }
 /* #### Code section: module_state_clear_contents ### */
 /* CommonTypesMetaclass.module_state_clear */
 Py_CLEAR(clear_module_state->__pyx_CommonTypesMetaclassType);
@@ -2898,7 +2922,7 @@ static CYTHON_SMALL_CODE int __pyx_m_traverse(PyObject *m, visitproc visit, void
   Py_VISIT(traverse_module_state->__pyx_type_10aiSelfTest_4main___pyx_scope_struct_3_health_check);
   for (int i=0; i<1; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_tuple[i]); }
   for (int i=0; i<5; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_codeobj_tab[i]); }
-  for (int i=0; i<138; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_string_tab[i]); }
+  for (int i=0; i<145; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_string_tab[i]); }
 /* #### Code section: module_state_traverse_contents ### */
 /* CommonTypesMetaclass.module_state_traverse */
 Py_VISIT(traverse_module_state->__pyx_CommonTypesMetaclassType);
@@ -2923,7 +2947,7 @@ return 0;
 /* #### Code section: module_code ### */
 static PyObject *__pyx_gb_10aiSelfTest_4main_2generator(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "aiSelfTest/main.py":31
+/* "aiSelfTest/main.py":35
  * 
  * 
  * @asynccontextmanager             # <<<<<<<<<<<<<<
@@ -2948,7 +2972,7 @@ PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ) {
-  CYTHON_UNUSED PyObject *__pyx_v_app = 0;
+  PyObject *__pyx_v_app = 0;
   #if !CYTHON_METH_FASTCALL
   CYTHON_UNUSED Py_ssize_t __pyx_nargs;
   #endif
@@ -2971,32 +2995,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_app,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 31, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 35, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 31, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 35, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "lifespan", 0) < (0)) __PYX_ERR(0, 31, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "lifespan", 0) < (0)) __PYX_ERR(0, 35, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("lifespan", 1, 1, 1, i); __PYX_ERR(0, 31, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("lifespan", 1, 1, 1, i); __PYX_ERR(0, 35, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 31, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 35, __pyx_L3_error)
     }
     __pyx_v_app = values[0];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("lifespan", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 31, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("lifespan", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 35, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -3017,7 +3041,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10aiSelfTest_4main_lifespan(CYTHON_UNUSED PyObject *__pyx_self, CYTHON_UNUSED PyObject *__pyx_v_app) {
+static PyObject *__pyx_pf_10aiSelfTest_4main_lifespan(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_app) {
   struct __pyx_obj_10aiSelfTest_4main___pyx_scope_struct__lifespan *__pyx_cur_scope;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -3029,7 +3053,7 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_lifespan(CYTHON_UNUSED PyObject *__
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_10aiSelfTest_4main___pyx_scope_struct__lifespan *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 31, __pyx_L1_error)
+    __PYX_ERR(0, 35, __pyx_L1_error)
   } else {
     __Pyx_GOTREF((PyObject *)__pyx_cur_scope);
   }
@@ -3037,7 +3061,7 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_lifespan(CYTHON_UNUSED PyObject *__
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_app);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_app);
   {
-    __pyx_CoroutineObject *gen = __Pyx_AsyncGen_New((__pyx_coroutine_body_t) __pyx_gb_10aiSelfTest_4main_2generator, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[0]), (PyObject *) __pyx_cur_scope, __pyx_mstate_global->__pyx_n_u_lifespan, __pyx_mstate_global->__pyx_n_u_lifespan, __pyx_mstate_global->__pyx_n_u_aiSelfTest_main); if (unlikely(!gen)) __PYX_ERR(0, 31, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_AsyncGen_New((__pyx_coroutine_body_t) __pyx_gb_10aiSelfTest_4main_2generator, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[0]), (PyObject *) __pyx_cur_scope, __pyx_mstate_global->__pyx_n_u_lifespan, __pyx_mstate_global->__pyx_n_u_lifespan, __pyx_mstate_global->__pyx_n_u_aiSelfTest_main); if (unlikely(!gen)) __PYX_ERR(0, 35, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -3062,6 +3086,15 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_2generator(__pyx_CoroutineObject *_
   PyObject *__pyx_t_3 = NULL;
   size_t __pyx_t_4;
   PyObject *__pyx_t_5 = NULL;
+  int __pyx_t_6;
+  int __pyx_t_7;
+  char const *__pyx_t_8;
+  PyObject *__pyx_t_9 = NULL;
+  PyObject *__pyx_t_10 = NULL;
+  PyObject *__pyx_t_11 = NULL;
+  PyObject *__pyx_t_12 = NULL;
+  PyObject *__pyx_t_13 = NULL;
+  PyObject *__pyx_t_14 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -3069,7 +3102,7 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_2generator(__pyx_CoroutineObject *_
   __Pyx_RefNannySetupContext("lifespan", 0);
   switch (__pyx_generator->resume_label) {
     case 0: goto __pyx_L3_first_run;
-    case 1: goto __pyx_L4_resume_from_yield;
+    case 1: goto __pyx_L7_resume_from_yield;
     default: /* CPython raises the right error here */
     __Pyx_RefNannyFinishContext();
     return NULL;
@@ -3077,10 +3110,10 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_2generator(__pyx_CoroutineObject *_
   __pyx_L3_first_run:;
   if (unlikely(__pyx_sent_value != Py_None)) {
     if (unlikely(__pyx_sent_value)) PyErr_SetString(PyExc_TypeError, "can't send non-None value to a just-started async generator");
-    __PYX_ERR(0, 31, __pyx_L1_error)
+    __PYX_ERR(0, 35, __pyx_L1_error)
   }
 
-  /* "aiSelfTest/main.py":35
+  /* "aiSelfTest/main.py":39
  *     """"""
  * 
  *     settings = get_settings()             # <<<<<<<<<<<<<<
@@ -3088,7 +3121,7 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_2generator(__pyx_CoroutineObject *_
  *     settings.log_dir.mkdir(parents=True, exist_ok=True)
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_get_settings); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 35, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_get_settings); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 39, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -3107,78 +3140,78 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_2generator(__pyx_CoroutineObject *_
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 39, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_GIVEREF(__pyx_t_1);
   __pyx_cur_scope->__pyx_v_settings = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/main.py":36
+  /* "aiSelfTest/main.py":40
  * 
  *     settings = get_settings()
  *     settings.data_dir.mkdir(parents=True, exist_ok=True)             # <<<<<<<<<<<<<<
  *     settings.log_dir.mkdir(parents=True, exist_ok=True)
  * 
 */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_settings, __pyx_mstate_global->__pyx_n_u_data_dir); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_settings, __pyx_mstate_global->__pyx_n_u_data_dir); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = __pyx_t_2;
   __Pyx_INCREF(__pyx_t_3);
   __pyx_t_4 = 0;
   {
     PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 2 : 0)] = {__pyx_t_3, NULL};
-    __pyx_t_5 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 36, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 40, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_parents, Py_True, __pyx_t_5, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 36, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_exist_ok, Py_True, __pyx_t_5, __pyx_callargs+1, 1) < (0)) __PYX_ERR(0, 36, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_parents, Py_True, __pyx_t_5, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 40, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_exist_ok, Py_True, __pyx_t_5, __pyx_callargs+1, 1) < (0)) __PYX_ERR(0, 40, __pyx_L1_error)
     __pyx_t_1 = __Pyx_Object_VectorcallMethod_CallFromBuilder((PyObject*)__pyx_mstate_global->__pyx_n_u_mkdir, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_5);
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 36, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 40, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/main.py":37
+  /* "aiSelfTest/main.py":41
  *     settings = get_settings()
  *     settings.data_dir.mkdir(parents=True, exist_ok=True)
  *     settings.log_dir.mkdir(parents=True, exist_ok=True)             # <<<<<<<<<<<<<<
  * 
  *     logger.info(" aiSelfTest FastAPI ...")
 */
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_settings, __pyx_mstate_global->__pyx_n_u_log_dir); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_settings, __pyx_mstate_global->__pyx_n_u_log_dir); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_2 = __pyx_t_5;
   __Pyx_INCREF(__pyx_t_2);
   __pyx_t_4 = 0;
   {
     PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 2 : 0)] = {__pyx_t_2, NULL};
-    __pyx_t_3 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 37, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 41, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_parents, Py_True, __pyx_t_3, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 37, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_exist_ok, Py_True, __pyx_t_3, __pyx_callargs+1, 1) < (0)) __PYX_ERR(0, 37, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_parents, Py_True, __pyx_t_3, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 41, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_exist_ok, Py_True, __pyx_t_3, __pyx_callargs+1, 1) < (0)) __PYX_ERR(0, 41, __pyx_L1_error)
     __pyx_t_1 = __Pyx_Object_VectorcallMethod_CallFromBuilder((PyObject*)__pyx_mstate_global->__pyx_n_u_mkdir, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_3);
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 37, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 41, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/main.py":39
+  /* "aiSelfTest/main.py":43
  *     settings.log_dir.mkdir(parents=True, exist_ok=True)
  * 
  *     logger.info(" aiSelfTest FastAPI ...")             # <<<<<<<<<<<<<<
  *     run_migrations()
- *     yield
+ *     task_scheduler = create_task_scheduler()
 */
   __pyx_t_5 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 39, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_info); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 39, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_info); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_4 = 1;
@@ -3198,20 +3231,20 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_2generator(__pyx_CoroutineObject *_
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_2, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 39, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 43, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/main.py":40
+  /* "aiSelfTest/main.py":44
  * 
  *     logger.info(" aiSelfTest FastAPI ...")
  *     run_migrations()             # <<<<<<<<<<<<<<
- *     yield
- *     logger.info(" aiSelfTest FastAPI ...")
+ *     task_scheduler = create_task_scheduler()
+ *     app.state.task_scheduler = task_scheduler
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_run_migrations); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_run_migrations); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 44, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_4 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -3230,65 +3263,356 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_2generator(__pyx_CoroutineObject *_
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_5, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 40, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 44, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/main.py":41
+  /* "aiSelfTest/main.py":45
  *     logger.info(" aiSelfTest FastAPI ...")
  *     run_migrations()
- *     yield             # <<<<<<<<<<<<<<
- *     logger.info(" aiSelfTest FastAPI ...")
- * 
-*/
-  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
-  /* return from async generator, yielding value */
-  __pyx_generator->resume_label = 1;
-  return __Pyx__PyAsyncGenValueWrapperNew(__pyx_r);
-  __pyx_L4_resume_from_yield:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 41, __pyx_L1_error)
-
-  /* "aiSelfTest/main.py":42
- *     run_migrations()
- *     yield
- *     logger.info(" aiSelfTest FastAPI ...")             # <<<<<<<<<<<<<<
- * 
- * 
+ *     task_scheduler = create_task_scheduler()             # <<<<<<<<<<<<<<
+ *     app.state.task_scheduler = task_scheduler
+ *     set_global_task_scheduler(task_scheduler)
 */
   __pyx_t_5 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_create_task_scheduler); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 45, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_info); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 42, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_4 = 1;
   #if CYTHON_UNPACK_METHODS
-  if (unlikely(PyMethod_Check(__pyx_t_3))) {
-    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_3);
+  if (unlikely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_2);
     assert(__pyx_t_5);
-    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_3);
+    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_2);
     __Pyx_INCREF(__pyx_t_5);
     __Pyx_INCREF(__pyx__function);
-    __Pyx_DECREF_SET(__pyx_t_3, __pyx__function);
+    __Pyx_DECREF_SET(__pyx_t_2, __pyx__function);
     __pyx_t_4 = 0;
   }
   #endif
   {
-    PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_mstate_global->__pyx_kp_u_aiSelfTest_FastAPI_2};
-    __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+    PyObject *__pyx_callargs[2] = {__pyx_t_5, NULL};
+    __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_2, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 42, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 45, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+  }
+  __Pyx_GIVEREF(__pyx_t_1);
+  __pyx_cur_scope->__pyx_v_task_scheduler = __pyx_t_1;
+  __pyx_t_1 = 0;
+
+  /* "aiSelfTest/main.py":46
+ *     run_migrations()
+ *     task_scheduler = create_task_scheduler()
+ *     app.state.task_scheduler = task_scheduler             # <<<<<<<<<<<<<<
+ *     set_global_task_scheduler(task_scheduler)
+ *     task_scheduler.start()
+*/
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_app, __pyx_mstate_global->__pyx_n_u_state); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (__Pyx_PyObject_SetAttrStr(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_task_scheduler, __pyx_cur_scope->__pyx_v_task_scheduler) < (0)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "aiSelfTest/main.py":47
+ *     task_scheduler = create_task_scheduler()
+ *     app.state.task_scheduler = task_scheduler
+ *     set_global_task_scheduler(task_scheduler)             # <<<<<<<<<<<<<<
+ *     task_scheduler.start()
+ *     try:
+*/
+  __pyx_t_2 = NULL;
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_set_global_task_scheduler); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_4 = 1;
+  #if CYTHON_UNPACK_METHODS
+  if (unlikely(PyMethod_Check(__pyx_t_5))) {
+    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_5);
+    assert(__pyx_t_2);
+    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_5);
+    __Pyx_INCREF(__pyx_t_2);
+    __Pyx_INCREF(__pyx__function);
+    __Pyx_DECREF_SET(__pyx_t_5, __pyx__function);
+    __pyx_t_4 = 0;
+  }
+  #endif
+  {
+    PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_cur_scope->__pyx_v_task_scheduler};
+    __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_5, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "aiSelfTest/main.py":48
+ *     app.state.task_scheduler = task_scheduler
+ *     set_global_task_scheduler(task_scheduler)
+ *     task_scheduler.start()             # <<<<<<<<<<<<<<
+ *     try:
+ *         yield
+*/
+  __pyx_t_5 = __pyx_cur_scope->__pyx_v_task_scheduler;
+  __Pyx_INCREF(__pyx_t_5);
+  __pyx_t_4 = 0;
+  {
+    PyObject *__pyx_callargs[2] = {__pyx_t_5, NULL};
+    __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_start, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 48, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "aiSelfTest/main.py":49
+ *     set_global_task_scheduler(task_scheduler)
+ *     task_scheduler.start()
+ *     try:             # <<<<<<<<<<<<<<
+ *         yield
+ *     finally:
+*/
+  /*try:*/ {
+
+    /* "aiSelfTest/main.py":50
+ *     task_scheduler.start()
+ *     try:
+ *         yield             # <<<<<<<<<<<<<<
+ *     finally:
+ *         task_scheduler.shutdown()
+*/
+    __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+    __Pyx_XGIVEREF(__pyx_r);
+    __Pyx_RefNannyFinishContext();
+    __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
+    /* return from async generator, yielding value */
+    __pyx_generator->resume_label = 1;
+    return __Pyx__PyAsyncGenValueWrapperNew(__pyx_r);
+    __pyx_L7_resume_from_yield:;
+    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 50, __pyx_L5_error)
+  }
+
+  /* "aiSelfTest/main.py":52
+ *         yield
+ *     finally:
+ *         task_scheduler.shutdown()             # <<<<<<<<<<<<<<
+ *         set_global_task_scheduler(None)
+ *         logger.info(" aiSelfTest FastAPI ...")
+*/
+  /*finally:*/ {
+    /*normal exit:*/{
+      __pyx_t_5 = __pyx_cur_scope->__pyx_v_task_scheduler;
+      __Pyx_INCREF(__pyx_t_5);
+      __pyx_t_4 = 0;
+      {
+        PyObject *__pyx_callargs[2] = {__pyx_t_5, NULL};
+        __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_shutdown, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+        __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+      }
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+      /* "aiSelfTest/main.py":53
+ *     finally:
+ *         task_scheduler.shutdown()
+ *         set_global_task_scheduler(None)             # <<<<<<<<<<<<<<
+ *         logger.info(" aiSelfTest FastAPI ...")
+ * 
+*/
+      __pyx_t_5 = NULL;
+      __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_set_global_task_scheduler); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 53, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_t_4 = 1;
+      #if CYTHON_UNPACK_METHODS
+      if (unlikely(PyMethod_Check(__pyx_t_2))) {
+        __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_2);
+        assert(__pyx_t_5);
+        PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_2);
+        __Pyx_INCREF(__pyx_t_5);
+        __Pyx_INCREF(__pyx__function);
+        __Pyx_DECREF_SET(__pyx_t_2, __pyx__function);
+        __pyx_t_4 = 0;
+      }
+      #endif
+      {
+        PyObject *__pyx_callargs[2] = {__pyx_t_5, Py_None};
+        __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_2, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+        __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 53, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+      }
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+      /* "aiSelfTest/main.py":54
+ *         task_scheduler.shutdown()
+ *         set_global_task_scheduler(None)
+ *         logger.info(" aiSelfTest FastAPI ...")             # <<<<<<<<<<<<<<
+ * 
+ * 
+*/
+      __pyx_t_2 = NULL;
+      __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 54, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_info); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 54, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      __pyx_t_4 = 1;
+      #if CYTHON_UNPACK_METHODS
+      if (unlikely(PyMethod_Check(__pyx_t_3))) {
+        __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
+        assert(__pyx_t_2);
+        PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_3);
+        __Pyx_INCREF(__pyx_t_2);
+        __Pyx_INCREF(__pyx__function);
+        __Pyx_DECREF_SET(__pyx_t_3, __pyx__function);
+        __pyx_t_4 = 0;
+      }
+      #endif
+      {
+        PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_mstate_global->__pyx_kp_u_aiSelfTest_FastAPI_2};
+        __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+        __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 54, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+      }
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      goto __pyx_L6;
+    }
+    __pyx_L5_error:;
+    /*exception exit:*/{
+      __Pyx_PyThreadState_assign
+      __pyx_t_9 = 0; __pyx_t_10 = 0; __pyx_t_11 = 0; __pyx_t_12 = 0; __pyx_t_13 = 0; __pyx_t_14 = 0;
+      __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+       __Pyx_ExceptionSwap(&__pyx_t_12, &__pyx_t_13, &__pyx_t_14);
+      if ( unlikely(__Pyx_GetException(&__pyx_t_9, &__pyx_t_10, &__pyx_t_11) < 0)) __Pyx_ErrFetch(&__pyx_t_9, &__pyx_t_10, &__pyx_t_11);
+      __Pyx_XGOTREF(__pyx_t_9);
+      __Pyx_XGOTREF(__pyx_t_10);
+      __Pyx_XGOTREF(__pyx_t_11);
+      __Pyx_XGOTREF(__pyx_t_12);
+      __Pyx_XGOTREF(__pyx_t_13);
+      __Pyx_XGOTREF(__pyx_t_14);
+      __pyx_t_6 = __pyx_lineno; __pyx_t_7 = __pyx_clineno; __pyx_t_8 = __pyx_filename;
+      {
+
+        /* "aiSelfTest/main.py":52
+ *         yield
+ *     finally:
+ *         task_scheduler.shutdown()             # <<<<<<<<<<<<<<
+ *         set_global_task_scheduler(None)
+ *         logger.info(" aiSelfTest FastAPI ...")
+*/
+        __pyx_t_3 = __pyx_cur_scope->__pyx_v_task_scheduler;
+        __Pyx_INCREF(__pyx_t_3);
+        __pyx_t_4 = 0;
+        {
+          PyObject *__pyx_callargs[2] = {__pyx_t_3, NULL};
+          __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_shutdown, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+          __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+          if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L9_error)
+          __Pyx_GOTREF(__pyx_t_1);
+        }
+        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+        /* "aiSelfTest/main.py":53
+ *     finally:
+ *         task_scheduler.shutdown()
+ *         set_global_task_scheduler(None)             # <<<<<<<<<<<<<<
+ *         logger.info(" aiSelfTest FastAPI ...")
+ * 
+*/
+        __pyx_t_3 = NULL;
+        __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_set_global_task_scheduler); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 53, __pyx_L9_error)
+        __Pyx_GOTREF(__pyx_t_2);
+        __pyx_t_4 = 1;
+        #if CYTHON_UNPACK_METHODS
+        if (unlikely(PyMethod_Check(__pyx_t_2))) {
+          __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+          assert(__pyx_t_3);
+          PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_2);
+          __Pyx_INCREF(__pyx_t_3);
+          __Pyx_INCREF(__pyx__function);
+          __Pyx_DECREF_SET(__pyx_t_2, __pyx__function);
+          __pyx_t_4 = 0;
+        }
+        #endif
+        {
+          PyObject *__pyx_callargs[2] = {__pyx_t_3, Py_None};
+          __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_2, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+          __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+          if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 53, __pyx_L9_error)
+          __Pyx_GOTREF(__pyx_t_1);
+        }
+        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+        /* "aiSelfTest/main.py":54
+ *         task_scheduler.shutdown()
+ *         set_global_task_scheduler(None)
+ *         logger.info(" aiSelfTest FastAPI ...")             # <<<<<<<<<<<<<<
+ * 
+ * 
+*/
+        __pyx_t_2 = NULL;
+        __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 54, __pyx_L9_error)
+        __Pyx_GOTREF(__pyx_t_3);
+        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_info); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 54, __pyx_L9_error)
+        __Pyx_GOTREF(__pyx_t_5);
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        __pyx_t_4 = 1;
+        #if CYTHON_UNPACK_METHODS
+        if (unlikely(PyMethod_Check(__pyx_t_5))) {
+          __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_5);
+          assert(__pyx_t_2);
+          PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_5);
+          __Pyx_INCREF(__pyx_t_2);
+          __Pyx_INCREF(__pyx__function);
+          __Pyx_DECREF_SET(__pyx_t_5, __pyx__function);
+          __pyx_t_4 = 0;
+        }
+        #endif
+        {
+          PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_mstate_global->__pyx_kp_u_aiSelfTest_FastAPI_2};
+          __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_5, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+          __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+          __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+          if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 54, __pyx_L9_error)
+          __Pyx_GOTREF(__pyx_t_1);
+        }
+        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      }
+      __Pyx_XGIVEREF(__pyx_t_12);
+      __Pyx_XGIVEREF(__pyx_t_13);
+      __Pyx_XGIVEREF(__pyx_t_14);
+      __Pyx_ExceptionReset(__pyx_t_12, __pyx_t_13, __pyx_t_14);
+      __Pyx_XGIVEREF(__pyx_t_9);
+      __Pyx_XGIVEREF(__pyx_t_10);
+      __Pyx_XGIVEREF(__pyx_t_11);
+      __Pyx_ErrRestore(__pyx_t_9, __pyx_t_10, __pyx_t_11);
+      __pyx_t_9 = 0; __pyx_t_10 = 0; __pyx_t_11 = 0; __pyx_t_12 = 0; __pyx_t_13 = 0; __pyx_t_14 = 0;
+      __pyx_lineno = __pyx_t_6; __pyx_clineno = __pyx_t_7; __pyx_filename = __pyx_t_8;
+      goto __pyx_L1_error;
+      __pyx_L9_error:;
+      __Pyx_XGIVEREF(__pyx_t_12);
+      __Pyx_XGIVEREF(__pyx_t_13);
+      __Pyx_XGIVEREF(__pyx_t_14);
+      __Pyx_ExceptionReset(__pyx_t_12, __pyx_t_13, __pyx_t_14);
+      __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
+      __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
+      __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
+      __pyx_t_12 = 0; __pyx_t_13 = 0; __pyx_t_14 = 0;
+      goto __pyx_L1_error;
+    }
+    __pyx_L6:;
+  }
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "aiSelfTest/main.py":31
+  /* "aiSelfTest/main.py":35
  * 
  * 
  * @asynccontextmanager             # <<<<<<<<<<<<<<
@@ -3319,7 +3643,7 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_2generator(__pyx_CoroutineObject *_
   return __pyx_r;
 }
 
-/* "aiSelfTest/main.py":45
+/* "aiSelfTest/main.py":57
  * 
  * 
  * def create_app() -> FastAPI:             # <<<<<<<<<<<<<<
@@ -3345,7 +3669,7 @@ static PyObject *__pyx_pw_10aiSelfTest_4main_4create_app(PyObject *__pyx_self, C
 }
 static PyObject *__pyx_gb_10aiSelfTest_4main_10create_app_2generator1(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "aiSelfTest/main.py":67
+/* "aiSelfTest/main.py":79
  *     )
  * 
  *     @app.middleware("http")             # <<<<<<<<<<<<<<
@@ -3393,39 +3717,39 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_request,&__pyx_mstate_global->__pyx_n_u_call_next,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 67, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 79, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 67, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 79, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 67, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 79, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "request_id_middleware", 0) < (0)) __PYX_ERR(0, 67, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "request_id_middleware", 0) < (0)) __PYX_ERR(0, 79, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("request_id_middleware", 1, 2, 2, i); __PYX_ERR(0, 67, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("request_id_middleware", 1, 2, 2, i); __PYX_ERR(0, 79, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 67, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 79, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 67, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 79, __pyx_L3_error)
     }
     __pyx_v_request = values[0];
     __pyx_v_call_next = values[1];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("request_id_middleware", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 67, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("request_id_middleware", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 79, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -3458,7 +3782,7 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_10create_app_request_id_middleware(
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_10aiSelfTest_4main___pyx_scope_struct_1_request_id_middleware *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 67, __pyx_L1_error)
+    __PYX_ERR(0, 79, __pyx_L1_error)
   } else {
     __Pyx_GOTREF((PyObject *)__pyx_cur_scope);
   }
@@ -3469,7 +3793,7 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_10create_app_request_id_middleware(
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_call_next);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_call_next);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_10aiSelfTest_4main_10create_app_2generator1, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[1]), (PyObject *) __pyx_cur_scope, __pyx_mstate_global->__pyx_n_u_request_id_middleware, __pyx_mstate_global->__pyx_n_u_create_app_locals_request_id_mid, __pyx_mstate_global->__pyx_n_u_aiSelfTest_main); if (unlikely(!gen)) __PYX_ERR(0, 67, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_10aiSelfTest_4main_10create_app_2generator1, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[1]), (PyObject *) __pyx_cur_scope, __pyx_mstate_global->__pyx_n_u_request_id_middleware, __pyx_mstate_global->__pyx_n_u_create_app_locals_request_id_mid, __pyx_mstate_global->__pyx_n_u_aiSelfTest_main); if (unlikely(!gen)) __PYX_ERR(0, 79, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -3519,22 +3843,22 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_10create_app_2generator1(__pyx_Coro
   __pyx_L3_first_run:;
   if (unlikely(__pyx_sent_value != Py_None)) {
     if (unlikely(__pyx_sent_value)) PyErr_SetString(PyExc_TypeError, "can't send non-None value to a just-started coroutine");
-    __PYX_ERR(0, 67, __pyx_L1_error)
+    __PYX_ERR(0, 79, __pyx_L1_error)
   }
 
-  /* "aiSelfTest/main.py":69
+  /* "aiSelfTest/main.py":81
  *     @app.middleware("http")
  *     async def request_id_middleware(request: Request, call_next):
  *         request_id = request.headers.get("X-Request-ID", str(uuid4()))             # <<<<<<<<<<<<<<
  *         with logger.contextualize(request_id=request_id):
  *             response = await call_next(request)
 */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_request, __pyx_mstate_global->__pyx_n_u_headers); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_request, __pyx_mstate_global->__pyx_n_u_headers); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_2 = __pyx_t_3;
   __Pyx_INCREF(__pyx_t_2);
   __pyx_t_5 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_uuid4); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_uuid4); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_t_7 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -3553,10 +3877,10 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_10create_app_2generator1(__pyx_Coro
     __pyx_t_4 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_6, __pyx_callargs+__pyx_t_7, (1-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 69, __pyx_L1_error)
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 81, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
   }
-  __pyx_t_6 = __Pyx_PyObject_Unicode(__pyx_t_4); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_Unicode(__pyx_t_4); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_7 = 0;
@@ -3566,14 +3890,14 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_10create_app_2generator1(__pyx_Coro
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 81, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_GIVEREF(__pyx_t_1);
   __pyx_cur_scope->__pyx_v_request_id = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/main.py":70
+  /* "aiSelfTest/main.py":82
  *     async def request_id_middleware(request: Request, call_next):
  *         request_id = request.headers.get("X-Request-ID", str(uuid4()))
  *         with logger.contextualize(request_id=request_id):             # <<<<<<<<<<<<<<
@@ -3582,9 +3906,9 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_10create_app_2generator1(__pyx_Coro
 */
   /*with:*/ {
     __pyx_t_3 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 70, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 82, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_contextualize); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 70, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_contextualize); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 82, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_t_7 = 1;
@@ -3601,20 +3925,20 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_10create_app_2generator1(__pyx_Coro
     #endif
     {
       PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 1 : 0)] = {__pyx_t_3, NULL};
-      __pyx_t_6 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 70, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 82, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
-      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_request_id, __pyx_cur_scope->__pyx_v_request_id, __pyx_t_6, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 70, __pyx_L1_error)
+      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_request_id, __pyx_cur_scope->__pyx_v_request_id, __pyx_t_6, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 82, __pyx_L1_error)
       __pyx_t_1 = __Pyx_Object_Vectorcall_CallFromBuilder((PyObject*)__pyx_t_2, __pyx_callargs+__pyx_t_7, (1-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_6);
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 70, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
     }
-    __pyx_t_8 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_exit); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 70, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_exit); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 82, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __pyx_t_6 = NULL;
-    __pyx_t_3 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_enter); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 70, __pyx_L4_error)
+    __pyx_t_3 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_enter); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 82, __pyx_L4_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_7 = 1;
     #if CYTHON_UNPACK_METHODS
@@ -3633,7 +3957,7 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_10create_app_2generator1(__pyx_Coro
       __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_7, (1-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 70, __pyx_L4_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 82, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_2);
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -3646,7 +3970,7 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_10create_app_2generator1(__pyx_Coro
         __Pyx_XGOTREF(__pyx_t_11);
         /*try:*/ {
 
-          /* "aiSelfTest/main.py":71
+          /* "aiSelfTest/main.py":83
  *         request_id = request.headers.get("X-Request-ID", str(uuid4()))
  *         with logger.contextualize(request_id=request_id):
  *             response = await call_next(request)             # <<<<<<<<<<<<<<
@@ -3673,7 +3997,7 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_10create_app_2generator1(__pyx_Coro
             __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
             __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
             __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-            if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 71, __pyx_L8_error)
+            if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 83, __pyx_L8_error)
             __Pyx_GOTREF(__pyx_t_1);
           }
           __pyx_t_12 = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_1, &__pyx_r);
@@ -3707,20 +4031,20 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_10create_app_2generator1(__pyx_Coro
             __pyx_t_11 = __pyx_cur_scope->__pyx_t_3;
             __pyx_cur_scope->__pyx_t_3 = 0;
             __Pyx_XGOTREF(__pyx_t_11);
-            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 71, __pyx_L8_error)
+            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 83, __pyx_L8_error)
             __pyx_t_1 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_1);
           } else if (likely(__pyx_t_12 == PYGEN_RETURN)) {
             __Pyx_GOTREF(__pyx_r);
             __pyx_t_1 = __pyx_r; __pyx_r = NULL;
           } else {
             __Pyx_XGOTREF(__pyx_r);
-            __PYX_ERR(0, 71, __pyx_L8_error)
+            __PYX_ERR(0, 83, __pyx_L8_error)
           }
           __Pyx_GIVEREF(__pyx_t_1);
           __pyx_cur_scope->__pyx_v_response = __pyx_t_1;
           __pyx_t_1 = 0;
 
-          /* "aiSelfTest/main.py":70
+          /* "aiSelfTest/main.py":82
  *     async def request_id_middleware(request: Request, call_next):
  *         request_id = request.headers.get("X-Request-ID", str(uuid4()))
  *         with logger.contextualize(request_id=request_id):             # <<<<<<<<<<<<<<
@@ -3741,20 +4065,20 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_10create_app_2generator1(__pyx_Coro
         __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
         /*except:*/ {
           __Pyx_AddTraceback("aiSelfTest.main.create_app.request_id_middleware", __pyx_clineno, __pyx_lineno, __pyx_filename);
-          if (__Pyx_GetException(&__pyx_t_1, &__pyx_t_3, &__pyx_t_2) < 0) __PYX_ERR(0, 70, __pyx_L10_except_error)
+          if (__Pyx_GetException(&__pyx_t_1, &__pyx_t_3, &__pyx_t_2) < 0) __PYX_ERR(0, 82, __pyx_L10_except_error)
           __Pyx_XGOTREF(__pyx_t_1);
           __Pyx_XGOTREF(__pyx_t_3);
           __Pyx_XGOTREF(__pyx_t_2);
-          __pyx_t_6 = PyTuple_Pack(3, __pyx_t_1, __pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 70, __pyx_L10_except_error)
+          __pyx_t_6 = PyTuple_Pack(3, __pyx_t_1, __pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 82, __pyx_L10_except_error)
           __Pyx_GOTREF(__pyx_t_6);
           __pyx_t_13 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_6, NULL);
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-          if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 70, __pyx_L10_except_error)
+          if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 82, __pyx_L10_except_error)
           __Pyx_GOTREF(__pyx_t_13);
           __pyx_t_14 = __Pyx_PyObject_IsTrue(__pyx_t_13);
           __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-          if (__pyx_t_14 < (0)) __PYX_ERR(0, 70, __pyx_L10_except_error)
+          if (__pyx_t_14 < (0)) __PYX_ERR(0, 82, __pyx_L10_except_error)
           __pyx_t_15 = (!__pyx_t_14);
           if (unlikely(__pyx_t_15)) {
             __Pyx_GIVEREF(__pyx_t_1);
@@ -3762,7 +4086,7 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_10create_app_2generator1(__pyx_Coro
             __Pyx_XGIVEREF(__pyx_t_2);
             __Pyx_ErrRestoreWithState(__pyx_t_1, __pyx_t_3, __pyx_t_2);
             __pyx_t_1 = 0;  __pyx_t_3 = 0;  __pyx_t_2 = 0; 
-            __PYX_ERR(0, 70, __pyx_L10_except_error)
+            __PYX_ERR(0, 82, __pyx_L10_except_error)
           }
           __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -3788,7 +4112,7 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_10create_app_2generator1(__pyx_Coro
         if (__pyx_t_8) {
           __pyx_t_11 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_mstate_global->__pyx_tuple[0], NULL);
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-          if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 70, __pyx_L1_error)
+          if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 82, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_11);
           __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
         }
@@ -3803,20 +4127,20 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_10create_app_2generator1(__pyx_Coro
     __pyx_L18:;
   }
 
-  /* "aiSelfTest/main.py":72
+  /* "aiSelfTest/main.py":84
  *         with logger.contextualize(request_id=request_id):
  *             response = await call_next(request)
  *         response.headers["X-Request-ID"] = request_id             # <<<<<<<<<<<<<<
  *         return response
  * 
 */
-  if (unlikely(!__pyx_cur_scope->__pyx_v_response)) { __Pyx_RaiseUnboundLocalError("response"); __PYX_ERR(0, 72, __pyx_L1_error) }
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_response, __pyx_mstate_global->__pyx_n_u_headers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 72, __pyx_L1_error)
+  if (unlikely(!__pyx_cur_scope->__pyx_v_response)) { __Pyx_RaiseUnboundLocalError("response"); __PYX_ERR(0, 84, __pyx_L1_error) }
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_response, __pyx_mstate_global->__pyx_n_u_headers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 84, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (unlikely((PyObject_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_kp_u_X_Request_ID, __pyx_cur_scope->__pyx_v_request_id) < 0))) __PYX_ERR(0, 72, __pyx_L1_error)
+  if (unlikely((PyObject_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_kp_u_X_Request_ID, __pyx_cur_scope->__pyx_v_request_id) < 0))) __PYX_ERR(0, 84, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "aiSelfTest/main.py":73
+  /* "aiSelfTest/main.py":85
  *             response = await call_next(request)
  *         response.headers["X-Request-ID"] = request_id
  *         return response             # <<<<<<<<<<<<<<
@@ -3824,13 +4148,13 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_10create_app_2generator1(__pyx_Coro
  *     app.include_router(client_router, prefix="/api", tags=[""])
 */
   __Pyx_XDECREF(__pyx_r);
-  if (unlikely(!__pyx_cur_scope->__pyx_v_response)) { __Pyx_RaiseUnboundLocalError("response"); __PYX_ERR(0, 73, __pyx_L1_error) }
+  if (unlikely(!__pyx_cur_scope->__pyx_v_response)) { __Pyx_RaiseUnboundLocalError("response"); __PYX_ERR(0, 85, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_response);
   __pyx_r = __pyx_cur_scope->__pyx_v_response;
   goto __pyx_L0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "aiSelfTest/main.py":67
+  /* "aiSelfTest/main.py":79
  *     )
  * 
  *     @app.middleware("http")             # <<<<<<<<<<<<<<
@@ -3862,7 +4186,7 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_10create_app_2generator1(__pyx_Coro
 }
 static PyObject *__pyx_gb_10aiSelfTest_4main_10create_app_5generator2(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "aiSelfTest/main.py":83
+/* "aiSelfTest/main.py":95
  *     app.include_router(review_router, prefix="/api", tags=[""])
  * 
  *     @app.get("/")             # <<<<<<<<<<<<<<
@@ -3898,12 +4222,12 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_10create_app_3root(CYTHON_UNUSED Py
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_10aiSelfTest_4main___pyx_scope_struct_2_root *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 83, __pyx_L1_error)
+    __PYX_ERR(0, 95, __pyx_L1_error)
   } else {
     __Pyx_GOTREF((PyObject *)__pyx_cur_scope);
   }
   {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_10aiSelfTest_4main_10create_app_5generator2, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[2]), (PyObject *) __pyx_cur_scope, __pyx_mstate_global->__pyx_n_u_root, __pyx_mstate_global->__pyx_n_u_create_app_locals_root, __pyx_mstate_global->__pyx_n_u_aiSelfTest_main); if (unlikely(!gen)) __PYX_ERR(0, 83, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_10aiSelfTest_4main_10create_app_5generator2, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[2]), (PyObject *) __pyx_cur_scope, __pyx_mstate_global->__pyx_n_u_root, __pyx_mstate_global->__pyx_n_u_create_app_locals_root, __pyx_mstate_global->__pyx_n_u_aiSelfTest_main); if (unlikely(!gen)) __PYX_ERR(0, 95, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -3938,10 +4262,10 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_10create_app_5generator2(__pyx_Coro
   __pyx_L3_first_run:;
   if (unlikely(__pyx_sent_value != Py_None)) {
     if (unlikely(__pyx_sent_value)) PyErr_SetString(PyExc_TypeError, "can't send non-None value to a just-started coroutine");
-    __PYX_ERR(0, 83, __pyx_L1_error)
+    __PYX_ERR(0, 95, __pyx_L1_error)
   }
 
-  /* "aiSelfTest/main.py":85
+  /* "aiSelfTest/main.py":97
  *     @app.get("/")
  *     async def root() -> dict[str, str]:
  *         return {             # <<<<<<<<<<<<<<
@@ -3950,34 +4274,34 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_10create_app_5generator2(__pyx_Coro
 */
   __Pyx_XDECREF(__pyx_r);
 
-  /* "aiSelfTest/main.py":86
+  /* "aiSelfTest/main.py":98
  *     async def root() -> dict[str, str]:
  *         return {
  *             "message": "AI  API",             # <<<<<<<<<<<<<<
  *             "version": __version__,
  *             "docs": "/docs",
 */
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 86, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 98, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_message, __pyx_mstate_global->__pyx_kp_u_AI_API) < (0)) __PYX_ERR(0, 86, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_message, __pyx_mstate_global->__pyx_kp_u_AI_API) < (0)) __PYX_ERR(0, 98, __pyx_L1_error)
 
-  /* "aiSelfTest/main.py":87
+  /* "aiSelfTest/main.py":99
  *         return {
  *             "message": "AI  API",
  *             "version": __version__,             # <<<<<<<<<<<<<<
  *             "docs": "/docs",
  *         }
 */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_version_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 87, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_version_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 99, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_version, __pyx_t_2) < (0)) __PYX_ERR(0, 86, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_version, __pyx_t_2) < (0)) __PYX_ERR(0, 98, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_docs, __pyx_mstate_global->__pyx_kp_u_docs_2) < (0)) __PYX_ERR(0, 86, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_docs, __pyx_mstate_global->__pyx_kp_u_docs_2) < (0)) __PYX_ERR(0, 98, __pyx_L1_error)
   __pyx_r = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "aiSelfTest/main.py":83
+  /* "aiSelfTest/main.py":95
  *     app.include_router(review_router, prefix="/api", tags=[""])
  * 
  *     @app.get("/")             # <<<<<<<<<<<<<<
@@ -4005,7 +4329,7 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_10create_app_5generator2(__pyx_Coro
 }
 static PyObject *__pyx_gb_10aiSelfTest_4main_10create_app_8generator3(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "aiSelfTest/main.py":91
+/* "aiSelfTest/main.py":103
  *         }
  * 
  *     @app.get("/health")             # <<<<<<<<<<<<<<
@@ -4041,12 +4365,12 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_10create_app_6health_check(CYTHON_U
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_10aiSelfTest_4main___pyx_scope_struct_3_health_check *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 91, __pyx_L1_error)
+    __PYX_ERR(0, 103, __pyx_L1_error)
   } else {
     __Pyx_GOTREF((PyObject *)__pyx_cur_scope);
   }
   {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_10aiSelfTest_4main_10create_app_8generator3, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[3]), (PyObject *) __pyx_cur_scope, __pyx_mstate_global->__pyx_n_u_health_check, __pyx_mstate_global->__pyx_n_u_create_app_locals_health_check, __pyx_mstate_global->__pyx_n_u_aiSelfTest_main); if (unlikely(!gen)) __PYX_ERR(0, 91, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_10aiSelfTest_4main_10create_app_8generator3, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[3]), (PyObject *) __pyx_cur_scope, __pyx_mstate_global->__pyx_n_u_health_check, __pyx_mstate_global->__pyx_n_u_create_app_locals_health_check, __pyx_mstate_global->__pyx_n_u_aiSelfTest_main); if (unlikely(!gen)) __PYX_ERR(0, 103, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -4080,10 +4404,10 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_10create_app_8generator3(__pyx_Coro
   __pyx_L3_first_run:;
   if (unlikely(__pyx_sent_value != Py_None)) {
     if (unlikely(__pyx_sent_value)) PyErr_SetString(PyExc_TypeError, "can't send non-None value to a just-started coroutine");
-    __PYX_ERR(0, 91, __pyx_L1_error)
+    __PYX_ERR(0, 103, __pyx_L1_error)
   }
 
-  /* "aiSelfTest/main.py":93
+  /* "aiSelfTest/main.py":105
  *     @app.get("/health")
  *     async def health_check() -> dict[str, str]:
  *         return {"status": "ok"}             # <<<<<<<<<<<<<<
@@ -4091,14 +4415,14 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_10create_app_8generator3(__pyx_Coro
  *     return app
 */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 93, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_status, __pyx_mstate_global->__pyx_n_u_ok) < (0)) __PYX_ERR(0, 93, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_status, __pyx_mstate_global->__pyx_n_u_ok) < (0)) __PYX_ERR(0, 105, __pyx_L1_error)
   __pyx_r = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "aiSelfTest/main.py":91
+  /* "aiSelfTest/main.py":103
  *         }
  * 
  *     @app.get("/health")             # <<<<<<<<<<<<<<
@@ -4124,7 +4448,7 @@ static PyObject *__pyx_gb_10aiSelfTest_4main_10create_app_8generator3(__pyx_Coro
   return __pyx_r;
 }
 
-/* "aiSelfTest/main.py":45
+/* "aiSelfTest/main.py":57
  * 
  * 
  * def create_app() -> FastAPI:             # <<<<<<<<<<<<<<
@@ -4155,7 +4479,7 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_3create_app(CYTHON_UNUSED PyObject 
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("create_app", 0);
 
-  /* "aiSelfTest/main.py":48
+  /* "aiSelfTest/main.py":60
  *     """ FastAPI """
  * 
  *     app = FastAPI(             # <<<<<<<<<<<<<<
@@ -4163,27 +4487,27 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_3create_app(CYTHON_UNUSED PyObject 
  *         description="AI  API",
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_FastAPI); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_FastAPI); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
-  /* "aiSelfTest/main.py":51
+  /* "aiSelfTest/main.py":63
  *         title="AI ",
  *         description="AI  API",
  *         version=__version__,             # <<<<<<<<<<<<<<
  *         lifespan=lifespan,
  *     )
 */
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_version_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 51, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_version_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
 
-  /* "aiSelfTest/main.py":52
+  /* "aiSelfTest/main.py":64
  *         description="AI  API",
  *         version=__version__,
  *         lifespan=lifespan,             # <<<<<<<<<<<<<<
  *     )
  * 
 */
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_lifespan); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_lifespan); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_6 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -4199,25 +4523,25 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_3create_app(CYTHON_UNUSED PyObject 
   #endif
   {
     PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 4 : 0)] = {__pyx_t_2, NULL};
-    __pyx_t_7 = __Pyx_MakeVectorcallBuilderKwds(4); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 48, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_MakeVectorcallBuilderKwds(4); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 60, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_title, __pyx_mstate_global->__pyx_kp_u_AI, __pyx_t_7, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 48, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_description, __pyx_mstate_global->__pyx_kp_u_AI_API_2, __pyx_t_7, __pyx_callargs+1, 1) < (0)) __PYX_ERR(0, 48, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_version, __pyx_t_4, __pyx_t_7, __pyx_callargs+1, 2) < (0)) __PYX_ERR(0, 48, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_lifespan, __pyx_t_5, __pyx_t_7, __pyx_callargs+1, 3) < (0)) __PYX_ERR(0, 48, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_title, __pyx_mstate_global->__pyx_kp_u_AI, __pyx_t_7, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 60, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_description, __pyx_mstate_global->__pyx_kp_u_AI_API_2, __pyx_t_7, __pyx_callargs+1, 1) < (0)) __PYX_ERR(0, 60, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_version, __pyx_t_4, __pyx_t_7, __pyx_callargs+1, 2) < (0)) __PYX_ERR(0, 60, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_lifespan, __pyx_t_5, __pyx_t_7, __pyx_callargs+1, 3) < (0)) __PYX_ERR(0, 60, __pyx_L1_error)
     __pyx_t_1 = __Pyx_Object_Vectorcall_CallFromBuilder((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_6, (1-__pyx_t_6) | (__pyx_t_6*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_7);
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 48, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_app = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/main.py":55
+  /* "aiSelfTest/main.py":67
  *     )
  * 
  *     app.add_exception_handler(RequestValidationError, validation_exception_handler)             # <<<<<<<<<<<<<<
@@ -4226,9 +4550,9 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_3create_app(CYTHON_UNUSED PyObject 
 */
   __pyx_t_3 = __pyx_v_app;
   __Pyx_INCREF(__pyx_t_3);
-  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_RequestValidationError); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_RequestValidationError); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 67, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_validation_exception_handler); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_validation_exception_handler); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 67, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_6 = 0;
   {
@@ -4237,12 +4561,12 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_3create_app(CYTHON_UNUSED PyObject 
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 67, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/main.py":56
+  /* "aiSelfTest/main.py":68
  * 
  *     app.add_exception_handler(RequestValidationError, validation_exception_handler)
  *     app.add_exception_handler(ValidationError, pydantic_validation_exception_handler)             # <<<<<<<<<<<<<<
@@ -4251,9 +4575,9 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_3create_app(CYTHON_UNUSED PyObject 
 */
   __pyx_t_5 = __pyx_v_app;
   __Pyx_INCREF(__pyx_t_5);
-  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_ValidationError); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_ValidationError); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 68, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_pydantic_validation_exception_ha); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_pydantic_validation_exception_ha); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 68, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_6 = 0;
   {
@@ -4262,12 +4586,12 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_3create_app(CYTHON_UNUSED PyObject 
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 56, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 68, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/main.py":57
+  /* "aiSelfTest/main.py":69
  *     app.add_exception_handler(RequestValidationError, validation_exception_handler)
  *     app.add_exception_handler(ValidationError, pydantic_validation_exception_handler)
  *     app.add_exception_handler(AppException, app_exception_handler)             # <<<<<<<<<<<<<<
@@ -4276,9 +4600,9 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_3create_app(CYTHON_UNUSED PyObject 
 */
   __pyx_t_3 = __pyx_v_app;
   __Pyx_INCREF(__pyx_t_3);
-  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_AppException); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_AppException); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_app_exception_handler); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_app_exception_handler); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_6 = 0;
   {
@@ -4287,12 +4611,12 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_3create_app(CYTHON_UNUSED PyObject 
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/main.py":59
+  /* "aiSelfTest/main.py":71
  *     app.add_exception_handler(AppException, app_exception_handler)
  * 
  *     app.add_middleware(             # <<<<<<<<<<<<<<
@@ -4302,17 +4626,17 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_3create_app(CYTHON_UNUSED PyObject 
   __pyx_t_5 = __pyx_v_app;
   __Pyx_INCREF(__pyx_t_5);
 
-  /* "aiSelfTest/main.py":60
+  /* "aiSelfTest/main.py":72
  * 
  *     app.add_middleware(
  *         CORSMiddleware,             # <<<<<<<<<<<<<<
  *         allow_origins=get_settings().cors_origins,
  *         allow_credentials=True,
 */
-  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_CORSMiddleware); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_CORSMiddleware); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 72, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
 
-  /* "aiSelfTest/main.py":61
+  /* "aiSelfTest/main.py":73
  *     app.add_middleware(
  *         CORSMiddleware,
  *         allow_origins=get_settings().cors_origins,             # <<<<<<<<<<<<<<
@@ -4320,7 +4644,7 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_3create_app(CYTHON_UNUSED PyObject 
  *         allow_methods=["*"],
 */
   __pyx_t_4 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_get_settings); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 61, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_get_settings); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_6 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -4339,47 +4663,47 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_3create_app(CYTHON_UNUSED PyObject 
     __pyx_t_3 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_2, __pyx_callargs+__pyx_t_6, (1-__pyx_t_6) | (__pyx_t_6*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 61, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 73, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
   }
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_cors_origins); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 61, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_cors_origins); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "aiSelfTest/main.py":63
+  /* "aiSelfTest/main.py":75
  *         allow_origins=get_settings().cors_origins,
  *         allow_credentials=True,
  *         allow_methods=["*"],             # <<<<<<<<<<<<<<
  *         allow_headers=["*"],
  *     )
 */
-  __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 75, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_INCREF(__pyx_mstate_global->__pyx_kp_u_);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_kp_u_);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 0, __pyx_mstate_global->__pyx_kp_u_) != (0)) __PYX_ERR(0, 63, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 0, __pyx_mstate_global->__pyx_kp_u_) != (0)) __PYX_ERR(0, 75, __pyx_L1_error);
 
-  /* "aiSelfTest/main.py":64
+  /* "aiSelfTest/main.py":76
  *         allow_credentials=True,
  *         allow_methods=["*"],
  *         allow_headers=["*"],             # <<<<<<<<<<<<<<
  *     )
  * 
 */
-  __pyx_t_4 = PyList_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 64, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF(__pyx_mstate_global->__pyx_kp_u_);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_kp_u_);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_4, 0, __pyx_mstate_global->__pyx_kp_u_) != (0)) __PYX_ERR(0, 64, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_4, 0, __pyx_mstate_global->__pyx_kp_u_) != (0)) __PYX_ERR(0, 76, __pyx_L1_error);
   __pyx_t_6 = 0;
   {
     PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 4 : 0)] = {__pyx_t_5, __pyx_t_7};
-    __pyx_t_8 = __Pyx_MakeVectorcallBuilderKwds(4); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 59, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_MakeVectorcallBuilderKwds(4); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 71, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_allow_origins, __pyx_t_2, __pyx_t_8, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 59, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_allow_credentials, Py_True, __pyx_t_8, __pyx_callargs+2, 1) < (0)) __PYX_ERR(0, 59, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_allow_methods, __pyx_t_3, __pyx_t_8, __pyx_callargs+2, 2) < (0)) __PYX_ERR(0, 59, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_allow_headers, __pyx_t_4, __pyx_t_8, __pyx_callargs+2, 3) < (0)) __PYX_ERR(0, 59, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_allow_origins, __pyx_t_2, __pyx_t_8, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 71, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_allow_credentials, Py_True, __pyx_t_8, __pyx_callargs+2, 1) < (0)) __PYX_ERR(0, 71, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_allow_methods, __pyx_t_3, __pyx_t_8, __pyx_callargs+2, 2) < (0)) __PYX_ERR(0, 71, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_allow_headers, __pyx_t_4, __pyx_t_8, __pyx_callargs+2, 3) < (0)) __PYX_ERR(0, 71, __pyx_L1_error)
     __pyx_t_1 = __Pyx_Object_VectorcallMethod_CallFromBuilder((PyObject*)__pyx_mstate_global->__pyx_n_u_add_middleware, __pyx_callargs+__pyx_t_6, (2-__pyx_t_6) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_8);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
@@ -4387,12 +4711,12 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_3create_app(CYTHON_UNUSED PyObject 
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 71, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/main.py":67
+  /* "aiSelfTest/main.py":79
  *     )
  * 
  *     @app.middleware("http")             # <<<<<<<<<<<<<<
@@ -4407,13 +4731,13 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_3create_app(CYTHON_UNUSED PyObject 
     PyObject *__pyx_callargs[2] = {__pyx_t_3, __pyx_mstate_global->__pyx_n_u_http};
     __pyx_t_4 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_middleware, __pyx_callargs+__pyx_t_6, (2-__pyx_t_6) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 67, __pyx_L1_error)
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 79, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
   }
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 67, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 79, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_request, __pyx_mstate_global->__pyx_n_u_Request) < (0)) __PYX_ERR(0, 67, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_4main_10create_app_1request_id_middleware, __Pyx_CYFUNCTION_COROUTINE, __pyx_mstate_global->__pyx_n_u_create_app_locals_request_id_mid, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_main, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[1])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 67, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_request, __pyx_mstate_global->__pyx_n_u_Request) < (0)) __PYX_ERR(0, 79, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_4main_10create_app_1request_id_middleware, __Pyx_CYFUNCTION_COROUTINE, __pyx_mstate_global->__pyx_n_u_create_app_locals_request_id_mid, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_main, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[1])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 79, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_2, __pyx_t_3);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -4435,13 +4759,13 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_3create_app(CYTHON_UNUSED PyObject 
     __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 67, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 79, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_request_id_middleware = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/main.py":75
+  /* "aiSelfTest/main.py":87
  *         return response
  * 
  *     app.include_router(client_router, prefix="/api", tags=[""])             # <<<<<<<<<<<<<<
@@ -4450,31 +4774,31 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_3create_app(CYTHON_UNUSED PyObject 
 */
   __pyx_t_4 = __pyx_v_app;
   __Pyx_INCREF(__pyx_t_4);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_client_router); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 75, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_client_router); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_8 = PyList_New(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_8 = PyList_New(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_INCREF(__pyx_mstate_global->__pyx_n_u__2);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_n_u__2);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_8, 0, __pyx_mstate_global->__pyx_n_u__2) != (0)) __PYX_ERR(0, 75, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_8, 0, __pyx_mstate_global->__pyx_n_u__2) != (0)) __PYX_ERR(0, 87, __pyx_L1_error);
   __pyx_t_6 = 0;
   {
     PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 2 : 0)] = {__pyx_t_4, __pyx_t_2};
-    __pyx_t_3 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 75, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 87, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_prefix, __pyx_mstate_global->__pyx_kp_u_api, __pyx_t_3, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 75, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_tags, __pyx_t_8, __pyx_t_3, __pyx_callargs+2, 1) < (0)) __PYX_ERR(0, 75, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_prefix, __pyx_mstate_global->__pyx_kp_u_api, __pyx_t_3, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 87, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_tags, __pyx_t_8, __pyx_t_3, __pyx_callargs+2, 1) < (0)) __PYX_ERR(0, 87, __pyx_L1_error)
     __pyx_t_1 = __Pyx_Object_VectorcallMethod_CallFromBuilder((PyObject*)__pyx_mstate_global->__pyx_n_u_include_router, __pyx_callargs+__pyx_t_6, (2-__pyx_t_6) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_3);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 75, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 87, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/main.py":76
+  /* "aiSelfTest/main.py":88
  * 
  *     app.include_router(client_router, prefix="/api", tags=[""])
  *     app.include_router(config_router, prefix="/api", tags=[""])             # <<<<<<<<<<<<<<
@@ -4483,31 +4807,31 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_3create_app(CYTHON_UNUSED PyObject 
 */
   __pyx_t_3 = __pyx_v_app;
   __Pyx_INCREF(__pyx_t_3);
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_config_router); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_config_router); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_mstate_global->__pyx_n_u__3);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_n_u__3);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_2, 0, __pyx_mstate_global->__pyx_n_u__3) != (0)) __PYX_ERR(0, 76, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_2, 0, __pyx_mstate_global->__pyx_n_u__3) != (0)) __PYX_ERR(0, 88, __pyx_L1_error);
   __pyx_t_6 = 0;
   {
     PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 2 : 0)] = {__pyx_t_3, __pyx_t_8};
-    __pyx_t_4 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 76, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 88, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_prefix, __pyx_mstate_global->__pyx_kp_u_api, __pyx_t_4, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 76, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_tags, __pyx_t_2, __pyx_t_4, __pyx_callargs+2, 1) < (0)) __PYX_ERR(0, 76, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_prefix, __pyx_mstate_global->__pyx_kp_u_api, __pyx_t_4, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 88, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_tags, __pyx_t_2, __pyx_t_4, __pyx_callargs+2, 1) < (0)) __PYX_ERR(0, 88, __pyx_L1_error)
     __pyx_t_1 = __Pyx_Object_VectorcallMethod_CallFromBuilder((PyObject*)__pyx_mstate_global->__pyx_n_u_include_router, __pyx_callargs+__pyx_t_6, (2-__pyx_t_6) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_4);
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 88, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/main.py":77
+  /* "aiSelfTest/main.py":89
  *     app.include_router(client_router, prefix="/api", tags=[""])
  *     app.include_router(config_router, prefix="/api", tags=[""])
  *     app.include_router(dashboard_router, prefix="/api", tags=[""])             # <<<<<<<<<<<<<<
@@ -4516,31 +4840,31 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_3create_app(CYTHON_UNUSED PyObject 
 */
   __pyx_t_4 = __pyx_v_app;
   __Pyx_INCREF(__pyx_t_4);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_dashboard_router); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 77, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_dashboard_router); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_8 = PyList_New(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 77, __pyx_L1_error)
+  __pyx_t_8 = PyList_New(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_INCREF(__pyx_mstate_global->__pyx_n_u__4);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_n_u__4);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_8, 0, __pyx_mstate_global->__pyx_n_u__4) != (0)) __PYX_ERR(0, 77, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_8, 0, __pyx_mstate_global->__pyx_n_u__4) != (0)) __PYX_ERR(0, 89, __pyx_L1_error);
   __pyx_t_6 = 0;
   {
     PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 2 : 0)] = {__pyx_t_4, __pyx_t_2};
-    __pyx_t_3 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 77, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 89, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_prefix, __pyx_mstate_global->__pyx_kp_u_api, __pyx_t_3, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 77, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_tags, __pyx_t_8, __pyx_t_3, __pyx_callargs+2, 1) < (0)) __PYX_ERR(0, 77, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_prefix, __pyx_mstate_global->__pyx_kp_u_api, __pyx_t_3, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_tags, __pyx_t_8, __pyx_t_3, __pyx_callargs+2, 1) < (0)) __PYX_ERR(0, 89, __pyx_L1_error)
     __pyx_t_1 = __Pyx_Object_VectorcallMethod_CallFromBuilder((PyObject*)__pyx_mstate_global->__pyx_n_u_include_router, __pyx_callargs+__pyx_t_6, (2-__pyx_t_6) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_3);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 77, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/main.py":78
+  /* "aiSelfTest/main.py":90
  *     app.include_router(config_router, prefix="/api", tags=[""])
  *     app.include_router(dashboard_router, prefix="/api", tags=[""])
  *     app.include_router(multimodal_model_router, prefix="/api", tags=[""])             # <<<<<<<<<<<<<<
@@ -4549,31 +4873,31 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_3create_app(CYTHON_UNUSED PyObject 
 */
   __pyx_t_3 = __pyx_v_app;
   __Pyx_INCREF(__pyx_t_3);
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_multimodal_model_router); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 78, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_multimodal_model_router); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 78, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_mstate_global->__pyx_n_u__5);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_n_u__5);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_2, 0, __pyx_mstate_global->__pyx_n_u__5) != (0)) __PYX_ERR(0, 78, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_2, 0, __pyx_mstate_global->__pyx_n_u__5) != (0)) __PYX_ERR(0, 90, __pyx_L1_error);
   __pyx_t_6 = 0;
   {
     PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 2 : 0)] = {__pyx_t_3, __pyx_t_8};
-    __pyx_t_4 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 78, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 90, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_prefix, __pyx_mstate_global->__pyx_kp_u_api, __pyx_t_4, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 78, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_tags, __pyx_t_2, __pyx_t_4, __pyx_callargs+2, 1) < (0)) __PYX_ERR(0, 78, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_prefix, __pyx_mstate_global->__pyx_kp_u_api, __pyx_t_4, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 90, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_tags, __pyx_t_2, __pyx_t_4, __pyx_callargs+2, 1) < (0)) __PYX_ERR(0, 90, __pyx_L1_error)
     __pyx_t_1 = __Pyx_Object_VectorcallMethod_CallFromBuilder((PyObject*)__pyx_mstate_global->__pyx_n_u_include_router, __pyx_callargs+__pyx_t_6, (2-__pyx_t_6) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_4);
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 78, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 90, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/main.py":79
+  /* "aiSelfTest/main.py":91
  *     app.include_router(dashboard_router, prefix="/api", tags=[""])
  *     app.include_router(multimodal_model_router, prefix="/api", tags=[""])
  *     app.include_router(task_router, prefix="/api", tags=[""])             # <<<<<<<<<<<<<<
@@ -4582,31 +4906,31 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_3create_app(CYTHON_UNUSED PyObject 
 */
   __pyx_t_4 = __pyx_v_app;
   __Pyx_INCREF(__pyx_t_4);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_task_router); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 79, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_task_router); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 91, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_8 = PyList_New(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 79, __pyx_L1_error)
+  __pyx_t_8 = PyList_New(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 91, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_INCREF(__pyx_mstate_global->__pyx_n_u__6);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_n_u__6);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_8, 0, __pyx_mstate_global->__pyx_n_u__6) != (0)) __PYX_ERR(0, 79, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_8, 0, __pyx_mstate_global->__pyx_n_u__6) != (0)) __PYX_ERR(0, 91, __pyx_L1_error);
   __pyx_t_6 = 0;
   {
     PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 2 : 0)] = {__pyx_t_4, __pyx_t_2};
-    __pyx_t_3 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 79, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 91, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_prefix, __pyx_mstate_global->__pyx_kp_u_api, __pyx_t_3, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 79, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_tags, __pyx_t_8, __pyx_t_3, __pyx_callargs+2, 1) < (0)) __PYX_ERR(0, 79, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_prefix, __pyx_mstate_global->__pyx_kp_u_api, __pyx_t_3, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 91, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_tags, __pyx_t_8, __pyx_t_3, __pyx_callargs+2, 1) < (0)) __PYX_ERR(0, 91, __pyx_L1_error)
     __pyx_t_1 = __Pyx_Object_VectorcallMethod_CallFromBuilder((PyObject*)__pyx_mstate_global->__pyx_n_u_include_router, __pyx_callargs+__pyx_t_6, (2-__pyx_t_6) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_3);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 79, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/main.py":80
+  /* "aiSelfTest/main.py":92
  *     app.include_router(multimodal_model_router, prefix="/api", tags=[""])
  *     app.include_router(task_router, prefix="/api", tags=[""])
  *     app.include_router(task_item_router, prefix="/api", tags=[""])             # <<<<<<<<<<<<<<
@@ -4615,31 +4939,31 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_3create_app(CYTHON_UNUSED PyObject 
 */
   __pyx_t_3 = __pyx_v_app;
   __Pyx_INCREF(__pyx_t_3);
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_task_item_router); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 80, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_task_item_router); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 92, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 80, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 92, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_mstate_global->__pyx_n_u__7);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_n_u__7);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_2, 0, __pyx_mstate_global->__pyx_n_u__7) != (0)) __PYX_ERR(0, 80, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_2, 0, __pyx_mstate_global->__pyx_n_u__7) != (0)) __PYX_ERR(0, 92, __pyx_L1_error);
   __pyx_t_6 = 0;
   {
     PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 2 : 0)] = {__pyx_t_3, __pyx_t_8};
-    __pyx_t_4 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 80, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 92, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_prefix, __pyx_mstate_global->__pyx_kp_u_api, __pyx_t_4, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 80, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_tags, __pyx_t_2, __pyx_t_4, __pyx_callargs+2, 1) < (0)) __PYX_ERR(0, 80, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_prefix, __pyx_mstate_global->__pyx_kp_u_api, __pyx_t_4, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 92, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_tags, __pyx_t_2, __pyx_t_4, __pyx_callargs+2, 1) < (0)) __PYX_ERR(0, 92, __pyx_L1_error)
     __pyx_t_1 = __Pyx_Object_VectorcallMethod_CallFromBuilder((PyObject*)__pyx_mstate_global->__pyx_n_u_include_router, __pyx_callargs+__pyx_t_6, (2-__pyx_t_6) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_4);
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 80, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 92, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/main.py":81
+  /* "aiSelfTest/main.py":93
  *     app.include_router(task_router, prefix="/api", tags=[""])
  *     app.include_router(task_item_router, prefix="/api", tags=[""])
  *     app.include_router(review_router, prefix="/api", tags=[""])             # <<<<<<<<<<<<<<
@@ -4648,31 +4972,31 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_3create_app(CYTHON_UNUSED PyObject 
 */
   __pyx_t_4 = __pyx_v_app;
   __Pyx_INCREF(__pyx_t_4);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_review_router); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 81, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_review_router); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 93, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_8 = PyList_New(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 81, __pyx_L1_error)
+  __pyx_t_8 = PyList_New(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 93, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_INCREF(__pyx_mstate_global->__pyx_n_u__8);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_n_u__8);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_8, 0, __pyx_mstate_global->__pyx_n_u__8) != (0)) __PYX_ERR(0, 81, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_8, 0, __pyx_mstate_global->__pyx_n_u__8) != (0)) __PYX_ERR(0, 93, __pyx_L1_error);
   __pyx_t_6 = 0;
   {
     PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 2 : 0)] = {__pyx_t_4, __pyx_t_2};
-    __pyx_t_3 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 81, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 93, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_prefix, __pyx_mstate_global->__pyx_kp_u_api, __pyx_t_3, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 81, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_tags, __pyx_t_8, __pyx_t_3, __pyx_callargs+2, 1) < (0)) __PYX_ERR(0, 81, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_prefix, __pyx_mstate_global->__pyx_kp_u_api, __pyx_t_3, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 93, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_tags, __pyx_t_8, __pyx_t_3, __pyx_callargs+2, 1) < (0)) __PYX_ERR(0, 93, __pyx_L1_error)
     __pyx_t_1 = __Pyx_Object_VectorcallMethod_CallFromBuilder((PyObject*)__pyx_mstate_global->__pyx_n_u_include_router, __pyx_callargs+__pyx_t_6, (2-__pyx_t_6) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_3);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 81, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 93, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/main.py":83
+  /* "aiSelfTest/main.py":95
  *     app.include_router(review_router, prefix="/api", tags=[""])
  * 
  *     @app.get("/")             # <<<<<<<<<<<<<<
@@ -4687,13 +5011,13 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_3create_app(CYTHON_UNUSED PyObject 
     PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_mstate_global->__pyx_kp_u__9};
     __pyx_t_8 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_get, __pyx_callargs+__pyx_t_6, (2-__pyx_t_6) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 83, __pyx_L1_error)
+    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 95, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
   }
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 83, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 95, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_kp_u_dict_str_str) < (0)) __PYX_ERR(0, 83, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_4main_10create_app_4root, __Pyx_CYFUNCTION_COROUTINE, __pyx_mstate_global->__pyx_n_u_create_app_locals_root, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_main, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[2])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 83, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_kp_u_dict_str_str) < (0)) __PYX_ERR(0, 95, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_4main_10create_app_4root, __Pyx_CYFUNCTION_COROUTINE, __pyx_mstate_global->__pyx_n_u_create_app_locals_root, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_main, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[2])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 95, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_2);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -4715,13 +5039,13 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_3create_app(CYTHON_UNUSED PyObject 
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 83, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 95, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_root = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/main.py":91
+  /* "aiSelfTest/main.py":103
  *         }
  * 
  *     @app.get("/health")             # <<<<<<<<<<<<<<
@@ -4736,13 +5060,13 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_3create_app(CYTHON_UNUSED PyObject 
     PyObject *__pyx_callargs[2] = {__pyx_t_3, __pyx_mstate_global->__pyx_kp_u_health};
     __pyx_t_4 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_get, __pyx_callargs+__pyx_t_6, (2-__pyx_t_6) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 91, __pyx_L1_error)
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 103, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
   }
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 103, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_kp_u_dict_str_str) < (0)) __PYX_ERR(0, 91, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_4main_10create_app_7health_check, __Pyx_CYFUNCTION_COROUTINE, __pyx_mstate_global->__pyx_n_u_create_app_locals_health_check, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_main, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[3])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 91, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_kp_u_dict_str_str) < (0)) __PYX_ERR(0, 103, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_4main_10create_app_7health_check, __Pyx_CYFUNCTION_COROUTINE, __pyx_mstate_global->__pyx_n_u_create_app_locals_health_check, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_main, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[3])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 103, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_2, __pyx_t_3);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -4764,13 +5088,13 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_3create_app(CYTHON_UNUSED PyObject 
     __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 103, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_health_check = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/main.py":95
+  /* "aiSelfTest/main.py":107
  *         return {"status": "ok"}
  * 
  *     return app             # <<<<<<<<<<<<<<
@@ -4782,7 +5106,7 @@ static PyObject *__pyx_pf_10aiSelfTest_4main_3create_app(CYTHON_UNUSED PyObject 
   __pyx_r = __pyx_v_app;
   goto __pyx_L0;
 
-  /* "aiSelfTest/main.py":45
+  /* "aiSelfTest/main.py":57
  * 
  * 
  * def create_app() -> FastAPI:             # <<<<<<<<<<<<<<
@@ -4852,6 +5176,7 @@ static void __pyx_tp_dealloc_10aiSelfTest_4main___pyx_scope_struct__lifespan(PyO
   PyObject_GC_UnTrack(o);
   Py_CLEAR(p->__pyx_v_app);
   Py_CLEAR(p->__pyx_v_settings);
+  Py_CLEAR(p->__pyx_v_task_scheduler);
   #if CYTHON_USE_FREELISTS
   if (likely((int)(__pyx_mstate_global->__pyx_freecount_10aiSelfTest_4main___pyx_scope_struct__lifespan < 8) & __PYX_CHECK_FINAL_TYPE_FOR_FREELISTS(Py_TYPE(o), __pyx_mstate_global->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct__lifespan, sizeof(struct __pyx_obj_10aiSelfTest_4main___pyx_scope_struct__lifespan))))
   {
@@ -4886,6 +5211,9 @@ static int __pyx_tp_traverse_10aiSelfTest_4main___pyx_scope_struct__lifespan(PyO
   }
   if (p->__pyx_v_settings) {
     e = (*v)(p->__pyx_v_settings, a); if (e) return e;
+  }
+  if (p->__pyx_v_task_scheduler) {
+    e = (*v)(p->__pyx_v_task_scheduler, a); if (e) return e;
   }
   return 0;
 }
@@ -5501,15 +5829,15 @@ static int __Pyx_modinit_type_init_code(__pyx_mstatetype *__pyx_mstate) {
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_init_code", 0);
   /*--- Type init code ---*/
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct__lifespan = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10aiSelfTest_4main___pyx_scope_struct__lifespan_spec, NULL); if (unlikely(!__pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct__lifespan)) __PYX_ERR(0, 31, __pyx_L1_error)
-  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_10aiSelfTest_4main___pyx_scope_struct__lifespan_spec, __pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct__lifespan) < (0)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct__lifespan = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10aiSelfTest_4main___pyx_scope_struct__lifespan_spec, NULL); if (unlikely(!__pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct__lifespan)) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_10aiSelfTest_4main___pyx_scope_struct__lifespan_spec, __pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct__lifespan) < (0)) __PYX_ERR(0, 35, __pyx_L1_error)
   #else
   __pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct__lifespan = &__pyx_type_10aiSelfTest_4main___pyx_scope_struct__lifespan;
   #endif
   #if !CYTHON_COMPILING_IN_LIMITED_API
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct__lifespan) < (0)) __PYX_ERR(0, 31, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct__lifespan) < (0)) __PYX_ERR(0, 35, __pyx_L1_error)
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount((PyObject*)__pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct__lifespan);
@@ -5520,15 +5848,15 @@ static int __Pyx_modinit_type_init_code(__pyx_mstatetype *__pyx_mstate) {
   }
   #endif
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_1_request_id_middleware = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10aiSelfTest_4main___pyx_scope_struct_1_request_id_middleware_spec, NULL); if (unlikely(!__pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_1_request_id_middleware)) __PYX_ERR(0, 67, __pyx_L1_error)
-  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_10aiSelfTest_4main___pyx_scope_struct_1_request_id_middleware_spec, __pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_1_request_id_middleware) < (0)) __PYX_ERR(0, 67, __pyx_L1_error)
+  __pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_1_request_id_middleware = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10aiSelfTest_4main___pyx_scope_struct_1_request_id_middleware_spec, NULL); if (unlikely(!__pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_1_request_id_middleware)) __PYX_ERR(0, 79, __pyx_L1_error)
+  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_10aiSelfTest_4main___pyx_scope_struct_1_request_id_middleware_spec, __pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_1_request_id_middleware) < (0)) __PYX_ERR(0, 79, __pyx_L1_error)
   #else
   __pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_1_request_id_middleware = &__pyx_type_10aiSelfTest_4main___pyx_scope_struct_1_request_id_middleware;
   #endif
   #if !CYTHON_COMPILING_IN_LIMITED_API
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_1_request_id_middleware) < (0)) __PYX_ERR(0, 67, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_1_request_id_middleware) < (0)) __PYX_ERR(0, 79, __pyx_L1_error)
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount((PyObject*)__pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_1_request_id_middleware);
@@ -5539,15 +5867,15 @@ static int __Pyx_modinit_type_init_code(__pyx_mstatetype *__pyx_mstate) {
   }
   #endif
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_2_root = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10aiSelfTest_4main___pyx_scope_struct_2_root_spec, NULL); if (unlikely(!__pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_2_root)) __PYX_ERR(0, 83, __pyx_L1_error)
-  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_10aiSelfTest_4main___pyx_scope_struct_2_root_spec, __pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_2_root) < (0)) __PYX_ERR(0, 83, __pyx_L1_error)
+  __pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_2_root = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10aiSelfTest_4main___pyx_scope_struct_2_root_spec, NULL); if (unlikely(!__pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_2_root)) __PYX_ERR(0, 95, __pyx_L1_error)
+  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_10aiSelfTest_4main___pyx_scope_struct_2_root_spec, __pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_2_root) < (0)) __PYX_ERR(0, 95, __pyx_L1_error)
   #else
   __pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_2_root = &__pyx_type_10aiSelfTest_4main___pyx_scope_struct_2_root;
   #endif
   #if !CYTHON_COMPILING_IN_LIMITED_API
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_2_root) < (0)) __PYX_ERR(0, 83, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_2_root) < (0)) __PYX_ERR(0, 95, __pyx_L1_error)
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount((PyObject*)__pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_2_root);
@@ -5558,15 +5886,15 @@ static int __Pyx_modinit_type_init_code(__pyx_mstatetype *__pyx_mstate) {
   }
   #endif
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_3_health_check = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10aiSelfTest_4main___pyx_scope_struct_3_health_check_spec, NULL); if (unlikely(!__pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_3_health_check)) __PYX_ERR(0, 91, __pyx_L1_error)
-  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_10aiSelfTest_4main___pyx_scope_struct_3_health_check_spec, __pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_3_health_check) < (0)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_3_health_check = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10aiSelfTest_4main___pyx_scope_struct_3_health_check_spec, NULL); if (unlikely(!__pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_3_health_check)) __PYX_ERR(0, 103, __pyx_L1_error)
+  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_10aiSelfTest_4main___pyx_scope_struct_3_health_check_spec, __pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_3_health_check) < (0)) __PYX_ERR(0, 103, __pyx_L1_error)
   #else
   __pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_3_health_check = &__pyx_type_10aiSelfTest_4main___pyx_scope_struct_3_health_check;
   #endif
   #if !CYTHON_COMPILING_IN_LIMITED_API
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_3_health_check) < (0)) __PYX_ERR(0, 91, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_3_health_check) < (0)) __PYX_ERR(0, 103, __pyx_L1_error)
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount((PyObject*)__pyx_mstate->__pyx_ptype_10aiSelfTest_4main___pyx_scope_struct_3_health_check);
@@ -6294,19 +6622,19 @@ __Pyx_RefNannySetupContext("PyInit_main", 0);
   /* "aiSelfTest/main.py":28
  *     validation_exception_handler,
  * )
- * from aiSelfTest.version import __version__             # <<<<<<<<<<<<<<
- * 
- * 
+ * from aiSelfTest.services.task_scheduler import (             # <<<<<<<<<<<<<<
+ *     create_task_scheduler,
+ *     set_global_task_scheduler,
 */
   {
-    PyObject* const __pyx_imported_names[] = {__pyx_mstate_global->__pyx_n_u_version_2};
-    __pyx_t_1 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_aiSelfTest_version, __pyx_imported_names, 1, NULL, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
+    PyObject* const __pyx_imported_names[] = {__pyx_mstate_global->__pyx_n_u_create_task_scheduler,__pyx_mstate_global->__pyx_n_u_set_global_task_scheduler};
+    __pyx_t_1 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_imported_names, 2, NULL, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
   }
   __pyx_t_2 = __pyx_t_1;
   __Pyx_GOTREF(__pyx_t_2);
   {
-    PyObject* const __pyx_imported_names[] = {__pyx_mstate_global->__pyx_n_u_version_2};
-    __pyx_t_3 = 0; {
+    PyObject* const __pyx_imported_names[] = {__pyx_mstate_global->__pyx_n_u_create_task_scheduler,__pyx_mstate_global->__pyx_n_u_set_global_task_scheduler};
+    for (__pyx_t_3=0; __pyx_t_3 < 2; __pyx_t_3++) {
       __pyx_t_4 = __Pyx_ImportFrom(__pyx_t_2, __pyx_imported_names[__pyx_t_3]); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 28, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_imported_names[__pyx_t_3], __pyx_t_4) < (0)) __PYX_ERR(0, 28, __pyx_L1_error)
@@ -6315,7 +6643,31 @@ __Pyx_RefNannySetupContext("PyInit_main", 0);
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "aiSelfTest/main.py":31
+  /* "aiSelfTest/main.py":32
+ *     set_global_task_scheduler,
+ * )
+ * from aiSelfTest.version import __version__             # <<<<<<<<<<<<<<
+ * 
+ * 
+*/
+  {
+    PyObject* const __pyx_imported_names[] = {__pyx_mstate_global->__pyx_n_u_version_2};
+    __pyx_t_1 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_aiSelfTest_version, __pyx_imported_names, 1, NULL, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 32, __pyx_L1_error)
+  }
+  __pyx_t_2 = __pyx_t_1;
+  __Pyx_GOTREF(__pyx_t_2);
+  {
+    PyObject* const __pyx_imported_names[] = {__pyx_mstate_global->__pyx_n_u_version_2};
+    __pyx_t_3 = 0; {
+      __pyx_t_4 = __Pyx_ImportFrom(__pyx_t_2, __pyx_imported_names[__pyx_t_3]); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 32, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_imported_names[__pyx_t_3], __pyx_t_4) < (0)) __PYX_ERR(0, 32, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    }
+  }
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "aiSelfTest/main.py":35
  * 
  * 
  * @asynccontextmanager             # <<<<<<<<<<<<<<
@@ -6323,12 +6675,12 @@ __Pyx_RefNannySetupContext("PyInit_main", 0);
  *     """"""
 */
   __pyx_t_4 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_asynccontextmanager); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_asynccontextmanager); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  if (PyDict_SetItem(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_app, __pyx_mstate_global->__pyx_n_u_FastAPI) < (0)) __PYX_ERR(0, 31, __pyx_L1_error)
-  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_4main_1lifespan, __Pyx_CYFUNCTION_COROUTINE, __pyx_mstate_global->__pyx_n_u_lifespan, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_main, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[0])); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 31, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_app, __pyx_mstate_global->__pyx_n_u_FastAPI) < (0)) __PYX_ERR(0, 35, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_4main_1lifespan, __Pyx_CYFUNCTION_COROUTINE, __pyx_mstate_global->__pyx_n_u_lifespan, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_main, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[0])); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_7);
@@ -6342,39 +6694,39 @@ __Pyx_RefNannySetupContext("PyInit_main", 0);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 31, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 35, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
   }
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_lifespan, __pyx_t_2) < (0)) __PYX_ERR(0, 31, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_lifespan, __pyx_t_2) < (0)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "aiSelfTest/main.py":45
+  /* "aiSelfTest/main.py":57
  * 
  * 
  * def create_app() -> FastAPI:             # <<<<<<<<<<<<<<
  *     """ FastAPI """
  * 
 */
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 45, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_FastAPI) < (0)) __PYX_ERR(0, 45, __pyx_L1_error)
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_4main_4create_app, 0, __pyx_mstate_global->__pyx_n_u_create_app, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_main, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[4])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 45, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_FastAPI) < (0)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_4main_4create_app, 0, __pyx_mstate_global->__pyx_n_u_create_app, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_main, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[4])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_5);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_5, __pyx_t_2);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_create_app, __pyx_t_5) < (0)) __PYX_ERR(0, 45, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_create_app, __pyx_t_5) < (0)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "aiSelfTest/main.py":98
+  /* "aiSelfTest/main.py":110
  * 
  * 
  * app = create_app()             # <<<<<<<<<<<<<<
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_create_app); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 98, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_create_app); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 110, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __pyx_t_8 = 1;
   {
@@ -6382,10 +6734,10 @@ __Pyx_RefNannySetupContext("PyInit_main", 0);
     __pyx_t_5 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_7, __pyx_callargs+__pyx_t_8, (1-__pyx_t_8) | (__pyx_t_8*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 98, __pyx_L1_error)
+    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 110, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
   }
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_app, __pyx_t_5) < (0)) __PYX_ERR(0, 98, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_app, __pyx_t_5) < (0)) __PYX_ERR(0, 110, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
   /* "aiSelfTest/main.py":1
@@ -6455,14 +6807,14 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
   CYTHON_UNUSED_VAR(__pyx_mstate);
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "aiSelfTest/main.py":70
+  /* "aiSelfTest/main.py":82
  *     async def request_id_middleware(request: Request, call_next):
  *         request_id = request.headers.get("X-Request-ID", str(uuid4()))
  *         with logger.contextualize(request_id=request_id):             # <<<<<<<<<<<<<<
  *             response = await call_next(request)
  *         response.headers["X-Request-ID"] = request_id
 */
-  __pyx_mstate_global->__pyx_tuple[0] = PyTuple_Pack(3, Py_None, Py_None, Py_None); if (unlikely(!__pyx_mstate_global->__pyx_tuple[0])) __PYX_ERR(0, 70, __pyx_L1_error)
+  __pyx_mstate_global->__pyx_tuple[0] = PyTuple_Pack(3, Py_None, Py_None, Py_None); if (unlikely(!__pyx_mstate_global->__pyx_tuple[0])) __PYX_ERR(0, 82, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[0]);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[0]);
   #if CYTHON_IMMORTAL_CONSTANTS
@@ -6495,31 +6847,31 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 static int __Pyx_InitConstants(__pyx_mstatetype *__pyx_mstate) {
   CYTHON_UNUSED_VAR(__pyx_mstate);
   {
-    const struct { const unsigned int length: 9; } index[] = {{1},{15},{19},{25},{12},{1},{1},{1},{35},{35},{18},{4},{14},{7},{5},{6},{2},{7},{9},{12},{14},{7},{20},{7},{22},{15},{9},{9},{12},{15},{6},{9},{12},{21},{14},{21},{21},{24},{31},{21},{19},{17},{19},{21},{15},{18},{17},{13},{13},{13},{3},{21},{19},{18},{9},{9},{13},{18},{5},{13},{10},{13},{12},{10},{32},{41},{24},{16},{8},{11},{4},{9},{8},{8},{7},{18},{23},{8},{3},{12},{7},{12},{4},{14},{4},{13},{5},{8},{7},{6},{6},{8},{7},{10},{5},{10},{23},{8},{4},{2},{7},{3},{6},{8},{37},{12},{7},{10},{21},{8},{6},{13},{4},{6},{14},{4},{12},{10},{8},{6},{4},{16},{11},{8},{5},{5},{4},{5},{28},{5},{6},{7},{11},{5},{5},{5},{305},{5}};
-    #if (CYTHON_COMPRESS_STRINGS) == 2 /* compression: bz2 (1178 bytes) */
-const char* const cstring = "BZh91AY&SY<\\%(\000\000=\177\377\347\355e\363t\267\347E\257\243\377J\277\357\377\362\342\333\315\325\375[\312\370@\000@@G\340@\000P\003\376D\000\000\020\014\221OP\323\022'\352\236j\031M=5\032h3P\r\032d\332\232\r\007\250i\243G\265&\236\246C\322\003@\033Q\223i4\017)\3725D\030\000&\000\0020\000\010\300\001\03214\300\023\000\000L#\010\300L\230\214@\302\014\000\023\000\001\030\000\004`\000\215\030\232`\t\200\000&\021\204`&LF a\006\000\t\200\000\214\000\0020\000F\214M0\004\300\000\023\010\3020\023&#\0200$\220\t\240Da2L\247\240\232\003\023@\000\000\000\000\r\017F\246@\000\000\032\000\002\261f_\257G\241\353~\377\270\231\216\002\301[3\376\013\312\250%\321b\210 \361\2625\2151\352\227\016\253*\257\264\252\326\241\260\242@\273\243\314?\033:\216\335\030.7\312\337U\271\270\207\027\327\205\376.,\261\307\025\2155G\006\000\225\274\013XJjP\254\265\"/\233\"\274\212\254\345\364\246M\303\234`\302\2211\323\250R7>\203\243z\021\247\005\247hR\nGU\177*j\204\367\003\355g\016\261L\004\035\330*0\205\014I\301\003\333\260\366{\356i+B\210&\374\306\004\317,\341`J+Zj\336\262\204df\232\327\207\346\301\217=\031\233y\2358\017\n\233\345\234\377c\233\031\327\210\347\241\202UU\352\261\221\032)\363\210*9\316\215\317!8\333J\323\202\204\230\256W\017-\201\223\203y\325#\031q\310:\373\361\303\030J\313:\234\212v\034\323\236i\331\245\211\357[\266\251\022U\332\r6\227\254\243/5\332Tpv\321\225\020m\253\t\256b\351\026\242\006P`ta^B\r\263y\335-\233\272Yf6\364\302\273)\362\336J\003\337C\r97%\030\020\333\317d\010\335\246\307\355I\260$\241n\201\345\304NA\205\320h\206#\013r3+\022r\276\363\331\274/\023p\245Q\251\274\315\272\257\t\323I-\207'\006w\017\350B\306\343\315\317\243\316@\225u\311\326+\314\263\215\351Z\234\023-f,r}\216{\0238\211\322\272\033\324\311\300m0&(\310\266\326h\270\225b\343\021\342\3045\014s\260\264f\327!)\326p|\223\231\372 \241\254\302\311JJd\237\313R$\026\014\3276\255\004V\336\340\025\022~,h\354\263\\D3\363\230,\204bj \355Kh\235\245\305\2159\300\223\032\014\\\262\214&`\206*\306\334\341\332\320\325<.\323j""\270\305\237R48{\014`\026\260\240$\351\005\n\263\222\337Z\362\220\264\"\225\251\3568\325\325\227]\362O\036\304Xn\020\344\346{\362\246`*\350\222t%kK\212Fs\t\275Hrr}\357x\312)\223@n\\3\346-Y\214\341\245\236\256\311D-\224\332\230r\304{Dx:X\216Hp4Q\245\267\033(\212\300r\353YR;\010\271\214\367k\302\tru\027\325\241c'2\3411p\320r\2503\\\342\354\324\272\0246\345h\373*\355q\331V%V\241\242|\321\2360\2517?Bu\260\265\233=\362\206/'\215\224\262\311^\260t\314\266\203\226\233I4\244\344\224S\n\270=B\274\376T\310\220\020ic\002\301\301\026\253\244=\354\027\346u2NaB\227\240\310\345\035\204\317zy\003!\236\200\3117&\313Tn*\327V\333\215\024u\270\327\241FI\214M\032\t\317r\232[\004\211\333\311\313\276\3736!\242\005\001\213\230N\341\355\274\r\014.V\256\315\213GGw\257\001\226\375\375\356>?\224x\225\020\030v\213p\3359\006\r\036\370\343\n\262\244\237\277\343A\3660\370\253\370\335\323\234\232\203\334\000L@Z\026!\272.\017\334^\237Q\371?|\334\326\371\332\337G\213\034\037l\333h\245F2\203\321\376\002>\330\261\233[0\34766Kcs\032]\265pUc\320(\354&\261\330\307]\323f\326\256\326P\331\262l\234\301_\030A|[AJp\210R\020Srh\275\307.\234\205d\251Z(\027&b\332f\333\030\222Q\020IM\307\252^\016\215\303\237\213\036\332U\250|\201p\265k\373p\332\207$r\177\321R\212Y\213\264\374O^ao\360w\332T\177\342\356H\247\n\022\007\213\204\245\000";
-    PyObject *data = __Pyx_DecompressString(cstring, 1178, 2);
+    const struct { const unsigned int length: 9; } index[] = {{1},{15},{19},{25},{12},{1},{1},{1},{35},{35},{18},{4},{14},{7},{5},{6},{2},{7},{9},{12},{14},{7},{20},{7},{22},{15},{9},{9},{12},{15},{6},{9},{12},{21},{14},{21},{21},{24},{31},{21},{19},{17},{19},{21},{15},{34},{18},{17},{13},{13},{13},{3},{21},{19},{18},{9},{9},{13},{18},{5},{13},{10},{13},{12},{10},{32},{41},{24},{21},{16},{8},{11},{4},{9},{8},{8},{7},{18},{23},{8},{3},{12},{7},{12},{4},{14},{4},{13},{5},{8},{7},{6},{6},{8},{7},{10},{5},{10},{23},{8},{4},{2},{7},{3},{6},{8},{37},{12},{7},{10},{21},{8},{6},{13},{4},{6},{14},{4},{25},{12},{10},{8},{8},{5},{5},{6},{4},{16},{11},{14},{8},{5},{5},{4},{5},{28},{5},{6},{7},{11},{5},{5},{5},{305},{5}};
+    #if (CYTHON_COMPRESS_STRINGS) == 2 /* compression: bz2 (1224 bytes) */
+const char* const cstring = "BZh91AY&SY\030\225\030\314\000\000=\177\377\347\355e\363t\267\347E\257\243\377J\277\357\377\362\342\333\315\325\375[\312\370@\000@@G\340@\000P\004>D\000\000\010<2E=*~\214Jz\237\252?(\305\033S\324\032\014\324\320=G\251\352\036\243CA\352\032h\321\262\207\251\351\017H\r\000=FM\244\320<\247\350Q\006\000\t\200\000\214\000\0020\000F\214M0\004\300\000\023\010\3020\023&#\0200\203\000\004\300\000F\000\001\030\000#F&\230\002`\000\t\204a\030\t\223\021\210\030@\311\202`\00210\230\230L!\2010\002`&L\t\223M\006\000\021\2040\000\000\032\t$\004\304\020\246d\004\236\202h\014\215\000\000\000\000\00041\251\220\000\000\006\201\240\n\305\231~\335\016\177\257\321\350\211\230\337(+L\377\203\002\252\tt\030\271\004\0366f\243Lz\272\361\325eU\367\025[J\032\024H\027\3649G\345N\243\270F+\213\3637\327mn\031\304\366!\207\215\221$p\305\203QM\003X%\216\362\326\022\242\224,-H\273+U&\3557Y\224z0C\275\232k\317\331@\361\224R72s\303\030$wE\327\247P\nG\225\213\"\005\t\256\210c\346\216\241Ih;u\252\260\205\014y\201\003\373P\376t.\370\025\237<\223\212c\022f\226o\345\310+ZiJd\350\310\313+^\363\313\270km\231\231\231\244\361\341C\226]\316\366y\221\237\027\206\347\242\256\t\271W\252\312DnS\346\220W9\316\215\357!\013N\263\337\252.'t\236W;\210\226\201\233\177y\327\021\214\270\304\035\226W\345\214%JW\251\314\256\251\2170\347\032\270\025\262{\327\007\005\"J\333\001\252\363\025\300\031y\316\324\243\213\266\r\010\203GE\007%\312]\"\327 gD\\\017t+\307A\266o;\245\246<\035L\265\215\275P\264\223\345\274\224bk\204cC-Y\367e\030\020\333\323X\021\266\305\037}\246\354I\250\351\034^@\343\216\2634\003!\205\273i\224\2119_y\355g\014\004\333\226\235\240\326\007\327y\233\202\246\023\243\265\022\320\344\344k\270\177>\024h\007\032\347\302\2178\351*\355I\325X\032'\034\022\262pL\260\250\341\314\372:\014L\341\247\022\215\327\313z\231\267\315\206Bb\254\231\212\027\263E\304\255\027\031\017\026A\2621\315\306\3036\274\222S\254\340\371'3\364\301Ch\306\222\224\2074\311C\222\244H(3^\333:\302\212\333\206\350\025IC&\324\332\273=|\t\006\236k\005a""\030\224 \355\225\260N\305\345\032s\201&4\231\234\262\030L\301\014\225\033s\205f\206\314\361\277U\222\274\311\237R79\270Z\030\305\30333Y\205\004\223\242\027\025g%\233\226\266\264\021\274$\225\223\334qm\263\243k\031'\217b,6\340\344\346{\364&`*\350\222t%f\227\020\214\202Sz\220\364\345\014\036\361\227O$\344\321\033\223\035ZK\303I\2506Y\353\014\367!k&\332a\3130\366\210\360t\262\034\220\340\253\244\215\226\340\266q\026\200\345\3272\244t#\0064\341\271\224\022\344m\030U\241F\0070n\261x\304\034\252\206k\334_\236\353\341q\271+\017\245]\267\036\002\240\252\305\306\231\363\006x\311_K\236A\264\246\276\027\263k\343(d\374\001\256\265iZ\313*Qe\n\031\357\271\223\322\325\2016\234\334\001\024\302\277'\250\306R\347u\216$Y \324\306b\303\242\311\232\256\220\367\2620\305\2639\236S=\331Q\025*\364\024\203\324t&\203\323\310\231\032\363\006I\267ie\033\312\265\365\2668\032h\353\341^}\314\223\031\032Q\244\234\367n\324\327\342\221u\374\214\374\267\327D4\276\005\300\306\014'\034-\267\200B\200\345K\244\201\320\246cq\300\010td\364%v;C\255U\001\213X\271\026\003H\326\257\335\031CBCg\357\370\317\205\214>\033^'\254\314M\021\355\000&81\305\270\260\013\343\367\207\321\351?\030q\034\201\312z\1777\313\035\037l\313\310\245F2\003\355{\303Z\342\336e\214\263\232\340\325.\r\214\2317\225\276U\2778\237\250\232gR\212\360\033\227t\265\271cV\341\270y\342\326H\257\210\\AB`\302(\n\365\035\200J\242^4\225MJ\357\240[{e\307f\273\030\215\242 m6\037\253\263\031w\316vCW\223B\251\361\205\305\036\357\366\371\273\0251\305\377a\240\000\3160\037s\200@oQ\323\007$\033\340.\344\212p\241 1*1\230";
+    PyObject *data = __Pyx_DecompressString(cstring, 1224, 2);
     if (unlikely(!data)) __PYX_ERR(0, 1, __pyx_L1_error)
     const char* const bytes = __Pyx_PyBytes_AsString(data);
     #if !CYTHON_ASSUME_SAFE_MACROS
     if (likely(bytes)); else { Py_DECREF(data); __PYX_ERR(0, 1, __pyx_L1_error) }
     #endif
-    #elif (CYTHON_COMPRESS_STRINGS) != 0 /* compression: zlib (1016 bytes) */
-const char* const cstring = "x\332}T\335\213[E\024\357\302~D*\305\005\261*(Y\021Dqo\\P\361A\224`\253\354\203\332\354\252\024D\206\311\235I2d2swf\356nV\220\306\0071Tj/Xt\021\251\211.\022\024\273\201\"\246\335\227\376\t\373\230\307>\364&\273o\375\023<\223;\3710\r\013\271g\346\2349s\316\357\234\337\231\274\222]O\037\177\373g\357\367Z|\347v|\275=\245\246\263\227\326\247Lq\364}\377\257\003{pyu\203n\205T\233\325\365\013\336\273\2318:\210\257\266\322\230mR^\370\004\314\351\367\2616\340\227\216\357\336\350\337hy\236\027\177s\373\344\247\277Ou\031\237e*\230\t/\330\315\340\200\021\346\233\317\265Q\257\246A|A\230\306yN3D\372\232\n\273-\372\231\022\305\334\224\2303\220l\020\\\254\37240L\212\367>\336\330\374\220\021\302\351\016V\324\245D\350\322n\025\276\013\020\032}D\253f\203\026\\=n\371\014sF\260\rpQ)\251\246\324\370\326o\275\372\277\320\212\336\365\250\277\177\367\370\340\332\311\037?\2364\377\351\037\376z|\253\031\357\377\334k5{\265\257A\3067\277{px\030_m&\362\244y\247\177\370C\357\346/\361\376\265^\243\203\tAt\210\024\225\260\000\230\312\032+#\304\343\236x\320\013\317\347\214\n3m\224\242\300\212SF\202u)/\261\"S\366J\310\r\253H\2029\002I\371\324\261\242\333\014\022\377\337h\260.O\230\036\311\007\255\301y\254'\301\216\312\322\023F\313\352\204\272M\225\006\017\314\271\334A\276\242\004Jc\230\353\304\000\244\022pH\224\n5%I\234\"\025+2\010\034\004\360\233\321@\275+|\300h\200\330\n\026\270\350LL\002r%C\303\004\325\010a\250\322 \344CL$\3005i-\262\016T\201\"(b\002\031\205}\232\307~\331\347R\323\244\362\241O\222\202\263\274\333\2050%_\202\217\322C\210P\0246\024\001\314\361\316{\233KH\252\337\361\222\261E~\211B\370\031\347*\231E\304&\007b\246\243\224f\304\267Cg9A\204)B\001\005\0334\310\276\031\204\240H\252`\2512\010-\313\203\035\364\241\000O\003\270v\313\004\177C\313\030\2027(\021\025B\341#T\244\006~HS\003}-j\307\332di%c\002&|\036\022\352\2601Q\220\210i4\242\203\031Z\321\234\025\250\016\260\340\262h\201\303\002\314\201\014U\210\220\035\035\220Tk\340s\014\245R\006Od'9\344\024\326\251\341v\371\020\022\270\002\307""\226fY\016\340\2360:\220A\240h\201U\203]\202a\360\374\341\212\266G\257\375\321\341Bh\013hN\3029~\3064\315$LAQ\320FXM\250D\362\276\034.\313\233\333\205\002\256\024\325 \253\206?2\202lK\035n\330\021Z\300P\334\260\315@\211\tA\024\265}\233\310\366\317\305\034\350\303\262\215E\203LI\311\035\303\014\247a\310\210\375^?\255D8\013\351@h\367B\021\032mj\331\356\252\007\342\351g@\244W\216\316<\031e\037.\236Y8[\177)Z\356\246\316\325q7\005\246n\352\211h\256\233Z\216\226\355a\352h\351\271\275\334\321\363o\266qw~\311)\231\326\326P\331\023\255\354\375\371\245\332\225\010n?\326M=\025\361\306\013\r\010\362\354\336\212\325p\264\345\026\033m\261\266Y?\033\255A\222\027W[\271\207\347 \276\275\031]i\024[\227\333\237vV:k\335$\330\014\323\321\371\227[\347\333\251\316B'\327\301#\333k\355\245v\265\023\336\313\336\313\r\257~\325\370\240\365V\373\215\316\\g\371\224\253\223\031\356\317/\000\262\371z\266\236\203\366X\\\213#=\275b\221?^_\253\315\301\331\1776\354$\313";
-    PyObject *data = __Pyx_DecompressString(cstring, 1016, 1);
+    #elif (CYTHON_COMPRESS_STRINGS) != 0 /* compression: zlib (1057 bytes) */
+const char* const cstring = "x\332}T\335k\\E\024o \037[*\305\200\330*(\033\021D1w\r\250\370 \312b\253\344A\355&*\005\221a\366\316\354\335!\263373s\223\215 ]\037\304\245R{\301\242A\244n4\310\242\330,\024q\333\274\364O\310\343>\366\301\273I\336\372'xf\357\354G\266K`\367\314\2343g\316\307\357w\346\276\222_\316\036}\373g\367\367Zr\357nr\2635\246f\363W\226\307LI\374\375\341_{\366\340\352\342\n]\217\2506\213\313\227\274wsI\274\227\\of1[\245\274\364\t\230\263\357cm\300/\233\334\277ux\253\351y^\362\315\335\343\237\376>\325ex\226\253`&\274p+\207CF\230o>\327F\275\232\005\361\005a\032\0279\315\021\351k*\3546\360se\212\271)3g \3710\274\\\365ih\230\024\357}\274\262\372!#\204\323M\254\250K\211\320\225\255*\374/Ah\364\021\255\232\025Zr\375\270\3453\314\031\3016\300e\245\244\032S\223;\277u\353\377\002\024\335\233\361\341\356\375\243\275\033\307\177\374x\274\363\317\341\376\257Gwv\222\335\237\273\315\235n\355k\220\311\355\357\376\333\337O\256\357\244\362x\347\336\341\376\017\335\333\277$\2737\272\2156&\004\321~\245\250\214\005\224\251\254\2612\250x\210\211\007Xx>gT\230q\243\024%\026\214\031\t\326\345\242\304\212\214\331+\0217\254\"\t\346\010$\345c\307\212n0H|\322h\260^\0331=\226\017\240\301E\254G\213\035\264\245G\214\226\325\021US\265\301|\252{\361\221\366\313\224D\026\200\241\307\006U\032b`\316\345&\362\025%\320<\303\\\247\006\240\235\200C\252T\250)K\342\024\251X\300 u\030\302o\002\304zK\370\320\205\001\352+X\340\300\231\230\204\336\224\214\014\023T#\204\001\007\203\220\0171\221\000\327\024|d\035\250\002EP\304\0042\n\373\264\210\3755\237KMSl\372>i\n\316\212n\027\301\034}\t>J\367K\204\246\260\241\010\312\034\356\274\267\271\204\244\372\035/\035l\004\310@\370\t\347*\235V\304FGf\242\243\224\306\331O\202=\030\023W\262\245\022\021\246\010\205\322X\0175\373\324\020\202\316\251\202\245\312 \237\\\353\355\000\234\022\274(\030\021\267\214\320\336\267\014\353\362z}\243R$|\204\002j\340\20745\000v\240\035\225\243\375\226\215\t\231\360yD\250\253\215\211\222DL\243\001G\314\320\212\346\254Du\210\005\227\201-\034\026\240\023d""\244\"\204\354\304\201\244Z\003\311\303R*k\340\211\354\003\000\014`\035{\023.\037B\002W\340\330r/\327B\270'\214\016e\030*Zb\325p\213`\230F\277\277\242\215\301G\342\361\211Ch\035\270O\3039\322\206\334MdQAS\000#\254&R\"}\226\256.K\246\333E\002\256\004\252\227U\303\367\217\000\240(\340\262\010\255\234$\032Y\254]C\260#\264\204\241\353>\376\272\034\031\"7\005p\246\014\010C\255\210@\004\272\027\307B\355\322\367\364\221\355H\n{\rdY\311M\303\014\247Q\304\210\375\277~\0326p\026\321\236\320\356\275#4\330\324\362\235E\017\304\305g@d\027\016\316<\025\347\037\315\236\2319W\177)\236\357d\316\327q'\003\246N\346\311x\252\223\231\217\347\355a\346`\356\271\355\302\301\363o\266pgz\316)\271\346z_\331\026\315\374\303\351\271\332\265\030n\237\355d\236\216y\343\205\006\004yv{\301j8^w\213\2156[[\255\237\213\227 \311\213\213\315\302\243\363\020\337\336\214\2575\202\346\325\326\247\355\205\366R'\r6\301tp\341\345\346\205V\246=\323.\264\361\300\366Zk\256UmG\017\362\017\n\375\253_5>h\276\325z\243=\325\236?\345\352h\206\207\3233P\331t=_/\000<\266\256\331\201\236]\260\225?Q_\252M\301\331\377\364\346R\334";
+    PyObject *data = __Pyx_DecompressString(cstring, 1057, 1);
     if (unlikely(!data)) __PYX_ERR(0, 1, __pyx_L1_error)
     const char* const bytes = __Pyx_PyBytes_AsString(data);
     #if !CYTHON_ASSUME_SAFE_MACROS
     if (likely(bytes)); else { Py_DECREF(data); __PYX_ERR(0, 1, __pyx_L1_error) }
     #endif
-    #else /* compression: none (1914 bytes) */
-const char* const bytes = "*AI \350\207\252\346\243\200\345\271\263\345\217\260AI \350\207\252\346\243\200\345\271\263\345\217\260 APIAI \350\207\252\346\243\200\345\271\263\345\217\260\345\220\216\347\253\257 APIX-Request-ID.?/\345\220\257\345\212\250 aiSelfTest FastAPI \345\272\224\347\224\250...\345\205\263\351\227\255 aiSelfTest FastAPI \345\272\224\347\224\250...aiSelfTest/main.py/apidict[str, str]disable/docsenablegc/healthisenabledAppExceptionCORSMiddlewareFastAPI__Pyx_PyDict_NextRefRequestRequestValidationErrorValidationError\345\256\242\346\210\267\347\253\257\346\217\220\347\244\272\350\257\215\351\246\226\351\241\265\347\273\237\350\256\241\345\244\232\346\250\241\346\200\201\346\250\241\345\236\213\344\273\273\345\212\241\344\273\273\345\212\241\351\241\271\347\273\223\346\236\234\345\244\215\346\240\270add_exception_handleradd_middlewareaiSelfTest.api.clientaiSelfTest.api.configaiSelfTest.api.dashboardaiSelfTest.api.multimodal_modelaiSelfTest.api.reviewaiSelfTest.api.taskaiSelfTest.configaiSelfTest.databaseaiSelfTest.exceptionsaiSelfTest.mainaiSelfTest.versionallow_credentialsallow_headersallow_methodsallow_originsappapp_exception_handlerasynccontextmanagerasyncio.coroutines__await__call_nextclient_routercline_in_tracebackcloseconfig_routercontextlibcontextualizecors_originscreate_appcreate_app.<locals>.health_checkcreate_app.<locals>.request_id_middlewarecreate_app.<locals>.rootdashboard_routerdata_dirdescriptiondocs__enter__exist_ok__exit__fastapifastapi.exceptionsfastapi.middleware.cors__func__getget_settingsheadershealth_checkhttpinclude_routerinfo_is_coroutineitemslifespanlog_dirloggerloguru__main__messagemiddlewaremkdir__module__multimodal_model_router__name__nextokparentspopprefixpydanticpydantic_validation_exception_handler__qualname__requestrequest_idrequest_id_middlewareresponsereturnreview_routerrootrouterrun_migrationssend__set_name__setdefaultsettingsstatustagstask_item_routertask_router__test__throwtitleuuiduuid4validation_exception_handlervaluevaluesversion__versio""n__\200A\330-.\200A\330\030\031\200A\330 !\320\000\024\220A\360\006\000\005\013\210'\220\021\330\010\016\210a\330\010\024\220A\330\010\020\220\001\330\010\021\220\021\360\006\000\005\010\320\007\035\230Q\320\0366\260a\330\004\007\320\007\035\230Q\320\036/\250q\330\004\007\320\007\035\230Q\230n\250A\340\004\007\200\177\220a\330\010\t\330\010\026\220l\240\"\240A\330\010\032\230!\330\010\026\220a\220q\330\010\026\220a\220q\360\006\000\005\006\200S\210\013\2201\220A\330$-\250Q\360\016\000\005\010\200\177\220a\220\177\240g\250X\260U\270!\2701\330\004\007\200\177\220a\220\177\240g\250X\260U\270!\2701\330\004\007\200\177\220a\320\027)\250\027\260\010\270\005\270Q\270a\330\004\007\200\177\220a\320\0270\260\007\260x\270u\300A\300Q\330\004\007\200\177\220a\220}\240G\2508\2605\270\001\270\021\330\004\007\200\177\220a\320\027)\250\027\260\010\270\005\270Q\270a\330\004\007\200\177\220a\220\177\240g\250X\260U\270!\2701\340\004\005\200S\210\004\210A\210Q\330\030\031\360\016\000\005\006\200S\210\004\210A\210Q\330 !\360\006\000\005\014\2101\200\001\330\030\031";
+    #else /* compression: none (2026 bytes) */
+const char* const bytes = "*AI \350\207\252\346\243\200\345\271\263\345\217\260AI \350\207\252\346\243\200\345\271\263\345\217\260 APIAI \350\207\252\346\243\200\345\271\263\345\217\260\345\220\216\347\253\257 APIX-Request-ID.?/\345\220\257\345\212\250 aiSelfTest FastAPI \345\272\224\347\224\250...\345\205\263\351\227\255 aiSelfTest FastAPI \345\272\224\347\224\250...aiSelfTest/main.py/apidict[str, str]disable/docsenablegc/healthisenabledAppExceptionCORSMiddlewareFastAPI__Pyx_PyDict_NextRefRequestRequestValidationErrorValidationError\345\256\242\346\210\267\347\253\257\346\217\220\347\244\272\350\257\215\351\246\226\351\241\265\347\273\237\350\256\241\345\244\232\346\250\241\346\200\201\346\250\241\345\236\213\344\273\273\345\212\241\344\273\273\345\212\241\351\241\271\347\273\223\346\236\234\345\244\215\346\240\270add_exception_handleradd_middlewareaiSelfTest.api.clientaiSelfTest.api.configaiSelfTest.api.dashboardaiSelfTest.api.multimodal_modelaiSelfTest.api.reviewaiSelfTest.api.taskaiSelfTest.configaiSelfTest.databaseaiSelfTest.exceptionsaiSelfTest.mainaiSelfTest.services.task_scheduleraiSelfTest.versionallow_credentialsallow_headersallow_methodsallow_originsappapp_exception_handlerasynccontextmanagerasyncio.coroutines__await__call_nextclient_routercline_in_tracebackcloseconfig_routercontextlibcontextualizecors_originscreate_appcreate_app.<locals>.health_checkcreate_app.<locals>.request_id_middlewarecreate_app.<locals>.rootcreate_task_schedulerdashboard_routerdata_dirdescriptiondocs__enter__exist_ok__exit__fastapifastapi.exceptionsfastapi.middleware.cors__func__getget_settingsheadershealth_checkhttpinclude_routerinfo_is_coroutineitemslifespanlog_dirloggerloguru__main__messagemiddlewaremkdir__module__multimodal_model_router__name__nextokparentspopprefixpydanticpydantic_validation_exception_handler__qualname__requestrequest_idrequest_id_middlewareresponsereturnreview_routerrootrouterrun_migrationssendset_global_task_scheduler__set_name__setdefaultsettingsshutdownstartstatestatustagstask_item_""routertask_routertask_scheduler__test__throwtitleuuiduuid4validation_exception_handlervaluevaluesversion__version__\200A\330-.\200A\330\030\031\200A\330 !\320\000\024\220A\360\006\000\005\013\210'\220\021\330\010\016\210a\330\010\024\220A\330\010\020\220\001\330\010\021\220\021\360\006\000\005\010\320\007\035\230Q\320\0366\260a\330\004\007\320\007\035\230Q\320\036/\250q\330\004\007\320\007\035\230Q\230n\250A\340\004\007\200\177\220a\330\010\t\330\010\026\220l\240\"\240A\330\010\032\230!\330\010\026\220a\220q\330\010\026\220a\220q\360\006\000\005\006\200S\210\013\2201\220A\330$-\250Q\360\016\000\005\010\200\177\220a\220\177\240g\250X\260U\270!\2701\330\004\007\200\177\220a\220\177\240g\250X\260U\270!\2701\330\004\007\200\177\220a\320\027)\250\027\260\010\270\005\270Q\270a\330\004\007\200\177\220a\320\0270\260\007\260x\270u\300A\300Q\330\004\007\200\177\220a\220}\240G\2508\2605\270\001\270\021\330\004\007\200\177\220a\320\027)\250\027\260\010\270\005\270Q\270a\330\004\007\200\177\220a\220\177\240g\250X\260U\270!\2701\340\004\005\200S\210\004\210A\210Q\330\030\031\360\016\000\005\006\200S\210\004\210A\210Q\330 !\360\006\000\005\014\2101\200\001\330\030\031";
     PyObject *data = NULL;
     CYTHON_UNUSED_VAR(__Pyx_DecompressString);
     #endif
     PyObject **stringtab = __pyx_mstate->__pyx_string_tab;
     Py_ssize_t pos = 0;
-    for (int i = 0; i < 133; i++) {
+    for (int i = 0; i < 140; i++) {
       Py_ssize_t bytes_length = index[i].length;
       PyObject *string = PyUnicode_DecodeUTF8(bytes + pos, bytes_length, NULL);
       if (likely(string) && i >= 19) PyUnicode_InternInPlace(&string);
@@ -6530,7 +6882,7 @@ const char* const bytes = "*AI \350\207\252\346\243\200\345\271\263\345\217\260A
       stringtab[i] = string;
       pos += bytes_length;
     }
-    for (int i = 133; i < 138; i++) {
+    for (int i = 140; i < 145; i++) {
       Py_ssize_t bytes_length = index[i].length;
       PyObject *string = PyBytes_FromStringAndSize(bytes + pos, bytes_length);
       stringtab[i] = string;
@@ -6541,14 +6893,14 @@ const char* const bytes = "*AI \350\207\252\346\243\200\345\271\263\345\217\260A
       }
     }
     Py_XDECREF(data);
-    for (Py_ssize_t i = 0; i < 138; i++) {
+    for (Py_ssize_t i = 0; i < 145; i++) {
       if (unlikely(PyObject_Hash(stringtab[i]) == -1)) {
         __PYX_ERR(0, 1, __pyx_L1_error)
       }
     }
     #if CYTHON_IMMORTAL_CONSTANTS
     {
-      PyObject **table = stringtab + 133;
+      PyObject **table = stringtab + 140;
       for (Py_ssize_t i=0; i<5; ++i) {
         #if CYTHON_COMPILING_IN_CPYTHON_FREETHREADING
         #if PY_VERSION_HEX < 0x030E0000
@@ -6594,27 +6946,27 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
   PyObject* tuple_dedup_map = PyDict_New();
   if (unlikely(!tuple_dedup_map)) return -1;
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS|CO_ASYNC_GENERATOR), 31};
-    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_app, __pyx_mstate->__pyx_n_u_settings};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS|CO_ASYNC_GENERATOR), 35};
+    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_app, __pyx_mstate->__pyx_n_u_settings, __pyx_mstate->__pyx_n_u_task_scheduler};
     __pyx_mstate_global->__pyx_codeobj_tab[0] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_main_py, __pyx_mstate->__pyx_n_u_lifespan, __pyx_mstate->__pyx_kp_b_iso88591__12, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[0])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS|CO_COROUTINE), 67};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS|CO_COROUTINE), 79};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_request, __pyx_mstate->__pyx_n_u_call_next, __pyx_mstate->__pyx_n_u_request_id, __pyx_mstate->__pyx_n_u_response};
     __pyx_mstate_global->__pyx_codeobj_tab[1] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_main_py, __pyx_mstate->__pyx_n_u_request_id_middleware, __pyx_mstate->__pyx_kp_b_iso88591_A, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[1])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {0, 0, 0, 0, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS|CO_COROUTINE), 83};
+    const __Pyx_PyCode_New_function_description descr = {0, 0, 0, 0, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS|CO_COROUTINE), 95};
     PyObject* const varnames[] = {0};
     __pyx_mstate_global->__pyx_codeobj_tab[2] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_main_py, __pyx_mstate->__pyx_n_u_root, __pyx_mstate->__pyx_kp_b_iso88591_A_2, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[2])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {0, 0, 0, 0, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS|CO_COROUTINE), 91};
+    const __Pyx_PyCode_New_function_description descr = {0, 0, 0, 0, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS|CO_COROUTINE), 103};
     PyObject* const varnames[] = {0};
     __pyx_mstate_global->__pyx_codeobj_tab[3] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_main_py, __pyx_mstate->__pyx_n_u_health_check, __pyx_mstate->__pyx_kp_b_iso88591_A_3, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[3])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {0, 0, 0, 7, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 45};
+    const __Pyx_PyCode_New_function_description descr = {0, 0, 0, 7, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 57};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_app, __pyx_mstate->__pyx_n_u_request_id_middleware, __pyx_mstate->__pyx_n_u_request_id_middleware, __pyx_mstate->__pyx_n_u_root, __pyx_mstate->__pyx_n_u_root, __pyx_mstate->__pyx_n_u_health_check, __pyx_mstate->__pyx_n_u_health_check};
     __pyx_mstate_global->__pyx_codeobj_tab[4] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_main_py, __pyx_mstate->__pyx_n_u_create_app, __pyx_mstate->__pyx_kp_b_iso88591_A_a_A_Q_6a_Q_q_QnA_a_l_A_aq_aq, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[4])) goto bad;
   }
@@ -8004,7 +8356,30 @@ static PyObject *__Pyx_Object_VectorcallMethod_CallFromBuilder(PyObject *name, P
 }
 #endif
 
-/* GetException (used by pep479) */
+/* PyObjectSetAttrStr */
+#if CYTHON_USE_TYPE_SLOTS
+static CYTHON_INLINE int __Pyx_PyObject_SetAttrStr(PyObject* obj, PyObject* attr_name, PyObject* value) {
+    PyTypeObject* tp = Py_TYPE(obj);
+    if (likely(tp->tp_setattro))
+        return tp->tp_setattro(obj, attr_name, value);
+    return PyObject_SetAttr(obj, attr_name, value);
+}
+#endif
+
+/* PyObjectFastCallMethod */
+#if !CYTHON_VECTORCALL || PY_VERSION_HEX < 0x03090000
+static PyObject *__Pyx_PyObject_FastCallMethod(PyObject *name, PyObject *const *args, size_t nargsf) {
+    PyObject *result;
+    PyObject *attr = PyObject_GetAttr(args[0], name);
+    if (unlikely(!attr))
+        return NULL;
+    result = __Pyx_PyObject_FastCall(attr, args+1, nargsf - 1);
+    Py_DECREF(attr);
+    return result;
+}
+#endif
+
+/* GetException */
 #if CYTHON_FAST_THREAD_STATE
 static int __Pyx__GetException(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb)
 #else
@@ -8107,6 +8482,142 @@ bad:
 #endif
 }
 
+/* SwapException */
+#if CYTHON_FAST_THREAD_STATE
+static CYTHON_INLINE void __Pyx__ExceptionSwap(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
+    PyObject *tmp_type, *tmp_value, *tmp_tb;
+  #if CYTHON_USE_EXC_INFO_STACK && PY_VERSION_HEX >= 0x030B00a4
+    _PyErr_StackItem *exc_info = tstate->exc_info;
+    tmp_value = exc_info->exc_value;
+    exc_info->exc_value = *value;
+    if (tmp_value == NULL || tmp_value == Py_None) {
+        Py_XDECREF(tmp_value);
+        tmp_value = NULL;
+        tmp_type = NULL;
+        tmp_tb = NULL;
+    } else {
+        tmp_type = (PyObject*) Py_TYPE(tmp_value);
+        Py_INCREF(tmp_type);
+        #if CYTHON_COMPILING_IN_CPYTHON
+        tmp_tb = ((PyBaseExceptionObject*) tmp_value)->traceback;
+        Py_XINCREF(tmp_tb);
+        #else
+        tmp_tb = PyException_GetTraceback(tmp_value);
+        #endif
+    }
+  #elif CYTHON_USE_EXC_INFO_STACK
+    _PyErr_StackItem *exc_info = tstate->exc_info;
+    tmp_type = exc_info->exc_type;
+    tmp_value = exc_info->exc_value;
+    tmp_tb = exc_info->exc_traceback;
+    exc_info->exc_type = *type;
+    exc_info->exc_value = *value;
+    exc_info->exc_traceback = *tb;
+  #else
+    tmp_type = tstate->exc_type;
+    tmp_value = tstate->exc_value;
+    tmp_tb = tstate->exc_traceback;
+    tstate->exc_type = *type;
+    tstate->exc_value = *value;
+    tstate->exc_traceback = *tb;
+  #endif
+    *type = tmp_type;
+    *value = tmp_value;
+    *tb = tmp_tb;
+}
+#else
+static CYTHON_INLINE void __Pyx_ExceptionSwap(PyObject **type, PyObject **value, PyObject **tb) {
+    PyObject *tmp_type, *tmp_value, *tmp_tb;
+    PyErr_GetExcInfo(&tmp_type, &tmp_value, &tmp_tb);
+    PyErr_SetExcInfo(*type, *value, *tb);
+    *type = tmp_type;
+    *value = tmp_value;
+    *tb = tmp_tb;
+}
+#endif
+
+/* GetTopmostException (used by SaveResetException) */
+#if CYTHON_USE_EXC_INFO_STACK && CYTHON_FAST_THREAD_STATE
+static _PyErr_StackItem *
+__Pyx_PyErr_GetTopmostException(PyThreadState *tstate)
+{
+    _PyErr_StackItem *exc_info = tstate->exc_info;
+    while ((exc_info->exc_value == NULL || exc_info->exc_value == Py_None) &&
+           exc_info->previous_item != NULL)
+    {
+        exc_info = exc_info->previous_item;
+    }
+    return exc_info;
+}
+#endif
+
+/* SaveResetException */
+#if CYTHON_FAST_THREAD_STATE
+static CYTHON_INLINE void __Pyx__ExceptionSave(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
+  #if CYTHON_USE_EXC_INFO_STACK && PY_VERSION_HEX >= 0x030B00a4
+    _PyErr_StackItem *exc_info = __Pyx_PyErr_GetTopmostException(tstate);
+    PyObject *exc_value = exc_info->exc_value;
+    if (exc_value == NULL || exc_value == Py_None) {
+        *value = NULL;
+        *type = NULL;
+        *tb = NULL;
+    } else {
+        *value = exc_value;
+        Py_INCREF(*value);
+        *type = (PyObject*) Py_TYPE(exc_value);
+        Py_INCREF(*type);
+        *tb = PyException_GetTraceback(exc_value);
+    }
+  #elif CYTHON_USE_EXC_INFO_STACK
+    _PyErr_StackItem *exc_info = __Pyx_PyErr_GetTopmostException(tstate);
+    *type = exc_info->exc_type;
+    *value = exc_info->exc_value;
+    *tb = exc_info->exc_traceback;
+    Py_XINCREF(*type);
+    Py_XINCREF(*value);
+    Py_XINCREF(*tb);
+  #else
+    *type = tstate->exc_type;
+    *value = tstate->exc_value;
+    *tb = tstate->exc_traceback;
+    Py_XINCREF(*type);
+    Py_XINCREF(*value);
+    Py_XINCREF(*tb);
+  #endif
+}
+static CYTHON_INLINE void __Pyx__ExceptionReset(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
+  #if CYTHON_USE_EXC_INFO_STACK && PY_VERSION_HEX >= 0x030B00a4
+    _PyErr_StackItem *exc_info = tstate->exc_info;
+    PyObject *tmp_value = exc_info->exc_value;
+    exc_info->exc_value = value;
+    Py_XDECREF(tmp_value);
+    Py_XDECREF(type);
+    Py_XDECREF(tb);
+  #else
+    PyObject *tmp_type, *tmp_value, *tmp_tb;
+    #if CYTHON_USE_EXC_INFO_STACK
+    _PyErr_StackItem *exc_info = tstate->exc_info;
+    tmp_type = exc_info->exc_type;
+    tmp_value = exc_info->exc_value;
+    tmp_tb = exc_info->exc_traceback;
+    exc_info->exc_type = type;
+    exc_info->exc_value = value;
+    exc_info->exc_traceback = tb;
+    #else
+    tmp_type = tstate->exc_type;
+    tmp_value = tstate->exc_value;
+    tmp_tb = tstate->exc_traceback;
+    tstate->exc_type = type;
+    tstate->exc_value = value;
+    tstate->exc_traceback = tb;
+    #endif
+    Py_XDECREF(tmp_type);
+    Py_XDECREF(tmp_value);
+    Py_XDECREF(tmp_tb);
+  #endif
+}
+#endif
+
 /* pep479 */
 static void __Pyx_Generator_Replace_StopIteration(int in_async_gen) {
     PyObject *exc, *val, *tb, *cur_exc, *new_exc;
@@ -8136,19 +8647,6 @@ static void __Pyx_Generator_Replace_StopIteration(int in_async_gen) {
     PyException_SetCause(new_exc, val); // steals ref to val
     PyErr_SetObject(PyExc_RuntimeError, new_exc);
 }
-
-/* PyObjectFastCallMethod */
-#if !CYTHON_VECTORCALL || PY_VERSION_HEX < 0x03090000
-static PyObject *__Pyx_PyObject_FastCallMethod(PyObject *name, PyObject *const *args, size_t nargsf) {
-    PyObject *result;
-    PyObject *attr = PyObject_GetAttr(args[0], name);
-    if (unlikely(!attr))
-        return NULL;
-    result = __Pyx_PyObject_FastCall(attr, args+1, nargsf - 1);
-    Py_DECREF(attr);
-    return result;
-}
-#endif
 
 /* PyObjectLookupSpecial */
 #if CYTHON_USE_PYTYPE_LOOKUP && CYTHON_USE_TYPE_SLOTS
@@ -8659,142 +9157,6 @@ bad:
     Py_XDECREF(owned_instance);
     return;
 }
-
-/* GetTopmostException (used by SaveResetException) */
-#if CYTHON_USE_EXC_INFO_STACK && CYTHON_FAST_THREAD_STATE
-static _PyErr_StackItem *
-__Pyx_PyErr_GetTopmostException(PyThreadState *tstate)
-{
-    _PyErr_StackItem *exc_info = tstate->exc_info;
-    while ((exc_info->exc_value == NULL || exc_info->exc_value == Py_None) &&
-           exc_info->previous_item != NULL)
-    {
-        exc_info = exc_info->previous_item;
-    }
-    return exc_info;
-}
-#endif
-
-/* SaveResetException (used by CoroutineBase) */
-#if CYTHON_FAST_THREAD_STATE
-static CYTHON_INLINE void __Pyx__ExceptionSave(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
-  #if CYTHON_USE_EXC_INFO_STACK && PY_VERSION_HEX >= 0x030B00a4
-    _PyErr_StackItem *exc_info = __Pyx_PyErr_GetTopmostException(tstate);
-    PyObject *exc_value = exc_info->exc_value;
-    if (exc_value == NULL || exc_value == Py_None) {
-        *value = NULL;
-        *type = NULL;
-        *tb = NULL;
-    } else {
-        *value = exc_value;
-        Py_INCREF(*value);
-        *type = (PyObject*) Py_TYPE(exc_value);
-        Py_INCREF(*type);
-        *tb = PyException_GetTraceback(exc_value);
-    }
-  #elif CYTHON_USE_EXC_INFO_STACK
-    _PyErr_StackItem *exc_info = __Pyx_PyErr_GetTopmostException(tstate);
-    *type = exc_info->exc_type;
-    *value = exc_info->exc_value;
-    *tb = exc_info->exc_traceback;
-    Py_XINCREF(*type);
-    Py_XINCREF(*value);
-    Py_XINCREF(*tb);
-  #else
-    *type = tstate->exc_type;
-    *value = tstate->exc_value;
-    *tb = tstate->exc_traceback;
-    Py_XINCREF(*type);
-    Py_XINCREF(*value);
-    Py_XINCREF(*tb);
-  #endif
-}
-static CYTHON_INLINE void __Pyx__ExceptionReset(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
-  #if CYTHON_USE_EXC_INFO_STACK && PY_VERSION_HEX >= 0x030B00a4
-    _PyErr_StackItem *exc_info = tstate->exc_info;
-    PyObject *tmp_value = exc_info->exc_value;
-    exc_info->exc_value = value;
-    Py_XDECREF(tmp_value);
-    Py_XDECREF(type);
-    Py_XDECREF(tb);
-  #else
-    PyObject *tmp_type, *tmp_value, *tmp_tb;
-    #if CYTHON_USE_EXC_INFO_STACK
-    _PyErr_StackItem *exc_info = tstate->exc_info;
-    tmp_type = exc_info->exc_type;
-    tmp_value = exc_info->exc_value;
-    tmp_tb = exc_info->exc_traceback;
-    exc_info->exc_type = type;
-    exc_info->exc_value = value;
-    exc_info->exc_traceback = tb;
-    #else
-    tmp_type = tstate->exc_type;
-    tmp_value = tstate->exc_value;
-    tmp_tb = tstate->exc_traceback;
-    tstate->exc_type = type;
-    tstate->exc_value = value;
-    tstate->exc_traceback = tb;
-    #endif
-    Py_XDECREF(tmp_type);
-    Py_XDECREF(tmp_value);
-    Py_XDECREF(tmp_tb);
-  #endif
-}
-#endif
-
-/* SwapException (used by CoroutineBase) */
-#if CYTHON_FAST_THREAD_STATE
-static CYTHON_INLINE void __Pyx__ExceptionSwap(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
-    PyObject *tmp_type, *tmp_value, *tmp_tb;
-  #if CYTHON_USE_EXC_INFO_STACK && PY_VERSION_HEX >= 0x030B00a4
-    _PyErr_StackItem *exc_info = tstate->exc_info;
-    tmp_value = exc_info->exc_value;
-    exc_info->exc_value = *value;
-    if (tmp_value == NULL || tmp_value == Py_None) {
-        Py_XDECREF(tmp_value);
-        tmp_value = NULL;
-        tmp_type = NULL;
-        tmp_tb = NULL;
-    } else {
-        tmp_type = (PyObject*) Py_TYPE(tmp_value);
-        Py_INCREF(tmp_type);
-        #if CYTHON_COMPILING_IN_CPYTHON
-        tmp_tb = ((PyBaseExceptionObject*) tmp_value)->traceback;
-        Py_XINCREF(tmp_tb);
-        #else
-        tmp_tb = PyException_GetTraceback(tmp_value);
-        #endif
-    }
-  #elif CYTHON_USE_EXC_INFO_STACK
-    _PyErr_StackItem *exc_info = tstate->exc_info;
-    tmp_type = exc_info->exc_type;
-    tmp_value = exc_info->exc_value;
-    tmp_tb = exc_info->exc_traceback;
-    exc_info->exc_type = *type;
-    exc_info->exc_value = *value;
-    exc_info->exc_traceback = *tb;
-  #else
-    tmp_type = tstate->exc_type;
-    tmp_value = tstate->exc_value;
-    tmp_tb = tstate->exc_traceback;
-    tstate->exc_type = *type;
-    tstate->exc_value = *value;
-    tstate->exc_traceback = *tb;
-  #endif
-    *type = tmp_type;
-    *value = tmp_value;
-    *tb = tmp_tb;
-}
-#else
-static CYTHON_INLINE void __Pyx_ExceptionSwap(PyObject **type, PyObject **value, PyObject **tb) {
-    PyObject *tmp_type, *tmp_value, *tmp_tb;
-    PyErr_GetExcInfo(&tmp_type, &tmp_value, &tmp_tb);
-    PyErr_SetExcInfo(*type, *value, *tb);
-    *type = tmp_type;
-    *value = tmp_value;
-    *tb = tmp_tb;
-}
-#endif
 
 /* CallTypeTraverse (used by CoroutineBase) */
 #if !CYTHON_USE_TYPE_SPECS || (!CYTHON_COMPILING_IN_LIMITED_API && PY_VERSION_HEX < 0x03090000)
