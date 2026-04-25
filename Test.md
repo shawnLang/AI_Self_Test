@@ -149,12 +149,23 @@ V1 必须覆盖：
 - `DataQuery` 不再以“实时查询并下发任务”为主语义
 - `Review` 只做基础确认，不扩成复杂审核工作台
 
+### 4.9 Review Compat Adapter 护栏
+
+- `/api/reviews/*` 只能作为旧 Review 页面适配层，不能重新长成主模型。
+- `GET /api/reviews?taskId=...` 必须由 `TaskItem + TaskItemData` 投影出旧卡片。
+- `POST /api/reviews/confirm` 必须委托 TaskItem 确认语义，只更新 `confirm_state`。
+- `confirm` 不得触发远端提交，不得把 `remote_state` 改成 `success`。
+- `DELETE /api/reviews/{id}` 与 `POST /api/reviews/delete` 必须保留源 `TaskItem`。
+- `delete` 只能把复核层对象或待提交差异集合标记为 `删除`。
+- 保护测试集中在 `tests/test_review_compat_api.py`，与 TaskItem Actions 测试互为补充。
+
 ## 5. 自动验证
 
 当前阶段至少运行：
 
 - `uv run pytest tests/test_task_api.py`
 - `uv run pytest tests/test_task_item_api.py`
+- `uv run pytest tests/test_review_compat_api.py`
 
 后续阶段逐步增加：
 
@@ -182,10 +193,11 @@ V1 必须覆盖：
 
 ## 8. 当前阶段结论
 
-当前进入 **Phase0：测试先行**。
+当前基线已进入 **Task 执行链路 V1 增量实现与验证阶段**。
 
-在以下条件满足前，不进入实现：
+本轮 worker-3 收敛到 **refined review compat lane**，优先固定以下证据：
 
-- [ ] `Test.md` 已更新为当前任务
-- [ ] task 相关可执行失败测试已写好
-- [ ] 失败点已验证为“正确失败”
+- [ ] `/api/reviews` 仍只是 compat adapter
+- [ ] `confirm` 不触发 `submit`
+- [ ] `delete` 不删除源 `TaskItem`
+- [ ] Review 首版只保留基础确认 / 删除能力
