@@ -137,9 +137,11 @@ def test_list_reviews_returns_review_items(
     assert data[0]["taskName"] == "复核任务-001"
     assert data[0]["mediaType"] == "image"
     assert data[0]["reviewRows"][0]["aiName"] == "苍鹭"
+    assert data[0]["reviewRows"][0]["groundingStatus"] == "structured"
+    assert data[0]["reviewRows"][0]["willSubmit"] is True
 
 
-def test_confirm_reviews_updates_task_item_confirm_state(
+def test_confirm_reviews_updates_task_item_confirm_state_without_submitting(
     app_client: TestClient,
     db_session: Session,
 ) -> None:
@@ -154,6 +156,8 @@ def test_confirm_reviews_updates_task_item_confirm_state(
     assert data["failureCount"] == 0
     task_item = db_session.exec(select(task_item_model).where(task_item_model.id == task_item_id)).one()
     assert task_item.confirm_state == "manual_confirmed"
+    assert task_item.remote_state == "pending"
+    assert task_item.remote_at is None
 
 
 def test_delete_review_marks_rows_deleted_but_keeps_source_entities(
@@ -166,6 +170,24 @@ def test_delete_review_marks_rows_deleted_but_keeps_source_entities(
     response = app_client.delete(f"/api/reviews/{task_item_id}")
 
     assert response.status_code == 200
+    task_item = db_session.exec(select(task_item_model).where(task_item_model.id == task_item_id)).one_or_none()
+    task_item_data = db_session.exec(select(task_item_data_model)).all()
+    assert task_item is not None
+    assert task_item_data != []
+    assert all(row.status == "删除" for row in task_item_data)
+
+
+def test_batch_delete_reviews_marks_rows_deleted_but_keeps_source_entities(
+    app_client: TestClient,
+    db_session: Session,
+) -> None:
+    _, task_item_id = _seed_review_fixture(app_client, db_session)
+    _, task_item_model, task_item_data_model = import_task_models()
+
+    response = app_client.post("/api/reviews/delete", json={"ids": [str(task_item_id)]})
+
+    assert response.status_code == 200
+    assert response.json() == {"ok": True}
     task_item = db_session.exec(select(task_item_model).where(task_item_model.id == task_item_id)).one_or_none()
     task_item_data = db_session.exec(select(task_item_data_model)).all()
     assert task_item is not None
