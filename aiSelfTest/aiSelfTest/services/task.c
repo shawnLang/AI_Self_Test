@@ -2009,6 +2009,22 @@ static int __Pyx__GetException(PyThreadState *tstate, PyObject **type, PyObject 
 static int __Pyx_GetException(PyObject **type, PyObject **value, PyObject **tb);
 #endif
 
+/* HasAttr.proto (used by ImportImpl) */
+#if __PYX_LIMITED_VERSION_HEX >= 0x030d0000
+#define __Pyx_HasAttr(o, n)  PyObject_HasAttrWithError(o, n)
+#else
+static CYTHON_INLINE int __Pyx_HasAttr(PyObject *, PyObject *);
+#endif
+
+/* ImportImpl.export */
+static PyObject *__Pyx__Import(PyObject *name, PyObject *const *imported_names, Py_ssize_t len_imported_names, PyObject *qualname, PyObject *moddict, int level);
+
+/* Import.proto */
+static CYTHON_INLINE PyObject *__Pyx_Import(PyObject *name, PyObject *const *imported_names, Py_ssize_t len_imported_names, PyObject *qualname, int level);
+
+/* ImportFrom.proto */
+static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name);
+
 /* RaiseKeywordRequired.proto */
 static void __Pyx_RaiseKeywordRequired(const char* func_name, PyObject* kw_name);
 
@@ -2135,22 +2151,6 @@ static PyObject *__Pyx_PyDict_GetItem(PyObject *d, PyObject* key);
 
 /* RaiseException.export */
 static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject *cause);
-
-/* HasAttr.proto (used by ImportImpl) */
-#if __PYX_LIMITED_VERSION_HEX >= 0x030d0000
-#define __Pyx_HasAttr(o, n)  PyObject_HasAttrWithError(o, n)
-#else
-static CYTHON_INLINE int __Pyx_HasAttr(PyObject *, PyObject *);
-#endif
-
-/* ImportImpl.export */
-static PyObject *__Pyx__Import(PyObject *name, PyObject *const *imported_names, Py_ssize_t len_imported_names, PyObject *qualname, PyObject *moddict, int level);
-
-/* Import.proto */
-static CYTHON_INLINE PyObject *__Pyx_Import(PyObject *name, PyObject *const *imported_names, Py_ssize_t len_imported_names, PyObject *qualname, int level);
-
-/* ImportFrom.proto */
-static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name);
 
 /* dict_setdefault.proto (used by FetchCommonType) */
 static CYTHON_INLINE PyObject *__Pyx_PyDict_SetDefault(PyObject *d, PyObject *key, PyObject *default_value);
@@ -2458,7 +2458,7 @@ int __pyx_module_is_main_aiSelfTest__services__task = 0;
 /* Implementation of "aiSelfTest.services.task" */
 /* #### Code section: global_var ### */
 /* #### Code section: string_decls ### */
-static const char __pyx_k__8[] = "\344\273\273\345\212\241\344\270\216\344\273\273\345\212\241\351\241\271\346\234\215\345\212\241\343\200\202";
+static const char __pyx_k__9[] = "\344\273\273\345\212\241\344\270\216\344\273\273\345\212\241\351\241\271\346\234\215\345\212\241\343\200\202";
 /* #### Code section: decls ### */
 static PyObject *__pyx_pf_10aiSelfTest_8services_4task_list_tasks(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_session); /* proto */
 static PyObject *__pyx_pf_10aiSelfTest_8services_4task_2create_task(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_session, PyObject *__pyx_v_payload); /* proto */
@@ -2488,6 +2488,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
 static PyObject *__pyx_pf_10aiSelfTest_8services_4task_50_build_compat_review_row(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_row); /* proto */
 static PyObject *__pyx_pf_10aiSelfTest_8services_4task_52_get_task_or_raise(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_session, PyObject *__pyx_v_task_id); /* proto */
 static PyObject *__pyx_pf_10aiSelfTest_8services_4task_54_get_task_item_or_raise(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_session, PyObject *__pyx_v_task_item_id); /* proto */
+static PyObject *__pyx_pf_10aiSelfTest_8services_4task_56_sync_scheduler(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_task_id); /* proto */
 /* #### Code section: late_includes ### */
 /* #### Code section: module_state ### */
 /* SmallCodeConfig */
@@ -2512,8 +2513,8 @@ typedef struct {
   __Pyx_CachedCFunction __pyx_umethod_PyDict_Type_pop;
   __Pyx_CachedCFunction __pyx_umethod_PyDict_Type_values;
   PyObject *__pyx_tuple[1];
-  PyObject *__pyx_codeobj_tab[28];
-  PyObject *__pyx_string_tab[270];
+  PyObject *__pyx_codeobj_tab[29];
+  PyObject *__pyx_string_tab[275];
   PyObject *__pyx_number_tab[6];
 /* #### Code section: module_state_contents ### */
 /* CommonTypesMetaclass.module_state_decls */
@@ -2559,272 +2560,277 @@ static __pyx_mstatetype * const __pyx_mstate_global = &__pyx_mstate_global_stati
 #define __pyx_kp_u_Note_that_Cython_is_deliberately __pyx_string_tab[1]
 #define __pyx_kp_u_Y_m_d_H_M_S __pyx_string_tab[2]
 #define __pyx_kp_u__10 __pyx_string_tab[3]
-#define __pyx_kp_u__3 __pyx_string_tab[4]
+#define __pyx_kp_u__2 __pyx_string_tab[4]
 #define __pyx_kp_u__4 __pyx_string_tab[5]
 #define __pyx_kp_u__5 __pyx_string_tab[6]
-#define __pyx_kp_u__9 __pyx_string_tab[7]
+#define __pyx_kp_u__6 __pyx_string_tab[7]
 #define __pyx_kp_u_add_note __pyx_string_tab[8]
 #define __pyx_kp_u_aiSelfTest_services_task_py __pyx_string_tab[9]
 #define __pyx_kp_u_dict_str_bool __pyx_string_tab[10]
 #define __pyx_kp_u_dict_str_object __pyx_string_tab[11]
-#define __pyx_kp_u_list_dict_str_int_str __pyx_string_tab[12]
-#define __pyx_kp_u_list_dict_str_object __pyx_string_tab[13]
-#define __pyx_kp_u_list_str __pyx_string_tab[14]
-#define __pyx_kp_u_str_None __pyx_string_tab[15]
-#define __pyx_n_u_AppException __pyx_string_tab[16]
-#define __pyx_n_u_DELETE __pyx_string_tab[17]
-#define __pyx_n_u_ErrorCode __pyx_string_tab[18]
-#define __pyx_n_u_NOT_FOUND __pyx_string_tab[19]
-#define __pyx_n_u_None __pyx_string_tab[20]
-#define __pyx_n_u_Pyx_PyDict_NextRef __pyx_string_tab[21]
-#define __pyx_n_u_Session __pyx_string_tab[22]
-#define __pyx_n_u_Task __pyx_string_tab[23]
-#define __pyx_n_u_TaskActionData __pyx_string_tab[24]
-#define __pyx_n_u_TaskCreateRequest __pyx_string_tab[25]
-#define __pyx_n_u_TaskDeleteData __pyx_string_tab[26]
-#define __pyx_n_u_TaskFiltersPayload __pyx_string_tab[27]
-#define __pyx_n_u_TaskItem __pyx_string_tab[28]
-#define __pyx_n_u_TaskItemActionData __pyx_string_tab[29]
-#define __pyx_n_u_TaskItemActionRequest __pyx_string_tab[30]
-#define __pyx_n_u_TaskItemData __pyx_string_tab[31]
-#define __pyx_n_u_TaskItemDataStatus __pyx_string_tab[32]
-#define __pyx_n_u_TaskItemDeleteRequest __pyx_string_tab[33]
-#define __pyx_n_u_TaskItemDetailData __pyx_string_tab[34]
-#define __pyx_n_u_TaskItemListData __pyx_string_tab[35]
-#define __pyx_n_u_TaskItemListRow __pyx_string_tab[36]
-#define __pyx_n_u_TaskItemRejectRequest __pyx_string_tab[37]
-#define __pyx_n_u_TaskItemReviewRow __pyx_string_tab[38]
-#define __pyx_n_u_TaskListData __pyx_string_tab[39]
-#define __pyx_n_u_TaskResponse __pyx_string_tab[40]
-#define __pyx_n_u_TaskUpdateRequest __pyx_string_tab[41]
-#define __pyx_n_u__2 __pyx_string_tab[42]
-#define __pyx_n_u__6 __pyx_string_tab[43]
+#define __pyx_kp_u_int_None __pyx_string_tab[12]
+#define __pyx_kp_u_list_dict_str_int_str __pyx_string_tab[13]
+#define __pyx_kp_u_list_dict_str_object __pyx_string_tab[14]
+#define __pyx_kp_u_list_str __pyx_string_tab[15]
+#define __pyx_kp_u_str_None __pyx_string_tab[16]
+#define __pyx_n_u_AppException __pyx_string_tab[17]
+#define __pyx_n_u_DELETE __pyx_string_tab[18]
+#define __pyx_n_u_ErrorCode __pyx_string_tab[19]
+#define __pyx_n_u_NOT_FOUND __pyx_string_tab[20]
+#define __pyx_n_u_None __pyx_string_tab[21]
+#define __pyx_n_u_Pyx_PyDict_NextRef __pyx_string_tab[22]
+#define __pyx_n_u_Session __pyx_string_tab[23]
+#define __pyx_n_u_Task __pyx_string_tab[24]
+#define __pyx_n_u_TaskActionData __pyx_string_tab[25]
+#define __pyx_n_u_TaskCreateRequest __pyx_string_tab[26]
+#define __pyx_n_u_TaskDeleteData __pyx_string_tab[27]
+#define __pyx_n_u_TaskFiltersPayload __pyx_string_tab[28]
+#define __pyx_n_u_TaskItem __pyx_string_tab[29]
+#define __pyx_n_u_TaskItemActionData __pyx_string_tab[30]
+#define __pyx_n_u_TaskItemActionRequest __pyx_string_tab[31]
+#define __pyx_n_u_TaskItemData __pyx_string_tab[32]
+#define __pyx_n_u_TaskItemDataStatus __pyx_string_tab[33]
+#define __pyx_n_u_TaskItemDeleteRequest __pyx_string_tab[34]
+#define __pyx_n_u_TaskItemDetailData __pyx_string_tab[35]
+#define __pyx_n_u_TaskItemListData __pyx_string_tab[36]
+#define __pyx_n_u_TaskItemListRow __pyx_string_tab[37]
+#define __pyx_n_u_TaskItemRejectRequest __pyx_string_tab[38]
+#define __pyx_n_u_TaskItemReviewRow __pyx_string_tab[39]
+#define __pyx_n_u_TaskListData __pyx_string_tab[40]
+#define __pyx_n_u_TaskResponse __pyx_string_tab[41]
+#define __pyx_n_u_TaskUpdateRequest __pyx_string_tab[42]
+#define __pyx_n_u__3 __pyx_string_tab[43]
 #define __pyx_n_u__7 __pyx_string_tab[44]
-#define __pyx_n_u_active __pyx_string_tab[45]
-#define __pyx_n_u_add __pyx_string_tab[46]
-#define __pyx_n_u_aiName __pyx_string_tab[47]
-#define __pyx_n_u_aiResult __pyx_string_tab[48]
-#define __pyx_n_u_aiSelfTest_exceptions __pyx_string_tab[49]
-#define __pyx_n_u_aiSelfTest_models_task __pyx_string_tab[50]
-#define __pyx_n_u_aiSelfTest_schemas_task __pyx_string_tab[51]
-#define __pyx_n_u_aiSelfTest_services_task __pyx_string_tab[52]
-#define __pyx_n_u_ai_values __pyx_string_tab[53]
-#define __pyx_n_u_all __pyx_string_tab[54]
-#define __pyx_n_u_asyncio_coroutines __pyx_string_tab[55]
-#define __pyx_n_u_auto_confirm __pyx_string_tab[56]
-#define __pyx_n_u_begin __pyx_string_tab[57]
-#define __pyx_n_u_build_compat_review_row __pyx_string_tab[58]
-#define __pyx_n_u_build_review_item __pyx_string_tab[59]
-#define __pyx_n_u_classify __pyx_string_tab[60]
-#define __pyx_n_u_classifyList __pyx_string_tab[61]
-#define __pyx_n_u_classify_list __pyx_string_tab[62]
-#define __pyx_n_u_client_id __pyx_string_tab[63]
-#define __pyx_n_u_cline_in_traceback __pyx_string_tab[64]
-#define __pyx_n_u_code __pyx_string_tab[65]
-#define __pyx_n_u_commit __pyx_string_tab[66]
-#define __pyx_n_u_config_id __pyx_string_tab[67]
-#define __pyx_n_u_confirm_review_items __pyx_string_tab[68]
-#define __pyx_n_u_confirm_state __pyx_string_tab[69]
-#define __pyx_n_u_confirm_task_item __pyx_string_tab[70]
-#define __pyx_n_u_confirmed_at __pyx_string_tab[71]
-#define __pyx_n_u_coverUrl __pyx_string_tab[72]
-#define __pyx_n_u_create_task __pyx_string_tab[73]
-#define __pyx_n_u_created_at __pyx_string_tab[74]
-#define __pyx_n_u_current __pyx_string_tab[75]
-#define __pyx_n_u_data_rows __pyx_string_tab[76]
-#define __pyx_n_u_datetime __pyx_string_tab[77]
-#define __pyx_n_u_deName __pyx_string_tab[78]
-#define __pyx_n_u_decision __pyx_string_tab[79]
-#define __pyx_n_u_delete __pyx_string_tab[80]
-#define __pyx_n_u_delete_review_item __pyx_string_tab[81]
-#define __pyx_n_u_delete_review_items __pyx_string_tab[82]
-#define __pyx_n_u_delete_task __pyx_string_tab[83]
-#define __pyx_n_u_delete_task_item_rows __pyx_string_tab[84]
-#define __pyx_n_u_desc __pyx_string_tab[85]
-#define __pyx_n_u_deserialize_filters __pyx_string_tab[86]
-#define __pyx_n_u_device_name __pyx_string_tab[87]
-#define __pyx_n_u_end __pyx_string_tab[88]
-#define __pyx_n_u_endTime __pyx_string_tab[89]
-#define __pyx_n_u_end_at __pyx_string_tab[90]
-#define __pyx_n_u_enter __pyx_string_tab[91]
-#define __pyx_n_u_exc __pyx_string_tab[92]
-#define __pyx_n_u_exclude __pyx_string_tab[93]
-#define __pyx_n_u_excludedCount __pyx_string_tab[94]
-#define __pyx_n_u_excluded_count __pyx_string_tab[95]
-#define __pyx_n_u_exec __pyx_string_tab[96]
-#define __pyx_n_u_execution_mode __pyx_string_tab[97]
-#define __pyx_n_u_execution_status __pyx_string_tab[98]
-#define __pyx_n_u_exit __pyx_string_tab[99]
-#define __pyx_n_u_failed __pyx_string_tab[100]
-#define __pyx_n_u_failureCount __pyx_string_tab[101]
-#define __pyx_n_u_failure_count __pyx_string_tab[102]
-#define __pyx_n_u_fileBmp __pyx_string_tab[103]
-#define __pyx_n_u_fileTime __pyx_string_tab[104]
-#define __pyx_n_u_fileUrl __pyx_string_tab[105]
-#define __pyx_n_u_file_bmp __pyx_string_tab[106]
-#define __pyx_n_u_file_url __pyx_string_tab[107]
-#define __pyx_n_u_filters __pyx_string_tab[108]
-#define __pyx_n_u_filters_json __pyx_string_tab[109]
-#define __pyx_n_u_first __pyx_string_tab[110]
-#define __pyx_n_u_flush __pyx_string_tab[111]
-#define __pyx_n_u_from_model __pyx_string_tab[112]
-#define __pyx_n_u_func __pyx_string_tab[113]
-#define __pyx_n_u_get __pyx_string_tab[114]
-#define __pyx_n_u_get_legacy_task_detail __pyx_string_tab[115]
-#define __pyx_n_u_get_task_detail __pyx_string_tab[116]
-#define __pyx_n_u_get_task_item_detail __pyx_string_tab[117]
-#define __pyx_n_u_get_task_item_or_raise __pyx_string_tab[118]
-#define __pyx_n_u_get_task_or_raise __pyx_string_tab[119]
-#define __pyx_n_u_groundingStatus __pyx_string_tab[120]
-#define __pyx_n_u_id __pyx_string_tab[121]
-#define __pyx_n_u_idType __pyx_string_tab[122]
-#define __pyx_n_u_id_type __pyx_string_tab[123]
-#define __pyx_n_u_identify_source __pyx_string_tab[124]
-#define __pyx_n_u_ids __pyx_string_tab[125]
-#define __pyx_n_u_image __pyx_string_tab[126]
-#define __pyx_n_u_imageUrl __pyx_string_tab[127]
-#define __pyx_n_u_in __pyx_string_tab[128]
-#define __pyx_n_u_int __pyx_string_tab[129]
-#define __pyx_n_u_interval __pyx_string_tab[130]
-#define __pyx_n_u_interval_hours __pyx_string_tab[131]
-#define __pyx_n_u_is_coroutine __pyx_string_tab[132]
-#define __pyx_n_u_item __pyx_string_tab[133]
-#define __pyx_n_u_items __pyx_string_tab[134]
-#define __pyx_n_u_json __pyx_string_tab[135]
-#define __pyx_n_u_keep __pyx_string_tab[136]
-#define __pyx_n_u_keyword __pyx_string_tab[137]
-#define __pyx_n_u_last_run_started_at __pyx_string_tab[138]
-#define __pyx_n_u_list_completed_review_tasks __pyx_string_tab[139]
-#define __pyx_n_u_list_review_items __pyx_string_tab[140]
-#define __pyx_n_u_list_task_items __pyx_string_tab[141]
-#define __pyx_n_u_list_tasks __pyx_string_tab[142]
-#define __pyx_n_u_llm_name __pyx_string_tab[143]
-#define __pyx_n_u_loads __pyx_string_tab[144]
-#define __pyx_n_u_main __pyx_string_tab[145]
-#define __pyx_n_u_manual_confirmed __pyx_string_tab[146]
-#define __pyx_n_u_mediaType __pyx_string_tab[147]
-#define __pyx_n_u_mediaUrl __pyx_string_tab[148]
-#define __pyx_n_u_media_type __pyx_string_tab[149]
-#define __pyx_n_u_media_types __pyx_string_tab[150]
-#define __pyx_n_u_message __pyx_string_tab[151]
-#define __pyx_n_u_model_dump_json __pyx_string_tab[152]
-#define __pyx_n_u_model_validate __pyx_string_tab[153]
-#define __pyx_n_u_module __pyx_string_tab[154]
-#define __pyx_n_u_name __pyx_string_tab[155]
-#define __pyx_n_u_name_2 __pyx_string_tab[156]
-#define __pyx_n_u_now __pyx_string_tab[157]
-#define __pyx_n_u_ok __pyx_string_tab[158]
-#define __pyx_n_u_order_by __pyx_string_tab[159]
-#define __pyx_n_u_originalName __pyx_string_tab[160]
-#define __pyx_n_u_originalResult __pyx_string_tab[161]
-#define __pyx_n_u_original_values __pyx_string_tab[162]
-#define __pyx_n_u_page __pyx_string_tab[163]
-#define __pyx_n_u_page_size __pyx_string_tab[164]
-#define __pyx_n_u_paged_items __pyx_string_tab[165]
-#define __pyx_n_u_payload __pyx_string_tab[166]
-#define __pyx_n_u_pop __pyx_string_tab[167]
-#define __pyx_n_u_qualname __pyx_string_tab[168]
-#define __pyx_n_u_query __pyx_string_tab[169]
-#define __pyx_n_u_query_legacy_task_data __pyx_string_tab[170]
-#define __pyx_n_u_raw __pyx_string_tab[171]
-#define __pyx_n_u_raw_id __pyx_string_tab[172]
-#define __pyx_n_u_recordId __pyx_string_tab[173]
-#define __pyx_n_u_refresh __pyx_string_tab[174]
-#define __pyx_n_u_reject_task_item __pyx_string_tab[175]
-#define __pyx_n_u_rejected __pyx_string_tab[176]
-#define __pyx_n_u_remoteError __pyx_string_tab[177]
-#define __pyx_n_u_remote_at __pyx_string_tab[178]
-#define __pyx_n_u_remote_error __pyx_string_tab[179]
-#define __pyx_n_u_remote_state __pyx_string_tab[180]
-#define __pyx_n_u_rename __pyx_string_tab[181]
-#define __pyx_n_u_results __pyx_string_tab[182]
-#define __pyx_n_u_return __pyx_string_tab[183]
-#define __pyx_n_u_reviewRows __pyx_string_tab[184]
-#define __pyx_n_u_review_rows __pyx_string_tab[185]
-#define __pyx_n_u_row __pyx_string_tab[186]
-#define __pyx_n_u_rows __pyx_string_tab[187]
-#define __pyx_n_u_run_legacy_task_execute __pyx_string_tab[188]
-#define __pyx_n_u_run_task_once __pyx_string_tab[189]
-#define __pyx_n_u_select __pyx_string_tab[190]
-#define __pyx_n_u_serialize_filters __pyx_string_tab[191]
-#define __pyx_n_u_session __pyx_string_tab[192]
-#define __pyx_n_u_set_name __pyx_string_tab[193]
-#define __pyx_n_u_setdefault __pyx_string_tab[194]
-#define __pyx_n_u_size __pyx_string_tab[195]
-#define __pyx_n_u_spName __pyx_string_tab[196]
-#define __pyx_n_u_spNameList __pyx_string_tab[197]
-#define __pyx_n_u_sp_name __pyx_string_tab[198]
-#define __pyx_n_u_sp_name_list __pyx_string_tab[199]
-#define __pyx_n_u_sqlmodel __pyx_string_tab[200]
-#define __pyx_n_u_start __pyx_string_tab[201]
-#define __pyx_n_u_startTime __pyx_string_tab[202]
-#define __pyx_n_u_start_at __pyx_string_tab[203]
-#define __pyx_n_u_start_task __pyx_string_tab[204]
-#define __pyx_n_u_started_at __pyx_string_tab[205]
-#define __pyx_n_u_status __pyx_string_tab[206]
-#define __pyx_n_u_status_code __pyx_string_tab[207]
-#define __pyx_n_u_stop_task __pyx_string_tab[208]
-#define __pyx_n_u_str __pyx_string_tab[209]
-#define __pyx_n_u_strftime __pyx_string_tab[210]
-#define __pyx_n_u_strip __pyx_string_tab[211]
-#define __pyx_n_u_structured __pyx_string_tab[212]
-#define __pyx_n_u_submitCount __pyx_string_tab[213]
-#define __pyx_n_u_submit_count __pyx_string_tab[214]
-#define __pyx_n_u_submit_task_item __pyx_string_tab[215]
-#define __pyx_n_u_success __pyx_string_tab[216]
-#define __pyx_n_u_successCount __pyx_string_tab[217]
-#define __pyx_n_u_success_count __pyx_string_tab[218]
-#define __pyx_n_u_task __pyx_string_tab[219]
-#define __pyx_n_u_taskName __pyx_string_tab[220]
-#define __pyx_n_u_task_id __pyx_string_tab[221]
-#define __pyx_n_u_task_item __pyx_string_tab[222]
-#define __pyx_n_u_task_item_data_ids __pyx_string_tab[223]
-#define __pyx_n_u_task_item_data_rows __pyx_string_tab[224]
-#define __pyx_n_u_task_item_id __pyx_string_tab[225]
-#define __pyx_n_u_task_item_ids __pyx_string_tab[226]
-#define __pyx_n_u_task_items __pyx_string_tab[227]
-#define __pyx_n_u_tasks __pyx_string_tab[228]
-#define __pyx_n_u_test __pyx_string_tab[229]
-#define __pyx_n_u_total __pyx_string_tab[230]
-#define __pyx_n_u_update_task __pyx_string_tab[231]
-#define __pyx_n_u_updated_at __pyx_string_tab[232]
-#define __pyx_n_u_uploadType __pyx_string_tab[233]
-#define __pyx_n_u_upload_type __pyx_string_tab[234]
-#define __pyx_n_u_upload_types __pyx_string_tab[235]
-#define __pyx_n_u_value __pyx_string_tab[236]
-#define __pyx_n_u_values __pyx_string_tab[237]
-#define __pyx_n_u_video __pyx_string_tab[238]
-#define __pyx_n_u_where __pyx_string_tab[239]
-#define __pyx_n_u_willSubmit __pyx_string_tab[240]
-#define __pyx_n_u_willSubmitEmptyArray __pyx_string_tab[241]
-#define __pyx_kp_b_iso88591_1_Qiq_G5_q_q_HIUVV_aaffjjnno_1 __pyx_string_tab[242]
-#define __pyx_kp_b_iso88591_2_7_avQ_uCq_l_A_1 __pyx_string_tab[243]
-#define __pyx_kp_b_iso88591_31_s_wa_1_Jd_V4s_6_Cs_vQ_1_A_1 __pyx_string_tab[244]
-#define __pyx_kp_b_iso88591_6ha_Qiq_4q_3aq_1_S_1_1_Qg_7_9LA __pyx_string_tab[245]
-#define __pyx_kp_b_iso88591_6ha_ay_7_q_ay_axy_89TUU_eeiimmn __pyx_string_tab[246]
-#define __pyx_kp_b_iso88591_7q_7 __pyx_string_tab[247]
-#define __pyx_kp_b_iso88591_7xq_1_F __pyx_string_tab[248]
-#define __pyx_kp_b_iso88591_7xq_q_uA_a_F_S_Q_c_q_4s_D_z_Ct7 __pyx_string_tab[249]
-#define __pyx_kp_b_iso88591_81_a_1_WE_YVZZ_D_G_c_D_q_1_a_a __pyx_string_tab[250]
-#define __pyx_kp_b_iso88591_9_q_uA_a_F_S_YVWWccffkkl_Kq_T_L __pyx_string_tab[251]
-#define __pyx_kp_b_iso88591_A_4q_WA_q_q_wa_WA_q_4q_7_81A_6 __pyx_string_tab[252]
-#define __pyx_kp_b_iso88591_A_7_q_auIQd_U_d_A_Kq_h_B_4q_HA __pyx_string_tab[253]
-#define __pyx_kp_b_iso88591_A_Q_uA_a_F_S_YVWWccffkkl_1E_WA __pyx_string_tab[254]
-#define __pyx_kp_b_iso88591_HA_t1Ja_z_A_l_A_1 __pyx_string_tab[255]
-#define __pyx_kp_b_iso88591_Q_9Cq __pyx_string_tab[256]
-#define __pyx_kp_b_iso88591_Q_G5_q_V1D0B_U_STTXX_ddhhi_1_t4 __pyx_string_tab[257]
-#define __pyx_kp_b_iso88591_Qiq_hd_4q_7_81A_T_S_7_i_PPTTU __pyx_string_tab[258]
-#define __pyx_kp_b_iso88591_Qiq_hd_4q_7_81A_T_S_7_i_PPTTU_2 __pyx_string_tab[259]
-#define __pyx_kp_b_iso88591_Qiq_q_WA_WA_G1_q_7_hd_4q_7_81A __pyx_string_tab[260]
-#define __pyx_kp_b_iso88591_XQ_Qiq_hd_t1_hd_4q_7_81A_T_S_7 __pyx_string_tab[261]
-#define __pyx_kp_b_iso88591_a_A_A_A_3aq_Qi_A_Q_7_Jk_F_1_A_Q __pyx_string_tab[262]
-#define __pyx_kp_b_iso88591_oQ_t1__AT_q __pyx_string_tab[263]
-#define __pyx_kp_b_iso88591_q_Q_a_84q_4q_7_81A_Qc_c_M __pyx_string_tab[264]
-#define __pyx_kp_b_iso88591_q_a_84q_4q_7_81A_Qc_c_N_1 __pyx_string_tab[265]
-#define __pyx_kp_b_iso88591_q_a_XT_84q_4q_7_81A_Qc_c_N_1 __pyx_string_tab[266]
-#define __pyx_kp_b_iso88591_q_ay_F_9F_89Cq_Q_V1HJc_Cq_V1HJc __pyx_string_tab[267]
-#define __pyx_kp_b_iso88591_q_wa_we1_a_3d_7_Q_G1_z_7_4q_84q __pyx_string_tab[268]
-#define __pyx_kp_b_iso88591_xq_Qiq_6_1EQd __pyx_string_tab[269]
+#define __pyx_n_u__8 __pyx_string_tab[45]
+#define __pyx_n_u_active __pyx_string_tab[46]
+#define __pyx_n_u_add __pyx_string_tab[47]
+#define __pyx_n_u_aiName __pyx_string_tab[48]
+#define __pyx_n_u_aiResult __pyx_string_tab[49]
+#define __pyx_n_u_aiSelfTest_exceptions __pyx_string_tab[50]
+#define __pyx_n_u_aiSelfTest_models_task __pyx_string_tab[51]
+#define __pyx_n_u_aiSelfTest_schemas_task __pyx_string_tab[52]
+#define __pyx_n_u_aiSelfTest_services_task __pyx_string_tab[53]
+#define __pyx_n_u_aiSelfTest_services_task_executi __pyx_string_tab[54]
+#define __pyx_n_u_aiSelfTest_services_task_schedul __pyx_string_tab[55]
+#define __pyx_n_u_ai_values __pyx_string_tab[56]
+#define __pyx_n_u_all __pyx_string_tab[57]
+#define __pyx_n_u_asyncio_coroutines __pyx_string_tab[58]
+#define __pyx_n_u_auto_confirm __pyx_string_tab[59]
+#define __pyx_n_u_begin __pyx_string_tab[60]
+#define __pyx_n_u_build_compat_review_row __pyx_string_tab[61]
+#define __pyx_n_u_build_review_item __pyx_string_tab[62]
+#define __pyx_n_u_classify __pyx_string_tab[63]
+#define __pyx_n_u_classifyList __pyx_string_tab[64]
+#define __pyx_n_u_classify_list __pyx_string_tab[65]
+#define __pyx_n_u_client_id __pyx_string_tab[66]
+#define __pyx_n_u_cline_in_traceback __pyx_string_tab[67]
+#define __pyx_n_u_code __pyx_string_tab[68]
+#define __pyx_n_u_commit __pyx_string_tab[69]
+#define __pyx_n_u_config_id __pyx_string_tab[70]
+#define __pyx_n_u_confirm_review_items __pyx_string_tab[71]
+#define __pyx_n_u_confirm_state __pyx_string_tab[72]
+#define __pyx_n_u_confirm_task_item __pyx_string_tab[73]
+#define __pyx_n_u_confirmed_at __pyx_string_tab[74]
+#define __pyx_n_u_coverUrl __pyx_string_tab[75]
+#define __pyx_n_u_create_task __pyx_string_tab[76]
+#define __pyx_n_u_created_at __pyx_string_tab[77]
+#define __pyx_n_u_current __pyx_string_tab[78]
+#define __pyx_n_u_data_rows __pyx_string_tab[79]
+#define __pyx_n_u_datetime __pyx_string_tab[80]
+#define __pyx_n_u_deName __pyx_string_tab[81]
+#define __pyx_n_u_decision __pyx_string_tab[82]
+#define __pyx_n_u_delete __pyx_string_tab[83]
+#define __pyx_n_u_delete_review_item __pyx_string_tab[84]
+#define __pyx_n_u_delete_review_items __pyx_string_tab[85]
+#define __pyx_n_u_delete_task __pyx_string_tab[86]
+#define __pyx_n_u_delete_task_item_rows __pyx_string_tab[87]
+#define __pyx_n_u_desc __pyx_string_tab[88]
+#define __pyx_n_u_deserialize_filters __pyx_string_tab[89]
+#define __pyx_n_u_device_name __pyx_string_tab[90]
+#define __pyx_n_u_end __pyx_string_tab[91]
+#define __pyx_n_u_endTime __pyx_string_tab[92]
+#define __pyx_n_u_end_at __pyx_string_tab[93]
+#define __pyx_n_u_enter __pyx_string_tab[94]
+#define __pyx_n_u_exc __pyx_string_tab[95]
+#define __pyx_n_u_exclude __pyx_string_tab[96]
+#define __pyx_n_u_excludedCount __pyx_string_tab[97]
+#define __pyx_n_u_excluded_count __pyx_string_tab[98]
+#define __pyx_n_u_exec __pyx_string_tab[99]
+#define __pyx_n_u_execution_mode __pyx_string_tab[100]
+#define __pyx_n_u_execution_status __pyx_string_tab[101]
+#define __pyx_n_u_exit __pyx_string_tab[102]
+#define __pyx_n_u_failed __pyx_string_tab[103]
+#define __pyx_n_u_failureCount __pyx_string_tab[104]
+#define __pyx_n_u_failure_count __pyx_string_tab[105]
+#define __pyx_n_u_fileBmp __pyx_string_tab[106]
+#define __pyx_n_u_fileTime __pyx_string_tab[107]
+#define __pyx_n_u_fileUrl __pyx_string_tab[108]
+#define __pyx_n_u_file_bmp __pyx_string_tab[109]
+#define __pyx_n_u_file_url __pyx_string_tab[110]
+#define __pyx_n_u_filters __pyx_string_tab[111]
+#define __pyx_n_u_filters_json __pyx_string_tab[112]
+#define __pyx_n_u_first __pyx_string_tab[113]
+#define __pyx_n_u_flush __pyx_string_tab[114]
+#define __pyx_n_u_from_model __pyx_string_tab[115]
+#define __pyx_n_u_func __pyx_string_tab[116]
+#define __pyx_n_u_get __pyx_string_tab[117]
+#define __pyx_n_u_get_legacy_task_detail __pyx_string_tab[118]
+#define __pyx_n_u_get_task_detail __pyx_string_tab[119]
+#define __pyx_n_u_get_task_item_detail __pyx_string_tab[120]
+#define __pyx_n_u_get_task_item_or_raise __pyx_string_tab[121]
+#define __pyx_n_u_get_task_or_raise __pyx_string_tab[122]
+#define __pyx_n_u_groundingStatus __pyx_string_tab[123]
+#define __pyx_n_u_id __pyx_string_tab[124]
+#define __pyx_n_u_idType __pyx_string_tab[125]
+#define __pyx_n_u_id_type __pyx_string_tab[126]
+#define __pyx_n_u_identify_source __pyx_string_tab[127]
+#define __pyx_n_u_ids __pyx_string_tab[128]
+#define __pyx_n_u_image __pyx_string_tab[129]
+#define __pyx_n_u_imageUrl __pyx_string_tab[130]
+#define __pyx_n_u_in __pyx_string_tab[131]
+#define __pyx_n_u_int __pyx_string_tab[132]
+#define __pyx_n_u_interval __pyx_string_tab[133]
+#define __pyx_n_u_interval_hours __pyx_string_tab[134]
+#define __pyx_n_u_is_coroutine __pyx_string_tab[135]
+#define __pyx_n_u_item __pyx_string_tab[136]
+#define __pyx_n_u_items __pyx_string_tab[137]
+#define __pyx_n_u_json __pyx_string_tab[138]
+#define __pyx_n_u_keep __pyx_string_tab[139]
+#define __pyx_n_u_keyword __pyx_string_tab[140]
+#define __pyx_n_u_list_completed_review_tasks __pyx_string_tab[141]
+#define __pyx_n_u_list_review_items __pyx_string_tab[142]
+#define __pyx_n_u_list_task_items __pyx_string_tab[143]
+#define __pyx_n_u_list_tasks __pyx_string_tab[144]
+#define __pyx_n_u_llm_name __pyx_string_tab[145]
+#define __pyx_n_u_loads __pyx_string_tab[146]
+#define __pyx_n_u_main __pyx_string_tab[147]
+#define __pyx_n_u_manual_confirmed __pyx_string_tab[148]
+#define __pyx_n_u_mediaType __pyx_string_tab[149]
+#define __pyx_n_u_mediaUrl __pyx_string_tab[150]
+#define __pyx_n_u_media_type __pyx_string_tab[151]
+#define __pyx_n_u_media_types __pyx_string_tab[152]
+#define __pyx_n_u_message __pyx_string_tab[153]
+#define __pyx_n_u_model_dump_json __pyx_string_tab[154]
+#define __pyx_n_u_model_validate __pyx_string_tab[155]
+#define __pyx_n_u_module __pyx_string_tab[156]
+#define __pyx_n_u_name __pyx_string_tab[157]
+#define __pyx_n_u_name_2 __pyx_string_tab[158]
+#define __pyx_n_u_now __pyx_string_tab[159]
+#define __pyx_n_u_ok __pyx_string_tab[160]
+#define __pyx_n_u_order_by __pyx_string_tab[161]
+#define __pyx_n_u_originalName __pyx_string_tab[162]
+#define __pyx_n_u_originalResult __pyx_string_tab[163]
+#define __pyx_n_u_original_values __pyx_string_tab[164]
+#define __pyx_n_u_page __pyx_string_tab[165]
+#define __pyx_n_u_page_size __pyx_string_tab[166]
+#define __pyx_n_u_paged_items __pyx_string_tab[167]
+#define __pyx_n_u_payload __pyx_string_tab[168]
+#define __pyx_n_u_pop __pyx_string_tab[169]
+#define __pyx_n_u_qualname __pyx_string_tab[170]
+#define __pyx_n_u_query __pyx_string_tab[171]
+#define __pyx_n_u_query_legacy_task_data __pyx_string_tab[172]
+#define __pyx_n_u_raw __pyx_string_tab[173]
+#define __pyx_n_u_raw_id __pyx_string_tab[174]
+#define __pyx_n_u_recordId __pyx_string_tab[175]
+#define __pyx_n_u_refresh __pyx_string_tab[176]
+#define __pyx_n_u_reject_task_item __pyx_string_tab[177]
+#define __pyx_n_u_rejected __pyx_string_tab[178]
+#define __pyx_n_u_remoteError __pyx_string_tab[179]
+#define __pyx_n_u_remote_at __pyx_string_tab[180]
+#define __pyx_n_u_remote_error __pyx_string_tab[181]
+#define __pyx_n_u_remote_state __pyx_string_tab[182]
+#define __pyx_n_u_rename __pyx_string_tab[183]
+#define __pyx_n_u_results __pyx_string_tab[184]
+#define __pyx_n_u_return __pyx_string_tab[185]
+#define __pyx_n_u_reviewRows __pyx_string_tab[186]
+#define __pyx_n_u_review_rows __pyx_string_tab[187]
+#define __pyx_n_u_row __pyx_string_tab[188]
+#define __pyx_n_u_rows __pyx_string_tab[189]
+#define __pyx_n_u_run_legacy_task_execute __pyx_string_tab[190]
+#define __pyx_n_u_run_task_execution __pyx_string_tab[191]
+#define __pyx_n_u_run_task_once __pyx_string_tab[192]
+#define __pyx_n_u_select __pyx_string_tab[193]
+#define __pyx_n_u_serialize_filters __pyx_string_tab[194]
+#define __pyx_n_u_session __pyx_string_tab[195]
+#define __pyx_n_u_set_name __pyx_string_tab[196]
+#define __pyx_n_u_setdefault __pyx_string_tab[197]
+#define __pyx_n_u_size __pyx_string_tab[198]
+#define __pyx_n_u_spName __pyx_string_tab[199]
+#define __pyx_n_u_spNameList __pyx_string_tab[200]
+#define __pyx_n_u_sp_name __pyx_string_tab[201]
+#define __pyx_n_u_sp_name_list __pyx_string_tab[202]
+#define __pyx_n_u_sqlmodel __pyx_string_tab[203]
+#define __pyx_n_u_start __pyx_string_tab[204]
+#define __pyx_n_u_startTime __pyx_string_tab[205]
+#define __pyx_n_u_start_at __pyx_string_tab[206]
+#define __pyx_n_u_start_task __pyx_string_tab[207]
+#define __pyx_n_u_status __pyx_string_tab[208]
+#define __pyx_n_u_status_code __pyx_string_tab[209]
+#define __pyx_n_u_stop_task __pyx_string_tab[210]
+#define __pyx_n_u_str __pyx_string_tab[211]
+#define __pyx_n_u_strftime __pyx_string_tab[212]
+#define __pyx_n_u_strip __pyx_string_tab[213]
+#define __pyx_n_u_structured __pyx_string_tab[214]
+#define __pyx_n_u_submitCount __pyx_string_tab[215]
+#define __pyx_n_u_submit_count __pyx_string_tab[216]
+#define __pyx_n_u_submit_task_item __pyx_string_tab[217]
+#define __pyx_n_u_success __pyx_string_tab[218]
+#define __pyx_n_u_successCount __pyx_string_tab[219]
+#define __pyx_n_u_success_count __pyx_string_tab[220]
+#define __pyx_n_u_sync_global_task_scheduler __pyx_string_tab[221]
+#define __pyx_n_u_sync_scheduler __pyx_string_tab[222]
+#define __pyx_n_u_task __pyx_string_tab[223]
+#define __pyx_n_u_taskName __pyx_string_tab[224]
+#define __pyx_n_u_task_id __pyx_string_tab[225]
+#define __pyx_n_u_task_item __pyx_string_tab[226]
+#define __pyx_n_u_task_item_data_ids __pyx_string_tab[227]
+#define __pyx_n_u_task_item_data_rows __pyx_string_tab[228]
+#define __pyx_n_u_task_item_id __pyx_string_tab[229]
+#define __pyx_n_u_task_item_ids __pyx_string_tab[230]
+#define __pyx_n_u_task_items __pyx_string_tab[231]
+#define __pyx_n_u_tasks __pyx_string_tab[232]
+#define __pyx_n_u_test __pyx_string_tab[233]
+#define __pyx_n_u_total __pyx_string_tab[234]
+#define __pyx_n_u_update_task __pyx_string_tab[235]
+#define __pyx_n_u_updated_at __pyx_string_tab[236]
+#define __pyx_n_u_uploadType __pyx_string_tab[237]
+#define __pyx_n_u_upload_type __pyx_string_tab[238]
+#define __pyx_n_u_upload_types __pyx_string_tab[239]
+#define __pyx_n_u_value __pyx_string_tab[240]
+#define __pyx_n_u_values __pyx_string_tab[241]
+#define __pyx_n_u_video __pyx_string_tab[242]
+#define __pyx_n_u_where __pyx_string_tab[243]
+#define __pyx_n_u_willSubmit __pyx_string_tab[244]
+#define __pyx_n_u_willSubmitEmptyArray __pyx_string_tab[245]
+#define __pyx_kp_b_iso88591_1_Qiq_G5_q_q_HIUVV_aaffjjnno_1 __pyx_string_tab[246]
+#define __pyx_kp_b_iso88591_2_7_avQ_uCq_l_A_1 __pyx_string_tab[247]
+#define __pyx_kp_b_iso88591_31_s_wa_1_Jd_V4s_6_Cs_vQ_1_A_1 __pyx_string_tab[248]
+#define __pyx_kp_b_iso88591_6ha_Qiq_4q_3aq_1_S_1_1_Qg_7_9LA __pyx_string_tab[249]
+#define __pyx_kp_b_iso88591_6ha_ay_7_q_ay_axy_89TUU_eeiimmn __pyx_string_tab[250]
+#define __pyx_kp_b_iso88591_7q_7 __pyx_string_tab[251]
+#define __pyx_kp_b_iso88591_7xq_1_F __pyx_string_tab[252]
+#define __pyx_kp_b_iso88591_7xq_q_uA_a_F_S_Q_c_q_4s_D_z_Ct7 __pyx_string_tab[253]
+#define __pyx_kp_b_iso88591_81_a_1_WE_YVZZ_D_G_c_D_q_1_a_a __pyx_string_tab[254]
+#define __pyx_kp_b_iso88591_9_q_uA_a_F_S_YVWWccffkkl_Kq_T_L __pyx_string_tab[255]
+#define __pyx_kp_b_iso88591_A_4q_WA_q_q_wa_WA_q_4q_7_81A_6 __pyx_string_tab[256]
+#define __pyx_kp_b_iso88591_A_7_q_auIQd_U_d_A_Kq_h_B_4q_HA __pyx_string_tab[257]
+#define __pyx_kp_b_iso88591_A_Q_uA_a_F_S_YVWWccffkkl_1E_WA __pyx_string_tab[258]
+#define __pyx_kp_b_iso88591_A_xs_31_aq __pyx_string_tab[259]
+#define __pyx_kp_b_iso88591_HA_t1Ja_z_A_l_A_1 __pyx_string_tab[260]
+#define __pyx_kp_b_iso88591_Q_9Cq __pyx_string_tab[261]
+#define __pyx_kp_b_iso88591_Q_G5_q_V1D0B_U_STTXX_ddhhi_1_t4 __pyx_string_tab[262]
+#define __pyx_kp_b_iso88591_Qiq_hd_4q_7_81A_1D_T_S_7_i_PPTT __pyx_string_tab[263]
+#define __pyx_kp_b_iso88591_Qiq_hd_4q_7_81A_1D_T_S_7_i_PPTT_2 __pyx_string_tab[264]
+#define __pyx_kp_b_iso88591_Qiq_q_WA_WA_G1_q_7_hd_4q_7_81A __pyx_string_tab[265]
+#define __pyx_kp_b_iso88591_XQ_31_ay_Qiq_T_S_7_i_PPTTU __pyx_string_tab[266]
+#define __pyx_kp_b_iso88591_a_A_A_A_3aq_Qi_A_Q_7_Jk_F_1_A_Q __pyx_string_tab[267]
+#define __pyx_kp_b_iso88591_oQ_t1__AT_q __pyx_string_tab[268]
+#define __pyx_kp_b_iso88591_q_Q_a_84q_4q_7_81A_Qc_c_M __pyx_string_tab[269]
+#define __pyx_kp_b_iso88591_q_a_84q_4q_7_81A_Qc_c_N_1 __pyx_string_tab[270]
+#define __pyx_kp_b_iso88591_q_a_XT_84q_4q_7_81A_Qc_c_N_1 __pyx_string_tab[271]
+#define __pyx_kp_b_iso88591_q_ay_F_9F_89Cq_Q_V1HJc_Cq_V1HJc __pyx_string_tab[272]
+#define __pyx_kp_b_iso88591_q_wa_we1_a_3d_7_Q_G1_z_7_4q_84q __pyx_string_tab[273]
+#define __pyx_kp_b_iso88591_xq_Qiq_6_1EQd __pyx_string_tab[274]
 #define __pyx_int_0 __pyx_number_tab[0]
 #define __pyx_int_1 __pyx_number_tab[1]
 #define __pyx_int_2 __pyx_number_tab[2]
@@ -2846,8 +2852,8 @@ static CYTHON_SMALL_CODE int __pyx_m_clear(PyObject *m) {
   __Pyx_State_RemoveModule(NULL);
   #endif
   for (int i=0; i<1; ++i) { Py_CLEAR(clear_module_state->__pyx_tuple[i]); }
-  for (int i=0; i<28; ++i) { Py_CLEAR(clear_module_state->__pyx_codeobj_tab[i]); }
-  for (int i=0; i<270; ++i) { Py_CLEAR(clear_module_state->__pyx_string_tab[i]); }
+  for (int i=0; i<29; ++i) { Py_CLEAR(clear_module_state->__pyx_codeobj_tab[i]); }
+  for (int i=0; i<275; ++i) { Py_CLEAR(clear_module_state->__pyx_string_tab[i]); }
   for (int i=0; i<6; ++i) { Py_CLEAR(clear_module_state->__pyx_number_tab[i]); }
 /* #### Code section: module_state_clear_contents ### */
 /* CommonTypesMetaclass.module_state_clear */
@@ -2872,8 +2878,8 @@ static CYTHON_SMALL_CODE int __pyx_m_traverse(PyObject *m, visitproc visit, void
   __Pyx_VISIT_CONST(traverse_module_state->__pyx_empty_bytes);
   __Pyx_VISIT_CONST(traverse_module_state->__pyx_empty_unicode);
   for (int i=0; i<1; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_tuple[i]); }
-  for (int i=0; i<28; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_codeobj_tab[i]); }
-  for (int i=0; i<270; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_string_tab[i]); }
+  for (int i=0; i<29; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_codeobj_tab[i]); }
+  for (int i=0; i<275; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_string_tab[i]); }
   for (int i=0; i<6; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_number_tab[i]); }
 /* #### Code section: module_state_traverse_contents ### */
 /* CommonTypesMetaclass.module_state_traverse */
@@ -4323,7 +4329,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_6update_task(CYTHON_UNUSE
  *     session.add(task)
  *     session.commit()             # <<<<<<<<<<<<<<
  *     session.refresh(task)
- *     return TaskResponse.from_model(task, filters=payload.filters)
+ *     _sync_scheduler(task.id)
 */
   __pyx_t_3 = __pyx_v_session;
   __Pyx_INCREF(__pyx_t_3);
@@ -4341,8 +4347,8 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_6update_task(CYTHON_UNUSE
  *     session.add(task)
  *     session.commit()
  *     session.refresh(task)             # <<<<<<<<<<<<<<
+ *     _sync_scheduler(task.id)
  *     return TaskResponse.from_model(task, filters=payload.filters)
- * 
 */
   __pyx_t_3 = __pyx_v_session;
   __Pyx_INCREF(__pyx_t_3);
@@ -4359,42 +4365,77 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_6update_task(CYTHON_UNUSE
   /* "aiSelfTest/services/task.py":88
  *     session.commit()
  *     session.refresh(task)
+ *     _sync_scheduler(task.id)             # <<<<<<<<<<<<<<
+ *     return TaskResponse.from_model(task, filters=payload.filters)
+ * 
+*/
+  __pyx_t_3 = NULL;
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_sync_scheduler); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 88, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 88, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_4 = 1;
+  #if CYTHON_UNPACK_METHODS
+  if (unlikely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    assert(__pyx_t_3);
+    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_2);
+    __Pyx_INCREF(__pyx_t_3);
+    __Pyx_INCREF(__pyx__function);
+    __Pyx_DECREF_SET(__pyx_t_2, __pyx__function);
+    __pyx_t_4 = 0;
+  }
+  #endif
+  {
+    PyObject *__pyx_callargs[2] = {__pyx_t_3, __pyx_t_5};
+    __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_2, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 88, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "aiSelfTest/services/task.py":89
+ *     session.refresh(task)
+ *     _sync_scheduler(task.id)
  *     return TaskResponse.from_model(task, filters=payload.filters)             # <<<<<<<<<<<<<<
  * 
  * 
 */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_TaskResponse); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 88, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_from_model); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 88, __pyx_L1_error)
+  __pyx_t_2 = NULL;
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_TaskResponse); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_payload, __pyx_mstate_global->__pyx_n_u_filters); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 88, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_from_model); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_payload, __pyx_mstate_global->__pyx_n_u_filters); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_4 = 1;
   #if CYTHON_UNPACK_METHODS
-  if (unlikely(PyMethod_Check(__pyx_t_5))) {
-    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_5);
-    assert(__pyx_t_3);
-    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_5);
-    __Pyx_INCREF(__pyx_t_3);
+  if (unlikely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
+    assert(__pyx_t_2);
+    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_3);
+    __Pyx_INCREF(__pyx_t_2);
     __Pyx_INCREF(__pyx__function);
-    __Pyx_DECREF_SET(__pyx_t_5, __pyx__function);
+    __Pyx_DECREF_SET(__pyx_t_3, __pyx__function);
     __pyx_t_4 = 0;
   }
   #endif
   {
-    PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 1 : 0)] = {__pyx_t_3, __pyx_v_task};
-    __pyx_t_6 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 88, __pyx_L1_error)
+    PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 1 : 0)] = {__pyx_t_2, __pyx_v_task};
+    __pyx_t_6 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 89, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_filters, __pyx_t_2, __pyx_t_6, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 88, __pyx_L1_error)
-    __pyx_t_1 = __Pyx_Object_Vectorcall_CallFromBuilder((PyObject*)__pyx_t_5, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_6);
-    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_filters, __pyx_t_5, __pyx_t_6, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_Object_Vectorcall_CallFromBuilder((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_6);
+    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 88, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_r = __pyx_t_1;
@@ -4425,7 +4466,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_6update_task(CYTHON_UNUSE
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task.py":91
+/* "aiSelfTest/services/task.py":92
  * 
  * 
  * def delete_task(session: Session, task_id: int) -> TaskDeleteData:             # <<<<<<<<<<<<<<
@@ -4474,40 +4515,40 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_session,&__pyx_mstate_global->__pyx_n_u_task_id,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 91, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 92, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 91, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 92, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 91, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 92, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "delete_task", 0) < (0)) __PYX_ERR(0, 91, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "delete_task", 0) < (0)) __PYX_ERR(0, 92, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("delete_task", 1, 2, 2, i); __PYX_ERR(0, 91, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("delete_task", 1, 2, 2, i); __PYX_ERR(0, 92, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 91, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 92, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 91, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 92, __pyx_L3_error)
     }
     __pyx_v_session = values[0];
-    if (__Pyx_PyInt_FromNumber(&values[1], "task_id", 0) < (0)) __PYX_ERR(0, 91, __pyx_L3_error)
+    if (__Pyx_PyInt_FromNumber(&values[1], "task_id", 0) < (0)) __PYX_ERR(0, 92, __pyx_L3_error)
     __pyx_v_task_id = ((PyObject*)values[1]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("delete_task", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 91, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("delete_task", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 92, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4518,7 +4559,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 91, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 92, __pyx_L1_error)
   __pyx_r = __pyx_pf_10aiSelfTest_8services_4task_8delete_task(__pyx_self, __pyx_v_session, __pyx_v_task_id);
 
   /* function exit code */
@@ -4573,7 +4614,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("delete_task", 0);
 
-  /* "aiSelfTest/services/task.py":94
+  /* "aiSelfTest/services/task.py":95
  *     """"""
  * 
  *     with session.begin():             # <<<<<<<<<<<<<<
@@ -4588,13 +4629,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
       PyObject *__pyx_callargs[2] = {__pyx_t_2, NULL};
       __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_begin, __pyx_callargs+__pyx_t_3, (1-__pyx_t_3) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 94, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 95, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
     }
-    __pyx_t_4 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_exit); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 94, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_exit); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 95, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = NULL;
-    __pyx_t_6 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_enter); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 94, __pyx_L3_error)
+    __pyx_t_6 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_enter); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 95, __pyx_L3_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_3 = 1;
     #if CYTHON_UNPACK_METHODS
@@ -4613,7 +4654,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
       __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_6, __pyx_callargs+__pyx_t_3, (1-__pyx_t_3) | (__pyx_t_3*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 94, __pyx_L3_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 95, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_2);
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -4628,7 +4669,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
         __Pyx_XGOTREF(__pyx_t_9);
         /*try:*/ {
 
-          /* "aiSelfTest/services/task.py":95
+          /* "aiSelfTest/services/task.py":96
  * 
  *     with session.begin():
  *         task = _get_task_or_raise(session, task_id)             # <<<<<<<<<<<<<<
@@ -4636,7 +4677,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
  *         task_item_ids = [row.id for row in task_items if row.id is not None]
 */
           __pyx_t_2 = NULL;
-          __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_get_task_or_raise); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 95, __pyx_L7_error)
+          __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_get_task_or_raise); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 96, __pyx_L7_error)
           __Pyx_GOTREF(__pyx_t_6);
           __pyx_t_3 = 1;
           #if CYTHON_UNPACK_METHODS
@@ -4655,13 +4696,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
             __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_6, __pyx_callargs+__pyx_t_3, (3-__pyx_t_3) | (__pyx_t_3*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
             __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
             __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-            if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 95, __pyx_L7_error)
+            if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 96, __pyx_L7_error)
             __Pyx_GOTREF(__pyx_t_1);
           }
           __pyx_v_task = __pyx_t_1;
           __pyx_t_1 = 0;
 
-          /* "aiSelfTest/services/task.py":96
+          /* "aiSelfTest/services/task.py":97
  *     with session.begin():
  *         task = _get_task_or_raise(session, task_id)
  *         task_items = session.exec(select(TaskItem).where(TaskItem.task_id == task_id)).all()             # <<<<<<<<<<<<<<
@@ -4671,9 +4712,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
           __pyx_t_5 = __pyx_v_session;
           __Pyx_INCREF(__pyx_t_5);
           __pyx_t_13 = NULL;
-          __Pyx_GetModuleGlobalName(__pyx_t_14, __pyx_mstate_global->__pyx_n_u_select); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 96, __pyx_L7_error)
+          __Pyx_GetModuleGlobalName(__pyx_t_14, __pyx_mstate_global->__pyx_n_u_select); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 97, __pyx_L7_error)
           __Pyx_GOTREF(__pyx_t_14);
-          __Pyx_GetModuleGlobalName(__pyx_t_15, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 96, __pyx_L7_error)
+          __Pyx_GetModuleGlobalName(__pyx_t_15, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 97, __pyx_L7_error)
           __Pyx_GOTREF(__pyx_t_15);
           __pyx_t_3 = 1;
           #if CYTHON_UNPACK_METHODS
@@ -4693,17 +4734,17 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
             __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
             __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
             __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-            if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 96, __pyx_L7_error)
+            if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 97, __pyx_L7_error)
             __Pyx_GOTREF(__pyx_t_12);
           }
           __pyx_t_11 = __pyx_t_12;
           __Pyx_INCREF(__pyx_t_11);
-          __Pyx_GetModuleGlobalName(__pyx_t_14, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 96, __pyx_L7_error)
+          __Pyx_GetModuleGlobalName(__pyx_t_14, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 97, __pyx_L7_error)
           __Pyx_GOTREF(__pyx_t_14);
-          __pyx_t_15 = __Pyx_PyObject_GetAttrStr(__pyx_t_14, __pyx_mstate_global->__pyx_n_u_task_id); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 96, __pyx_L7_error)
+          __pyx_t_15 = __Pyx_PyObject_GetAttrStr(__pyx_t_14, __pyx_mstate_global->__pyx_n_u_task_id); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 97, __pyx_L7_error)
           __Pyx_GOTREF(__pyx_t_15);
           __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-          __pyx_t_14 = PyObject_RichCompare(__pyx_t_15, __pyx_v_task_id, Py_EQ); __Pyx_XGOTREF(__pyx_t_14); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 96, __pyx_L7_error)
+          __pyx_t_14 = PyObject_RichCompare(__pyx_t_15, __pyx_v_task_id, Py_EQ); __Pyx_XGOTREF(__pyx_t_14); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 97, __pyx_L7_error)
           __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
           __pyx_t_3 = 0;
           {
@@ -4712,7 +4753,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
             __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
             __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
             __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-            if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 96, __pyx_L7_error)
+            if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 97, __pyx_L7_error)
             __Pyx_GOTREF(__pyx_t_10);
           }
           __pyx_t_3 = 0;
@@ -4721,7 +4762,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
             __pyx_t_2 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_exec, __pyx_callargs+__pyx_t_3, (2-__pyx_t_3) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
             __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
             __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-            if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 96, __pyx_L7_error)
+            if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 97, __pyx_L7_error)
             __Pyx_GOTREF(__pyx_t_2);
           }
           __pyx_t_6 = __pyx_t_2;
@@ -4732,13 +4773,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
             __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_all, __pyx_callargs+__pyx_t_3, (1-__pyx_t_3) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
             __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
             __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-            if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 96, __pyx_L7_error)
+            if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 97, __pyx_L7_error)
             __Pyx_GOTREF(__pyx_t_1);
           }
           __pyx_v_task_items = __pyx_t_1;
           __pyx_t_1 = 0;
 
-          /* "aiSelfTest/services/task.py":97
+          /* "aiSelfTest/services/task.py":98
  *         task = _get_task_or_raise(session, task_id)
  *         task_items = session.exec(select(TaskItem).where(TaskItem.task_id == task_id)).all()
  *         task_item_ids = [row.id for row in task_items if row.id is not None]             # <<<<<<<<<<<<<<
@@ -4746,16 +4787,16 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
  *         if task_item_ids:
 */
           { /* enter inner scope */
-            __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 97, __pyx_L15_error)
+            __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 98, __pyx_L15_error)
             __Pyx_GOTREF(__pyx_t_1);
             if (likely(PyList_CheckExact(__pyx_v_task_items)) || PyTuple_CheckExact(__pyx_v_task_items)) {
               __pyx_t_2 = __pyx_v_task_items; __Pyx_INCREF(__pyx_t_2);
               __pyx_t_16 = 0;
               __pyx_t_17 = NULL;
             } else {
-              __pyx_t_16 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_task_items); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 97, __pyx_L15_error)
+              __pyx_t_16 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_task_items); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 98, __pyx_L15_error)
               __Pyx_GOTREF(__pyx_t_2);
-              __pyx_t_17 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 97, __pyx_L15_error)
+              __pyx_t_17 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 98, __pyx_L15_error)
             }
             for (;;) {
               if (likely(!__pyx_t_17)) {
@@ -4763,7 +4804,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
                   {
                     Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_2);
                     #if !CYTHON_ASSUME_SAFE_SIZE
-                    if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 97, __pyx_L15_error)
+                    if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 98, __pyx_L15_error)
                     #endif
                     if (__pyx_t_16 >= __pyx_temp) break;
                   }
@@ -4773,7 +4814,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
                   {
                     Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_2);
                     #if !CYTHON_ASSUME_SAFE_SIZE
-                    if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 97, __pyx_L15_error)
+                    if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 98, __pyx_L15_error)
                     #endif
                     if (__pyx_t_16 >= __pyx_temp) break;
                   }
@@ -4784,13 +4825,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
                   #endif
                   ++__pyx_t_16;
                 }
-                if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 97, __pyx_L15_error)
+                if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 98, __pyx_L15_error)
               } else {
                 __pyx_t_6 = __pyx_t_17(__pyx_t_2);
                 if (unlikely(!__pyx_t_6)) {
                   PyObject* exc_type = PyErr_Occurred();
                   if (exc_type) {
-                    if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 97, __pyx_L15_error)
+                    if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 98, __pyx_L15_error)
                     PyErr_Clear();
                   }
                   break;
@@ -4799,14 +4840,14 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
               __Pyx_GOTREF(__pyx_t_6);
               __Pyx_XDECREF_SET(__pyx_8genexpr1__pyx_v_row, __pyx_t_6);
               __pyx_t_6 = 0;
-              __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr1__pyx_v_row, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 97, __pyx_L15_error)
+              __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr1__pyx_v_row, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 98, __pyx_L15_error)
               __Pyx_GOTREF(__pyx_t_6);
               __pyx_t_18 = (__pyx_t_6 != Py_None);
               __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
               if (__pyx_t_18) {
-                __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr1__pyx_v_row, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 97, __pyx_L15_error)
+                __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr1__pyx_v_row, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 98, __pyx_L15_error)
                 __Pyx_GOTREF(__pyx_t_6);
-                if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_6))) __PYX_ERR(0, 97, __pyx_L15_error)
+                if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_6))) __PYX_ERR(0, 98, __pyx_L15_error)
                 __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
               }
             }
@@ -4821,7 +4862,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
           __pyx_v_task_item_ids = ((PyObject*)__pyx_t_1);
           __pyx_t_1 = 0;
 
-          /* "aiSelfTest/services/task.py":99
+          /* "aiSelfTest/services/task.py":100
  *         task_item_ids = [row.id for row in task_items if row.id is not None]
  * 
  *         if task_item_ids:             # <<<<<<<<<<<<<<
@@ -4830,13 +4871,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
 */
           {
             Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_v_task_item_ids);
-            if (unlikely(((!CYTHON_ASSUME_SAFE_SIZE) && __pyx_temp < 0))) __PYX_ERR(0, 99, __pyx_L7_error)
+            if (unlikely(((!CYTHON_ASSUME_SAFE_SIZE) && __pyx_temp < 0))) __PYX_ERR(0, 100, __pyx_L7_error)
             __pyx_t_18 = (__pyx_temp != 0);
           }
 
           if (__pyx_t_18) {
 
-            /* "aiSelfTest/services/task.py":100
+            /* "aiSelfTest/services/task.py":101
  * 
  *         if task_item_ids:
  *             task_item_data_rows = session.exec(             # <<<<<<<<<<<<<<
@@ -4846,7 +4887,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
             __pyx_t_10 = __pyx_v_session;
             __Pyx_INCREF(__pyx_t_10);
 
-            /* "aiSelfTest/services/task.py":101
+            /* "aiSelfTest/services/task.py":102
  *         if task_item_ids:
  *             task_item_data_rows = session.exec(
  *                 select(TaskItemData).where(TaskItemData.task_item_id.in_(task_item_ids))             # <<<<<<<<<<<<<<
@@ -4854,9 +4895,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
  *             for row in task_item_data_rows:
 */
             __pyx_t_11 = NULL;
-            __Pyx_GetModuleGlobalName(__pyx_t_15, __pyx_mstate_global->__pyx_n_u_select); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 101, __pyx_L7_error)
+            __Pyx_GetModuleGlobalName(__pyx_t_15, __pyx_mstate_global->__pyx_n_u_select); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 102, __pyx_L7_error)
             __Pyx_GOTREF(__pyx_t_15);
-            __Pyx_GetModuleGlobalName(__pyx_t_13, __pyx_mstate_global->__pyx_n_u_TaskItemData); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 101, __pyx_L7_error)
+            __Pyx_GetModuleGlobalName(__pyx_t_13, __pyx_mstate_global->__pyx_n_u_TaskItemData); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 102, __pyx_L7_error)
             __Pyx_GOTREF(__pyx_t_13);
             __pyx_t_3 = 1;
             #if CYTHON_UNPACK_METHODS
@@ -4876,14 +4917,14 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
               __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
               __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
               __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
-              if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 101, __pyx_L7_error)
+              if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 102, __pyx_L7_error)
               __Pyx_GOTREF(__pyx_t_14);
             }
             __pyx_t_12 = __pyx_t_14;
             __Pyx_INCREF(__pyx_t_12);
-            __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_TaskItemData); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 101, __pyx_L7_error)
+            __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_TaskItemData); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 102, __pyx_L7_error)
             __Pyx_GOTREF(__pyx_t_11);
-            __pyx_t_19 = __Pyx_PyObject_GetAttrStr(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_task_item_id); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 101, __pyx_L7_error)
+            __pyx_t_19 = __Pyx_PyObject_GetAttrStr(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_task_item_id); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 102, __pyx_L7_error)
             __Pyx_GOTREF(__pyx_t_19);
             __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
             __pyx_t_13 = __pyx_t_19;
@@ -4894,7 +4935,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
               __pyx_t_15 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_in, __pyx_callargs+__pyx_t_3, (2-__pyx_t_3) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
               __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
               __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
-              if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 101, __pyx_L7_error)
+              if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 102, __pyx_L7_error)
               __Pyx_GOTREF(__pyx_t_15);
             }
             __pyx_t_3 = 0;
@@ -4904,7 +4945,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
               __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
               __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
               __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-              if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 101, __pyx_L7_error)
+              if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 102, __pyx_L7_error)
               __Pyx_GOTREF(__pyx_t_5);
             }
             __pyx_t_3 = 0;
@@ -4913,7 +4954,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
               __pyx_t_6 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_exec, __pyx_callargs+__pyx_t_3, (2-__pyx_t_3) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
               __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
               __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-              if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 100, __pyx_L7_error)
+              if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 101, __pyx_L7_error)
               __Pyx_GOTREF(__pyx_t_6);
             }
             __pyx_t_2 = __pyx_t_6;
@@ -4924,13 +4965,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
               __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_all, __pyx_callargs+__pyx_t_3, (1-__pyx_t_3) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
               __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
               __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-              if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 102, __pyx_L7_error)
+              if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 103, __pyx_L7_error)
               __Pyx_GOTREF(__pyx_t_1);
             }
             __pyx_v_task_item_data_rows = __pyx_t_1;
             __pyx_t_1 = 0;
 
-            /* "aiSelfTest/services/task.py":103
+            /* "aiSelfTest/services/task.py":104
  *                 select(TaskItemData).where(TaskItemData.task_item_id.in_(task_item_ids))
  *             ).all()
  *             for row in task_item_data_rows:             # <<<<<<<<<<<<<<
@@ -4942,9 +4983,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
               __pyx_t_16 = 0;
               __pyx_t_17 = NULL;
             } else {
-              __pyx_t_16 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_task_item_data_rows); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 103, __pyx_L7_error)
+              __pyx_t_16 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_task_item_data_rows); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 104, __pyx_L7_error)
               __Pyx_GOTREF(__pyx_t_1);
-              __pyx_t_17 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 103, __pyx_L7_error)
+              __pyx_t_17 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 104, __pyx_L7_error)
             }
             for (;;) {
               if (likely(!__pyx_t_17)) {
@@ -4952,7 +4993,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
                   {
                     Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_1);
                     #if !CYTHON_ASSUME_SAFE_SIZE
-                    if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 103, __pyx_L7_error)
+                    if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 104, __pyx_L7_error)
                     #endif
                     if (__pyx_t_16 >= __pyx_temp) break;
                   }
@@ -4962,7 +5003,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
                   {
                     Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_1);
                     #if !CYTHON_ASSUME_SAFE_SIZE
-                    if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 103, __pyx_L7_error)
+                    if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 104, __pyx_L7_error)
                     #endif
                     if (__pyx_t_16 >= __pyx_temp) break;
                   }
@@ -4973,13 +5014,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
                   #endif
                   ++__pyx_t_16;
                 }
-                if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 103, __pyx_L7_error)
+                if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 104, __pyx_L7_error)
               } else {
                 __pyx_t_6 = __pyx_t_17(__pyx_t_1);
                 if (unlikely(!__pyx_t_6)) {
                   PyObject* exc_type = PyErr_Occurred();
                   if (exc_type) {
-                    if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 103, __pyx_L7_error)
+                    if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 104, __pyx_L7_error)
                     PyErr_Clear();
                   }
                   break;
@@ -4989,7 +5030,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
               __Pyx_XDECREF_SET(__pyx_v_row, __pyx_t_6);
               __pyx_t_6 = 0;
 
-              /* "aiSelfTest/services/task.py":104
+              /* "aiSelfTest/services/task.py":105
  *             ).all()
  *             for row in task_item_data_rows:
  *                 session.delete(row)             # <<<<<<<<<<<<<<
@@ -5003,12 +5044,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
                 PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_v_row};
                 __pyx_t_6 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_delete, __pyx_callargs+__pyx_t_3, (2-__pyx_t_3) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
                 __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-                if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 104, __pyx_L7_error)
+                if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 105, __pyx_L7_error)
                 __Pyx_GOTREF(__pyx_t_6);
               }
               __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-              /* "aiSelfTest/services/task.py":103
+              /* "aiSelfTest/services/task.py":104
  *                 select(TaskItemData).where(TaskItemData.task_item_id.in_(task_item_ids))
  *             ).all()
  *             for row in task_item_data_rows:             # <<<<<<<<<<<<<<
@@ -5018,7 +5059,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
             }
             __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-            /* "aiSelfTest/services/task.py":105
+            /* "aiSelfTest/services/task.py":106
  *             for row in task_item_data_rows:
  *                 session.delete(row)
  *             session.flush()             # <<<<<<<<<<<<<<
@@ -5032,12 +5073,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
               PyObject *__pyx_callargs[2] = {__pyx_t_6, NULL};
               __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_flush, __pyx_callargs+__pyx_t_3, (1-__pyx_t_3) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
               __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-              if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L7_error)
+              if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 106, __pyx_L7_error)
               __Pyx_GOTREF(__pyx_t_1);
             }
             __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-            /* "aiSelfTest/services/task.py":99
+            /* "aiSelfTest/services/task.py":100
  *         task_item_ids = [row.id for row in task_items if row.id is not None]
  * 
  *         if task_item_ids:             # <<<<<<<<<<<<<<
@@ -5046,7 +5087,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
 */
           }
 
-          /* "aiSelfTest/services/task.py":107
+          /* "aiSelfTest/services/task.py":108
  *             session.flush()
  * 
  *         for row in task_items:             # <<<<<<<<<<<<<<
@@ -5058,9 +5099,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
             __pyx_t_16 = 0;
             __pyx_t_17 = NULL;
           } else {
-            __pyx_t_16 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_task_items); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L7_error)
+            __pyx_t_16 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_task_items); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 108, __pyx_L7_error)
             __Pyx_GOTREF(__pyx_t_1);
-            __pyx_t_17 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 107, __pyx_L7_error)
+            __pyx_t_17 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 108, __pyx_L7_error)
           }
           for (;;) {
             if (likely(!__pyx_t_17)) {
@@ -5068,7 +5109,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
                 {
                   Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_1);
                   #if !CYTHON_ASSUME_SAFE_SIZE
-                  if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 107, __pyx_L7_error)
+                  if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 108, __pyx_L7_error)
                   #endif
                   if (__pyx_t_16 >= __pyx_temp) break;
                 }
@@ -5078,7 +5119,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
                 {
                   Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_1);
                   #if !CYTHON_ASSUME_SAFE_SIZE
-                  if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 107, __pyx_L7_error)
+                  if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 108, __pyx_L7_error)
                   #endif
                   if (__pyx_t_16 >= __pyx_temp) break;
                 }
@@ -5089,13 +5130,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
                 #endif
                 ++__pyx_t_16;
               }
-              if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 107, __pyx_L7_error)
+              if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 108, __pyx_L7_error)
             } else {
               __pyx_t_6 = __pyx_t_17(__pyx_t_1);
               if (unlikely(!__pyx_t_6)) {
                 PyObject* exc_type = PyErr_Occurred();
                 if (exc_type) {
-                  if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 107, __pyx_L7_error)
+                  if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 108, __pyx_L7_error)
                   PyErr_Clear();
                 }
                 break;
@@ -5105,7 +5146,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
             __Pyx_XDECREF_SET(__pyx_v_row, __pyx_t_6);
             __pyx_t_6 = 0;
 
-            /* "aiSelfTest/services/task.py":108
+            /* "aiSelfTest/services/task.py":109
  * 
  *         for row in task_items:
  *             session.delete(row)             # <<<<<<<<<<<<<<
@@ -5119,12 +5160,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
               PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_v_row};
               __pyx_t_6 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_delete, __pyx_callargs+__pyx_t_3, (2-__pyx_t_3) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
               __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-              if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 108, __pyx_L7_error)
+              if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 109, __pyx_L7_error)
               __Pyx_GOTREF(__pyx_t_6);
             }
             __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-            /* "aiSelfTest/services/task.py":107
+            /* "aiSelfTest/services/task.py":108
  *             session.flush()
  * 
  *         for row in task_items:             # <<<<<<<<<<<<<<
@@ -5134,7 +5175,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
           }
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-          /* "aiSelfTest/services/task.py":109
+          /* "aiSelfTest/services/task.py":110
  *         for row in task_items:
  *             session.delete(row)
  *         session.flush()             # <<<<<<<<<<<<<<
@@ -5148,17 +5189,17 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
             PyObject *__pyx_callargs[2] = {__pyx_t_6, NULL};
             __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_flush, __pyx_callargs+__pyx_t_3, (1-__pyx_t_3) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
             __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-            if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 109, __pyx_L7_error)
+            if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 110, __pyx_L7_error)
             __Pyx_GOTREF(__pyx_t_1);
           }
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-          /* "aiSelfTest/services/task.py":111
+          /* "aiSelfTest/services/task.py":112
  *         session.flush()
  * 
  *         session.delete(task)             # <<<<<<<<<<<<<<
  * 
- *     return TaskDeleteData(id=task_id)
+ *     _sync_scheduler(task_id)
 */
           __pyx_t_6 = __pyx_v_session;
           __Pyx_INCREF(__pyx_t_6);
@@ -5167,12 +5208,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
             PyObject *__pyx_callargs[2] = {__pyx_t_6, __pyx_v_task};
             __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_delete, __pyx_callargs+__pyx_t_3, (2-__pyx_t_3) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
             __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-            if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 111, __pyx_L7_error)
+            if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 112, __pyx_L7_error)
             __Pyx_GOTREF(__pyx_t_1);
           }
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-          /* "aiSelfTest/services/task.py":94
+          /* "aiSelfTest/services/task.py":95
  *     """"""
  * 
  *     with session.begin():             # <<<<<<<<<<<<<<
@@ -5198,20 +5239,20 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
         __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
         /*except:*/ {
           __Pyx_AddTraceback("aiSelfTest.services.task.delete_task", __pyx_clineno, __pyx_lineno, __pyx_filename);
-          if (__Pyx_GetException(&__pyx_t_1, &__pyx_t_6, &__pyx_t_2) < 0) __PYX_ERR(0, 94, __pyx_L9_except_error)
+          if (__Pyx_GetException(&__pyx_t_1, &__pyx_t_6, &__pyx_t_2) < 0) __PYX_ERR(0, 95, __pyx_L9_except_error)
           __Pyx_XGOTREF(__pyx_t_1);
           __Pyx_XGOTREF(__pyx_t_6);
           __Pyx_XGOTREF(__pyx_t_2);
-          __pyx_t_5 = PyTuple_Pack(3, __pyx_t_1, __pyx_t_6, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 94, __pyx_L9_except_error)
+          __pyx_t_5 = PyTuple_Pack(3, __pyx_t_1, __pyx_t_6, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 95, __pyx_L9_except_error)
           __Pyx_GOTREF(__pyx_t_5);
           __pyx_t_20 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, NULL);
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-          if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 94, __pyx_L9_except_error)
+          if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 95, __pyx_L9_except_error)
           __Pyx_GOTREF(__pyx_t_20);
           __pyx_t_18 = __Pyx_PyObject_IsTrue(__pyx_t_20);
           __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
-          if (__pyx_t_18 < (0)) __PYX_ERR(0, 94, __pyx_L9_except_error)
+          if (__pyx_t_18 < (0)) __PYX_ERR(0, 95, __pyx_L9_except_error)
           __pyx_t_21 = (!__pyx_t_18);
           if (unlikely(__pyx_t_21)) {
             __Pyx_GIVEREF(__pyx_t_1);
@@ -5219,7 +5260,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
             __Pyx_XGIVEREF(__pyx_t_2);
             __Pyx_ErrRestoreWithState(__pyx_t_1, __pyx_t_6, __pyx_t_2);
             __pyx_t_1 = 0;  __pyx_t_6 = 0;  __pyx_t_2 = 0; 
-            __PYX_ERR(0, 94, __pyx_L9_except_error)
+            __PYX_ERR(0, 95, __pyx_L9_except_error)
           }
           __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
           __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
@@ -5245,7 +5286,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
         if (__pyx_t_4) {
           __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[0], NULL);
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 94, __pyx_L1_error)
+          if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 95, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_9);
           __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
         }
@@ -5260,16 +5301,15 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
     __pyx_L31:;
   }
 
-  /* "aiSelfTest/services/task.py":113
+  /* "aiSelfTest/services/task.py":114
  *         session.delete(task)
  * 
- *     return TaskDeleteData(id=task_id)             # <<<<<<<<<<<<<<
- * 
+ *     _sync_scheduler(task_id)             # <<<<<<<<<<<<<<
+ *     return TaskDeleteData(id=task_id)
  * 
 */
-  __Pyx_XDECREF(__pyx_r);
   __pyx_t_6 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_TaskDeleteData); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_sync_scheduler); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 114, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_3 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -5284,22 +5324,55 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
   }
   #endif
   {
-    PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 1 : 0)] = {__pyx_t_6, NULL};
-    __pyx_t_5 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 113, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_id, __pyx_v_task_id, __pyx_t_5, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 113, __pyx_L1_error)
-    __pyx_t_2 = __Pyx_Object_Vectorcall_CallFromBuilder((PyObject*)__pyx_t_1, __pyx_callargs+__pyx_t_3, (1-__pyx_t_3) | (__pyx_t_3*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_5);
+    PyObject *__pyx_callargs[2] = {__pyx_t_6, __pyx_v_task_id};
+    __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_1, __pyx_callargs+__pyx_t_3, (2-__pyx_t_3) | (__pyx_t_3*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 113, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 114, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+  }
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "aiSelfTest/services/task.py":115
+ * 
+ *     _sync_scheduler(task_id)
+ *     return TaskDeleteData(id=task_id)             # <<<<<<<<<<<<<<
+ * 
+ * 
+*/
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = NULL;
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_TaskDeleteData); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 115, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_3 = 1;
+  #if CYTHON_UNPACK_METHODS
+  if (unlikely(PyMethod_Check(__pyx_t_6))) {
+    __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_6);
+    assert(__pyx_t_1);
+    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_6);
+    __Pyx_INCREF(__pyx_t_1);
+    __Pyx_INCREF(__pyx__function);
+    __Pyx_DECREF_SET(__pyx_t_6, __pyx__function);
+    __pyx_t_3 = 0;
+  }
+  #endif
+  {
+    PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 1 : 0)] = {__pyx_t_1, NULL};
+    __pyx_t_5 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 115, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_id, __pyx_v_task_id, __pyx_t_5, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 115, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_Object_Vectorcall_CallFromBuilder((PyObject*)__pyx_t_6, __pyx_callargs+__pyx_t_3, (1-__pyx_t_3) | (__pyx_t_3*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_5);
+    __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 115, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
   }
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "aiSelfTest/services/task.py":91
+  /* "aiSelfTest/services/task.py":92
  * 
  * 
  * def delete_task(session: Session, task_id: int) -> TaskDeleteData:             # <<<<<<<<<<<<<<
@@ -5334,7 +5407,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_8delete_task(CYTHON_UNUSE
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task.py":116
+/* "aiSelfTest/services/task.py":118
  * 
  * 
  * def start_task(session: Session, task_id: int) -> TaskActionData:             # <<<<<<<<<<<<<<
@@ -5383,40 +5456,40 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_session,&__pyx_mstate_global->__pyx_n_u_task_id,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 116, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 118, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 116, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 118, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 116, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 118, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "start_task", 0) < (0)) __PYX_ERR(0, 116, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "start_task", 0) < (0)) __PYX_ERR(0, 118, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("start_task", 1, 2, 2, i); __PYX_ERR(0, 116, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("start_task", 1, 2, 2, i); __PYX_ERR(0, 118, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 116, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 118, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 116, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 118, __pyx_L3_error)
     }
     __pyx_v_session = values[0];
-    if (__Pyx_PyInt_FromNumber(&values[1], "task_id", 0) < (0)) __PYX_ERR(0, 116, __pyx_L3_error)
+    if (__Pyx_PyInt_FromNumber(&values[1], "task_id", 0) < (0)) __PYX_ERR(0, 118, __pyx_L3_error)
     __pyx_v_task_id = ((PyObject*)values[1]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("start_task", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 116, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("start_task", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 118, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -5427,7 +5500,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 116, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 118, __pyx_L1_error)
   __pyx_r = __pyx_pf_10aiSelfTest_8services_4task_10start_task(__pyx_self, __pyx_v_session, __pyx_v_task_id);
 
   /* function exit code */
@@ -5465,7 +5538,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_10start_task(CYTHON_UNUSE
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("start_task", 0);
 
-  /* "aiSelfTest/services/task.py":119
+  /* "aiSelfTest/services/task.py":121
  *     """"""
  * 
  *     task = _get_task_or_raise(session, task_id)             # <<<<<<<<<<<<<<
@@ -5473,7 +5546,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_10start_task(CYTHON_UNUSE
  *     task.updated_at = datetime.now()
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_get_task_or_raise); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 119, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_get_task_or_raise); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 121, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -5492,22 +5565,22 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_10start_task(CYTHON_UNUSE
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_4, (3-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 119, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 121, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_task = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":120
+  /* "aiSelfTest/services/task.py":122
  * 
  *     task = _get_task_or_raise(session, task_id)
  *     task.active = True             # <<<<<<<<<<<<<<
  *     task.updated_at = datetime.now()
  *     session.add(task)
 */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_active, Py_True) < (0)) __PYX_ERR(0, 120, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_active, Py_True) < (0)) __PYX_ERR(0, 122, __pyx_L1_error)
 
-  /* "aiSelfTest/services/task.py":121
+  /* "aiSelfTest/services/task.py":123
  *     task = _get_task_or_raise(session, task_id)
  *     task.active = True
  *     task.updated_at = datetime.now()             # <<<<<<<<<<<<<<
@@ -5515,9 +5588,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_10start_task(CYTHON_UNUSE
  *     session.commit()
 */
   __pyx_t_3 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_datetime); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 121, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_datetime); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 123, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_now); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 121, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_now); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 123, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_4 = 1;
@@ -5537,13 +5610,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_10start_task(CYTHON_UNUSE
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_5, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 121, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 123, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_updated_at, __pyx_t_1) < (0)) __PYX_ERR(0, 121, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_updated_at, __pyx_t_1) < (0)) __PYX_ERR(0, 123, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":122
+  /* "aiSelfTest/services/task.py":124
  *     task.active = True
  *     task.updated_at = datetime.now()
  *     session.add(task)             # <<<<<<<<<<<<<<
@@ -5557,17 +5630,17 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_10start_task(CYTHON_UNUSE
     PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_v_task};
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_add, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 122, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 124, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":123
+  /* "aiSelfTest/services/task.py":125
  *     task.updated_at = datetime.now()
  *     session.add(task)
  *     session.commit()             # <<<<<<<<<<<<<<
  *     session.refresh(task)
- *     return TaskActionData(id=task.id or 0, active=task.active, execution_status=task.execution_status)
+ *     _sync_scheduler(task.id)
 */
   __pyx_t_5 = __pyx_v_session;
   __Pyx_INCREF(__pyx_t_5);
@@ -5576,17 +5649,17 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_10start_task(CYTHON_UNUSE
     PyObject *__pyx_callargs[2] = {__pyx_t_5, NULL};
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_commit, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 123, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 125, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":124
+  /* "aiSelfTest/services/task.py":126
  *     session.add(task)
  *     session.commit()
  *     session.refresh(task)             # <<<<<<<<<<<<<<
+ *     _sync_scheduler(task.id)
  *     return TaskActionData(id=task.id or 0, active=task.active, execution_status=task.execution_status)
- * 
 */
   __pyx_t_5 = __pyx_v_session;
   __Pyx_INCREF(__pyx_t_5);
@@ -5595,42 +5668,23 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_10start_task(CYTHON_UNUSE
     PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_v_task};
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_refresh, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 124, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 126, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":125
+  /* "aiSelfTest/services/task.py":127
  *     session.commit()
  *     session.refresh(task)
- *     return TaskActionData(id=task.id or 0, active=task.active, execution_status=task.execution_status)             # <<<<<<<<<<<<<<
- * 
+ *     _sync_scheduler(task.id)             # <<<<<<<<<<<<<<
+ *     return TaskActionData(id=task.id or 0, active=task.active, execution_status=task.execution_status)
  * 
 */
-  __Pyx_XDECREF(__pyx_r);
   __pyx_t_5 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_TaskActionData); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 125, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_sync_scheduler); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 127, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 125, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely((__pyx_t_7 < 0))) __PYX_ERR(0, 125, __pyx_L1_error)
-  if (!__pyx_t_7) {
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  } else {
-    __Pyx_INCREF(__pyx_t_6);
-    __pyx_t_2 = __pyx_t_6;
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    goto __pyx_L3_bool_binop_done;
-  }
-  __pyx_t_6 = __Pyx_PyLong_From_long(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 125, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_2 = __pyx_t_6;
-  __pyx_t_6 = 0;
-  __pyx_L3_bool_binop_done:;
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_active); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 125, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_execution_status); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 125, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = 1;
   #if CYTHON_UNPACK_METHODS
   if (unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -5644,27 +5698,81 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_10start_task(CYTHON_UNUSE
   }
   #endif
   {
-    PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 3 : 0)] = {__pyx_t_5, NULL};
-    __pyx_t_9 = __Pyx_MakeVectorcallBuilderKwds(3); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 125, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_id, __pyx_t_2, __pyx_t_9, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 125, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_active, __pyx_t_6, __pyx_t_9, __pyx_callargs+1, 1) < (0)) __PYX_ERR(0, 125, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_execution_status, __pyx_t_8, __pyx_t_9, __pyx_callargs+1, 2) < (0)) __PYX_ERR(0, 125, __pyx_L1_error)
-    __pyx_t_1 = __Pyx_Object_Vectorcall_CallFromBuilder((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_9);
+    PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_t_2};
+    __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 127, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "aiSelfTest/services/task.py":128
+ *     session.refresh(task)
+ *     _sync_scheduler(task.id)
+ *     return TaskActionData(id=task.id or 0, active=task.active, execution_status=task.execution_status)             # <<<<<<<<<<<<<<
+ * 
+ * 
+*/
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_3 = NULL;
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_TaskActionData); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 128, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 128, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely((__pyx_t_7 < 0))) __PYX_ERR(0, 128, __pyx_L1_error)
+  if (!__pyx_t_7) {
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  } else {
+    __Pyx_INCREF(__pyx_t_6);
+    __pyx_t_5 = __pyx_t_6;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    goto __pyx_L3_bool_binop_done;
+  }
+  __pyx_t_6 = __Pyx_PyLong_From_long(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 128, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_5 = __pyx_t_6;
+  __pyx_t_6 = 0;
+  __pyx_L3_bool_binop_done:;
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_active); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 128, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_execution_status); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 128, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_4 = 1;
+  #if CYTHON_UNPACK_METHODS
+  if (unlikely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    assert(__pyx_t_3);
+    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_2);
+    __Pyx_INCREF(__pyx_t_3);
+    __Pyx_INCREF(__pyx__function);
+    __Pyx_DECREF_SET(__pyx_t_2, __pyx__function);
+    __pyx_t_4 = 0;
+  }
+  #endif
+  {
+    PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 3 : 0)] = {__pyx_t_3, NULL};
+    __pyx_t_9 = __Pyx_MakeVectorcallBuilderKwds(3); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 128, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_9);
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_id, __pyx_t_5, __pyx_t_9, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 128, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_active, __pyx_t_6, __pyx_t_9, __pyx_callargs+1, 1) < (0)) __PYX_ERR(0, 128, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_execution_status, __pyx_t_8, __pyx_t_9, __pyx_callargs+1, 2) < (0)) __PYX_ERR(0, 128, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_Object_Vectorcall_CallFromBuilder((PyObject*)__pyx_t_2, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_9);
+    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 125, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 128, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "aiSelfTest/services/task.py":116
+  /* "aiSelfTest/services/task.py":118
  * 
  * 
  * def start_task(session: Session, task_id: int) -> TaskActionData:             # <<<<<<<<<<<<<<
@@ -5690,7 +5798,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_10start_task(CYTHON_UNUSE
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task.py":128
+/* "aiSelfTest/services/task.py":131
  * 
  * 
  * def stop_task(session: Session, task_id: int) -> TaskActionData:             # <<<<<<<<<<<<<<
@@ -5739,40 +5847,40 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_session,&__pyx_mstate_global->__pyx_n_u_task_id,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 128, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 131, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 128, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 131, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 128, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 131, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "stop_task", 0) < (0)) __PYX_ERR(0, 128, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "stop_task", 0) < (0)) __PYX_ERR(0, 131, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("stop_task", 1, 2, 2, i); __PYX_ERR(0, 128, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("stop_task", 1, 2, 2, i); __PYX_ERR(0, 131, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 128, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 131, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 128, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 131, __pyx_L3_error)
     }
     __pyx_v_session = values[0];
-    if (__Pyx_PyInt_FromNumber(&values[1], "task_id", 0) < (0)) __PYX_ERR(0, 128, __pyx_L3_error)
+    if (__Pyx_PyInt_FromNumber(&values[1], "task_id", 0) < (0)) __PYX_ERR(0, 131, __pyx_L3_error)
     __pyx_v_task_id = ((PyObject*)values[1]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("stop_task", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 128, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("stop_task", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 131, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -5783,7 +5891,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 128, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 131, __pyx_L1_error)
   __pyx_r = __pyx_pf_10aiSelfTest_8services_4task_12stop_task(__pyx_self, __pyx_v_session, __pyx_v_task_id);
 
   /* function exit code */
@@ -5821,7 +5929,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_12stop_task(CYTHON_UNUSED
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("stop_task", 0);
 
-  /* "aiSelfTest/services/task.py":131
+  /* "aiSelfTest/services/task.py":134
  *     """"""
  * 
  *     task = _get_task_or_raise(session, task_id)             # <<<<<<<<<<<<<<
@@ -5829,7 +5937,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_12stop_task(CYTHON_UNUSED
  *     task.updated_at = datetime.now()
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_get_task_or_raise); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 131, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_get_task_or_raise); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 134, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -5848,22 +5956,22 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_12stop_task(CYTHON_UNUSED
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_4, (3-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 131, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 134, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_task = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":132
+  /* "aiSelfTest/services/task.py":135
  * 
  *     task = _get_task_or_raise(session, task_id)
  *     task.active = False             # <<<<<<<<<<<<<<
  *     task.updated_at = datetime.now()
  *     session.add(task)
 */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_active, Py_False) < (0)) __PYX_ERR(0, 132, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_active, Py_False) < (0)) __PYX_ERR(0, 135, __pyx_L1_error)
 
-  /* "aiSelfTest/services/task.py":133
+  /* "aiSelfTest/services/task.py":136
  *     task = _get_task_or_raise(session, task_id)
  *     task.active = False
  *     task.updated_at = datetime.now()             # <<<<<<<<<<<<<<
@@ -5871,9 +5979,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_12stop_task(CYTHON_UNUSED
  *     session.commit()
 */
   __pyx_t_3 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_datetime); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 133, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_datetime); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_now); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 133, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_now); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_4 = 1;
@@ -5893,13 +6001,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_12stop_task(CYTHON_UNUSED
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_5, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 133, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 136, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_updated_at, __pyx_t_1) < (0)) __PYX_ERR(0, 133, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_updated_at, __pyx_t_1) < (0)) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":134
+  /* "aiSelfTest/services/task.py":137
  *     task.active = False
  *     task.updated_at = datetime.now()
  *     session.add(task)             # <<<<<<<<<<<<<<
@@ -5913,17 +6021,17 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_12stop_task(CYTHON_UNUSED
     PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_v_task};
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_add, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 134, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 137, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":135
+  /* "aiSelfTest/services/task.py":138
  *     task.updated_at = datetime.now()
  *     session.add(task)
  *     session.commit()             # <<<<<<<<<<<<<<
  *     session.refresh(task)
- *     return TaskActionData(id=task.id or 0, active=task.active, execution_status=task.execution_status)
+ *     _sync_scheduler(task.id)
 */
   __pyx_t_5 = __pyx_v_session;
   __Pyx_INCREF(__pyx_t_5);
@@ -5932,17 +6040,17 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_12stop_task(CYTHON_UNUSED
     PyObject *__pyx_callargs[2] = {__pyx_t_5, NULL};
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_commit, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 135, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 138, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":136
+  /* "aiSelfTest/services/task.py":139
  *     session.add(task)
  *     session.commit()
  *     session.refresh(task)             # <<<<<<<<<<<<<<
+ *     _sync_scheduler(task.id)
  *     return TaskActionData(id=task.id or 0, active=task.active, execution_status=task.execution_status)
- * 
 */
   __pyx_t_5 = __pyx_v_session;
   __Pyx_INCREF(__pyx_t_5);
@@ -5951,42 +6059,23 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_12stop_task(CYTHON_UNUSED
     PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_v_task};
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_refresh, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 136, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 139, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":137
+  /* "aiSelfTest/services/task.py":140
  *     session.commit()
  *     session.refresh(task)
- *     return TaskActionData(id=task.id or 0, active=task.active, execution_status=task.execution_status)             # <<<<<<<<<<<<<<
- * 
+ *     _sync_scheduler(task.id)             # <<<<<<<<<<<<<<
+ *     return TaskActionData(id=task.id or 0, active=task.active, execution_status=task.execution_status)
  * 
 */
-  __Pyx_XDECREF(__pyx_r);
   __pyx_t_5 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_TaskActionData); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_sync_scheduler); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 137, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely((__pyx_t_7 < 0))) __PYX_ERR(0, 137, __pyx_L1_error)
-  if (!__pyx_t_7) {
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  } else {
-    __Pyx_INCREF(__pyx_t_6);
-    __pyx_t_2 = __pyx_t_6;
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    goto __pyx_L3_bool_binop_done;
-  }
-  __pyx_t_6 = __Pyx_PyLong_From_long(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 137, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_2 = __pyx_t_6;
-  __pyx_t_6 = 0;
-  __pyx_L3_bool_binop_done:;
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_active); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 137, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_execution_status); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 137, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 140, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = 1;
   #if CYTHON_UNPACK_METHODS
   if (unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -6000,27 +6089,81 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_12stop_task(CYTHON_UNUSED
   }
   #endif
   {
-    PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 3 : 0)] = {__pyx_t_5, NULL};
-    __pyx_t_9 = __Pyx_MakeVectorcallBuilderKwds(3); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 137, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_id, __pyx_t_2, __pyx_t_9, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 137, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_active, __pyx_t_6, __pyx_t_9, __pyx_callargs+1, 1) < (0)) __PYX_ERR(0, 137, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_execution_status, __pyx_t_8, __pyx_t_9, __pyx_callargs+1, 2) < (0)) __PYX_ERR(0, 137, __pyx_L1_error)
-    __pyx_t_1 = __Pyx_Object_Vectorcall_CallFromBuilder((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_9);
+    PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_t_2};
+    __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 140, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "aiSelfTest/services/task.py":141
+ *     session.refresh(task)
+ *     _sync_scheduler(task.id)
+ *     return TaskActionData(id=task.id or 0, active=task.active, execution_status=task.execution_status)             # <<<<<<<<<<<<<<
+ * 
+ * 
+*/
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_3 = NULL;
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_TaskActionData); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely((__pyx_t_7 < 0))) __PYX_ERR(0, 141, __pyx_L1_error)
+  if (!__pyx_t_7) {
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  } else {
+    __Pyx_INCREF(__pyx_t_6);
+    __pyx_t_5 = __pyx_t_6;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    goto __pyx_L3_bool_binop_done;
+  }
+  __pyx_t_6 = __Pyx_PyLong_From_long(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_5 = __pyx_t_6;
+  __pyx_t_6 = 0;
+  __pyx_L3_bool_binop_done:;
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_active); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_execution_status); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_4 = 1;
+  #if CYTHON_UNPACK_METHODS
+  if (unlikely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    assert(__pyx_t_3);
+    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_2);
+    __Pyx_INCREF(__pyx_t_3);
+    __Pyx_INCREF(__pyx__function);
+    __Pyx_DECREF_SET(__pyx_t_2, __pyx__function);
+    __pyx_t_4 = 0;
+  }
+  #endif
+  {
+    PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 3 : 0)] = {__pyx_t_3, NULL};
+    __pyx_t_9 = __Pyx_MakeVectorcallBuilderKwds(3); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 141, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_9);
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_id, __pyx_t_5, __pyx_t_9, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 141, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_active, __pyx_t_6, __pyx_t_9, __pyx_callargs+1, 1) < (0)) __PYX_ERR(0, 141, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_execution_status, __pyx_t_8, __pyx_t_9, __pyx_callargs+1, 2) < (0)) __PYX_ERR(0, 141, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_Object_Vectorcall_CallFromBuilder((PyObject*)__pyx_t_2, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_9);
+    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 137, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 141, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "aiSelfTest/services/task.py":128
+  /* "aiSelfTest/services/task.py":131
  * 
  * 
  * def stop_task(session: Session, task_id: int) -> TaskActionData:             # <<<<<<<<<<<<<<
@@ -6046,7 +6189,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_12stop_task(CYTHON_UNUSED
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task.py":140
+/* "aiSelfTest/services/task.py":144
  * 
  * 
  * def run_task_once(session: Session, task_id: int) -> TaskActionData:             # <<<<<<<<<<<<<<
@@ -6095,40 +6238,40 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_session,&__pyx_mstate_global->__pyx_n_u_task_id,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 140, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 144, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 140, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 144, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 140, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 144, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "run_task_once", 0) < (0)) __PYX_ERR(0, 140, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "run_task_once", 0) < (0)) __PYX_ERR(0, 144, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("run_task_once", 1, 2, 2, i); __PYX_ERR(0, 140, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("run_task_once", 1, 2, 2, i); __PYX_ERR(0, 144, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 140, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 144, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 140, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 144, __pyx_L3_error)
     }
     __pyx_v_session = values[0];
-    if (__Pyx_PyInt_FromNumber(&values[1], "task_id", 0) < (0)) __PYX_ERR(0, 140, __pyx_L3_error)
+    if (__Pyx_PyInt_FromNumber(&values[1], "task_id", 0) < (0)) __PYX_ERR(0, 144, __pyx_L3_error)
     __pyx_v_task_id = ((PyObject*)values[1]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("run_task_once", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 140, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("run_task_once", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 144, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -6139,7 +6282,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 140, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 144, __pyx_L1_error)
   __pyx_r = __pyx_pf_10aiSelfTest_8services_4task_14run_task_once(__pyx_self, __pyx_v_session, __pyx_v_task_id);
 
   /* function exit code */
@@ -6160,262 +6303,186 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 }
 
 static PyObject *__pyx_pf_10aiSelfTest_8services_4task_14run_task_once(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_session, PyObject *__pyx_v_task_id) {
+  PyObject *__pyx_v_run_task_execution = NULL;
   PyObject *__pyx_v_task = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  size_t __pyx_t_4;
+  Py_ssize_t __pyx_t_3;
+  PyObject *__pyx_t_4 = NULL;
   PyObject *__pyx_t_5 = NULL;
-  PyObject *__pyx_t_6 = NULL;
-  int __pyx_t_7;
+  size_t __pyx_t_6;
+  PyObject *__pyx_t_7 = NULL;
   PyObject *__pyx_t_8 = NULL;
-  PyObject *__pyx_t_9 = NULL;
+  int __pyx_t_9;
+  PyObject *__pyx_t_10 = NULL;
+  PyObject *__pyx_t_11 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("run_task_once", 0);
 
-  /* "aiSelfTest/services/task.py":143
+  /* "aiSelfTest/services/task.py":147
  *     """"""
  * 
- *     task = _get_task_or_raise(session, task_id)             # <<<<<<<<<<<<<<
- *     task.started_at = datetime.now()
- *     task.last_run_started_at = task.started_at
-*/
-  __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_get_task_or_raise); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 143, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = 1;
-  #if CYTHON_UNPACK_METHODS
-  if (unlikely(PyMethod_Check(__pyx_t_3))) {
-    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
-    assert(__pyx_t_2);
-    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_3);
-    __Pyx_INCREF(__pyx_t_2);
-    __Pyx_INCREF(__pyx__function);
-    __Pyx_DECREF_SET(__pyx_t_3, __pyx__function);
-    __pyx_t_4 = 0;
-  }
-  #endif
-  {
-    PyObject *__pyx_callargs[3] = {__pyx_t_2, __pyx_v_session, __pyx_v_task_id};
-    __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_4, (3-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 143, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-  }
-  __pyx_v_task = __pyx_t_1;
-  __pyx_t_1 = 0;
-
-  /* "aiSelfTest/services/task.py":144
+ *     from aiSelfTest.services.task_execution import run_task_execution             # <<<<<<<<<<<<<<
  * 
- *     task = _get_task_or_raise(session, task_id)
- *     task.started_at = datetime.now()             # <<<<<<<<<<<<<<
- *     task.last_run_started_at = task.started_at
- *     task.updated_at = datetime.now()
+ *     run_task_execution(session, task_id)
 */
-  __pyx_t_3 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_datetime); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 144, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_now); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 144, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_4 = 1;
-  #if CYTHON_UNPACK_METHODS
-  if (unlikely(PyMethod_Check(__pyx_t_5))) {
-    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_5);
-    assert(__pyx_t_3);
-    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_5);
-    __Pyx_INCREF(__pyx_t_3);
-    __Pyx_INCREF(__pyx__function);
-    __Pyx_DECREF_SET(__pyx_t_5, __pyx__function);
-    __pyx_t_4 = 0;
-  }
-  #endif
   {
-    PyObject *__pyx_callargs[2] = {__pyx_t_3, NULL};
-    __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_5, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 144, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
+    PyObject* const __pyx_imported_names[] = {__pyx_mstate_global->__pyx_n_u_run_task_execution};
+    __pyx_t_2 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_executi, __pyx_imported_names, 1, NULL, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 147, __pyx_L1_error)
   }
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_started_at, __pyx_t_1) < (0)) __PYX_ERR(0, 144, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "aiSelfTest/services/task.py":145
- *     task = _get_task_or_raise(session, task_id)
- *     task.started_at = datetime.now()
- *     task.last_run_started_at = task.started_at             # <<<<<<<<<<<<<<
- *     task.updated_at = datetime.now()
- *     session.add(task)
-*/
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_started_at); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 145, __pyx_L1_error)
+  __pyx_t_1 = __pyx_t_2;
   __Pyx_GOTREF(__pyx_t_1);
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_last_run_started_at, __pyx_t_1) < (0)) __PYX_ERR(0, 145, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "aiSelfTest/services/task.py":146
- *     task.started_at = datetime.now()
- *     task.last_run_started_at = task.started_at
- *     task.updated_at = datetime.now()             # <<<<<<<<<<<<<<
- *     session.add(task)
- *     session.commit()
-*/
-  __pyx_t_5 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_datetime); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 146, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_now); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 146, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_4 = 1;
-  #if CYTHON_UNPACK_METHODS
-  if (unlikely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_2);
-    assert(__pyx_t_5);
-    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_2);
-    __Pyx_INCREF(__pyx_t_5);
-    __Pyx_INCREF(__pyx__function);
-    __Pyx_DECREF_SET(__pyx_t_2, __pyx__function);
-    __pyx_t_4 = 0;
-  }
-  #endif
   {
-    PyObject *__pyx_callargs[2] = {__pyx_t_5, NULL};
-    __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_2, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 146, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-  }
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_updated_at, __pyx_t_1) < (0)) __PYX_ERR(0, 146, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "aiSelfTest/services/task.py":147
- *     task.last_run_started_at = task.started_at
- *     task.updated_at = datetime.now()
- *     session.add(task)             # <<<<<<<<<<<<<<
- *     session.commit()
- *     session.refresh(task)
-*/
-  __pyx_t_2 = __pyx_v_session;
-  __Pyx_INCREF(__pyx_t_2);
-  __pyx_t_4 = 0;
-  {
-    PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_v_task};
-    __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_add, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 147, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-  }
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "aiSelfTest/services/task.py":148
- *     task.updated_at = datetime.now()
- *     session.add(task)
- *     session.commit()             # <<<<<<<<<<<<<<
- *     session.refresh(task)
- *     return TaskActionData(id=task.id or 0, active=task.active, execution_status=task.execution_status)
-*/
-  __pyx_t_2 = __pyx_v_session;
-  __Pyx_INCREF(__pyx_t_2);
-  __pyx_t_4 = 0;
-  {
-    PyObject *__pyx_callargs[2] = {__pyx_t_2, NULL};
-    __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_commit, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 148, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
+    PyObject* const __pyx_imported_names[] = {__pyx_mstate_global->__pyx_n_u_run_task_execution};
+    __pyx_t_3 = 0; {
+      __pyx_t_4 = __Pyx_ImportFrom(__pyx_t_1, __pyx_imported_names[__pyx_t_3]); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 147, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      switch (__pyx_t_3) {
+        case 0:
+        __Pyx_INCREF(__pyx_t_4);
+        __pyx_v_run_task_execution = __pyx_t_4;
+        break;
+        default:;
+      }
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    }
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "aiSelfTest/services/task.py":149
- *     session.add(task)
- *     session.commit()
- *     session.refresh(task)             # <<<<<<<<<<<<<<
- *     return TaskActionData(id=task.id or 0, active=task.active, execution_status=task.execution_status)
+ *     from aiSelfTest.services.task_execution import run_task_execution
  * 
+ *     run_task_execution(session, task_id)             # <<<<<<<<<<<<<<
+ *     task = _get_task_or_raise(session, task_id)
+ *     return TaskActionData(id=task.id or 0, active=task.active, execution_status=task.execution_status)
 */
-  __pyx_t_2 = __pyx_v_session;
-  __Pyx_INCREF(__pyx_t_2);
-  __pyx_t_4 = 0;
+  __pyx_t_4 = NULL;
+  __Pyx_INCREF(__pyx_v_run_task_execution);
+  __pyx_t_5 = __pyx_v_run_task_execution; 
+  __pyx_t_6 = 1;
+  #if CYTHON_UNPACK_METHODS
+  if (unlikely(PyMethod_Check(__pyx_t_5))) {
+    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_5);
+    assert(__pyx_t_4);
+    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_5);
+    __Pyx_INCREF(__pyx_t_4);
+    __Pyx_INCREF(__pyx__function);
+    __Pyx_DECREF_SET(__pyx_t_5, __pyx__function);
+    __pyx_t_6 = 0;
+  }
+  #endif
   {
-    PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_v_task};
-    __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_refresh, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+    PyObject *__pyx_callargs[3] = {__pyx_t_4, __pyx_v_session, __pyx_v_task_id};
+    __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_5, __pyx_callargs+__pyx_t_6, (3-__pyx_t_6) | (__pyx_t_6*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 149, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "aiSelfTest/services/task.py":150
- *     session.commit()
- *     session.refresh(task)
+ * 
+ *     run_task_execution(session, task_id)
+ *     task = _get_task_or_raise(session, task_id)             # <<<<<<<<<<<<<<
+ *     return TaskActionData(id=task.id or 0, active=task.active, execution_status=task.execution_status)
+ * 
+*/
+  __pyx_t_5 = NULL;
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_get_task_or_raise); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 150, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_6 = 1;
+  #if CYTHON_UNPACK_METHODS
+  if (unlikely(PyMethod_Check(__pyx_t_4))) {
+    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_4);
+    assert(__pyx_t_5);
+    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_4);
+    __Pyx_INCREF(__pyx_t_5);
+    __Pyx_INCREF(__pyx__function);
+    __Pyx_DECREF_SET(__pyx_t_4, __pyx__function);
+    __pyx_t_6 = 0;
+  }
+  #endif
+  {
+    PyObject *__pyx_callargs[3] = {__pyx_t_5, __pyx_v_session, __pyx_v_task_id};
+    __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_6, (3-__pyx_t_6) | (__pyx_t_6*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 150, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+  }
+  __pyx_v_task = __pyx_t_1;
+  __pyx_t_1 = 0;
+
+  /* "aiSelfTest/services/task.py":151
+ *     run_task_execution(session, task_id)
+ *     task = _get_task_or_raise(session, task_id)
  *     return TaskActionData(id=task.id or 0, active=task.active, execution_status=task.execution_status)             # <<<<<<<<<<<<<<
  * 
  * 
 */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_TaskActionData); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 150, __pyx_L1_error)
+  __pyx_t_4 = NULL;
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_TaskActionData); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 151, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 150, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely((__pyx_t_7 < 0))) __PYX_ERR(0, 150, __pyx_L1_error)
-  if (!__pyx_t_7) {
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely((__pyx_t_9 < 0))) __PYX_ERR(0, 151, __pyx_L1_error)
+  if (!__pyx_t_9) {
+    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   } else {
-    __Pyx_INCREF(__pyx_t_6);
-    __pyx_t_3 = __pyx_t_6;
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __Pyx_INCREF(__pyx_t_8);
+    __pyx_t_7 = __pyx_t_8;
+    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     goto __pyx_L3_bool_binop_done;
   }
-  __pyx_t_6 = __Pyx_PyLong_From_long(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 150, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_3 = __pyx_t_6;
-  __pyx_t_6 = 0;
-  __pyx_L3_bool_binop_done:;
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_active); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 150, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_execution_status); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 150, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyLong_From_long(0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 151, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_4 = 1;
+  __pyx_t_7 = __pyx_t_8;
+  __pyx_t_8 = 0;
+  __pyx_L3_bool_binop_done:;
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_active); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_execution_status); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_10);
+  __pyx_t_6 = 1;
   #if CYTHON_UNPACK_METHODS
   if (unlikely(PyMethod_Check(__pyx_t_5))) {
-    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_5);
-    assert(__pyx_t_2);
+    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_5);
+    assert(__pyx_t_4);
     PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_5);
-    __Pyx_INCREF(__pyx_t_2);
+    __Pyx_INCREF(__pyx_t_4);
     __Pyx_INCREF(__pyx__function);
     __Pyx_DECREF_SET(__pyx_t_5, __pyx__function);
-    __pyx_t_4 = 0;
+    __pyx_t_6 = 0;
   }
   #endif
   {
-    PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 3 : 0)] = {__pyx_t_2, NULL};
-    __pyx_t_9 = __Pyx_MakeVectorcallBuilderKwds(3); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 150, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_id, __pyx_t_3, __pyx_t_9, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 150, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_active, __pyx_t_6, __pyx_t_9, __pyx_callargs+1, 1) < (0)) __PYX_ERR(0, 150, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_execution_status, __pyx_t_8, __pyx_t_9, __pyx_callargs+1, 2) < (0)) __PYX_ERR(0, 150, __pyx_L1_error)
-    __pyx_t_1 = __Pyx_Object_Vectorcall_CallFromBuilder((PyObject*)__pyx_t_5, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_9);
-    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 3 : 0)] = {__pyx_t_4, NULL};
+    __pyx_t_11 = __Pyx_MakeVectorcallBuilderKwds(3); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 151, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_11);
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_id, __pyx_t_7, __pyx_t_11, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 151, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_active, __pyx_t_8, __pyx_t_11, __pyx_callargs+1, 1) < (0)) __PYX_ERR(0, 151, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_execution_status, __pyx_t_10, __pyx_t_11, __pyx_callargs+1, 2) < (0)) __PYX_ERR(0, 151, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_Object_Vectorcall_CallFromBuilder((PyObject*)__pyx_t_5, __pyx_callargs+__pyx_t_6, (1-__pyx_t_6) | (__pyx_t_6*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_11);
+    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+    __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 150, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 151, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "aiSelfTest/services/task.py":140
+  /* "aiSelfTest/services/task.py":144
  * 
  * 
  * def run_task_once(session: Session, task_id: int) -> TaskActionData:             # <<<<<<<<<<<<<<
@@ -6426,22 +6493,23 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_14run_task_once(CYTHON_UN
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_8);
-  __Pyx_XDECREF(__pyx_t_9);
+  __Pyx_XDECREF(__pyx_t_10);
+  __Pyx_XDECREF(__pyx_t_11);
   __Pyx_AddTraceback("aiSelfTest.services.task.run_task_once", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_run_task_execution);
   __Pyx_XDECREF(__pyx_v_task);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task.py":153
+/* "aiSelfTest/services/task.py":154
  * 
  * 
  * def list_task_items(             # <<<<<<<<<<<<<<
@@ -6493,20 +6561,20 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_session,&__pyx_mstate_global->__pyx_n_u_task_id,&__pyx_mstate_global->__pyx_n_u_media_type,&__pyx_mstate_global->__pyx_n_u_page,&__pyx_mstate_global->__pyx_n_u_page_size,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 153, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 154, __pyx_L3_error)
     if (likely(__pyx_kwds_len > 0)) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 153, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 154, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "list_task_items", 0) < (0)) __PYX_ERR(0, 153, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "list_task_items", 0) < (0)) __PYX_ERR(0, 154, __pyx_L3_error)
 
-      /* "aiSelfTest/services/task.py":157
+      /* "aiSelfTest/services/task.py":158
  *     *,
  *     task_id: int,
  *     media_type: str | None = None,             # <<<<<<<<<<<<<<
@@ -6517,28 +6585,28 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       if (!values[3]) values[3] = __Pyx_NewRef(((PyObject*)((PyObject*)__pyx_mstate_global->__pyx_int_1)));
       if (!values[4]) values[4] = __Pyx_NewRef(((PyObject*)((PyObject*)__pyx_mstate_global->__pyx_int_20)));
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("list_task_items", 1, 1, 1, i); __PYX_ERR(0, 153, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("list_task_items", 1, 1, 1, i); __PYX_ERR(0, 154, __pyx_L3_error) }
       }
       for (Py_ssize_t i = 1; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseKeywordRequired("list_task_items", *(__pyx_pyargnames[i - 0])); __PYX_ERR(0, 153, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseKeywordRequired("list_task_items", *(__pyx_pyargnames[i - 0])); __PYX_ERR(0, 154, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
-      __Pyx_RaiseKeywordRequired("list_task_items", __pyx_mstate_global->__pyx_n_u_task_id); __PYX_ERR(0, 153, __pyx_L3_error)
+      __Pyx_RaiseKeywordRequired("list_task_items", __pyx_mstate_global->__pyx_n_u_task_id); __PYX_ERR(0, 154, __pyx_L3_error)
     }
     __pyx_v_session = values[0];
-    if (__Pyx_PyInt_FromNumber(&values[1], "task_id", 0) < (0)) __PYX_ERR(0, 156, __pyx_L3_error)
+    if (__Pyx_PyInt_FromNumber(&values[1], "task_id", 0) < (0)) __PYX_ERR(0, 157, __pyx_L3_error)
     __pyx_v_task_id = ((PyObject*)values[1]);
     __pyx_v_media_type = ((PyObject*)values[2]);
-    if (__Pyx_PyInt_FromNumber(&values[3], "page", 0) < (0)) __PYX_ERR(0, 158, __pyx_L3_error)
+    if (__Pyx_PyInt_FromNumber(&values[3], "page", 0) < (0)) __PYX_ERR(0, 159, __pyx_L3_error)
     __pyx_v_page = ((PyObject*)values[3]);
-    if (__Pyx_PyInt_FromNumber(&values[4], "page_size", 0) < (0)) __PYX_ERR(0, 159, __pyx_L3_error)
+    if (__Pyx_PyInt_FromNumber(&values[4], "page_size", 0) < (0)) __PYX_ERR(0, 160, __pyx_L3_error)
     __pyx_v_page_size = ((PyObject*)values[4]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("list_task_items", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 153, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("list_task_items", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 154, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -6549,13 +6617,13 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 156, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_media_type), (&PyUnicode_Type), 1, "media_type", 2))) __PYX_ERR(0, 157, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_page), (&PyLong_Type), 0, "page", 2))) __PYX_ERR(0, 158, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_page_size), (&PyLong_Type), 0, "page_size", 2))) __PYX_ERR(0, 159, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 157, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_media_type), (&PyUnicode_Type), 1, "media_type", 2))) __PYX_ERR(0, 158, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_page), (&PyLong_Type), 0, "page", 2))) __PYX_ERR(0, 159, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_page_size), (&PyLong_Type), 0, "page_size", 2))) __PYX_ERR(0, 160, __pyx_L1_error)
   __pyx_r = __pyx_pf_10aiSelfTest_8services_4task_16list_task_items(__pyx_self, __pyx_v_session, __pyx_v_task_id, __pyx_v_media_type, __pyx_v_page, __pyx_v_page_size);
 
-  /* "aiSelfTest/services/task.py":153
+  /* "aiSelfTest/services/task.py":154
  * 
  * 
  * def list_task_items(             # <<<<<<<<<<<<<<
@@ -6612,7 +6680,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("list_task_items", 0);
 
-  /* "aiSelfTest/services/task.py":163
+  /* "aiSelfTest/services/task.py":164
  *     """ TaskItem """
  * 
  *     _get_task_or_raise(session, task_id)             # <<<<<<<<<<<<<<
@@ -6620,7 +6688,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
  * 
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_get_task_or_raise); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 163, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_get_task_or_raise); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 164, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -6639,12 +6707,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_4, (3-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 163, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 164, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":164
+  /* "aiSelfTest/services/task.py":165
  * 
  *     _get_task_or_raise(session, task_id)
  *     query = select(TaskItem).where(TaskItem.task_id == task_id)             # <<<<<<<<<<<<<<
@@ -6652,9 +6720,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
  *     if media_type == "image":
 */
   __pyx_t_5 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_select); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 164, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_select); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 165, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 164, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 165, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __pyx_t_4 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -6674,17 +6742,17 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 164, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 165, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
   }
   __pyx_t_3 = __pyx_t_2;
   __Pyx_INCREF(__pyx_t_3);
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 164, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 165, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_task_id); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 164, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_task_id); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 165, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = PyObject_RichCompare(__pyx_t_7, __pyx_v_task_id, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 164, __pyx_L1_error)
+  __pyx_t_6 = PyObject_RichCompare(__pyx_t_7, __pyx_v_task_id, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 165, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __pyx_t_4 = 0;
   {
@@ -6693,23 +6761,23 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 164, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 165, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_query = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":166
+  /* "aiSelfTest/services/task.py":167
  *     query = select(TaskItem).where(TaskItem.task_id == task_id)
  * 
  *     if media_type == "image":             # <<<<<<<<<<<<<<
  *         query = query.where(TaskItem.file_bmp == 1)
  *     elif media_type == "video":
 */
-  __pyx_t_8 = (__Pyx_PyUnicode_Equals(__pyx_v_media_type, __pyx_mstate_global->__pyx_n_u_image, Py_EQ)); if (unlikely((__pyx_t_8 < 0))) __PYX_ERR(0, 166, __pyx_L1_error)
+  __pyx_t_8 = (__Pyx_PyUnicode_Equals(__pyx_v_media_type, __pyx_mstate_global->__pyx_n_u_image, Py_EQ)); if (unlikely((__pyx_t_8 < 0))) __PYX_ERR(0, 167, __pyx_L1_error)
   if (__pyx_t_8) {
 
-    /* "aiSelfTest/services/task.py":167
+    /* "aiSelfTest/services/task.py":168
  * 
  *     if media_type == "image":
  *         query = query.where(TaskItem.file_bmp == 1)             # <<<<<<<<<<<<<<
@@ -6718,12 +6786,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
 */
     __pyx_t_2 = __pyx_v_query;
     __Pyx_INCREF(__pyx_t_2);
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 167, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 168, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_file_bmp); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 167, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_file_bmp); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 168, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_6 = __Pyx_PyLong_EqObjC(__pyx_t_3, __pyx_mstate_global->__pyx_int_1, 1, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 167, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyLong_EqObjC(__pyx_t_3, __pyx_mstate_global->__pyx_int_1, 1, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 168, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_4 = 0;
@@ -6732,13 +6800,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
       __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_where, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 167, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 168, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
     }
     __Pyx_DECREF_SET(__pyx_v_query, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "aiSelfTest/services/task.py":166
+    /* "aiSelfTest/services/task.py":167
  *     query = select(TaskItem).where(TaskItem.task_id == task_id)
  * 
  *     if media_type == "image":             # <<<<<<<<<<<<<<
@@ -6748,17 +6816,17 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
     goto __pyx_L3;
   }
 
-  /* "aiSelfTest/services/task.py":168
+  /* "aiSelfTest/services/task.py":169
  *     if media_type == "image":
  *         query = query.where(TaskItem.file_bmp == 1)
  *     elif media_type == "video":             # <<<<<<<<<<<<<<
  *         query = query.where(TaskItem.file_bmp == 2)
  * 
 */
-  __pyx_t_8 = (__Pyx_PyUnicode_Equals(__pyx_v_media_type, __pyx_mstate_global->__pyx_n_u_video, Py_EQ)); if (unlikely((__pyx_t_8 < 0))) __PYX_ERR(0, 168, __pyx_L1_error)
+  __pyx_t_8 = (__Pyx_PyUnicode_Equals(__pyx_v_media_type, __pyx_mstate_global->__pyx_n_u_video, Py_EQ)); if (unlikely((__pyx_t_8 < 0))) __PYX_ERR(0, 169, __pyx_L1_error)
   if (__pyx_t_8) {
 
-    /* "aiSelfTest/services/task.py":169
+    /* "aiSelfTest/services/task.py":170
  *         query = query.where(TaskItem.file_bmp == 1)
  *     elif media_type == "video":
  *         query = query.where(TaskItem.file_bmp == 2)             # <<<<<<<<<<<<<<
@@ -6767,12 +6835,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
 */
     __pyx_t_6 = __pyx_v_query;
     __Pyx_INCREF(__pyx_t_6);
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 169, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 170, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_file_bmp); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 169, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_file_bmp); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 170, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyLong_EqObjC(__pyx_t_3, __pyx_mstate_global->__pyx_int_2, 2, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 169, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyLong_EqObjC(__pyx_t_3, __pyx_mstate_global->__pyx_int_2, 2, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 170, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_4 = 0;
@@ -6781,13 +6849,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
       __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_where, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 169, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 170, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
     }
     __Pyx_DECREF_SET(__pyx_v_query, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "aiSelfTest/services/task.py":168
+    /* "aiSelfTest/services/task.py":169
  *     if media_type == "image":
  *         query = query.where(TaskItem.file_bmp == 1)
  *     elif media_type == "video":             # <<<<<<<<<<<<<<
@@ -6797,7 +6865,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
   }
   __pyx_L3:;
 
-  /* "aiSelfTest/services/task.py":171
+  /* "aiSelfTest/services/task.py":172
  *         query = query.where(TaskItem.file_bmp == 2)
  * 
  *     rows = session.exec(query.order_by(TaskItem.id.desc())).all()             # <<<<<<<<<<<<<<
@@ -6808,9 +6876,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
   __Pyx_INCREF(__pyx_t_3);
   __pyx_t_5 = __pyx_v_query;
   __Pyx_INCREF(__pyx_t_5);
-  __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 171, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 172, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
-  __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 171, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 172, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
   __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
   __pyx_t_10 = __pyx_t_12;
@@ -6821,7 +6889,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
     __pyx_t_9 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_desc, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-    if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 171, __pyx_L1_error)
+    if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 172, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
   }
   __pyx_t_4 = 0;
@@ -6830,7 +6898,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
     __pyx_t_7 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_order_by, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 171, __pyx_L1_error)
+    if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 172, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
   }
   __pyx_t_4 = 0;
@@ -6839,7 +6907,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
     __pyx_t_6 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_exec, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 171, __pyx_L1_error)
+    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 172, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
   }
   __pyx_t_2 = __pyx_t_6;
@@ -6850,13 +6918,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_all, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 171, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 172, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_rows = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":172
+  /* "aiSelfTest/services/task.py":173
  * 
  *     rows = session.exec(query.order_by(TaskItem.id.desc())).all()
  *     items = [TaskItemListRow.from_model(row) for row in rows]             # <<<<<<<<<<<<<<
@@ -6864,16 +6932,16 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
  *     end = start + page_size
 */
   { /* enter inner scope */
-    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 172, __pyx_L6_error)
+    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 173, __pyx_L6_error)
     __Pyx_GOTREF(__pyx_t_1);
     if (likely(PyList_CheckExact(__pyx_v_rows)) || PyTuple_CheckExact(__pyx_v_rows)) {
       __pyx_t_6 = __pyx_v_rows; __Pyx_INCREF(__pyx_t_6);
       __pyx_t_13 = 0;
       __pyx_t_14 = NULL;
     } else {
-      __pyx_t_13 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_v_rows); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 172, __pyx_L6_error)
+      __pyx_t_13 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_v_rows); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 173, __pyx_L6_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_14 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_6); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 172, __pyx_L6_error)
+      __pyx_t_14 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_6); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 173, __pyx_L6_error)
     }
     for (;;) {
       if (likely(!__pyx_t_14)) {
@@ -6881,7 +6949,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
           {
             Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_6);
             #if !CYTHON_ASSUME_SAFE_SIZE
-            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 172, __pyx_L6_error)
+            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 173, __pyx_L6_error)
             #endif
             if (__pyx_t_13 >= __pyx_temp) break;
           }
@@ -6891,7 +6959,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
           {
             Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_6);
             #if !CYTHON_ASSUME_SAFE_SIZE
-            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 172, __pyx_L6_error)
+            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 173, __pyx_L6_error)
             #endif
             if (__pyx_t_13 >= __pyx_temp) break;
           }
@@ -6902,13 +6970,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
           #endif
           ++__pyx_t_13;
         }
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 172, __pyx_L6_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 173, __pyx_L6_error)
       } else {
         __pyx_t_2 = __pyx_t_14(__pyx_t_6);
         if (unlikely(!__pyx_t_2)) {
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
-            if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 172, __pyx_L6_error)
+            if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 173, __pyx_L6_error)
             PyErr_Clear();
           }
           break;
@@ -6918,9 +6986,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
       __Pyx_XDECREF_SET(__pyx_8genexpr2__pyx_v_row, __pyx_t_2);
       __pyx_t_2 = 0;
       __pyx_t_7 = NULL;
-      __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_TaskItemListRow); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 172, __pyx_L6_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_TaskItemListRow); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 173, __pyx_L6_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_from_model); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 172, __pyx_L6_error)
+      __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_from_model); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 173, __pyx_L6_error)
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __pyx_t_4 = 1;
@@ -6940,10 +7008,10 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
         __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_9, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
         __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 172, __pyx_L6_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 173, __pyx_L6_error)
         __Pyx_GOTREF(__pyx_t_2);
       }
-      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_2))) __PYX_ERR(0, 172, __pyx_L6_error)
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_2))) __PYX_ERR(0, 173, __pyx_L6_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     }
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
@@ -6957,34 +7025,34 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
   __pyx_v_items = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":173
+  /* "aiSelfTest/services/task.py":174
  *     rows = session.exec(query.order_by(TaskItem.id.desc())).all()
  *     items = [TaskItemListRow.from_model(row) for row in rows]
  *     start = (page - 1) * page_size             # <<<<<<<<<<<<<<
  *     end = start + page_size
  *     paged_items = items[start:end]
 */
-  __pyx_t_1 = __Pyx_PyLong_SubtractObjC(__pyx_v_page, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 173, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyLong_SubtractObjC(__pyx_v_page, __pyx_mstate_global->__pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 174, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_6 = PyNumber_Multiply(__pyx_t_1, __pyx_v_page_size); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 173, __pyx_L1_error)
+  __pyx_t_6 = PyNumber_Multiply(__pyx_t_1, __pyx_v_page_size); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 174, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_start = ((PyObject*)__pyx_t_6);
   __pyx_t_6 = 0;
 
-  /* "aiSelfTest/services/task.py":174
+  /* "aiSelfTest/services/task.py":175
  *     items = [TaskItemListRow.from_model(row) for row in rows]
  *     start = (page - 1) * page_size
  *     end = start + page_size             # <<<<<<<<<<<<<<
  *     paged_items = items[start:end]
  *     return TaskItemListData(items=paged_items, total=len(items), page=page, page_size=page_size)
 */
-  __pyx_t_6 = PyNumber_Add(__pyx_v_start, __pyx_v_page_size); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 174, __pyx_L1_error)
+  __pyx_t_6 = PyNumber_Add(__pyx_v_start, __pyx_v_page_size); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 175, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_v_end = ((PyObject*)__pyx_t_6);
   __pyx_t_6 = 0;
 
-  /* "aiSelfTest/services/task.py":175
+  /* "aiSelfTest/services/task.py":176
  *     start = (page - 1) * page_size
  *     end = start + page_size
  *     paged_items = items[start:end]             # <<<<<<<<<<<<<<
@@ -6997,7 +7065,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
   if (__pyx_t_8) {
     __pyx_t_13 = 0;
   } else {
-    __pyx_t_16 = __Pyx_PyIndex_AsSsize_t(__pyx_t_15); if (unlikely((__pyx_t_16 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 175, __pyx_L1_error)
+    __pyx_t_16 = __Pyx_PyIndex_AsSsize_t(__pyx_t_15); if (unlikely((__pyx_t_16 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 176, __pyx_L1_error)
     __pyx_t_13 = __pyx_t_16;
   }
   __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
@@ -7007,16 +7075,16 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
   if (__pyx_t_8) {
     __pyx_t_16 = PY_SSIZE_T_MAX;
   } else {
-    __pyx_t_17 = __Pyx_PyIndex_AsSsize_t(__pyx_t_15); if (unlikely((__pyx_t_17 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 175, __pyx_L1_error)
+    __pyx_t_17 = __Pyx_PyIndex_AsSsize_t(__pyx_t_15); if (unlikely((__pyx_t_17 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 176, __pyx_L1_error)
     __pyx_t_16 = __pyx_t_17;
   }
   __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
-  __pyx_t_6 = __Pyx_PyList_GetSlice(__pyx_v_items, __pyx_t_13, __pyx_t_16); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 175, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyList_GetSlice(__pyx_v_items, __pyx_t_13, __pyx_t_16); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 176, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_v_paged_items = ((PyObject*)__pyx_t_6);
   __pyx_t_6 = 0;
 
-  /* "aiSelfTest/services/task.py":176
+  /* "aiSelfTest/services/task.py":177
  *     end = start + page_size
  *     paged_items = items[start:end]
  *     return TaskItemListData(items=paged_items, total=len(items), page=page, page_size=page_size)             # <<<<<<<<<<<<<<
@@ -7025,10 +7093,10 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
 */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_TaskItemListData); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 176, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_TaskItemListData); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 177, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_16 = __Pyx_PyList_GET_SIZE(__pyx_v_items); if (unlikely(__pyx_t_16 == ((Py_ssize_t)-1))) __PYX_ERR(0, 176, __pyx_L1_error)
-  __pyx_t_9 = PyLong_FromSsize_t(__pyx_t_16); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 176, __pyx_L1_error)
+  __pyx_t_16 = __Pyx_PyList_GET_SIZE(__pyx_v_items); if (unlikely(__pyx_t_16 == ((Py_ssize_t)-1))) __PYX_ERR(0, 177, __pyx_L1_error)
+  __pyx_t_9 = PyLong_FromSsize_t(__pyx_t_16); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 177, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
   __pyx_t_4 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -7044,25 +7112,25 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
   #endif
   {
     PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 4 : 0)] = {__pyx_t_1, NULL};
-    __pyx_t_7 = __Pyx_MakeVectorcallBuilderKwds(4); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 176, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_MakeVectorcallBuilderKwds(4); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 177, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_items, __pyx_v_paged_items, __pyx_t_7, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 176, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_total, __pyx_t_9, __pyx_t_7, __pyx_callargs+1, 1) < (0)) __PYX_ERR(0, 176, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_page, __pyx_v_page, __pyx_t_7, __pyx_callargs+1, 2) < (0)) __PYX_ERR(0, 176, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_page_size, __pyx_v_page_size, __pyx_t_7, __pyx_callargs+1, 3) < (0)) __PYX_ERR(0, 176, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_items, __pyx_v_paged_items, __pyx_t_7, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 177, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_total, __pyx_t_9, __pyx_t_7, __pyx_callargs+1, 1) < (0)) __PYX_ERR(0, 177, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_page, __pyx_v_page, __pyx_t_7, __pyx_callargs+1, 2) < (0)) __PYX_ERR(0, 177, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_page_size, __pyx_v_page_size, __pyx_t_7, __pyx_callargs+1, 3) < (0)) __PYX_ERR(0, 177, __pyx_L1_error)
     __pyx_t_6 = __Pyx_Object_Vectorcall_CallFromBuilder((PyObject*)__pyx_t_2, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_7);
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 176, __pyx_L1_error)
+    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 177, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
   }
   __pyx_r = __pyx_t_6;
   __pyx_t_6 = 0;
   goto __pyx_L0;
 
-  /* "aiSelfTest/services/task.py":153
+  /* "aiSelfTest/services/task.py":154
  * 
  * 
  * def list_task_items(             # <<<<<<<<<<<<<<
@@ -7098,7 +7166,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_16list_task_items(CYTHON_
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task.py":179
+/* "aiSelfTest/services/task.py":180
  * 
  * 
  * def get_task_item_detail(session: Session, task_item_id: int) -> TaskItemDetailData:             # <<<<<<<<<<<<<<
@@ -7147,40 +7215,40 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_session,&__pyx_mstate_global->__pyx_n_u_task_item_id,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 179, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 180, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 179, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 180, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 179, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 180, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "get_task_item_detail", 0) < (0)) __PYX_ERR(0, 179, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "get_task_item_detail", 0) < (0)) __PYX_ERR(0, 180, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("get_task_item_detail", 1, 2, 2, i); __PYX_ERR(0, 179, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("get_task_item_detail", 1, 2, 2, i); __PYX_ERR(0, 180, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 179, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 180, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 179, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 180, __pyx_L3_error)
     }
     __pyx_v_session = values[0];
-    if (__Pyx_PyInt_FromNumber(&values[1], "task_item_id", 0) < (0)) __PYX_ERR(0, 179, __pyx_L3_error)
+    if (__Pyx_PyInt_FromNumber(&values[1], "task_item_id", 0) < (0)) __PYX_ERR(0, 180, __pyx_L3_error)
     __pyx_v_task_item_id = ((PyObject*)values[1]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_task_item_detail", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 179, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_task_item_detail", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 180, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -7191,7 +7259,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_item_id), (&PyLong_Type), 0, "task_item_id", 2))) __PYX_ERR(0, 179, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_item_id), (&PyLong_Type), 0, "task_item_id", 2))) __PYX_ERR(0, 180, __pyx_L1_error)
   __pyx_r = __pyx_pf_10aiSelfTest_8services_4task_18get_task_item_detail(__pyx_self, __pyx_v_session, __pyx_v_task_item_id);
 
   /* function exit code */
@@ -7238,7 +7306,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_18get_task_item_detail(CY
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("get_task_item_detail", 0);
 
-  /* "aiSelfTest/services/task.py":182
+  /* "aiSelfTest/services/task.py":183
  *     """ TaskItem """
  * 
  *     task_item = _get_task_item_or_raise(session, task_item_id)             # <<<<<<<<<<<<<<
@@ -7246,7 +7314,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_18get_task_item_detail(CY
  *         select(TaskItemData).where(TaskItemData.task_item_id == task_item_id).order_by(TaskItemData.id.desc())
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_get_task_item_or_raise); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 182, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_get_task_item_or_raise); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 183, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -7265,13 +7333,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_18get_task_item_detail(CY
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_4, (3-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 182, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 183, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_task_item = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":183
+  /* "aiSelfTest/services/task.py":184
  * 
  *     task_item = _get_task_item_or_raise(session, task_item_id)
  *     data_rows = session.exec(             # <<<<<<<<<<<<<<
@@ -7281,7 +7349,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_18get_task_item_detail(CY
   __pyx_t_5 = __pyx_v_session;
   __Pyx_INCREF(__pyx_t_5);
 
-  /* "aiSelfTest/services/task.py":184
+  /* "aiSelfTest/services/task.py":185
  *     task_item = _get_task_item_or_raise(session, task_item_id)
  *     data_rows = session.exec(
  *         select(TaskItemData).where(TaskItemData.task_item_id == task_item_id).order_by(TaskItemData.id.desc())             # <<<<<<<<<<<<<<
@@ -7289,9 +7357,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_18get_task_item_detail(CY
  *     review_rows = [TaskItemReviewRow.from_model(row) for row in data_rows]
 */
   __pyx_t_11 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_select); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 184, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_select); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 185, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
-  __Pyx_GetModuleGlobalName(__pyx_t_13, __pyx_mstate_global->__pyx_n_u_TaskItemData); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 184, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_13, __pyx_mstate_global->__pyx_n_u_TaskItemData); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 185, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_13);
   __pyx_t_4 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -7311,17 +7379,17 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_18get_task_item_detail(CY
     __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-    if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 184, __pyx_L1_error)
+    if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 185, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
   }
   __pyx_t_9 = __pyx_t_10;
   __Pyx_INCREF(__pyx_t_9);
-  __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_TaskItemData); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 184, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_TaskItemData); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 185, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
-  __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_task_item_id); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 184, __pyx_L1_error)
+  __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_task_item_id); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 185, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_13);
   __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-  __pyx_t_12 = PyObject_RichCompare(__pyx_t_13, __pyx_v_task_item_id, Py_EQ); __Pyx_XGOTREF(__pyx_t_12); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 184, __pyx_L1_error)
+  __pyx_t_12 = PyObject_RichCompare(__pyx_t_13, __pyx_v_task_item_id, Py_EQ); __Pyx_XGOTREF(__pyx_t_12); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 185, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
   __pyx_t_4 = 0;
   {
@@ -7330,14 +7398,14 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_18get_task_item_detail(CY
     __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 184, __pyx_L1_error)
+    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 185, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
   }
   __pyx_t_7 = __pyx_t_8;
   __Pyx_INCREF(__pyx_t_7);
-  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_TaskItemData); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 184, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_TaskItemData); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 185, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 184, __pyx_L1_error)
+  __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 185, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_13);
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
   __pyx_t_12 = __pyx_t_13;
@@ -7348,7 +7416,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_18get_task_item_detail(CY
     __pyx_t_10 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_desc, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-    if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 184, __pyx_L1_error)
+    if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 185, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
   }
   __pyx_t_4 = 0;
@@ -7358,7 +7426,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_18get_task_item_detail(CY
     __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 184, __pyx_L1_error)
+    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 185, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
   }
   __pyx_t_4 = 0;
@@ -7367,7 +7435,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_18get_task_item_detail(CY
     __pyx_t_2 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_exec, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 183, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 184, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
   }
   __pyx_t_3 = __pyx_t_2;
@@ -7378,13 +7446,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_18get_task_item_detail(CY
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_all, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 185, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 186, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_data_rows = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":186
+  /* "aiSelfTest/services/task.py":187
  *         select(TaskItemData).where(TaskItemData.task_item_id == task_item_id).order_by(TaskItemData.id.desc())
  *     ).all()
  *     review_rows = [TaskItemReviewRow.from_model(row) for row in data_rows]             # <<<<<<<<<<<<<<
@@ -7392,16 +7460,16 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_18get_task_item_detail(CY
  * 
 */
   { /* enter inner scope */
-    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 186, __pyx_L5_error)
+    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 187, __pyx_L5_error)
     __Pyx_GOTREF(__pyx_t_1);
     if (likely(PyList_CheckExact(__pyx_v_data_rows)) || PyTuple_CheckExact(__pyx_v_data_rows)) {
       __pyx_t_2 = __pyx_v_data_rows; __Pyx_INCREF(__pyx_t_2);
       __pyx_t_14 = 0;
       __pyx_t_15 = NULL;
     } else {
-      __pyx_t_14 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_data_rows); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 186, __pyx_L5_error)
+      __pyx_t_14 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_data_rows); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 187, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_15 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 186, __pyx_L5_error)
+      __pyx_t_15 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 187, __pyx_L5_error)
     }
     for (;;) {
       if (likely(!__pyx_t_15)) {
@@ -7409,7 +7477,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_18get_task_item_detail(CY
           {
             Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_2);
             #if !CYTHON_ASSUME_SAFE_SIZE
-            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 186, __pyx_L5_error)
+            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 187, __pyx_L5_error)
             #endif
             if (__pyx_t_14 >= __pyx_temp) break;
           }
@@ -7419,7 +7487,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_18get_task_item_detail(CY
           {
             Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_2);
             #if !CYTHON_ASSUME_SAFE_SIZE
-            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 186, __pyx_L5_error)
+            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 187, __pyx_L5_error)
             #endif
             if (__pyx_t_14 >= __pyx_temp) break;
           }
@@ -7430,13 +7498,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_18get_task_item_detail(CY
           #endif
           ++__pyx_t_14;
         }
-        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 186, __pyx_L5_error)
+        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 187, __pyx_L5_error)
       } else {
         __pyx_t_3 = __pyx_t_15(__pyx_t_2);
         if (unlikely(!__pyx_t_3)) {
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
-            if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 186, __pyx_L5_error)
+            if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 187, __pyx_L5_error)
             PyErr_Clear();
           }
           break;
@@ -7446,9 +7514,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_18get_task_item_detail(CY
       __Pyx_XDECREF_SET(__pyx_8genexpr3__pyx_v_row, __pyx_t_3);
       __pyx_t_3 = 0;
       __pyx_t_6 = NULL;
-      __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_TaskItemReviewRow); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 186, __pyx_L5_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_TaskItemReviewRow); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 187, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_from_model); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 186, __pyx_L5_error)
+      __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_from_model); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 187, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __pyx_t_4 = 1;
@@ -7468,10 +7536,10 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_18get_task_item_detail(CY
         __pyx_t_3 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_8, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 186, __pyx_L5_error)
+        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 187, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_3);
       }
-      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_3))) __PYX_ERR(0, 186, __pyx_L5_error)
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_3))) __PYX_ERR(0, 187, __pyx_L5_error)
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -7485,7 +7553,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_18get_task_item_detail(CY
   __pyx_v_review_rows = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":187
+  /* "aiSelfTest/services/task.py":188
  *     ).all()
  *     review_rows = [TaskItemReviewRow.from_model(row) for row in data_rows]
  *     return TaskItemDetailData.from_model(task_item, review_rows=review_rows)             # <<<<<<<<<<<<<<
@@ -7494,9 +7562,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_18get_task_item_detail(CY
 */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_TaskItemDetailData); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 187, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_TaskItemDetailData); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 188, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_from_model); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 187, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_from_model); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 188, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_4 = 1;
@@ -7513,21 +7581,21 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_18get_task_item_detail(CY
   #endif
   {
     PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 1 : 0)] = {__pyx_t_2, __pyx_v_task_item};
-    __pyx_t_3 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 187, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 188, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_review_rows, __pyx_v_review_rows, __pyx_t_3, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 187, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_review_rows, __pyx_v_review_rows, __pyx_t_3, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 188, __pyx_L1_error)
     __pyx_t_1 = __Pyx_Object_Vectorcall_CallFromBuilder((PyObject*)__pyx_t_8, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_3);
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 187, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 188, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "aiSelfTest/services/task.py":179
+  /* "aiSelfTest/services/task.py":180
  * 
  * 
  * def get_task_item_detail(session: Session, task_item_id: int) -> TaskItemDetailData:             # <<<<<<<<<<<<<<
@@ -7561,7 +7629,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_18get_task_item_detail(CY
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task.py":190
+/* "aiSelfTest/services/task.py":191
  * 
  * 
  * def confirm_task_item(             # <<<<<<<<<<<<<<
@@ -7610,39 +7678,39 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_session,&__pyx_mstate_global->__pyx_n_u_payload,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 190, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 191, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 190, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 191, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 190, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 191, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "confirm_task_item", 0) < (0)) __PYX_ERR(0, 190, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "confirm_task_item", 0) < (0)) __PYX_ERR(0, 191, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("confirm_task_item", 1, 2, 2, i); __PYX_ERR(0, 190, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("confirm_task_item", 1, 2, 2, i); __PYX_ERR(0, 191, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 190, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 191, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 190, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 191, __pyx_L3_error)
     }
     __pyx_v_session = values[0];
     __pyx_v_payload = values[1];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("confirm_task_item", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 190, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("confirm_task_item", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 191, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -7680,7 +7748,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_20confirm_task_item(CYTHO
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("confirm_task_item", 0);
 
-  /* "aiSelfTest/services/task.py":196
+  /* "aiSelfTest/services/task.py":197
  *     """ TaskItem"""
  * 
  *     task_item = _get_task_item_or_raise(session, payload.task_item_id)             # <<<<<<<<<<<<<<
@@ -7688,9 +7756,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_20confirm_task_item(CYTHO
  *     task_item.confirmed_at = datetime.now()
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_get_task_item_or_raise); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 196, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_get_task_item_or_raise); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 197, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_payload, __pyx_mstate_global->__pyx_n_u_task_item_id); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 196, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_payload, __pyx_mstate_global->__pyx_n_u_task_item_id); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 197, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -7710,22 +7778,22 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_20confirm_task_item(CYTHO
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 196, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 197, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_task_item = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":197
+  /* "aiSelfTest/services/task.py":198
  * 
  *     task_item = _get_task_item_or_raise(session, payload.task_item_id)
  *     task_item.confirm_state = "manual_confirmed"             # <<<<<<<<<<<<<<
  *     task_item.confirmed_at = datetime.now()
  *     task_item.updated_at = datetime.now()
 */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_confirm_state, __pyx_mstate_global->__pyx_n_u_manual_confirmed) < (0)) __PYX_ERR(0, 197, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_confirm_state, __pyx_mstate_global->__pyx_n_u_manual_confirmed) < (0)) __PYX_ERR(0, 198, __pyx_L1_error)
 
-  /* "aiSelfTest/services/task.py":198
+  /* "aiSelfTest/services/task.py":199
  *     task_item = _get_task_item_or_raise(session, payload.task_item_id)
  *     task_item.confirm_state = "manual_confirmed"
  *     task_item.confirmed_at = datetime.now()             # <<<<<<<<<<<<<<
@@ -7733,9 +7801,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_20confirm_task_item(CYTHO
  *     session.add(task_item)
 */
   __pyx_t_3 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_datetime); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 198, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_datetime); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 199, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_now); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 198, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_now); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 199, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_5 = 1;
@@ -7755,13 +7823,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_20confirm_task_item(CYTHO
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_2, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 198, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 199, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_confirmed_at, __pyx_t_1) < (0)) __PYX_ERR(0, 198, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_confirmed_at, __pyx_t_1) < (0)) __PYX_ERR(0, 199, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":199
+  /* "aiSelfTest/services/task.py":200
  *     task_item.confirm_state = "manual_confirmed"
  *     task_item.confirmed_at = datetime.now()
  *     task_item.updated_at = datetime.now()             # <<<<<<<<<<<<<<
@@ -7769,9 +7837,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_20confirm_task_item(CYTHO
  *     session.commit()
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_datetime); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 199, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_datetime); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 200, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_now); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 199, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_now); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 200, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_5 = 1;
@@ -7791,13 +7859,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_20confirm_task_item(CYTHO
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 199, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 200, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_updated_at, __pyx_t_1) < (0)) __PYX_ERR(0, 199, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_updated_at, __pyx_t_1) < (0)) __PYX_ERR(0, 200, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":200
+  /* "aiSelfTest/services/task.py":201
  *     task_item.confirmed_at = datetime.now()
  *     task_item.updated_at = datetime.now()
  *     session.add(task_item)             # <<<<<<<<<<<<<<
@@ -7811,12 +7879,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_20confirm_task_item(CYTHO
     PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_v_task_item};
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_add, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 200, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 201, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":201
+  /* "aiSelfTest/services/task.py":202
  *     task_item.updated_at = datetime.now()
  *     session.add(task_item)
  *     session.commit()             # <<<<<<<<<<<<<<
@@ -7830,12 +7898,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_20confirm_task_item(CYTHO
     PyObject *__pyx_callargs[2] = {__pyx_t_4, NULL};
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_commit, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 201, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 202, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":202
+  /* "aiSelfTest/services/task.py":203
  *     session.add(task_item)
  *     session.commit()
  *     session.refresh(task_item)             # <<<<<<<<<<<<<<
@@ -7849,12 +7917,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_20confirm_task_item(CYTHO
     PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_v_task_item};
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_refresh, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 202, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 203, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":203
+  /* "aiSelfTest/services/task.py":204
  *     session.commit()
  *     session.refresh(task_item)
  *     return TaskItemActionData(id=task_item.id or 0, confirm_state=task_item.confirm_state)             # <<<<<<<<<<<<<<
@@ -7863,11 +7931,11 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_20confirm_task_item(CYTHO
 */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_4 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_TaskItemActionData); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 203, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_TaskItemActionData); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 204, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 203, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 204, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely((__pyx_t_7 < 0))) __PYX_ERR(0, 203, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely((__pyx_t_7 < 0))) __PYX_ERR(0, 204, __pyx_L1_error)
   if (!__pyx_t_7) {
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   } else {
@@ -7876,12 +7944,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_20confirm_task_item(CYTHO
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     goto __pyx_L3_bool_binop_done;
   }
-  __pyx_t_6 = __Pyx_PyLong_From_long(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 203, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyLong_From_long(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 204, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_t_3 = __pyx_t_6;
   __pyx_t_6 = 0;
   __pyx_L3_bool_binop_done:;
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_confirm_state); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 203, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_confirm_state); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 204, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_t_5 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -7897,24 +7965,24 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_20confirm_task_item(CYTHO
   #endif
   {
     PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 2 : 0)] = {__pyx_t_4, NULL};
-    __pyx_t_8 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 203, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 204, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_id, __pyx_t_3, __pyx_t_8, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 203, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_confirm_state, __pyx_t_6, __pyx_t_8, __pyx_callargs+1, 1) < (0)) __PYX_ERR(0, 203, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_id, __pyx_t_3, __pyx_t_8, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 204, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_confirm_state, __pyx_t_6, __pyx_t_8, __pyx_callargs+1, 1) < (0)) __PYX_ERR(0, 204, __pyx_L1_error)
     __pyx_t_1 = __Pyx_Object_Vectorcall_CallFromBuilder((PyObject*)__pyx_t_2, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_8);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 203, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 204, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "aiSelfTest/services/task.py":190
+  /* "aiSelfTest/services/task.py":191
  * 
  * 
  * def confirm_task_item(             # <<<<<<<<<<<<<<
@@ -7939,7 +8007,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_20confirm_task_item(CYTHO
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task.py":206
+/* "aiSelfTest/services/task.py":207
  * 
  * 
  * def reject_task_item(             # <<<<<<<<<<<<<<
@@ -7988,39 +8056,39 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_session,&__pyx_mstate_global->__pyx_n_u_payload,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 206, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 207, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 206, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 207, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 206, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 207, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "reject_task_item", 0) < (0)) __PYX_ERR(0, 206, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "reject_task_item", 0) < (0)) __PYX_ERR(0, 207, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("reject_task_item", 1, 2, 2, i); __PYX_ERR(0, 206, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("reject_task_item", 1, 2, 2, i); __PYX_ERR(0, 207, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 206, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 207, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 206, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 207, __pyx_L3_error)
     }
     __pyx_v_session = values[0];
     __pyx_v_payload = values[1];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("reject_task_item", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 206, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("reject_task_item", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 207, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -8058,7 +8126,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_22reject_task_item(CYTHON
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("reject_task_item", 0);
 
-  /* "aiSelfTest/services/task.py":212
+  /* "aiSelfTest/services/task.py":213
  *     """ TaskItem"""
  * 
  *     task_item = _get_task_item_or_raise(session, payload.task_item_id)             # <<<<<<<<<<<<<<
@@ -8066,9 +8134,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_22reject_task_item(CYTHON
  *     task_item.updated_at = datetime.now()
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_get_task_item_or_raise); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 212, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_get_task_item_or_raise); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_payload, __pyx_mstate_global->__pyx_n_u_task_item_id); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 212, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_payload, __pyx_mstate_global->__pyx_n_u_task_item_id); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -8088,22 +8156,22 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_22reject_task_item(CYTHON
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 212, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 213, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_task_item = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":213
+  /* "aiSelfTest/services/task.py":214
  * 
  *     task_item = _get_task_item_or_raise(session, payload.task_item_id)
  *     task_item.confirm_state = "rejected"             # <<<<<<<<<<<<<<
  *     task_item.updated_at = datetime.now()
  *     session.add(task_item)
 */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_confirm_state, __pyx_mstate_global->__pyx_n_u_rejected) < (0)) __PYX_ERR(0, 213, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_confirm_state, __pyx_mstate_global->__pyx_n_u_rejected) < (0)) __PYX_ERR(0, 214, __pyx_L1_error)
 
-  /* "aiSelfTest/services/task.py":214
+  /* "aiSelfTest/services/task.py":215
  *     task_item = _get_task_item_or_raise(session, payload.task_item_id)
  *     task_item.confirm_state = "rejected"
  *     task_item.updated_at = datetime.now()             # <<<<<<<<<<<<<<
@@ -8111,9 +8179,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_22reject_task_item(CYTHON
  *     session.commit()
 */
   __pyx_t_3 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_datetime); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 214, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_datetime); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 215, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_now); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 214, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_now); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 215, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_5 = 1;
@@ -8133,13 +8201,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_22reject_task_item(CYTHON
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_2, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 214, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 215, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_updated_at, __pyx_t_1) < (0)) __PYX_ERR(0, 214, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_updated_at, __pyx_t_1) < (0)) __PYX_ERR(0, 215, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":215
+  /* "aiSelfTest/services/task.py":216
  *     task_item.confirm_state = "rejected"
  *     task_item.updated_at = datetime.now()
  *     session.add(task_item)             # <<<<<<<<<<<<<<
@@ -8153,12 +8221,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_22reject_task_item(CYTHON
     PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_v_task_item};
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_add, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 215, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 216, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":216
+  /* "aiSelfTest/services/task.py":217
  *     task_item.updated_at = datetime.now()
  *     session.add(task_item)
  *     session.commit()             # <<<<<<<<<<<<<<
@@ -8172,12 +8240,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_22reject_task_item(CYTHON
     PyObject *__pyx_callargs[2] = {__pyx_t_2, NULL};
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_commit, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 216, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 217, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":217
+  /* "aiSelfTest/services/task.py":218
  *     session.add(task_item)
  *     session.commit()
  *     session.refresh(task_item)             # <<<<<<<<<<<<<<
@@ -8191,12 +8259,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_22reject_task_item(CYTHON
     PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_v_task_item};
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_refresh, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 217, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 218, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":218
+  /* "aiSelfTest/services/task.py":219
  *     session.commit()
  *     session.refresh(task_item)
  *     return TaskItemActionData(id=task_item.id or 0, confirm_state=task_item.confirm_state)             # <<<<<<<<<<<<<<
@@ -8205,11 +8273,11 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_22reject_task_item(CYTHON
 */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_TaskItemActionData); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 218, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_TaskItemActionData); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 219, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 218, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 219, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely((__pyx_t_7 < 0))) __PYX_ERR(0, 218, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely((__pyx_t_7 < 0))) __PYX_ERR(0, 219, __pyx_L1_error)
   if (!__pyx_t_7) {
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   } else {
@@ -8218,12 +8286,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_22reject_task_item(CYTHON
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     goto __pyx_L3_bool_binop_done;
   }
-  __pyx_t_6 = __Pyx_PyLong_From_long(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 218, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyLong_From_long(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 219, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_t_4 = __pyx_t_6;
   __pyx_t_6 = 0;
   __pyx_L3_bool_binop_done:;
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_confirm_state); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 218, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_confirm_state); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 219, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_t_5 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -8239,24 +8307,24 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_22reject_task_item(CYTHON
   #endif
   {
     PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 2 : 0)] = {__pyx_t_2, NULL};
-    __pyx_t_8 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 218, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 219, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_id, __pyx_t_4, __pyx_t_8, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 218, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_confirm_state, __pyx_t_6, __pyx_t_8, __pyx_callargs+1, 1) < (0)) __PYX_ERR(0, 218, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_id, __pyx_t_4, __pyx_t_8, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 219, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_confirm_state, __pyx_t_6, __pyx_t_8, __pyx_callargs+1, 1) < (0)) __PYX_ERR(0, 219, __pyx_L1_error)
     __pyx_t_1 = __Pyx_Object_Vectorcall_CallFromBuilder((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_8);
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 218, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 219, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "aiSelfTest/services/task.py":206
+  /* "aiSelfTest/services/task.py":207
  * 
  * 
  * def reject_task_item(             # <<<<<<<<<<<<<<
@@ -8281,7 +8349,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_22reject_task_item(CYTHON
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task.py":221
+/* "aiSelfTest/services/task.py":222
  * 
  * 
  * def delete_task_item_rows(             # <<<<<<<<<<<<<<
@@ -8330,39 +8398,39 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_session,&__pyx_mstate_global->__pyx_n_u_payload,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 221, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 222, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 221, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 222, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 221, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 222, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "delete_task_item_rows", 0) < (0)) __PYX_ERR(0, 221, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "delete_task_item_rows", 0) < (0)) __PYX_ERR(0, 222, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("delete_task_item_rows", 1, 2, 2, i); __PYX_ERR(0, 221, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("delete_task_item_rows", 1, 2, 2, i); __PYX_ERR(0, 222, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 221, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 222, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 221, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 222, __pyx_L3_error)
     }
     __pyx_v_session = values[0];
     __pyx_v_payload = values[1];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("delete_task_item_rows", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 221, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("delete_task_item_rows", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 222, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -8409,7 +8477,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_24delete_task_item_rows(C
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("delete_task_item_rows", 0);
 
-  /* "aiSelfTest/services/task.py":227
+  /* "aiSelfTest/services/task.py":228
  *     """ TaskItem"""
  * 
  *     task_item = _get_task_item_or_raise(session, payload.task_item_id)             # <<<<<<<<<<<<<<
@@ -8417,9 +8485,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_24delete_task_item_rows(C
  *         rows = session.exec(
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_get_task_item_or_raise); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 227, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_get_task_item_or_raise); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 228, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_payload, __pyx_mstate_global->__pyx_n_u_task_item_id); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 227, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_payload, __pyx_mstate_global->__pyx_n_u_task_item_id); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 228, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -8439,26 +8507,26 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_24delete_task_item_rows(C
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 227, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 228, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_task_item = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":228
+  /* "aiSelfTest/services/task.py":229
  * 
  *     task_item = _get_task_item_or_raise(session, payload.task_item_id)
  *     if payload.task_item_data_ids:             # <<<<<<<<<<<<<<
  *         rows = session.exec(
  *             select(TaskItemData).where(TaskItemData.id.in_(payload.task_item_data_ids))
 */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_payload, __pyx_mstate_global->__pyx_n_u_task_item_data_ids); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 228, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_payload, __pyx_mstate_global->__pyx_n_u_task_item_data_ids); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 229, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 228, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 229, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_6) {
 
-    /* "aiSelfTest/services/task.py":229
+    /* "aiSelfTest/services/task.py":230
  *     task_item = _get_task_item_or_raise(session, payload.task_item_id)
  *     if payload.task_item_data_ids:
  *         rows = session.exec(             # <<<<<<<<<<<<<<
@@ -8468,7 +8536,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_24delete_task_item_rows(C
     __pyx_t_2 = __pyx_v_session;
     __Pyx_INCREF(__pyx_t_2);
 
-    /* "aiSelfTest/services/task.py":230
+    /* "aiSelfTest/services/task.py":231
  *     if payload.task_item_data_ids:
  *         rows = session.exec(
  *             select(TaskItemData).where(TaskItemData.id.in_(payload.task_item_data_ids))             # <<<<<<<<<<<<<<
@@ -8476,9 +8544,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_24delete_task_item_rows(C
  *         for row in rows:
 */
     __pyx_t_10 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_select); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 230, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_select); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 231, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_11);
-    __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_TaskItemData); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 230, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_TaskItemData); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 231, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_12);
     __pyx_t_5 = 1;
     #if CYTHON_UNPACK_METHODS
@@ -8498,19 +8566,19 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_24delete_task_item_rows(C
       __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
       __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
       __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-      if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 230, __pyx_L1_error)
+      if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 231, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
     }
     __pyx_t_8 = __pyx_t_9;
     __Pyx_INCREF(__pyx_t_8);
-    __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_TaskItemData); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 230, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_TaskItemData); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 231, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
-    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 230, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 231, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     __pyx_t_12 = __pyx_t_13;
     __Pyx_INCREF(__pyx_t_12);
-    __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_payload, __pyx_mstate_global->__pyx_n_u_task_item_data_ids); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 230, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_payload, __pyx_mstate_global->__pyx_n_u_task_item_data_ids); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 231, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __pyx_t_5 = 0;
     {
@@ -8519,7 +8587,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_24delete_task_item_rows(C
       __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-      if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 230, __pyx_L1_error)
+      if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 231, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_11);
     }
     __pyx_t_5 = 0;
@@ -8529,7 +8597,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_24delete_task_item_rows(C
       __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
       __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-      if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 230, __pyx_L1_error)
+      if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 231, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
     }
     __pyx_t_5 = 0;
@@ -8538,7 +8606,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_24delete_task_item_rows(C
       __pyx_t_4 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_exec, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 229, __pyx_L1_error)
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 230, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
     }
     __pyx_t_3 = __pyx_t_4;
@@ -8549,13 +8617,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_24delete_task_item_rows(C
       __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_all, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 231, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 232, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
     }
     __pyx_v_rows = __pyx_t_1;
     __pyx_t_1 = 0;
 
-    /* "aiSelfTest/services/task.py":232
+    /* "aiSelfTest/services/task.py":233
  *             select(TaskItemData).where(TaskItemData.id.in_(payload.task_item_data_ids))
  *         ).all()
  *         for row in rows:             # <<<<<<<<<<<<<<
@@ -8567,9 +8635,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_24delete_task_item_rows(C
       __pyx_t_14 = 0;
       __pyx_t_15 = NULL;
     } else {
-      __pyx_t_14 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_rows); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 232, __pyx_L1_error)
+      __pyx_t_14 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_rows); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 233, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_15 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_1); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 232, __pyx_L1_error)
+      __pyx_t_15 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_1); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 233, __pyx_L1_error)
     }
     for (;;) {
       if (likely(!__pyx_t_15)) {
@@ -8577,7 +8645,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_24delete_task_item_rows(C
           {
             Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_1);
             #if !CYTHON_ASSUME_SAFE_SIZE
-            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 232, __pyx_L1_error)
+            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 233, __pyx_L1_error)
             #endif
             if (__pyx_t_14 >= __pyx_temp) break;
           }
@@ -8587,7 +8655,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_24delete_task_item_rows(C
           {
             Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_1);
             #if !CYTHON_ASSUME_SAFE_SIZE
-            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 232, __pyx_L1_error)
+            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 233, __pyx_L1_error)
             #endif
             if (__pyx_t_14 >= __pyx_temp) break;
           }
@@ -8598,13 +8666,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_24delete_task_item_rows(C
           #endif
           ++__pyx_t_14;
         }
-        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 232, __pyx_L1_error)
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 233, __pyx_L1_error)
       } else {
         __pyx_t_4 = __pyx_t_15(__pyx_t_1);
         if (unlikely(!__pyx_t_4)) {
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
-            if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 232, __pyx_L1_error)
+            if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 233, __pyx_L1_error)
             PyErr_Clear();
           }
           break;
@@ -8614,25 +8682,25 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_24delete_task_item_rows(C
       __Pyx_XDECREF_SET(__pyx_v_row, __pyx_t_4);
       __pyx_t_4 = 0;
 
-      /* "aiSelfTest/services/task.py":233
+      /* "aiSelfTest/services/task.py":234
  *         ).all()
  *         for row in rows:
  *             row.status = TaskItemDataStatus.DELETE.value             # <<<<<<<<<<<<<<
  *             session.add(row)
  *     task_item.updated_at = datetime.now()
 */
-      __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_TaskItemDataStatus); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 233, __pyx_L1_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_TaskItemDataStatus); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 234, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_DELETE); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 233, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_DELETE); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 234, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_value); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 233, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_value); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 234, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (__Pyx_PyObject_SetAttrStr(__pyx_v_row, __pyx_mstate_global->__pyx_n_u_status, __pyx_t_4) < (0)) __PYX_ERR(0, 233, __pyx_L1_error)
+      if (__Pyx_PyObject_SetAttrStr(__pyx_v_row, __pyx_mstate_global->__pyx_n_u_status, __pyx_t_4) < (0)) __PYX_ERR(0, 234, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-      /* "aiSelfTest/services/task.py":234
+      /* "aiSelfTest/services/task.py":235
  *         for row in rows:
  *             row.status = TaskItemDataStatus.DELETE.value
  *             session.add(row)             # <<<<<<<<<<<<<<
@@ -8646,12 +8714,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_24delete_task_item_rows(C
         PyObject *__pyx_callargs[2] = {__pyx_t_3, __pyx_v_row};
         __pyx_t_4 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_add, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 234, __pyx_L1_error)
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 235, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
       }
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-      /* "aiSelfTest/services/task.py":232
+      /* "aiSelfTest/services/task.py":233
  *             select(TaskItemData).where(TaskItemData.id.in_(payload.task_item_data_ids))
  *         ).all()
  *         for row in rows:             # <<<<<<<<<<<<<<
@@ -8661,7 +8729,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_24delete_task_item_rows(C
     }
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "aiSelfTest/services/task.py":228
+    /* "aiSelfTest/services/task.py":229
  * 
  *     task_item = _get_task_item_or_raise(session, payload.task_item_id)
  *     if payload.task_item_data_ids:             # <<<<<<<<<<<<<<
@@ -8670,7 +8738,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_24delete_task_item_rows(C
 */
   }
 
-  /* "aiSelfTest/services/task.py":235
+  /* "aiSelfTest/services/task.py":236
  *             row.status = TaskItemDataStatus.DELETE.value
  *             session.add(row)
  *     task_item.updated_at = datetime.now()             # <<<<<<<<<<<<<<
@@ -8678,9 +8746,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_24delete_task_item_rows(C
  *     session.commit()
 */
   __pyx_t_4 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_datetime); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 235, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_datetime); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 236, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_now); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 235, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_now); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 236, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_5 = 1;
@@ -8700,13 +8768,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_24delete_task_item_rows(C
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_7, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 235, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 236, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_updated_at, __pyx_t_1) < (0)) __PYX_ERR(0, 235, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_updated_at, __pyx_t_1) < (0)) __PYX_ERR(0, 236, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":236
+  /* "aiSelfTest/services/task.py":237
  *             session.add(row)
  *     task_item.updated_at = datetime.now()
  *     session.add(task_item)             # <<<<<<<<<<<<<<
@@ -8720,12 +8788,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_24delete_task_item_rows(C
     PyObject *__pyx_callargs[2] = {__pyx_t_7, __pyx_v_task_item};
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_add, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 236, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 237, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":237
+  /* "aiSelfTest/services/task.py":238
  *     task_item.updated_at = datetime.now()
  *     session.add(task_item)
  *     session.commit()             # <<<<<<<<<<<<<<
@@ -8739,12 +8807,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_24delete_task_item_rows(C
     PyObject *__pyx_callargs[2] = {__pyx_t_7, NULL};
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_commit, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 237, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 238, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":238
+  /* "aiSelfTest/services/task.py":239
  *     session.add(task_item)
  *     session.commit()
  *     session.refresh(task_item)             # <<<<<<<<<<<<<<
@@ -8758,12 +8826,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_24delete_task_item_rows(C
     PyObject *__pyx_callargs[2] = {__pyx_t_7, __pyx_v_task_item};
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_refresh, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 238, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 239, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":239
+  /* "aiSelfTest/services/task.py":240
  *     session.commit()
  *     session.refresh(task_item)
  *     return TaskItemActionData(id=task_item.id or 0, confirm_state=task_item.confirm_state)             # <<<<<<<<<<<<<<
@@ -8772,11 +8840,11 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_24delete_task_item_rows(C
 */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_7 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_TaskItemActionData); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 239, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_TaskItemActionData); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 240, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 239, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 240, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 239, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 240, __pyx_L1_error)
   if (!__pyx_t_6) {
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   } else {
@@ -8785,12 +8853,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_24delete_task_item_rows(C
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     goto __pyx_L7_bool_binop_done;
   }
-  __pyx_t_2 = __Pyx_PyLong_From_long(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 239, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyLong_From_long(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 240, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = __pyx_t_2;
   __pyx_t_2 = 0;
   __pyx_L7_bool_binop_done:;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_confirm_state); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 239, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_confirm_state); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 240, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_5 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -8806,24 +8874,24 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_24delete_task_item_rows(C
   #endif
   {
     PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 2 : 0)] = {__pyx_t_7, NULL};
-    __pyx_t_9 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 239, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 240, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_id, __pyx_t_3, __pyx_t_9, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 239, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_confirm_state, __pyx_t_2, __pyx_t_9, __pyx_callargs+1, 1) < (0)) __PYX_ERR(0, 239, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_id, __pyx_t_3, __pyx_t_9, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 240, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_confirm_state, __pyx_t_2, __pyx_t_9, __pyx_callargs+1, 1) < (0)) __PYX_ERR(0, 240, __pyx_L1_error)
     __pyx_t_1 = __Pyx_Object_Vectorcall_CallFromBuilder((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_9);
     __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 239, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 240, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "aiSelfTest/services/task.py":221
+  /* "aiSelfTest/services/task.py":222
  * 
  * 
  * def delete_task_item_rows(             # <<<<<<<<<<<<<<
@@ -8855,7 +8923,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_24delete_task_item_rows(C
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task.py":242
+/* "aiSelfTest/services/task.py":243
  * 
  * 
  * def submit_task_item(             # <<<<<<<<<<<<<<
@@ -8904,39 +8972,39 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_session,&__pyx_mstate_global->__pyx_n_u_payload,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 242, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 243, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 242, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 243, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 242, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 243, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "submit_task_item", 0) < (0)) __PYX_ERR(0, 242, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "submit_task_item", 0) < (0)) __PYX_ERR(0, 243, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("submit_task_item", 1, 2, 2, i); __PYX_ERR(0, 242, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("submit_task_item", 1, 2, 2, i); __PYX_ERR(0, 243, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 242, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 243, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 242, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 243, __pyx_L3_error)
     }
     __pyx_v_session = values[0];
     __pyx_v_payload = values[1];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("submit_task_item", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 242, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("submit_task_item", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 243, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -8974,7 +9042,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_26submit_task_item(CYTHON
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("submit_task_item", 0);
 
-  /* "aiSelfTest/services/task.py":248
+  /* "aiSelfTest/services/task.py":249
  *     """ TaskItem"""
  * 
  *     task_item = _get_task_item_or_raise(session, payload.task_item_id)             # <<<<<<<<<<<<<<
@@ -8982,9 +9050,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_26submit_task_item(CYTHON
  *     task_item.remote_at = datetime.now()
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_get_task_item_or_raise); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 248, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_get_task_item_or_raise); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 249, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_payload, __pyx_mstate_global->__pyx_n_u_task_item_id); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 248, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_payload, __pyx_mstate_global->__pyx_n_u_task_item_id); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 249, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -9004,22 +9072,22 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_26submit_task_item(CYTHON
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 248, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 249, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_task_item = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":249
+  /* "aiSelfTest/services/task.py":250
  * 
  *     task_item = _get_task_item_or_raise(session, payload.task_item_id)
  *     task_item.remote_state = "success"             # <<<<<<<<<<<<<<
  *     task_item.remote_at = datetime.now()
  *     task_item.updated_at = datetime.now()
 */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_remote_state, __pyx_mstate_global->__pyx_n_u_success) < (0)) __PYX_ERR(0, 249, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_remote_state, __pyx_mstate_global->__pyx_n_u_success) < (0)) __PYX_ERR(0, 250, __pyx_L1_error)
 
-  /* "aiSelfTest/services/task.py":250
+  /* "aiSelfTest/services/task.py":251
  *     task_item = _get_task_item_or_raise(session, payload.task_item_id)
  *     task_item.remote_state = "success"
  *     task_item.remote_at = datetime.now()             # <<<<<<<<<<<<<<
@@ -9027,9 +9095,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_26submit_task_item(CYTHON
  *     session.add(task_item)
 */
   __pyx_t_3 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_datetime); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 250, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_datetime); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 251, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_now); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 250, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_now); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 251, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_5 = 1;
@@ -9049,13 +9117,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_26submit_task_item(CYTHON
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_2, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 250, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 251, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_remote_at, __pyx_t_1) < (0)) __PYX_ERR(0, 250, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_remote_at, __pyx_t_1) < (0)) __PYX_ERR(0, 251, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":251
+  /* "aiSelfTest/services/task.py":252
  *     task_item.remote_state = "success"
  *     task_item.remote_at = datetime.now()
  *     task_item.updated_at = datetime.now()             # <<<<<<<<<<<<<<
@@ -9063,9 +9131,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_26submit_task_item(CYTHON
  *     session.commit()
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_datetime); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 251, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_datetime); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 252, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_now); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 251, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_now); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 252, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_5 = 1;
@@ -9085,13 +9153,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_26submit_task_item(CYTHON
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 251, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 252, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_updated_at, __pyx_t_1) < (0)) __PYX_ERR(0, 251, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_updated_at, __pyx_t_1) < (0)) __PYX_ERR(0, 252, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":252
+  /* "aiSelfTest/services/task.py":253
  *     task_item.remote_at = datetime.now()
  *     task_item.updated_at = datetime.now()
  *     session.add(task_item)             # <<<<<<<<<<<<<<
@@ -9105,12 +9173,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_26submit_task_item(CYTHON
     PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_v_task_item};
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_add, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 252, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 253, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":253
+  /* "aiSelfTest/services/task.py":254
  *     task_item.updated_at = datetime.now()
  *     session.add(task_item)
  *     session.commit()             # <<<<<<<<<<<<<<
@@ -9124,12 +9192,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_26submit_task_item(CYTHON
     PyObject *__pyx_callargs[2] = {__pyx_t_4, NULL};
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_commit, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 253, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 254, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":254
+  /* "aiSelfTest/services/task.py":255
  *     session.add(task_item)
  *     session.commit()
  *     session.refresh(task_item)             # <<<<<<<<<<<<<<
@@ -9143,12 +9211,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_26submit_task_item(CYTHON
     PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_v_task_item};
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_refresh, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 254, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 255, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":255
+  /* "aiSelfTest/services/task.py":256
  *     session.commit()
  *     session.refresh(task_item)
  *     return TaskItemActionData(id=task_item.id or 0, remote_state=task_item.remote_state)             # <<<<<<<<<<<<<<
@@ -9157,11 +9225,11 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_26submit_task_item(CYTHON
 */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_4 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_TaskItemActionData); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 255, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_TaskItemActionData); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 256, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 255, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 256, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely((__pyx_t_7 < 0))) __PYX_ERR(0, 255, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely((__pyx_t_7 < 0))) __PYX_ERR(0, 256, __pyx_L1_error)
   if (!__pyx_t_7) {
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   } else {
@@ -9170,12 +9238,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_26submit_task_item(CYTHON
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     goto __pyx_L3_bool_binop_done;
   }
-  __pyx_t_6 = __Pyx_PyLong_From_long(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 255, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyLong_From_long(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 256, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_t_3 = __pyx_t_6;
   __pyx_t_6 = 0;
   __pyx_L3_bool_binop_done:;
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_remote_state); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 255, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_remote_state); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 256, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_t_5 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -9191,24 +9259,24 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_26submit_task_item(CYTHON
   #endif
   {
     PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 2 : 0)] = {__pyx_t_4, NULL};
-    __pyx_t_8 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 255, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 256, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_id, __pyx_t_3, __pyx_t_8, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 255, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_remote_state, __pyx_t_6, __pyx_t_8, __pyx_callargs+1, 1) < (0)) __PYX_ERR(0, 255, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_id, __pyx_t_3, __pyx_t_8, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 256, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_remote_state, __pyx_t_6, __pyx_t_8, __pyx_callargs+1, 1) < (0)) __PYX_ERR(0, 256, __pyx_L1_error)
     __pyx_t_1 = __Pyx_Object_Vectorcall_CallFromBuilder((PyObject*)__pyx_t_2, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_8);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 255, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 256, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "aiSelfTest/services/task.py":242
+  /* "aiSelfTest/services/task.py":243
  * 
  * 
  * def submit_task_item(             # <<<<<<<<<<<<<<
@@ -9233,7 +9301,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_26submit_task_item(CYTHON
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task.py":258
+/* "aiSelfTest/services/task.py":259
  * 
  * 
  * def get_legacy_task_detail(session: Session, task_id: int) -> dict[str, object]:             # <<<<<<<<<<<<<<
@@ -9282,40 +9350,40 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_session,&__pyx_mstate_global->__pyx_n_u_task_id,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 258, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 259, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 258, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 259, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 258, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 259, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "get_legacy_task_detail", 0) < (0)) __PYX_ERR(0, 258, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "get_legacy_task_detail", 0) < (0)) __PYX_ERR(0, 259, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("get_legacy_task_detail", 1, 2, 2, i); __PYX_ERR(0, 258, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("get_legacy_task_detail", 1, 2, 2, i); __PYX_ERR(0, 259, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 258, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 259, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 258, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 259, __pyx_L3_error)
     }
     __pyx_v_session = values[0];
-    if (__Pyx_PyInt_FromNumber(&values[1], "task_id", 0) < (0)) __PYX_ERR(0, 258, __pyx_L3_error)
+    if (__Pyx_PyInt_FromNumber(&values[1], "task_id", 0) < (0)) __PYX_ERR(0, 259, __pyx_L3_error)
     __pyx_v_task_id = ((PyObject*)values[1]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_legacy_task_detail", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 258, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_legacy_task_detail", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 259, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -9326,7 +9394,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 258, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 259, __pyx_L1_error)
   __pyx_r = __pyx_pf_10aiSelfTest_8services_4task_28get_legacy_task_detail(__pyx_self, __pyx_v_session, __pyx_v_task_id);
 
   /* function exit code */
@@ -9366,7 +9434,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_28get_legacy_task_detail(
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("get_legacy_task_detail", 0);
 
-  /* "aiSelfTest/services/task.py":261
+  /* "aiSelfTest/services/task.py":262
  *     """ DataQuery """
  * 
  *     task = _get_task_or_raise(session, task_id)             # <<<<<<<<<<<<<<
@@ -9374,7 +9442,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_28get_legacy_task_detail(
  *     media_types = filters.media_types
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_get_task_or_raise); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 261, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_get_task_or_raise); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 262, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -9393,13 +9461,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_28get_legacy_task_detail(
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_4, (3-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 261, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 262, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_task = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":262
+  /* "aiSelfTest/services/task.py":263
  * 
  *     task = _get_task_or_raise(session, task_id)
  *     filters = _deserialize_filters(task.filters_json)             # <<<<<<<<<<<<<<
@@ -9407,9 +9475,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_28get_legacy_task_detail(
  *     if media_types == ["image"]:
 */
   __pyx_t_3 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_deserialize_filters); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 262, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_deserialize_filters); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 263, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_filters_json); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 262, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_filters_json); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 263, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_4 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -9429,43 +9497,43 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_28get_legacy_task_detail(
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 262, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 263, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_filters = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":263
+  /* "aiSelfTest/services/task.py":264
  *     task = _get_task_or_raise(session, task_id)
  *     filters = _deserialize_filters(task.filters_json)
  *     media_types = filters.media_types             # <<<<<<<<<<<<<<
  *     if media_types == ["image"]:
  *         file_bmp = "image"
 */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_filters, __pyx_mstate_global->__pyx_n_u_media_types); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 263, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_filters, __pyx_mstate_global->__pyx_n_u_media_types); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 264, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_media_types = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":264
+  /* "aiSelfTest/services/task.py":265
  *     filters = _deserialize_filters(task.filters_json)
  *     media_types = filters.media_types
  *     if media_types == ["image"]:             # <<<<<<<<<<<<<<
  *         file_bmp = "image"
  *     elif media_types == ["video"]:
 */
-  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 264, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 265, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_mstate_global->__pyx_n_u_image);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_n_u_image);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_1, 0, __pyx_mstate_global->__pyx_n_u_image) != (0)) __PYX_ERR(0, 264, __pyx_L1_error);
-  __pyx_t_2 = PyObject_RichCompare(__pyx_v_media_types, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 264, __pyx_L1_error)
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_1, 0, __pyx_mstate_global->__pyx_n_u_image) != (0)) __PYX_ERR(0, 265, __pyx_L1_error);
+  __pyx_t_2 = PyObject_RichCompare(__pyx_v_media_types, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 265, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 264, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 265, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (__pyx_t_6) {
 
-    /* "aiSelfTest/services/task.py":265
+    /* "aiSelfTest/services/task.py":266
  *     media_types = filters.media_types
  *     if media_types == ["image"]:
  *         file_bmp = "image"             # <<<<<<<<<<<<<<
@@ -9475,7 +9543,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_28get_legacy_task_detail(
     __Pyx_INCREF(__pyx_mstate_global->__pyx_n_u_image);
     __pyx_v_file_bmp = __pyx_mstate_global->__pyx_n_u_image;
 
-    /* "aiSelfTest/services/task.py":264
+    /* "aiSelfTest/services/task.py":265
  *     filters = _deserialize_filters(task.filters_json)
  *     media_types = filters.media_types
  *     if media_types == ["image"]:             # <<<<<<<<<<<<<<
@@ -9485,25 +9553,25 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_28get_legacy_task_detail(
     goto __pyx_L3;
   }
 
-  /* "aiSelfTest/services/task.py":266
+  /* "aiSelfTest/services/task.py":267
  *     if media_types == ["image"]:
  *         file_bmp = "image"
  *     elif media_types == ["video"]:             # <<<<<<<<<<<<<<
  *         file_bmp = "video"
  *     else:
 */
-  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 266, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 267, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_mstate_global->__pyx_n_u_video);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_n_u_video);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_2, 0, __pyx_mstate_global->__pyx_n_u_video) != (0)) __PYX_ERR(0, 266, __pyx_L1_error);
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_media_types, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 266, __pyx_L1_error)
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_2, 0, __pyx_mstate_global->__pyx_n_u_video) != (0)) __PYX_ERR(0, 267, __pyx_L1_error);
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_media_types, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 267, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 266, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 267, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_6) {
 
-    /* "aiSelfTest/services/task.py":267
+    /* "aiSelfTest/services/task.py":268
  *         file_bmp = "image"
  *     elif media_types == ["video"]:
  *         file_bmp = "video"             # <<<<<<<<<<<<<<
@@ -9513,7 +9581,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_28get_legacy_task_detail(
     __Pyx_INCREF(__pyx_mstate_global->__pyx_n_u_video);
     __pyx_v_file_bmp = __pyx_mstate_global->__pyx_n_u_video;
 
-    /* "aiSelfTest/services/task.py":266
+    /* "aiSelfTest/services/task.py":267
  *     if media_types == ["image"]:
  *         file_bmp = "image"
  *     elif media_types == ["video"]:             # <<<<<<<<<<<<<<
@@ -9523,7 +9591,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_28get_legacy_task_detail(
     goto __pyx_L3;
   }
 
-  /* "aiSelfTest/services/task.py":269
+  /* "aiSelfTest/services/task.py":270
  *         file_bmp = "video"
  *     else:
  *         file_bmp = "all"             # <<<<<<<<<<<<<<
@@ -9536,48 +9604,19 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_28get_legacy_task_detail(
   }
   __pyx_L3:;
 
-  /* "aiSelfTest/services/task.py":270
+  /* "aiSelfTest/services/task.py":271
  *     else:
  *         file_bmp = "all"
  *     upload_type = str(filters.upload_types[0]) if filters.upload_types else "all"             # <<<<<<<<<<<<<<
  *     id_type = str(filters.identify_source[0]) if filters.identify_source else "all"
  * 
 */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_filters, __pyx_mstate_global->__pyx_n_u_upload_types); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 270, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 270, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (__pyx_t_6) {
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_filters, __pyx_mstate_global->__pyx_n_u_upload_types); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 270, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_5 = __Pyx_GetItemInt(__pyx_t_2, 0, long, 1, __Pyx_PyLong_From_long, 0, 0, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 270, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyObject_Unicode(__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 270, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_1 = __pyx_t_2;
-    __pyx_t_2 = 0;
-  } else {
-    __Pyx_INCREF(__pyx_mstate_global->__pyx_n_u_all);
-    __pyx_t_1 = __pyx_mstate_global->__pyx_n_u_all;
-  }
-  __pyx_v_upload_type = ((PyObject*)__pyx_t_1);
-  __pyx_t_1 = 0;
-
-  /* "aiSelfTest/services/task.py":271
- *         file_bmp = "all"
- *     upload_type = str(filters.upload_types[0]) if filters.upload_types else "all"
- *     id_type = str(filters.identify_source[0]) if filters.identify_source else "all"             # <<<<<<<<<<<<<<
- * 
- *     return {
-*/
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_filters, __pyx_mstate_global->__pyx_n_u_identify_source); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 271, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_filters, __pyx_mstate_global->__pyx_n_u_upload_types); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 271, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 271, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (__pyx_t_6) {
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_filters, __pyx_mstate_global->__pyx_n_u_identify_source); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 271, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_filters, __pyx_mstate_global->__pyx_n_u_upload_types); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 271, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_5 = __Pyx_GetItemInt(__pyx_t_2, 0, long, 1, __Pyx_PyLong_From_long, 0, 0, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 271, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
@@ -9591,10 +9630,39 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_28get_legacy_task_detail(
     __Pyx_INCREF(__pyx_mstate_global->__pyx_n_u_all);
     __pyx_t_1 = __pyx_mstate_global->__pyx_n_u_all;
   }
+  __pyx_v_upload_type = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "aiSelfTest/services/task.py":272
+ *         file_bmp = "all"
+ *     upload_type = str(filters.upload_types[0]) if filters.upload_types else "all"
+ *     id_type = str(filters.identify_source[0]) if filters.identify_source else "all"             # <<<<<<<<<<<<<<
+ * 
+ *     return {
+*/
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_filters, __pyx_mstate_global->__pyx_n_u_identify_source); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 272, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 272, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (__pyx_t_6) {
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_filters, __pyx_mstate_global->__pyx_n_u_identify_source); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 272, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_5 = __Pyx_GetItemInt(__pyx_t_2, 0, long, 1, __Pyx_PyLong_From_long, 0, 0, 1, 1, __Pyx_ReferenceSharing_OwnStrongReference); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 272, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = __Pyx_PyObject_Unicode(__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 272, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_1 = __pyx_t_2;
+    __pyx_t_2 = 0;
+  } else {
+    __Pyx_INCREF(__pyx_mstate_global->__pyx_n_u_all);
+    __pyx_t_1 = __pyx_mstate_global->__pyx_n_u_all;
+  }
   __pyx_v_id_type = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":273
+  /* "aiSelfTest/services/task.py":274
  *     id_type = str(filters.identify_source[0]) if filters.identify_source else "all"
  * 
  *     return {             # <<<<<<<<<<<<<<
@@ -9603,18 +9671,18 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_28get_legacy_task_detail(
 */
   __Pyx_XDECREF(__pyx_r);
 
-  /* "aiSelfTest/services/task.py":274
+  /* "aiSelfTest/services/task.py":275
  * 
  *     return {
  *         "id": task.id or 0,             # <<<<<<<<<<<<<<
  *         "name": task.name,
  *         "filters": {
 */
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 275, __pyx_L1_error)
   if (!__pyx_t_6) {
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   } else {
@@ -9623,123 +9691,123 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_28get_legacy_task_detail(
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_5 = __Pyx_PyLong_From_long(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyLong_From_long(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_2 = __pyx_t_5;
   __pyx_t_5 = 0;
   __pyx_L4_bool_binop_done:;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_id, __pyx_t_2) < (0)) __PYX_ERR(0, 274, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_id, __pyx_t_2) < (0)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "aiSelfTest/services/task.py":275
+  /* "aiSelfTest/services/task.py":276
  *     return {
  *         "id": task.id or 0,
  *         "name": task.name,             # <<<<<<<<<<<<<<
  *         "filters": {
  *             "classifyList": filters.classify_list,
 */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_name); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 275, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_name); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 276, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_name, __pyx_t_2) < (0)) __PYX_ERR(0, 274, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_name, __pyx_t_2) < (0)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "aiSelfTest/services/task.py":277
+  /* "aiSelfTest/services/task.py":278
  *         "name": task.name,
  *         "filters": {
  *             "classifyList": filters.classify_list,             # <<<<<<<<<<<<<<
  *             "keyword": filters.keyword,
  *             "spName": filters.sp_name,
 */
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(10); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 277, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(10); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 278, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_filters, __pyx_mstate_global->__pyx_n_u_classify_list); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 277, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_filters, __pyx_mstate_global->__pyx_n_u_classify_list); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 278, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_classifyList, __pyx_t_5) < (0)) __PYX_ERR(0, 277, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_classifyList, __pyx_t_5) < (0)) __PYX_ERR(0, 278, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "aiSelfTest/services/task.py":278
+  /* "aiSelfTest/services/task.py":279
  *         "filters": {
  *             "classifyList": filters.classify_list,
  *             "keyword": filters.keyword,             # <<<<<<<<<<<<<<
  *             "spName": filters.sp_name,
  *             "startTime": filters.start_at,
 */
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_filters, __pyx_mstate_global->__pyx_n_u_keyword); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 278, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_filters, __pyx_mstate_global->__pyx_n_u_keyword); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 279, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_keyword, __pyx_t_5) < (0)) __PYX_ERR(0, 277, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_keyword, __pyx_t_5) < (0)) __PYX_ERR(0, 278, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "aiSelfTest/services/task.py":279
+  /* "aiSelfTest/services/task.py":280
  *             "classifyList": filters.classify_list,
  *             "keyword": filters.keyword,
  *             "spName": filters.sp_name,             # <<<<<<<<<<<<<<
  *             "startTime": filters.start_at,
  *             "endTime": filters.end_at,
 */
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_filters, __pyx_mstate_global->__pyx_n_u_sp_name); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 279, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_filters, __pyx_mstate_global->__pyx_n_u_sp_name); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 280, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_spName, __pyx_t_5) < (0)) __PYX_ERR(0, 277, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_spName, __pyx_t_5) < (0)) __PYX_ERR(0, 278, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "aiSelfTest/services/task.py":280
+  /* "aiSelfTest/services/task.py":281
  *             "keyword": filters.keyword,
  *             "spName": filters.sp_name,
  *             "startTime": filters.start_at,             # <<<<<<<<<<<<<<
  *             "endTime": filters.end_at,
  *             "fileBmp": file_bmp,
 */
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_filters, __pyx_mstate_global->__pyx_n_u_start_at); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 280, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_filters, __pyx_mstate_global->__pyx_n_u_start_at); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 281, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_startTime, __pyx_t_5) < (0)) __PYX_ERR(0, 277, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_startTime, __pyx_t_5) < (0)) __PYX_ERR(0, 278, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "aiSelfTest/services/task.py":281
+  /* "aiSelfTest/services/task.py":282
  *             "spName": filters.sp_name,
  *             "startTime": filters.start_at,
  *             "endTime": filters.end_at,             # <<<<<<<<<<<<<<
  *             "fileBmp": file_bmp,
  *             "uploadType": upload_type,
 */
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_filters, __pyx_mstate_global->__pyx_n_u_end_at); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 281, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_filters, __pyx_mstate_global->__pyx_n_u_end_at); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 282, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_endTime, __pyx_t_5) < (0)) __PYX_ERR(0, 277, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_endTime, __pyx_t_5) < (0)) __PYX_ERR(0, 278, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "aiSelfTest/services/task.py":282
+  /* "aiSelfTest/services/task.py":283
  *             "startTime": filters.start_at,
  *             "endTime": filters.end_at,
  *             "fileBmp": file_bmp,             # <<<<<<<<<<<<<<
  *             "uploadType": upload_type,
  *             "idType": id_type,
 */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_fileBmp, __pyx_v_file_bmp) < (0)) __PYX_ERR(0, 277, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_fileBmp, __pyx_v_file_bmp) < (0)) __PYX_ERR(0, 278, __pyx_L1_error)
 
-  /* "aiSelfTest/services/task.py":283
+  /* "aiSelfTest/services/task.py":284
  *             "endTime": filters.end_at,
  *             "fileBmp": file_bmp,
  *             "uploadType": upload_type,             # <<<<<<<<<<<<<<
  *             "idType": id_type,
  *             "size": 50,
 */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_uploadType, __pyx_v_upload_type) < (0)) __PYX_ERR(0, 277, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_uploadType, __pyx_v_upload_type) < (0)) __PYX_ERR(0, 278, __pyx_L1_error)
 
-  /* "aiSelfTest/services/task.py":284
+  /* "aiSelfTest/services/task.py":285
  *             "fileBmp": file_bmp,
  *             "uploadType": upload_type,
  *             "idType": id_type,             # <<<<<<<<<<<<<<
  *             "size": 50,
  *             "current": 1,
 */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_idType, __pyx_v_id_type) < (0)) __PYX_ERR(0, 277, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_size, __pyx_mstate_global->__pyx_int_50) < (0)) __PYX_ERR(0, 277, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_current, __pyx_mstate_global->__pyx_int_1) < (0)) __PYX_ERR(0, 277, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_filters, __pyx_t_2) < (0)) __PYX_ERR(0, 274, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_idType, __pyx_v_id_type) < (0)) __PYX_ERR(0, 278, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_size, __pyx_mstate_global->__pyx_int_50) < (0)) __PYX_ERR(0, 278, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_current, __pyx_mstate_global->__pyx_int_1) < (0)) __PYX_ERR(0, 278, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_filters, __pyx_t_2) < (0)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_r = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "aiSelfTest/services/task.py":258
+  /* "aiSelfTest/services/task.py":259
  * 
  * 
  * def get_legacy_task_detail(session: Session, task_id: int) -> dict[str, object]:             # <<<<<<<<<<<<<<
@@ -9767,7 +9835,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_28get_legacy_task_detail(
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task.py":291
+/* "aiSelfTest/services/task.py":292
  * 
  * 
  * def query_legacy_task_data(session: Session, task_id: int) -> dict[str, object]:             # <<<<<<<<<<<<<<
@@ -9816,40 +9884,40 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_session,&__pyx_mstate_global->__pyx_n_u_task_id,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 291, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 292, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 291, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 292, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 291, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 292, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "query_legacy_task_data", 0) < (0)) __PYX_ERR(0, 291, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "query_legacy_task_data", 0) < (0)) __PYX_ERR(0, 292, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("query_legacy_task_data", 1, 2, 2, i); __PYX_ERR(0, 291, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("query_legacy_task_data", 1, 2, 2, i); __PYX_ERR(0, 292, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 291, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 292, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 291, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 292, __pyx_L3_error)
     }
     __pyx_v_session = values[0];
-    if (__Pyx_PyInt_FromNumber(&values[1], "task_id", 0) < (0)) __PYX_ERR(0, 291, __pyx_L3_error)
+    if (__Pyx_PyInt_FromNumber(&values[1], "task_id", 0) < (0)) __PYX_ERR(0, 292, __pyx_L3_error)
     __pyx_v_task_id = ((PyObject*)values[1]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("query_legacy_task_data", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 291, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("query_legacy_task_data", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 292, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -9860,7 +9928,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 291, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 292, __pyx_L1_error)
   __pyx_r = __pyx_pf_10aiSelfTest_8services_4task_30query_legacy_task_data(__pyx_self, __pyx_v_session, __pyx_v_task_id);
 
   /* function exit code */
@@ -9907,7 +9975,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_30query_legacy_task_data(
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("query_legacy_task_data", 0);
 
-  /* "aiSelfTest/services/task.py":294
+  /* "aiSelfTest/services/task.py":295
  *     """ DataQuery """
  * 
  *     _get_task_or_raise(session, task_id)             # <<<<<<<<<<<<<<
@@ -9915,7 +9983,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_30query_legacy_task_data(
  *     results = [
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_get_task_or_raise); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 294, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_get_task_or_raise); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -9934,12 +10002,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_30query_legacy_task_data(
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_4, (3-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 294, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 295, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":295
+  /* "aiSelfTest/services/task.py":296
  * 
  *     _get_task_or_raise(session, task_id)
  *     rows = session.exec(select(TaskItem).where(TaskItem.task_id == task_id).order_by(TaskItem.id.desc())).all()             # <<<<<<<<<<<<<<
@@ -9949,9 +10017,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_30query_legacy_task_data(
   __pyx_t_5 = __pyx_v_session;
   __Pyx_INCREF(__pyx_t_5);
   __pyx_t_11 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_select); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 295, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_select); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 296, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
-  __Pyx_GetModuleGlobalName(__pyx_t_13, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 295, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_13, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 296, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_13);
   __pyx_t_4 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -9971,17 +10039,17 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_30query_legacy_task_data(
     __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-    if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 295, __pyx_L1_error)
+    if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 296, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
   }
   __pyx_t_9 = __pyx_t_10;
   __Pyx_INCREF(__pyx_t_9);
-  __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 295, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 296, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
-  __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_task_id); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 295, __pyx_L1_error)
+  __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_task_id); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 296, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_13);
   __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-  __pyx_t_12 = PyObject_RichCompare(__pyx_t_13, __pyx_v_task_id, Py_EQ); __Pyx_XGOTREF(__pyx_t_12); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 295, __pyx_L1_error)
+  __pyx_t_12 = PyObject_RichCompare(__pyx_t_13, __pyx_v_task_id, Py_EQ); __Pyx_XGOTREF(__pyx_t_12); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 296, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
   __pyx_t_4 = 0;
   {
@@ -9990,14 +10058,14 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_30query_legacy_task_data(
     __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 295, __pyx_L1_error)
+    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 296, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
   }
   __pyx_t_7 = __pyx_t_8;
   __Pyx_INCREF(__pyx_t_7);
-  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 295, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 296, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 295, __pyx_L1_error)
+  __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 296, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_13);
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
   __pyx_t_12 = __pyx_t_13;
@@ -10008,7 +10076,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_30query_legacy_task_data(
     __pyx_t_10 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_desc, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-    if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 295, __pyx_L1_error)
+    if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 296, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
   }
   __pyx_t_4 = 0;
@@ -10018,7 +10086,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_30query_legacy_task_data(
     __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 295, __pyx_L1_error)
+    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 296, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
   }
   __pyx_t_4 = 0;
@@ -10027,7 +10095,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_30query_legacy_task_data(
     __pyx_t_2 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_exec, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 295, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 296, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
   }
   __pyx_t_3 = __pyx_t_2;
@@ -10038,13 +10106,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_30query_legacy_task_data(
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_all, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 295, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 296, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_rows = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":296
+  /* "aiSelfTest/services/task.py":297
  *     _get_task_or_raise(session, task_id)
  *     rows = session.exec(select(TaskItem).where(TaskItem.task_id == task_id).order_by(TaskItem.id.desc())).all()
  *     results = [             # <<<<<<<<<<<<<<
@@ -10052,10 +10120,10 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_30query_legacy_task_data(
  *             "id": row.id or 0,
 */
   { /* enter inner scope */
-    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 296, __pyx_L5_error)
+    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 297, __pyx_L5_error)
     __Pyx_GOTREF(__pyx_t_1);
 
-    /* "aiSelfTest/services/task.py":309
+    /* "aiSelfTest/services/task.py":310
  *             "deName": row.device_name,
  *         }
  *         for row in rows             # <<<<<<<<<<<<<<
@@ -10067,9 +10135,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_30query_legacy_task_data(
       __pyx_t_14 = 0;
       __pyx_t_15 = NULL;
     } else {
-      __pyx_t_14 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_rows); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 309, __pyx_L5_error)
+      __pyx_t_14 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_rows); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 310, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_15 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 309, __pyx_L5_error)
+      __pyx_t_15 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 310, __pyx_L5_error)
     }
     for (;;) {
       if (likely(!__pyx_t_15)) {
@@ -10077,7 +10145,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_30query_legacy_task_data(
           {
             Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_2);
             #if !CYTHON_ASSUME_SAFE_SIZE
-            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 309, __pyx_L5_error)
+            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 310, __pyx_L5_error)
             #endif
             if (__pyx_t_14 >= __pyx_temp) break;
           }
@@ -10087,7 +10155,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_30query_legacy_task_data(
           {
             Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_2);
             #if !CYTHON_ASSUME_SAFE_SIZE
-            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 309, __pyx_L5_error)
+            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 310, __pyx_L5_error)
             #endif
             if (__pyx_t_14 >= __pyx_temp) break;
           }
@@ -10098,13 +10166,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_30query_legacy_task_data(
           #endif
           ++__pyx_t_14;
         }
-        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 309, __pyx_L5_error)
+        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 310, __pyx_L5_error)
       } else {
         __pyx_t_3 = __pyx_t_15(__pyx_t_2);
         if (unlikely(!__pyx_t_3)) {
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
-            if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 309, __pyx_L5_error)
+            if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 310, __pyx_L5_error)
             PyErr_Clear();
           }
           break;
@@ -10114,18 +10182,18 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_30query_legacy_task_data(
       __Pyx_XDECREF_SET(__pyx_8genexpr4__pyx_v_row, __pyx_t_3);
       __pyx_t_3 = 0;
 
-      /* "aiSelfTest/services/task.py":298
+      /* "aiSelfTest/services/task.py":299
  *     results = [
  *         {
  *             "id": row.id or 0,             # <<<<<<<<<<<<<<
  *             "name": row.name,
  *             "spNameList": row.sp_name_list,
 */
-      __pyx_t_3 = __Pyx_PyDict_NewPresized(10); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 298, __pyx_L5_error)
+      __pyx_t_3 = __Pyx_PyDict_NewPresized(10); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 299, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr4__pyx_v_row, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 298, __pyx_L5_error)
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr4__pyx_v_row, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 299, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_16 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely((__pyx_t_16 < 0))) __PYX_ERR(0, 298, __pyx_L5_error)
+      __pyx_t_16 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely((__pyx_t_16 < 0))) __PYX_ERR(0, 299, __pyx_L5_error)
       if (!__pyx_t_16) {
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       } else {
@@ -10134,63 +10202,63 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_30query_legacy_task_data(
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         goto __pyx_L8_bool_binop_done;
       }
-      __pyx_t_5 = __Pyx_PyLong_From_long(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 298, __pyx_L5_error)
+      __pyx_t_5 = __Pyx_PyLong_From_long(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 299, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_5);
       __pyx_t_6 = __pyx_t_5;
       __pyx_t_5 = 0;
       __pyx_L8_bool_binop_done:;
-      if (PyDict_SetItem(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_id, __pyx_t_6) < (0)) __PYX_ERR(0, 298, __pyx_L5_error)
+      if (PyDict_SetItem(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_id, __pyx_t_6) < (0)) __PYX_ERR(0, 299, __pyx_L5_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-      /* "aiSelfTest/services/task.py":299
+      /* "aiSelfTest/services/task.py":300
  *         {
  *             "id": row.id or 0,
  *             "name": row.name,             # <<<<<<<<<<<<<<
  *             "spNameList": row.sp_name_list,
  *             "classify": row.classify,
 */
-      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr4__pyx_v_row, __pyx_mstate_global->__pyx_n_u_name); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 299, __pyx_L5_error)
+      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr4__pyx_v_row, __pyx_mstate_global->__pyx_n_u_name); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 300, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_6);
-      if (PyDict_SetItem(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_name, __pyx_t_6) < (0)) __PYX_ERR(0, 298, __pyx_L5_error)
+      if (PyDict_SetItem(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_name, __pyx_t_6) < (0)) __PYX_ERR(0, 299, __pyx_L5_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-      /* "aiSelfTest/services/task.py":300
+      /* "aiSelfTest/services/task.py":301
  *             "id": row.id or 0,
  *             "name": row.name,
  *             "spNameList": row.sp_name_list,             # <<<<<<<<<<<<<<
  *             "classify": row.classify,
  *             "fileTime": row.created_at.strftime("%Y-%m-%d %H:%M:%S") if row.created_at else "--",
 */
-      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr4__pyx_v_row, __pyx_mstate_global->__pyx_n_u_sp_name_list); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 300, __pyx_L5_error)
+      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr4__pyx_v_row, __pyx_mstate_global->__pyx_n_u_sp_name_list); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 301, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_6);
-      if (PyDict_SetItem(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_spNameList, __pyx_t_6) < (0)) __PYX_ERR(0, 298, __pyx_L5_error)
+      if (PyDict_SetItem(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_spNameList, __pyx_t_6) < (0)) __PYX_ERR(0, 299, __pyx_L5_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-      /* "aiSelfTest/services/task.py":301
+      /* "aiSelfTest/services/task.py":302
  *             "name": row.name,
  *             "spNameList": row.sp_name_list,
  *             "classify": row.classify,             # <<<<<<<<<<<<<<
  *             "fileTime": row.created_at.strftime("%Y-%m-%d %H:%M:%S") if row.created_at else "--",
  *             "fileUrl": row.file_url,
 */
-      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr4__pyx_v_row, __pyx_mstate_global->__pyx_n_u_classify); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 301, __pyx_L5_error)
+      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr4__pyx_v_row, __pyx_mstate_global->__pyx_n_u_classify); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 302, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_6);
-      if (PyDict_SetItem(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_classify, __pyx_t_6) < (0)) __PYX_ERR(0, 298, __pyx_L5_error)
+      if (PyDict_SetItem(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_classify, __pyx_t_6) < (0)) __PYX_ERR(0, 299, __pyx_L5_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-      /* "aiSelfTest/services/task.py":302
+      /* "aiSelfTest/services/task.py":303
  *             "spNameList": row.sp_name_list,
  *             "classify": row.classify,
  *             "fileTime": row.created_at.strftime("%Y-%m-%d %H:%M:%S") if row.created_at else "--",             # <<<<<<<<<<<<<<
  *             "fileUrl": row.file_url,
  *             "coverUrl": row.file_url,
 */
-      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr4__pyx_v_row, __pyx_mstate_global->__pyx_n_u_created_at); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 302, __pyx_L5_error)
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr4__pyx_v_row, __pyx_mstate_global->__pyx_n_u_created_at); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 303, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_16 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely((__pyx_t_16 < 0))) __PYX_ERR(0, 302, __pyx_L5_error)
+      __pyx_t_16 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely((__pyx_t_16 < 0))) __PYX_ERR(0, 303, __pyx_L5_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       if (__pyx_t_16) {
-        __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr4__pyx_v_row, __pyx_mstate_global->__pyx_n_u_created_at); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 302, __pyx_L5_error)
+        __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr4__pyx_v_row, __pyx_mstate_global->__pyx_n_u_created_at); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 303, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_10);
         __pyx_t_8 = __pyx_t_10;
         __Pyx_INCREF(__pyx_t_8);
@@ -10200,52 +10268,52 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_30query_legacy_task_data(
           __pyx_t_5 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_strftime, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
           __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
           __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-          if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 302, __pyx_L5_error)
+          if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 303, __pyx_L5_error)
           __Pyx_GOTREF(__pyx_t_5);
         }
         __pyx_t_6 = __pyx_t_5;
         __pyx_t_5 = 0;
       } else {
-        __Pyx_INCREF(__pyx_mstate_global->__pyx_kp_u_);
-        __pyx_t_6 = __pyx_mstate_global->__pyx_kp_u_;
+        __Pyx_INCREF(__pyx_mstate_global->__pyx_kp_u__2);
+        __pyx_t_6 = __pyx_mstate_global->__pyx_kp_u__2;
       }
-      if (PyDict_SetItem(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_fileTime, __pyx_t_6) < (0)) __PYX_ERR(0, 298, __pyx_L5_error)
+      if (PyDict_SetItem(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_fileTime, __pyx_t_6) < (0)) __PYX_ERR(0, 299, __pyx_L5_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-      /* "aiSelfTest/services/task.py":303
+      /* "aiSelfTest/services/task.py":304
  *             "classify": row.classify,
  *             "fileTime": row.created_at.strftime("%Y-%m-%d %H:%M:%S") if row.created_at else "--",
  *             "fileUrl": row.file_url,             # <<<<<<<<<<<<<<
  *             "coverUrl": row.file_url,
  *             "mediaType": "video" if row.file_bmp == 2 else "image",
 */
-      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr4__pyx_v_row, __pyx_mstate_global->__pyx_n_u_file_url); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 303, __pyx_L5_error)
+      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr4__pyx_v_row, __pyx_mstate_global->__pyx_n_u_file_url); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 304, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_6);
-      if (PyDict_SetItem(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_fileUrl, __pyx_t_6) < (0)) __PYX_ERR(0, 298, __pyx_L5_error)
+      if (PyDict_SetItem(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_fileUrl, __pyx_t_6) < (0)) __PYX_ERR(0, 299, __pyx_L5_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-      /* "aiSelfTest/services/task.py":304
+      /* "aiSelfTest/services/task.py":305
  *             "fileTime": row.created_at.strftime("%Y-%m-%d %H:%M:%S") if row.created_at else "--",
  *             "fileUrl": row.file_url,
  *             "coverUrl": row.file_url,             # <<<<<<<<<<<<<<
  *             "mediaType": "video" if row.file_bmp == 2 else "image",
  *             "mediaUrl": row.file_url,
 */
-      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr4__pyx_v_row, __pyx_mstate_global->__pyx_n_u_file_url); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 304, __pyx_L5_error)
+      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr4__pyx_v_row, __pyx_mstate_global->__pyx_n_u_file_url); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 305, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_6);
-      if (PyDict_SetItem(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_coverUrl, __pyx_t_6) < (0)) __PYX_ERR(0, 298, __pyx_L5_error)
+      if (PyDict_SetItem(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_coverUrl, __pyx_t_6) < (0)) __PYX_ERR(0, 299, __pyx_L5_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-      /* "aiSelfTest/services/task.py":305
+      /* "aiSelfTest/services/task.py":306
  *             "fileUrl": row.file_url,
  *             "coverUrl": row.file_url,
  *             "mediaType": "video" if row.file_bmp == 2 else "image",             # <<<<<<<<<<<<<<
  *             "mediaUrl": row.file_url,
  *             "deName": row.device_name,
 */
-      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr4__pyx_v_row, __pyx_mstate_global->__pyx_n_u_file_bmp); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 305, __pyx_L5_error)
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr4__pyx_v_row, __pyx_mstate_global->__pyx_n_u_file_bmp); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 306, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_16 = (__Pyx_PyLong_BoolEqObjC(__pyx_t_5, __pyx_mstate_global->__pyx_int_2, 2, 0)); if (unlikely((__pyx_t_16 < 0))) __PYX_ERR(0, 305, __pyx_L5_error)
+      __pyx_t_16 = (__Pyx_PyLong_BoolEqObjC(__pyx_t_5, __pyx_mstate_global->__pyx_int_2, 2, 0)); if (unlikely((__pyx_t_16 < 0))) __PYX_ERR(0, 306, __pyx_L5_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       if (__pyx_t_16) {
         __Pyx_INCREF(__pyx_mstate_global->__pyx_n_u_video);
@@ -10254,36 +10322,36 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_30query_legacy_task_data(
         __Pyx_INCREF(__pyx_mstate_global->__pyx_n_u_image);
         __pyx_t_6 = __pyx_mstate_global->__pyx_n_u_image;
       }
-      if (PyDict_SetItem(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_mediaType, __pyx_t_6) < (0)) __PYX_ERR(0, 298, __pyx_L5_error)
+      if (PyDict_SetItem(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_mediaType, __pyx_t_6) < (0)) __PYX_ERR(0, 299, __pyx_L5_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-      /* "aiSelfTest/services/task.py":306
+      /* "aiSelfTest/services/task.py":307
  *             "coverUrl": row.file_url,
  *             "mediaType": "video" if row.file_bmp == 2 else "image",
  *             "mediaUrl": row.file_url,             # <<<<<<<<<<<<<<
  *             "deName": row.device_name,
  *         }
 */
-      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr4__pyx_v_row, __pyx_mstate_global->__pyx_n_u_file_url); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 306, __pyx_L5_error)
+      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr4__pyx_v_row, __pyx_mstate_global->__pyx_n_u_file_url); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 307, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_6);
-      if (PyDict_SetItem(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_mediaUrl, __pyx_t_6) < (0)) __PYX_ERR(0, 298, __pyx_L5_error)
+      if (PyDict_SetItem(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_mediaUrl, __pyx_t_6) < (0)) __PYX_ERR(0, 299, __pyx_L5_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-      /* "aiSelfTest/services/task.py":307
+      /* "aiSelfTest/services/task.py":308
  *             "mediaType": "video" if row.file_bmp == 2 else "image",
  *             "mediaUrl": row.file_url,
  *             "deName": row.device_name,             # <<<<<<<<<<<<<<
  *         }
  *         for row in rows
 */
-      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr4__pyx_v_row, __pyx_mstate_global->__pyx_n_u_device_name); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 307, __pyx_L5_error)
+      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr4__pyx_v_row, __pyx_mstate_global->__pyx_n_u_device_name); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 308, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_6);
-      if (PyDict_SetItem(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_deName, __pyx_t_6) < (0)) __PYX_ERR(0, 298, __pyx_L5_error)
+      if (PyDict_SetItem(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_deName, __pyx_t_6) < (0)) __PYX_ERR(0, 299, __pyx_L5_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_3))) __PYX_ERR(0, 296, __pyx_L5_error)
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_3))) __PYX_ERR(0, 297, __pyx_L5_error)
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-      /* "aiSelfTest/services/task.py":309
+      /* "aiSelfTest/services/task.py":310
  *             "deName": row.device_name,
  *         }
  *         for row in rows             # <<<<<<<<<<<<<<
@@ -10302,7 +10370,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_30query_legacy_task_data(
   __pyx_v_results = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":311
+  /* "aiSelfTest/services/task.py":312
  *         for row in rows
  *     ]
  *     return {"results": results}             # <<<<<<<<<<<<<<
@@ -10310,14 +10378,14 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_30query_legacy_task_data(
  * 
 */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 311, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_results, __pyx_v_results) < (0)) __PYX_ERR(0, 311, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_results, __pyx_v_results) < (0)) __PYX_ERR(0, 312, __pyx_L1_error)
   __pyx_r = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "aiSelfTest/services/task.py":291
+  /* "aiSelfTest/services/task.py":292
  * 
  * 
  * def query_legacy_task_data(session: Session, task_id: int) -> dict[str, object]:             # <<<<<<<<<<<<<<
@@ -10350,7 +10418,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_30query_legacy_task_data(
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task.py":314
+/* "aiSelfTest/services/task.py":315
  * 
  * 
  * def run_legacy_task_execute(session: Session, task_id: int) -> dict[str, bool]:             # <<<<<<<<<<<<<<
@@ -10399,40 +10467,40 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_session,&__pyx_mstate_global->__pyx_n_u_task_id,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 314, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 315, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 314, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 315, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 314, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 315, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "run_legacy_task_execute", 0) < (0)) __PYX_ERR(0, 314, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "run_legacy_task_execute", 0) < (0)) __PYX_ERR(0, 315, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("run_legacy_task_execute", 1, 2, 2, i); __PYX_ERR(0, 314, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("run_legacy_task_execute", 1, 2, 2, i); __PYX_ERR(0, 315, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 314, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 315, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 314, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 315, __pyx_L3_error)
     }
     __pyx_v_session = values[0];
-    if (__Pyx_PyInt_FromNumber(&values[1], "task_id", 0) < (0)) __PYX_ERR(0, 314, __pyx_L3_error)
+    if (__Pyx_PyInt_FromNumber(&values[1], "task_id", 0) < (0)) __PYX_ERR(0, 315, __pyx_L3_error)
     __pyx_v_task_id = ((PyObject*)values[1]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("run_legacy_task_execute", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 314, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("run_legacy_task_execute", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 315, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -10443,7 +10511,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 314, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 315, __pyx_L1_error)
   __pyx_r = __pyx_pf_10aiSelfTest_8services_4task_32run_legacy_task_execute(__pyx_self, __pyx_v_session, __pyx_v_task_id);
 
   /* function exit code */
@@ -10475,7 +10543,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_32run_legacy_task_execute
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("run_legacy_task_execute", 0);
 
-  /* "aiSelfTest/services/task.py":317
+  /* "aiSelfTest/services/task.py":318
  *     """ execute """
  * 
  *     run_task_once(session, task_id)             # <<<<<<<<<<<<<<
@@ -10483,7 +10551,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_32run_legacy_task_execute
  * 
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_run_task_once); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 317, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_run_task_once); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 318, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -10502,12 +10570,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_32run_legacy_task_execute
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_4, (3-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 317, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 318, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":318
+  /* "aiSelfTest/services/task.py":319
  * 
  *     run_task_once(session, task_id)
  *     return {"ok": True}             # <<<<<<<<<<<<<<
@@ -10515,14 +10583,14 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_32run_legacy_task_execute
  * 
 */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 318, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 319, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_ok, Py_True) < (0)) __PYX_ERR(0, 318, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_ok, Py_True) < (0)) __PYX_ERR(0, 319, __pyx_L1_error)
   __pyx_r = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "aiSelfTest/services/task.py":314
+  /* "aiSelfTest/services/task.py":315
  * 
  * 
  * def run_legacy_task_execute(session: Session, task_id: int) -> dict[str, bool]:             # <<<<<<<<<<<<<<
@@ -10543,7 +10611,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_32run_legacy_task_execute
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task.py":321
+/* "aiSelfTest/services/task.py":322
  * 
  * 
  * def list_completed_review_tasks(session: Session) -> list[dict[str, int | str]]:             # <<<<<<<<<<<<<<
@@ -10591,32 +10659,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_session,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 321, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 322, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 321, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 322, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "list_completed_review_tasks", 0) < (0)) __PYX_ERR(0, 321, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "list_completed_review_tasks", 0) < (0)) __PYX_ERR(0, 322, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("list_completed_review_tasks", 1, 1, 1, i); __PYX_ERR(0, 321, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("list_completed_review_tasks", 1, 1, 1, i); __PYX_ERR(0, 322, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 321, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 322, __pyx_L3_error)
     }
     __pyx_v_session = values[0];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("list_completed_review_tasks", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 321, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("list_completed_review_tasks", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 322, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -10663,7 +10731,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_34list_completed_review_t
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("list_completed_review_tasks", 0);
 
-  /* "aiSelfTest/services/task.py":324
+  /* "aiSelfTest/services/task.py":325
  *     """"""
  * 
  *     tasks = session.exec(select(Task).where(Task.execution_status == "").order_by(Task.id.desc())).all()             # <<<<<<<<<<<<<<
@@ -10673,9 +10741,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_34list_completed_review_t
   __pyx_t_4 = __pyx_v_session;
   __Pyx_INCREF(__pyx_t_4);
   __pyx_t_10 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_select); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 324, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_select); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 325, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
-  __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_Task); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 324, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_Task); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 325, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
   __pyx_t_13 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -10695,17 +10763,17 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_34list_completed_review_t
     __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
     __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-    if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 324, __pyx_L1_error)
+    if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 325, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
   }
   __pyx_t_8 = __pyx_t_9;
   __Pyx_INCREF(__pyx_t_8);
-  __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_Task); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 324, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_Task); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 325, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
-  __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_execution_status); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 324, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_execution_status); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 325, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
   __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-  __pyx_t_11 = PyObject_RichCompare(__pyx_t_12, __pyx_mstate_global->__pyx_n_u__2, Py_EQ); __Pyx_XGOTREF(__pyx_t_11); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 324, __pyx_L1_error)
+  __pyx_t_11 = PyObject_RichCompare(__pyx_t_12, __pyx_mstate_global->__pyx_n_u__3, Py_EQ); __Pyx_XGOTREF(__pyx_t_11); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 325, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
   __pyx_t_13 = 0;
   {
@@ -10714,14 +10782,14 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_34list_completed_review_t
     __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 324, __pyx_L1_error)
+    if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 325, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
   }
   __pyx_t_6 = __pyx_t_7;
   __Pyx_INCREF(__pyx_t_6);
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_Task); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 324, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_Task); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 325, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 324, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 325, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __pyx_t_11 = __pyx_t_12;
@@ -10732,7 +10800,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_34list_completed_review_t
     __pyx_t_9 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_desc, __pyx_callargs+__pyx_t_13, (1-__pyx_t_13) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-    if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 324, __pyx_L1_error)
+    if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 325, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
   }
   __pyx_t_13 = 0;
@@ -10742,7 +10810,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_34list_completed_review_t
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 324, __pyx_L1_error)
+    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 325, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
   }
   __pyx_t_13 = 0;
@@ -10751,7 +10819,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_34list_completed_review_t
     __pyx_t_3 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_exec, __pyx_callargs+__pyx_t_13, (2-__pyx_t_13) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 324, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 325, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
   }
   __pyx_t_2 = __pyx_t_3;
@@ -10762,13 +10830,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_34list_completed_review_t
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_all, __pyx_callargs+__pyx_t_13, (1-__pyx_t_13) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 324, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 325, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_tasks = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":325
+  /* "aiSelfTest/services/task.py":326
  * 
  *     tasks = session.exec(select(Task).where(Task.execution_status == "").order_by(Task.id.desc())).all()
  *     return [             # <<<<<<<<<<<<<<
@@ -10777,10 +10845,10 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_34list_completed_review_t
 */
   __Pyx_XDECREF(__pyx_r);
   { /* enter inner scope */
-    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 325, __pyx_L5_error)
+    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 326, __pyx_L5_error)
     __Pyx_GOTREF(__pyx_t_1);
 
-    /* "aiSelfTest/services/task.py":327
+    /* "aiSelfTest/services/task.py":328
  *     return [
  *         {"id": task.id or 0, "name": task.name}
  *         for task in tasks             # <<<<<<<<<<<<<<
@@ -10792,9 +10860,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_34list_completed_review_t
       __pyx_t_14 = 0;
       __pyx_t_15 = NULL;
     } else {
-      __pyx_t_14 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_v_tasks); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 327, __pyx_L5_error)
+      __pyx_t_14 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_v_tasks); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 328, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_15 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_3); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 327, __pyx_L5_error)
+      __pyx_t_15 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_3); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 328, __pyx_L5_error)
     }
     for (;;) {
       if (likely(!__pyx_t_15)) {
@@ -10802,7 +10870,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_34list_completed_review_t
           {
             Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_3);
             #if !CYTHON_ASSUME_SAFE_SIZE
-            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 327, __pyx_L5_error)
+            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 328, __pyx_L5_error)
             #endif
             if (__pyx_t_14 >= __pyx_temp) break;
           }
@@ -10812,7 +10880,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_34list_completed_review_t
           {
             Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_3);
             #if !CYTHON_ASSUME_SAFE_SIZE
-            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 327, __pyx_L5_error)
+            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 328, __pyx_L5_error)
             #endif
             if (__pyx_t_14 >= __pyx_temp) break;
           }
@@ -10823,13 +10891,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_34list_completed_review_t
           #endif
           ++__pyx_t_14;
         }
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 327, __pyx_L5_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 328, __pyx_L5_error)
       } else {
         __pyx_t_2 = __pyx_t_15(__pyx_t_3);
         if (unlikely(!__pyx_t_2)) {
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
-            if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 327, __pyx_L5_error)
+            if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 328, __pyx_L5_error)
             PyErr_Clear();
           }
           break;
@@ -10839,7 +10907,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_34list_completed_review_t
       __Pyx_XDECREF_SET(__pyx_8genexpr5__pyx_v_task, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "aiSelfTest/services/task.py":328
+      /* "aiSelfTest/services/task.py":329
  *         {"id": task.id or 0, "name": task.name}
  *         for task in tasks
  *         if session.exec(select(TaskItem).where(TaskItem.task_id == task.id)).first() is not None             # <<<<<<<<<<<<<<
@@ -10849,9 +10917,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_34list_completed_review_t
       __pyx_t_7 = __pyx_v_session;
       __Pyx_INCREF(__pyx_t_7);
       __pyx_t_11 = NULL;
-      __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_select); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 328, __pyx_L5_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_select); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 329, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_8);
-      __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 328, __pyx_L5_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 329, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_10);
       __pyx_t_13 = 1;
       #if CYTHON_UNPACK_METHODS
@@ -10871,19 +10939,19 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_34list_completed_review_t
         __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
         __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-        if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 328, __pyx_L5_error)
+        if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 329, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_12);
       }
       __pyx_t_6 = __pyx_t_12;
       __Pyx_INCREF(__pyx_t_6);
-      __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 328, __pyx_L5_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 329, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_8);
-      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_task_id); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 328, __pyx_L5_error)
+      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_task_id); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 329, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-      __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr5__pyx_v_task, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 328, __pyx_L5_error)
+      __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr5__pyx_v_task, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 329, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_8);
-      __pyx_t_11 = PyObject_RichCompare(__pyx_t_10, __pyx_t_8, Py_EQ); __Pyx_XGOTREF(__pyx_t_11); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 328, __pyx_L5_error)
+      __pyx_t_11 = PyObject_RichCompare(__pyx_t_10, __pyx_t_8, Py_EQ); __Pyx_XGOTREF(__pyx_t_11); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 329, __pyx_L5_error)
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       __pyx_t_13 = 0;
@@ -10893,7 +10961,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_34list_completed_review_t
         __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
         __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-        if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 328, __pyx_L5_error)
+        if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 329, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_9);
       }
       __pyx_t_13 = 0;
@@ -10902,7 +10970,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_34list_completed_review_t
         __pyx_t_4 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_exec, __pyx_callargs+__pyx_t_13, (2-__pyx_t_13) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
         __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 328, __pyx_L5_error)
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 329, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_4);
       }
       __pyx_t_5 = __pyx_t_4;
@@ -10913,25 +10981,25 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_34list_completed_review_t
         __pyx_t_2 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_first, __pyx_callargs+__pyx_t_13, (1-__pyx_t_13) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 328, __pyx_L5_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 329, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_2);
       }
       __pyx_t_16 = (__pyx_t_2 != Py_None);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (__pyx_t_16) {
 
-        /* "aiSelfTest/services/task.py":326
+        /* "aiSelfTest/services/task.py":327
  *     tasks = session.exec(select(Task).where(Task.execution_status == "").order_by(Task.id.desc())).all()
  *     return [
  *         {"id": task.id or 0, "name": task.name}             # <<<<<<<<<<<<<<
  *         for task in tasks
  *         if session.exec(select(TaskItem).where(TaskItem.task_id == task.id)).first() is not None
 */
-        __pyx_t_2 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 326, __pyx_L5_error)
+        __pyx_t_2 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 327, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_2);
-        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr5__pyx_v_task, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 326, __pyx_L5_error)
+        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr5__pyx_v_task, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 327, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_16 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely((__pyx_t_16 < 0))) __PYX_ERR(0, 326, __pyx_L5_error)
+        __pyx_t_16 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely((__pyx_t_16 < 0))) __PYX_ERR(0, 327, __pyx_L5_error)
         if (!__pyx_t_16) {
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         } else {
@@ -10940,21 +11008,21 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_34list_completed_review_t
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
           goto __pyx_L9_bool_binop_done;
         }
-        __pyx_t_5 = __Pyx_PyLong_From_long(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 326, __pyx_L5_error)
+        __pyx_t_5 = __Pyx_PyLong_From_long(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 327, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_5);
         __pyx_t_4 = __pyx_t_5;
         __pyx_t_5 = 0;
         __pyx_L9_bool_binop_done:;
-        if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_id, __pyx_t_4) < (0)) __PYX_ERR(0, 326, __pyx_L5_error)
+        if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_id, __pyx_t_4) < (0)) __PYX_ERR(0, 327, __pyx_L5_error)
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr5__pyx_v_task, __pyx_mstate_global->__pyx_n_u_name); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 326, __pyx_L5_error)
+        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr5__pyx_v_task, __pyx_mstate_global->__pyx_n_u_name); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 327, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_4);
-        if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_name, __pyx_t_4) < (0)) __PYX_ERR(0, 326, __pyx_L5_error)
+        if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_name, __pyx_t_4) < (0)) __PYX_ERR(0, 327, __pyx_L5_error)
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_2))) __PYX_ERR(0, 325, __pyx_L5_error)
+        if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_2))) __PYX_ERR(0, 326, __pyx_L5_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-        /* "aiSelfTest/services/task.py":328
+        /* "aiSelfTest/services/task.py":329
  *         {"id": task.id or 0, "name": task.name}
  *         for task in tasks
  *         if session.exec(select(TaskItem).where(TaskItem.task_id == task.id)).first() is not None             # <<<<<<<<<<<<<<
@@ -10963,7 +11031,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_34list_completed_review_t
 */
       }
 
-      /* "aiSelfTest/services/task.py":327
+      /* "aiSelfTest/services/task.py":328
  *     return [
  *         {"id": task.id or 0, "name": task.name}
  *         for task in tasks             # <<<<<<<<<<<<<<
@@ -10983,7 +11051,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_34list_completed_review_t
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "aiSelfTest/services/task.py":321
+  /* "aiSelfTest/services/task.py":322
  * 
  * 
  * def list_completed_review_tasks(session: Session) -> list[dict[str, int | str]]:             # <<<<<<<<<<<<<<
@@ -11015,7 +11083,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_34list_completed_review_t
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task.py":332
+/* "aiSelfTest/services/task.py":333
  * 
  * 
  * def list_review_items(session: Session, task_id: int) -> list[dict[str, object]]:             # <<<<<<<<<<<<<<
@@ -11064,40 +11132,40 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_session,&__pyx_mstate_global->__pyx_n_u_task_id,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 332, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 333, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 332, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 333, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 332, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 333, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "list_review_items", 0) < (0)) __PYX_ERR(0, 332, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "list_review_items", 0) < (0)) __PYX_ERR(0, 333, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("list_review_items", 1, 2, 2, i); __PYX_ERR(0, 332, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("list_review_items", 1, 2, 2, i); __PYX_ERR(0, 333, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 332, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 333, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 332, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 333, __pyx_L3_error)
     }
     __pyx_v_session = values[0];
-    if (__Pyx_PyInt_FromNumber(&values[1], "task_id", 0) < (0)) __PYX_ERR(0, 332, __pyx_L3_error)
+    if (__Pyx_PyInt_FromNumber(&values[1], "task_id", 0) < (0)) __PYX_ERR(0, 333, __pyx_L3_error)
     __pyx_v_task_id = ((PyObject*)values[1]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("list_review_items", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 332, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("list_review_items", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 333, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -11108,7 +11176,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 332, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 333, __pyx_L1_error)
   __pyx_r = __pyx_pf_10aiSelfTest_8services_4task_36list_review_items(__pyx_self, __pyx_v_session, __pyx_v_task_id);
 
   /* function exit code */
@@ -11154,7 +11222,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_36list_review_items(CYTHO
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("list_review_items", 0);
 
-  /* "aiSelfTest/services/task.py":335
+  /* "aiSelfTest/services/task.py":336
  *     """"""
  * 
  *     task = _get_task_or_raise(session, task_id)             # <<<<<<<<<<<<<<
@@ -11162,7 +11230,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_36list_review_items(CYTHO
  *     return [_build_review_item(task, item, session) for item in items]
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_get_task_or_raise); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 335, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_get_task_or_raise); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 336, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -11181,13 +11249,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_36list_review_items(CYTHO
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_4, (3-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 335, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 336, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_task = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":336
+  /* "aiSelfTest/services/task.py":337
  * 
  *     task = _get_task_or_raise(session, task_id)
  *     items = session.exec(select(TaskItem).where(TaskItem.task_id == task_id).order_by(TaskItem.id.desc())).all()             # <<<<<<<<<<<<<<
@@ -11197,9 +11265,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_36list_review_items(CYTHO
   __pyx_t_5 = __pyx_v_session;
   __Pyx_INCREF(__pyx_t_5);
   __pyx_t_11 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_select); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 336, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_select); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 337, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
-  __Pyx_GetModuleGlobalName(__pyx_t_13, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 336, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_13, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 337, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_13);
   __pyx_t_4 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -11219,17 +11287,17 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_36list_review_items(CYTHO
     __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-    if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 336, __pyx_L1_error)
+    if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 337, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
   }
   __pyx_t_9 = __pyx_t_10;
   __Pyx_INCREF(__pyx_t_9);
-  __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 336, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 337, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
-  __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_task_id); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 336, __pyx_L1_error)
+  __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_task_id); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 337, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_13);
   __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-  __pyx_t_12 = PyObject_RichCompare(__pyx_t_13, __pyx_v_task_id, Py_EQ); __Pyx_XGOTREF(__pyx_t_12); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 336, __pyx_L1_error)
+  __pyx_t_12 = PyObject_RichCompare(__pyx_t_13, __pyx_v_task_id, Py_EQ); __Pyx_XGOTREF(__pyx_t_12); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 337, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
   __pyx_t_4 = 0;
   {
@@ -11238,14 +11306,14 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_36list_review_items(CYTHO
     __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 336, __pyx_L1_error)
+    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 337, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
   }
   __pyx_t_7 = __pyx_t_8;
   __Pyx_INCREF(__pyx_t_7);
-  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 336, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 337, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 336, __pyx_L1_error)
+  __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 337, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_13);
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
   __pyx_t_12 = __pyx_t_13;
@@ -11256,7 +11324,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_36list_review_items(CYTHO
     __pyx_t_10 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_desc, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-    if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 336, __pyx_L1_error)
+    if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 337, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
   }
   __pyx_t_4 = 0;
@@ -11266,7 +11334,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_36list_review_items(CYTHO
     __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 336, __pyx_L1_error)
+    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 337, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
   }
   __pyx_t_4 = 0;
@@ -11275,7 +11343,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_36list_review_items(CYTHO
     __pyx_t_2 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_exec, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 336, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 337, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
   }
   __pyx_t_3 = __pyx_t_2;
@@ -11286,13 +11354,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_36list_review_items(CYTHO
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_all, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 336, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 337, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_items = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":337
+  /* "aiSelfTest/services/task.py":338
  *     task = _get_task_or_raise(session, task_id)
  *     items = session.exec(select(TaskItem).where(TaskItem.task_id == task_id).order_by(TaskItem.id.desc())).all()
  *     return [_build_review_item(task, item, session) for item in items]             # <<<<<<<<<<<<<<
@@ -11301,16 +11369,16 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_36list_review_items(CYTHO
 */
   __Pyx_XDECREF(__pyx_r);
   { /* enter inner scope */
-    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 337, __pyx_L5_error)
+    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 338, __pyx_L5_error)
     __Pyx_GOTREF(__pyx_t_1);
     if (likely(PyList_CheckExact(__pyx_v_items)) || PyTuple_CheckExact(__pyx_v_items)) {
       __pyx_t_2 = __pyx_v_items; __Pyx_INCREF(__pyx_t_2);
       __pyx_t_14 = 0;
       __pyx_t_15 = NULL;
     } else {
-      __pyx_t_14 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_items); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 337, __pyx_L5_error)
+      __pyx_t_14 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_items); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 338, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_15 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 337, __pyx_L5_error)
+      __pyx_t_15 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 338, __pyx_L5_error)
     }
     for (;;) {
       if (likely(!__pyx_t_15)) {
@@ -11318,7 +11386,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_36list_review_items(CYTHO
           {
             Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_2);
             #if !CYTHON_ASSUME_SAFE_SIZE
-            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 337, __pyx_L5_error)
+            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 338, __pyx_L5_error)
             #endif
             if (__pyx_t_14 >= __pyx_temp) break;
           }
@@ -11328,7 +11396,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_36list_review_items(CYTHO
           {
             Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_2);
             #if !CYTHON_ASSUME_SAFE_SIZE
-            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 337, __pyx_L5_error)
+            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 338, __pyx_L5_error)
             #endif
             if (__pyx_t_14 >= __pyx_temp) break;
           }
@@ -11339,13 +11407,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_36list_review_items(CYTHO
           #endif
           ++__pyx_t_14;
         }
-        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 337, __pyx_L5_error)
+        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 338, __pyx_L5_error)
       } else {
         __pyx_t_3 = __pyx_t_15(__pyx_t_2);
         if (unlikely(!__pyx_t_3)) {
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
-            if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 337, __pyx_L5_error)
+            if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 338, __pyx_L5_error)
             PyErr_Clear();
           }
           break;
@@ -11355,7 +11423,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_36list_review_items(CYTHO
       __Pyx_XDECREF_SET(__pyx_8genexpr6__pyx_v_item, __pyx_t_3);
       __pyx_t_3 = 0;
       __pyx_t_6 = NULL;
-      __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_build_review_item); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 337, __pyx_L5_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_build_review_item); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 338, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_5);
       __pyx_t_4 = 1;
       #if CYTHON_UNPACK_METHODS
@@ -11374,10 +11442,10 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_36list_review_items(CYTHO
         __pyx_t_3 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_5, __pyx_callargs+__pyx_t_4, (4-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 337, __pyx_L5_error)
+        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 338, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_3);
       }
-      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_3))) __PYX_ERR(0, 337, __pyx_L5_error)
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_3))) __PYX_ERR(0, 338, __pyx_L5_error)
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -11392,7 +11460,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_36list_review_items(CYTHO
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "aiSelfTest/services/task.py":332
+  /* "aiSelfTest/services/task.py":333
  * 
  * 
  * def list_review_items(session: Session, task_id: int) -> list[dict[str, object]]:             # <<<<<<<<<<<<<<
@@ -11425,7 +11493,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_36list_review_items(CYTHO
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task.py":340
+/* "aiSelfTest/services/task.py":341
  * 
  * 
  * def confirm_review_items(session: Session, ids: list[str]) -> dict[str, object]:             # <<<<<<<<<<<<<<
@@ -11474,39 +11542,39 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_session,&__pyx_mstate_global->__pyx_n_u_ids,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 340, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 341, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 340, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 341, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 340, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 341, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "confirm_review_items", 0) < (0)) __PYX_ERR(0, 340, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "confirm_review_items", 0) < (0)) __PYX_ERR(0, 341, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("confirm_review_items", 1, 2, 2, i); __PYX_ERR(0, 340, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("confirm_review_items", 1, 2, 2, i); __PYX_ERR(0, 341, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 340, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 341, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 340, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 341, __pyx_L3_error)
     }
     __pyx_v_session = values[0];
     __pyx_v_ids = ((PyObject*)values[1]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("confirm_review_items", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 340, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("confirm_review_items", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 341, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -11517,7 +11585,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ids), (&PyList_Type), 0, "ids", 2))) __PYX_ERR(0, 340, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ids), (&PyList_Type), 0, "ids", 2))) __PYX_ERR(0, 341, __pyx_L1_error)
   __pyx_r = __pyx_pf_10aiSelfTest_8services_4task_38confirm_review_items(__pyx_self, __pyx_v_session, __pyx_v_ids);
 
   /* function exit code */
@@ -11575,7 +11643,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_38confirm_review_items(CY
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("confirm_review_items", 0);
 
-  /* "aiSelfTest/services/task.py":343
+  /* "aiSelfTest/services/task.py":344
  *     """"""
  * 
  *     success_count = 0             # <<<<<<<<<<<<<<
@@ -11585,7 +11653,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_38confirm_review_items(CY
   __Pyx_INCREF(__pyx_mstate_global->__pyx_int_0);
   __pyx_v_success_count = __pyx_mstate_global->__pyx_int_0;
 
-  /* "aiSelfTest/services/task.py":344
+  /* "aiSelfTest/services/task.py":345
  * 
  *     success_count = 0
  *     failure_count = 0             # <<<<<<<<<<<<<<
@@ -11595,19 +11663,19 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_38confirm_review_items(CY
   __Pyx_INCREF(__pyx_mstate_global->__pyx_int_0);
   __pyx_v_failure_count = __pyx_mstate_global->__pyx_int_0;
 
-  /* "aiSelfTest/services/task.py":345
+  /* "aiSelfTest/services/task.py":346
  *     success_count = 0
  *     failure_count = 0
  *     results: list[dict[str, str]] = []             # <<<<<<<<<<<<<<
  * 
  *     for raw_id in ids:
 */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 345, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 346, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_results = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":347
+  /* "aiSelfTest/services/task.py":348
  *     results: list[dict[str, str]] = []
  * 
  *     for raw_id in ids:             # <<<<<<<<<<<<<<
@@ -11620,18 +11688,18 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_38confirm_review_items(CY
     {
       Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_1);
       #if !CYTHON_ASSUME_SAFE_SIZE
-      if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 347, __pyx_L1_error)
+      if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 348, __pyx_L1_error)
       #endif
       if (__pyx_t_2 >= __pyx_temp) break;
     }
     __pyx_t_3 = __Pyx_PyList_GetItemRefFast(__pyx_t_1, __pyx_t_2, __Pyx_ReferenceSharing_OwnStrongReference);
     ++__pyx_t_2;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 347, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 348, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_XDECREF_SET(__pyx_v_raw_id, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "aiSelfTest/services/task.py":348
+    /* "aiSelfTest/services/task.py":349
  * 
  *     for raw_id in ids:
  *         try:             # <<<<<<<<<<<<<<
@@ -11647,19 +11715,19 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_38confirm_review_items(CY
       __Pyx_XGOTREF(__pyx_t_6);
       /*try:*/ {
 
-        /* "aiSelfTest/services/task.py":349
+        /* "aiSelfTest/services/task.py":350
  *     for raw_id in ids:
  *         try:
  *             task_item_id = int(raw_id)             # <<<<<<<<<<<<<<
  *             confirm_task_item(session, TaskItemActionRequest(task_item_id=task_item_id))
  *             success_count += 1
 */
-        __pyx_t_3 = __Pyx_PyNumber_Int(__pyx_v_raw_id); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 349, __pyx_L5_error)
+        __pyx_t_3 = __Pyx_PyNumber_Int(__pyx_v_raw_id); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 350, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_XDECREF_SET(__pyx_v_task_item_id, ((PyObject*)__pyx_t_3));
         __pyx_t_3 = 0;
 
-        /* "aiSelfTest/services/task.py":350
+        /* "aiSelfTest/services/task.py":351
  *         try:
  *             task_item_id = int(raw_id)
  *             confirm_task_item(session, TaskItemActionRequest(task_item_id=task_item_id))             # <<<<<<<<<<<<<<
@@ -11667,10 +11735,10 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_38confirm_review_items(CY
  *             results.append({"status": "success", "message": f" {task_item_id} "})
 */
         __pyx_t_7 = NULL;
-        __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_confirm_task_item); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 350, __pyx_L5_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_confirm_task_item); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 351, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_8);
         __pyx_t_10 = NULL;
-        __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_TaskItemActionRequest); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 350, __pyx_L5_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_TaskItemActionRequest); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 351, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_11);
         __pyx_t_12 = 1;
         #if CYTHON_UNPACK_METHODS
@@ -11686,14 +11754,14 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_38confirm_review_items(CY
         #endif
         {
           PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 1 : 0)] = {__pyx_t_10, NULL};
-          __pyx_t_13 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 350, __pyx_L5_error)
+          __pyx_t_13 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 351, __pyx_L5_error)
           __Pyx_GOTREF(__pyx_t_13);
-          if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_task_item_id, __pyx_v_task_item_id, __pyx_t_13, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 350, __pyx_L5_error)
+          if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_task_item_id, __pyx_v_task_item_id, __pyx_t_13, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 351, __pyx_L5_error)
           __pyx_t_9 = __Pyx_Object_Vectorcall_CallFromBuilder((PyObject*)__pyx_t_11, __pyx_callargs+__pyx_t_12, (1-__pyx_t_12) | (__pyx_t_12*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_13);
           __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
           __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
           __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-          if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 350, __pyx_L5_error)
+          if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 351, __pyx_L5_error)
           __Pyx_GOTREF(__pyx_t_9);
         }
         __pyx_t_12 = 1;
@@ -11714,48 +11782,48 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_38confirm_review_items(CY
           __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
           __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-          if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 350, __pyx_L5_error)
+          if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 351, __pyx_L5_error)
           __Pyx_GOTREF(__pyx_t_3);
         }
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-        /* "aiSelfTest/services/task.py":351
+        /* "aiSelfTest/services/task.py":352
  *             task_item_id = int(raw_id)
  *             confirm_task_item(session, TaskItemActionRequest(task_item_id=task_item_id))
  *             success_count += 1             # <<<<<<<<<<<<<<
  *             results.append({"status": "success", "message": f" {task_item_id} "})
  *         except Exception as exc:  # noqa: BLE001
 */
-        __pyx_t_3 = __Pyx_PyLong_AddObjC(__pyx_v_success_count, __pyx_mstate_global->__pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 351, __pyx_L5_error)
+        __pyx_t_3 = __Pyx_PyLong_AddObjC(__pyx_v_success_count, __pyx_mstate_global->__pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 352, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF_SET(__pyx_v_success_count, __pyx_t_3);
         __pyx_t_3 = 0;
 
-        /* "aiSelfTest/services/task.py":352
+        /* "aiSelfTest/services/task.py":353
  *             confirm_task_item(session, TaskItemActionRequest(task_item_id=task_item_id))
  *             success_count += 1
  *             results.append({"status": "success", "message": f" {task_item_id} "})             # <<<<<<<<<<<<<<
  *         except Exception as exc:  # noqa: BLE001
  *             failure_count += 1
 */
-        __pyx_t_3 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 352, __pyx_L5_error)
+        __pyx_t_3 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 353, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_3);
-        if (PyDict_SetItem(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_status, __pyx_mstate_global->__pyx_n_u_success) < (0)) __PYX_ERR(0, 352, __pyx_L5_error)
-        __pyx_t_8 = __Pyx_PyObject_FormatSimple(__pyx_v_task_item_id, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 352, __pyx_L5_error)
+        if (PyDict_SetItem(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_status, __pyx_mstate_global->__pyx_n_u_success) < (0)) __PYX_ERR(0, 353, __pyx_L5_error)
+        __pyx_t_8 = __Pyx_PyObject_FormatSimple(__pyx_v_task_item_id, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 353, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_8);
-        __pyx_t_14[0] = __pyx_mstate_global->__pyx_kp_u__3;
+        __pyx_t_14[0] = __pyx_mstate_global->__pyx_kp_u__4;
         __pyx_t_14[1] = __pyx_t_8;
-        __pyx_t_14[2] = __pyx_mstate_global->__pyx_kp_u__4;
+        __pyx_t_14[2] = __pyx_mstate_global->__pyx_kp_u__5;
         __pyx_t_9 = __Pyx_PyUnicode_Join(__pyx_t_14, 3, 4 + __Pyx_PyUnicode_GET_LENGTH(__pyx_t_8) + 5, 65535 | __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_8));
-        if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 352, __pyx_L5_error)
+        if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 353, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_9);
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-        if (PyDict_SetItem(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_message, __pyx_t_9) < (0)) __PYX_ERR(0, 352, __pyx_L5_error)
+        if (PyDict_SetItem(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_message, __pyx_t_9) < (0)) __PYX_ERR(0, 353, __pyx_L5_error)
         __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-        __pyx_t_15 = __Pyx_PyList_Append(__pyx_v_results, __pyx_t_3); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 352, __pyx_L5_error)
+        __pyx_t_15 = __Pyx_PyList_Append(__pyx_v_results, __pyx_t_3); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 353, __pyx_L5_error)
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-        /* "aiSelfTest/services/task.py":348
+        /* "aiSelfTest/services/task.py":349
  * 
  *     for raw_id in ids:
  *         try:             # <<<<<<<<<<<<<<
@@ -11776,7 +11844,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_38confirm_review_items(CY
       __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
       __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-      /* "aiSelfTest/services/task.py":353
+      /* "aiSelfTest/services/task.py":354
  *             success_count += 1
  *             results.append({"status": "success", "message": f" {task_item_id} "})
  *         except Exception as exc:  # noqa: BLE001             # <<<<<<<<<<<<<<
@@ -11786,7 +11854,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_38confirm_review_items(CY
       __pyx_t_16 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(((PyTypeObject*)PyExc_Exception))));
       if (__pyx_t_16) {
         __Pyx_AddTraceback("aiSelfTest.services.task.confirm_review_items", __pyx_clineno, __pyx_lineno, __pyx_filename);
-        if (__Pyx_GetException(&__pyx_t_3, &__pyx_t_9, &__pyx_t_8) < 0) __PYX_ERR(0, 353, __pyx_L7_except_error)
+        if (__Pyx_GetException(&__pyx_t_3, &__pyx_t_9, &__pyx_t_8) < 0) __PYX_ERR(0, 354, __pyx_L7_except_error)
         __Pyx_XGOTREF(__pyx_t_3);
         __Pyx_XGOTREF(__pyx_t_9);
         __Pyx_XGOTREF(__pyx_t_8);
@@ -11794,37 +11862,37 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_38confirm_review_items(CY
         __pyx_v_exc = __pyx_t_9;
         /*try:*/ {
 
-          /* "aiSelfTest/services/task.py":354
+          /* "aiSelfTest/services/task.py":355
  *             results.append({"status": "success", "message": f" {task_item_id} "})
  *         except Exception as exc:  # noqa: BLE001
  *             failure_count += 1             # <<<<<<<<<<<<<<
  *             results.append({"status": "failed", "message": str(exc)})
  * 
 */
-          __pyx_t_7 = __Pyx_PyLong_AddObjC(__pyx_v_failure_count, __pyx_mstate_global->__pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 354, __pyx_L18_error)
+          __pyx_t_7 = __Pyx_PyLong_AddObjC(__pyx_v_failure_count, __pyx_mstate_global->__pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 355, __pyx_L18_error)
           __Pyx_GOTREF(__pyx_t_7);
           __Pyx_DECREF_SET(__pyx_v_failure_count, __pyx_t_7);
           __pyx_t_7 = 0;
 
-          /* "aiSelfTest/services/task.py":355
+          /* "aiSelfTest/services/task.py":356
  *         except Exception as exc:  # noqa: BLE001
  *             failure_count += 1
  *             results.append({"status": "failed", "message": str(exc)})             # <<<<<<<<<<<<<<
  * 
  *     return {
 */
-          __pyx_t_7 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 355, __pyx_L18_error)
+          __pyx_t_7 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 356, __pyx_L18_error)
           __Pyx_GOTREF(__pyx_t_7);
-          if (PyDict_SetItem(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_status, __pyx_mstate_global->__pyx_n_u_failed) < (0)) __PYX_ERR(0, 355, __pyx_L18_error)
-          __pyx_t_11 = __Pyx_PyObject_Unicode(__pyx_v_exc); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 355, __pyx_L18_error)
+          if (PyDict_SetItem(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_status, __pyx_mstate_global->__pyx_n_u_failed) < (0)) __PYX_ERR(0, 356, __pyx_L18_error)
+          __pyx_t_11 = __Pyx_PyObject_Unicode(__pyx_v_exc); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 356, __pyx_L18_error)
           __Pyx_GOTREF(__pyx_t_11);
-          if (PyDict_SetItem(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_message, __pyx_t_11) < (0)) __PYX_ERR(0, 355, __pyx_L18_error)
+          if (PyDict_SetItem(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_message, __pyx_t_11) < (0)) __PYX_ERR(0, 356, __pyx_L18_error)
           __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-          __pyx_t_15 = __Pyx_PyList_Append(__pyx_v_results, __pyx_t_7); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 355, __pyx_L18_error)
+          __pyx_t_15 = __Pyx_PyList_Append(__pyx_v_results, __pyx_t_7); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 356, __pyx_L18_error)
           __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         }
 
-        /* "aiSelfTest/services/task.py":353
+        /* "aiSelfTest/services/task.py":354
  *             success_count += 1
  *             results.append({"status": "success", "message": f" {task_item_id} "})
  *         except Exception as exc:  # noqa: BLE001             # <<<<<<<<<<<<<<
@@ -11878,7 +11946,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_38confirm_review_items(CY
       }
       goto __pyx_L7_except_error;
 
-      /* "aiSelfTest/services/task.py":348
+      /* "aiSelfTest/services/task.py":349
  * 
  *     for raw_id in ids:
  *         try:             # <<<<<<<<<<<<<<
@@ -11899,7 +11967,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_38confirm_review_items(CY
       __pyx_L12_try_end:;
     }
 
-    /* "aiSelfTest/services/task.py":347
+    /* "aiSelfTest/services/task.py":348
  *     results: list[dict[str, str]] = []
  * 
  *     for raw_id in ids:             # <<<<<<<<<<<<<<
@@ -11909,7 +11977,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_38confirm_review_items(CY
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":357
+  /* "aiSelfTest/services/task.py":358
  *             results.append({"status": "failed", "message": str(exc)})
  * 
  *     return {             # <<<<<<<<<<<<<<
@@ -11918,39 +11986,39 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_38confirm_review_items(CY
 */
   __Pyx_XDECREF(__pyx_r);
 
-  /* "aiSelfTest/services/task.py":358
+  /* "aiSelfTest/services/task.py":359
  * 
  *     return {
  *         "successCount": success_count,             # <<<<<<<<<<<<<<
  *         "failureCount": failure_count,
  *         "results": results,
 */
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 358, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 359, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_successCount, __pyx_v_success_count) < (0)) __PYX_ERR(0, 358, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_successCount, __pyx_v_success_count) < (0)) __PYX_ERR(0, 359, __pyx_L1_error)
 
-  /* "aiSelfTest/services/task.py":359
+  /* "aiSelfTest/services/task.py":360
  *     return {
  *         "successCount": success_count,
  *         "failureCount": failure_count,             # <<<<<<<<<<<<<<
  *         "results": results,
  *     }
 */
-  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_failureCount, __pyx_v_failure_count) < (0)) __PYX_ERR(0, 358, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_failureCount, __pyx_v_failure_count) < (0)) __PYX_ERR(0, 359, __pyx_L1_error)
 
-  /* "aiSelfTest/services/task.py":360
+  /* "aiSelfTest/services/task.py":361
  *         "successCount": success_count,
  *         "failureCount": failure_count,
  *         "results": results,             # <<<<<<<<<<<<<<
  *     }
  * 
 */
-  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_results, __pyx_v_results) < (0)) __PYX_ERR(0, 358, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_results, __pyx_v_results) < (0)) __PYX_ERR(0, 359, __pyx_L1_error)
   __pyx_r = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "aiSelfTest/services/task.py":340
+  /* "aiSelfTest/services/task.py":341
  * 
  * 
  * def confirm_review_items(session: Session, ids: list[str]) -> dict[str, object]:             # <<<<<<<<<<<<<<
@@ -11982,7 +12050,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_38confirm_review_items(CY
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task.py":364
+/* "aiSelfTest/services/task.py":365
  * 
  * 
  * def delete_review_item(session: Session, task_item_id: int) -> None:             # <<<<<<<<<<<<<<
@@ -12031,40 +12099,40 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_session,&__pyx_mstate_global->__pyx_n_u_task_item_id,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 364, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 365, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 364, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 365, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 364, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 365, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "delete_review_item", 0) < (0)) __PYX_ERR(0, 364, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "delete_review_item", 0) < (0)) __PYX_ERR(0, 365, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("delete_review_item", 1, 2, 2, i); __PYX_ERR(0, 364, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("delete_review_item", 1, 2, 2, i); __PYX_ERR(0, 365, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 364, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 365, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 364, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 365, __pyx_L3_error)
     }
     __pyx_v_session = values[0];
-    if (__Pyx_PyInt_FromNumber(&values[1], "task_item_id", 0) < (0)) __PYX_ERR(0, 364, __pyx_L3_error)
+    if (__Pyx_PyInt_FromNumber(&values[1], "task_item_id", 0) < (0)) __PYX_ERR(0, 365, __pyx_L3_error)
     __pyx_v_task_item_id = ((PyObject*)values[1]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("delete_review_item", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 364, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("delete_review_item", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 365, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -12075,7 +12143,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_item_id), (&PyLong_Type), 0, "task_item_id", 2))) __PYX_ERR(0, 364, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_item_id), (&PyLong_Type), 0, "task_item_id", 2))) __PYX_ERR(0, 365, __pyx_L1_error)
   __pyx_r = __pyx_pf_10aiSelfTest_8services_4task_40delete_review_item(__pyx_self, __pyx_v_session, __pyx_v_task_item_id);
 
   /* function exit code */
@@ -12121,7 +12189,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_40delete_review_item(CYTH
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("delete_review_item", 0);
 
-  /* "aiSelfTest/services/task.py":367
+  /* "aiSelfTest/services/task.py":368
  *     """"""
  * 
  *     task_item = _get_task_item_or_raise(session, task_item_id)             # <<<<<<<<<<<<<<
@@ -12129,7 +12197,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_40delete_review_item(CYTH
  *         select(TaskItemData).where(TaskItemData.task_item_id == task_item_id)
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_get_task_item_or_raise); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 367, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_get_task_item_or_raise); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 368, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -12148,13 +12216,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_40delete_review_item(CYTH
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_4, (3-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 367, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 368, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_task_item = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":368
+  /* "aiSelfTest/services/task.py":369
  * 
  *     task_item = _get_task_item_or_raise(session, task_item_id)
  *     data_rows = session.exec(             # <<<<<<<<<<<<<<
@@ -12164,7 +12232,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_40delete_review_item(CYTH
   __pyx_t_5 = __pyx_v_session;
   __Pyx_INCREF(__pyx_t_5);
 
-  /* "aiSelfTest/services/task.py":369
+  /* "aiSelfTest/services/task.py":370
  *     task_item = _get_task_item_or_raise(session, task_item_id)
  *     data_rows = session.exec(
  *         select(TaskItemData).where(TaskItemData.task_item_id == task_item_id)             # <<<<<<<<<<<<<<
@@ -12172,9 +12240,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_40delete_review_item(CYTH
  *     delete_task_item_rows(
 */
   __pyx_t_9 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_select); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 369, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_select); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 370, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
-  __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_TaskItemData); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 369, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_TaskItemData); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 370, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
   __pyx_t_4 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -12194,17 +12262,17 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_40delete_review_item(CYTH
     __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
     __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 369, __pyx_L1_error)
+    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 370, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
   }
   __pyx_t_7 = __pyx_t_8;
   __Pyx_INCREF(__pyx_t_7);
-  __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_TaskItemData); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 369, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_TaskItemData); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 370, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
-  __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_task_item_id); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 369, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_task_item_id); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 370, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-  __pyx_t_10 = PyObject_RichCompare(__pyx_t_11, __pyx_v_task_item_id, Py_EQ); __Pyx_XGOTREF(__pyx_t_10); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 369, __pyx_L1_error)
+  __pyx_t_10 = PyObject_RichCompare(__pyx_t_11, __pyx_v_task_item_id, Py_EQ); __Pyx_XGOTREF(__pyx_t_10); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 370, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
   __pyx_t_4 = 0;
   {
@@ -12213,7 +12281,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_40delete_review_item(CYTH
     __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 369, __pyx_L1_error)
+    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 370, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
   }
   __pyx_t_4 = 0;
@@ -12222,7 +12290,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_40delete_review_item(CYTH
     __pyx_t_2 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_exec, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 368, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 369, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
   }
   __pyx_t_3 = __pyx_t_2;
@@ -12233,13 +12301,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_40delete_review_item(CYTH
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_all, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 370, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 371, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_data_rows = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":371
+  /* "aiSelfTest/services/task.py":372
  *         select(TaskItemData).where(TaskItemData.task_item_id == task_item_id)
  *     ).all()
  *     delete_task_item_rows(             # <<<<<<<<<<<<<<
@@ -12247,10 +12315,10 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_40delete_review_item(CYTH
  *         TaskItemDeleteRequest(
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_delete_task_item_rows); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 371, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_delete_task_item_rows); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 372, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
-  /* "aiSelfTest/services/task.py":373
+  /* "aiSelfTest/services/task.py":374
  *     delete_task_item_rows(
  *         session,
  *         TaskItemDeleteRequest(             # <<<<<<<<<<<<<<
@@ -12258,19 +12326,19 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_40delete_review_item(CYTH
  *             task_item_data_ids=[row.id or 0 for row in data_rows if row.id is not None],
 */
   __pyx_t_5 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_TaskItemDeleteRequest); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 373, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_TaskItemDeleteRequest); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 374, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
 
-  /* "aiSelfTest/services/task.py":374
+  /* "aiSelfTest/services/task.py":375
  *         session,
  *         TaskItemDeleteRequest(
  *             task_item_id=task_item.id or 0,             # <<<<<<<<<<<<<<
  *             task_item_data_ids=[row.id or 0 for row in data_rows if row.id is not None],
  *         ),
 */
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 374, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 375, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_12 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely((__pyx_t_12 < 0))) __PYX_ERR(0, 374, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely((__pyx_t_12 < 0))) __PYX_ERR(0, 375, __pyx_L1_error)
   if (!__pyx_t_12) {
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   } else {
@@ -12279,30 +12347,30 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_40delete_review_item(CYTH
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     goto __pyx_L3_bool_binop_done;
   }
-  __pyx_t_7 = __Pyx_PyLong_From_long(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 374, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyLong_From_long(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 375, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __pyx_t_10 = __pyx_t_7;
   __pyx_t_7 = 0;
   __pyx_L3_bool_binop_done:;
   { /* enter inner scope */
 
-    /* "aiSelfTest/services/task.py":375
+    /* "aiSelfTest/services/task.py":376
  *         TaskItemDeleteRequest(
  *             task_item_id=task_item.id or 0,
  *             task_item_data_ids=[row.id or 0 for row in data_rows if row.id is not None],             # <<<<<<<<<<<<<<
  *         ),
  *     )
 */
-    __pyx_t_7 = PyList_New(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 375, __pyx_L7_error)
+    __pyx_t_7 = PyList_New(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 376, __pyx_L7_error)
     __Pyx_GOTREF(__pyx_t_7);
     if (likely(PyList_CheckExact(__pyx_v_data_rows)) || PyTuple_CheckExact(__pyx_v_data_rows)) {
       __pyx_t_11 = __pyx_v_data_rows; __Pyx_INCREF(__pyx_t_11);
       __pyx_t_13 = 0;
       __pyx_t_14 = NULL;
     } else {
-      __pyx_t_13 = -1; __pyx_t_11 = PyObject_GetIter(__pyx_v_data_rows); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 375, __pyx_L7_error)
+      __pyx_t_13 = -1; __pyx_t_11 = PyObject_GetIter(__pyx_v_data_rows); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 376, __pyx_L7_error)
       __Pyx_GOTREF(__pyx_t_11);
-      __pyx_t_14 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_11); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 375, __pyx_L7_error)
+      __pyx_t_14 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_11); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 376, __pyx_L7_error)
     }
     for (;;) {
       if (likely(!__pyx_t_14)) {
@@ -12310,7 +12378,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_40delete_review_item(CYTH
           {
             Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_11);
             #if !CYTHON_ASSUME_SAFE_SIZE
-            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 375, __pyx_L7_error)
+            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 376, __pyx_L7_error)
             #endif
             if (__pyx_t_13 >= __pyx_temp) break;
           }
@@ -12320,7 +12388,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_40delete_review_item(CYTH
           {
             Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_11);
             #if !CYTHON_ASSUME_SAFE_SIZE
-            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 375, __pyx_L7_error)
+            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 376, __pyx_L7_error)
             #endif
             if (__pyx_t_13 >= __pyx_temp) break;
           }
@@ -12331,13 +12399,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_40delete_review_item(CYTH
           #endif
           ++__pyx_t_13;
         }
-        if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 375, __pyx_L7_error)
+        if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 376, __pyx_L7_error)
       } else {
         __pyx_t_9 = __pyx_t_14(__pyx_t_11);
         if (unlikely(!__pyx_t_9)) {
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
-            if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 375, __pyx_L7_error)
+            if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 376, __pyx_L7_error)
             PyErr_Clear();
           }
           break;
@@ -12346,14 +12414,14 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_40delete_review_item(CYTH
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_XDECREF_SET(__pyx_8genexpr7__pyx_v_row, __pyx_t_9);
       __pyx_t_9 = 0;
-      __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr7__pyx_v_row, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 375, __pyx_L7_error)
+      __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr7__pyx_v_row, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 376, __pyx_L7_error)
       __Pyx_GOTREF(__pyx_t_9);
       __pyx_t_12 = (__pyx_t_9 != Py_None);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       if (__pyx_t_12) {
-        __pyx_t_15 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr7__pyx_v_row, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 375, __pyx_L7_error)
+        __pyx_t_15 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr7__pyx_v_row, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 376, __pyx_L7_error)
         __Pyx_GOTREF(__pyx_t_15);
-        __pyx_t_12 = __Pyx_PyObject_IsTrue(__pyx_t_15); if (unlikely((__pyx_t_12 < 0))) __PYX_ERR(0, 375, __pyx_L7_error)
+        __pyx_t_12 = __Pyx_PyObject_IsTrue(__pyx_t_15); if (unlikely((__pyx_t_12 < 0))) __PYX_ERR(0, 376, __pyx_L7_error)
         if (!__pyx_t_12) {
           __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
         } else {
@@ -12362,12 +12430,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_40delete_review_item(CYTH
           __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
           goto __pyx_L11_bool_binop_done;
         }
-        __pyx_t_15 = __Pyx_PyLong_From_long(0); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 375, __pyx_L7_error)
+        __pyx_t_15 = __Pyx_PyLong_From_long(0); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 376, __pyx_L7_error)
         __Pyx_GOTREF(__pyx_t_15);
         __pyx_t_9 = __pyx_t_15;
         __pyx_t_15 = 0;
         __pyx_L11_bool_binop_done:;
-        if (unlikely(__Pyx_ListComp_Append(__pyx_t_7, (PyObject*)__pyx_t_9))) __PYX_ERR(0, 375, __pyx_L7_error)
+        if (unlikely(__Pyx_ListComp_Append(__pyx_t_7, (PyObject*)__pyx_t_9))) __PYX_ERR(0, 376, __pyx_L7_error)
         __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       }
     }
@@ -12393,17 +12461,17 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_40delete_review_item(CYTH
   #endif
   {
     PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 2 : 0)] = {__pyx_t_5, NULL};
-    __pyx_t_11 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 373, __pyx_L1_error)
+    __pyx_t_11 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 374, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_11);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_task_item_id, __pyx_t_10, __pyx_t_11, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 373, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_task_item_data_ids, __pyx_t_7, __pyx_t_11, __pyx_callargs+1, 1) < (0)) __PYX_ERR(0, 373, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_task_item_id, __pyx_t_10, __pyx_t_11, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 374, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_task_item_data_ids, __pyx_t_7, __pyx_t_11, __pyx_callargs+1, 1) < (0)) __PYX_ERR(0, 374, __pyx_L1_error)
     __pyx_t_6 = __Pyx_Object_Vectorcall_CallFromBuilder((PyObject*)__pyx_t_8, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_11);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 373, __pyx_L1_error)
+    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 374, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
   }
   __pyx_t_4 = 1;
@@ -12424,12 +12492,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_40delete_review_item(CYTH
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 371, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 372, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":364
+  /* "aiSelfTest/services/task.py":365
  * 
  * 
  * def delete_review_item(session: Session, task_item_id: int) -> None:             # <<<<<<<<<<<<<<
@@ -12463,7 +12531,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_40delete_review_item(CYTH
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task.py":380
+/* "aiSelfTest/services/task.py":381
  * 
  * 
  * def delete_review_items(session: Session, ids: list[str]) -> None:             # <<<<<<<<<<<<<<
@@ -12512,39 +12580,39 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_session,&__pyx_mstate_global->__pyx_n_u_ids,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 380, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 381, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 380, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 381, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 380, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 381, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "delete_review_items", 0) < (0)) __PYX_ERR(0, 380, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "delete_review_items", 0) < (0)) __PYX_ERR(0, 381, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("delete_review_items", 1, 2, 2, i); __PYX_ERR(0, 380, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("delete_review_items", 1, 2, 2, i); __PYX_ERR(0, 381, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 380, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 381, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 380, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 381, __pyx_L3_error)
     }
     __pyx_v_session = values[0];
     __pyx_v_ids = ((PyObject*)values[1]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("delete_review_items", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 380, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("delete_review_items", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 381, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -12555,7 +12623,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ids), (&PyList_Type), 0, "ids", 2))) __PYX_ERR(0, 380, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ids), (&PyList_Type), 0, "ids", 2))) __PYX_ERR(0, 381, __pyx_L1_error)
   __pyx_r = __pyx_pf_10aiSelfTest_8services_4task_42delete_review_items(__pyx_self, __pyx_v_session, __pyx_v_ids);
 
   /* function exit code */
@@ -12591,7 +12659,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_42delete_review_items(CYT
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("delete_review_items", 0);
 
-  /* "aiSelfTest/services/task.py":383
+  /* "aiSelfTest/services/task.py":384
  *     """"""
  * 
  *     for raw_id in ids:             # <<<<<<<<<<<<<<
@@ -12604,18 +12672,18 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_42delete_review_items(CYT
     {
       Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_1);
       #if !CYTHON_ASSUME_SAFE_SIZE
-      if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 383, __pyx_L1_error)
+      if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 384, __pyx_L1_error)
       #endif
       if (__pyx_t_2 >= __pyx_temp) break;
     }
     __pyx_t_3 = __Pyx_PyList_GetItemRefFast(__pyx_t_1, __pyx_t_2, __Pyx_ReferenceSharing_OwnStrongReference);
     ++__pyx_t_2;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 383, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 384, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_XDECREF_SET(__pyx_v_raw_id, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "aiSelfTest/services/task.py":384
+    /* "aiSelfTest/services/task.py":385
  * 
  *     for raw_id in ids:
  *         delete_review_item(session, int(raw_id))             # <<<<<<<<<<<<<<
@@ -12623,9 +12691,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_42delete_review_items(CYT
  * 
 */
     __pyx_t_4 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_delete_review_item); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 384, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_delete_review_item); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 385, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = __Pyx_PyNumber_Int(__pyx_v_raw_id); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 384, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyNumber_Int(__pyx_v_raw_id); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 385, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_7 = 1;
     #if CYTHON_UNPACK_METHODS
@@ -12645,12 +12713,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_42delete_review_items(CYT
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 384, __pyx_L1_error)
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 385, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
     }
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "aiSelfTest/services/task.py":383
+    /* "aiSelfTest/services/task.py":384
  *     """"""
  * 
  *     for raw_id in ids:             # <<<<<<<<<<<<<<
@@ -12660,7 +12728,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_42delete_review_items(CYT
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":380
+  /* "aiSelfTest/services/task.py":381
  * 
  * 
  * def delete_review_items(session: Session, ids: list[str]) -> None:             # <<<<<<<<<<<<<<
@@ -12686,7 +12754,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_42delete_review_items(CYT
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task.py":387
+/* "aiSelfTest/services/task.py":388
  * 
  * 
  * def _serialize_filters(filters: TaskFiltersPayload) -> str:             # <<<<<<<<<<<<<<
@@ -12733,32 +12801,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_filters,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 387, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 388, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 387, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 388, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "_serialize_filters", 0) < (0)) __PYX_ERR(0, 387, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "_serialize_filters", 0) < (0)) __PYX_ERR(0, 388, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("_serialize_filters", 1, 1, 1, i); __PYX_ERR(0, 387, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("_serialize_filters", 1, 1, 1, i); __PYX_ERR(0, 388, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 387, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 388, __pyx_L3_error)
     }
     __pyx_v_filters = values[0];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_serialize_filters", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 387, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_serialize_filters", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 388, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -12790,7 +12858,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_44_serialize_filters(CYTH
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_serialize_filters", 0);
 
-  /* "aiSelfTest/services/task.py":388
+  /* "aiSelfTest/services/task.py":389
  * 
  * def _serialize_filters(filters: TaskFiltersPayload) -> str:
  *     return filters.model_dump_json()             # <<<<<<<<<<<<<<
@@ -12805,15 +12873,15 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_44_serialize_filters(CYTH
     PyObject *__pyx_callargs[2] = {__pyx_t_2, NULL};
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_model_dump_json, __pyx_callargs+__pyx_t_3, (1-__pyx_t_3) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 388, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 389, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  if (!(likely(PyUnicode_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None) || __Pyx_RaiseUnexpectedTypeError("str", __pyx_t_1))) __PYX_ERR(0, 388, __pyx_L1_error)
+  if (!(likely(PyUnicode_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None) || __Pyx_RaiseUnexpectedTypeError("str", __pyx_t_1))) __PYX_ERR(0, 389, __pyx_L1_error)
   __pyx_r = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "aiSelfTest/services/task.py":387
+  /* "aiSelfTest/services/task.py":388
  * 
  * 
  * def _serialize_filters(filters: TaskFiltersPayload) -> str:             # <<<<<<<<<<<<<<
@@ -12833,7 +12901,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_44_serialize_filters(CYTH
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task.py":391
+/* "aiSelfTest/services/task.py":392
  * 
  * 
  * def _deserialize_filters(raw: str | None) -> TaskFiltersPayload:             # <<<<<<<<<<<<<<
@@ -12880,32 +12948,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_raw,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 391, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 392, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 391, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 392, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "_deserialize_filters", 0) < (0)) __PYX_ERR(0, 391, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "_deserialize_filters", 0) < (0)) __PYX_ERR(0, 392, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("_deserialize_filters", 1, 1, 1, i); __PYX_ERR(0, 391, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("_deserialize_filters", 1, 1, 1, i); __PYX_ERR(0, 392, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 391, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 392, __pyx_L3_error)
     }
     __pyx_v_raw = ((PyObject*)values[0]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_deserialize_filters", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 391, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_deserialize_filters", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 392, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -12916,7 +12984,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_raw), (&PyUnicode_Type), 1, "raw", 2))) __PYX_ERR(0, 391, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_raw), (&PyUnicode_Type), 1, "raw", 2))) __PYX_ERR(0, 392, __pyx_L1_error)
   __pyx_r = __pyx_pf_10aiSelfTest_8services_4task_46_deserialize_filters(__pyx_self, __pyx_v_raw);
 
   /* function exit code */
@@ -12954,7 +13022,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_46_deserialize_filters(CY
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_deserialize_filters", 0);
 
-  /* "aiSelfTest/services/task.py":392
+  /* "aiSelfTest/services/task.py":393
  * 
  * def _deserialize_filters(raw: str | None) -> TaskFiltersPayload:
  *     if not raw:             # <<<<<<<<<<<<<<
@@ -12965,14 +13033,14 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_46_deserialize_filters(CY
   else
   {
     Py_ssize_t __pyx_temp = __Pyx_PyUnicode_IS_TRUE(__pyx_v_raw);
-    if (unlikely(((!CYTHON_ASSUME_SAFE_SIZE) && __pyx_temp < 0))) __PYX_ERR(0, 392, __pyx_L1_error)
+    if (unlikely(((!CYTHON_ASSUME_SAFE_SIZE) && __pyx_temp < 0))) __PYX_ERR(0, 393, __pyx_L1_error)
     __pyx_t_1 = (__pyx_temp != 0);
   }
 
   __pyx_t_2 = (!__pyx_t_1);
   if (__pyx_t_2) {
 
-    /* "aiSelfTest/services/task.py":393
+    /* "aiSelfTest/services/task.py":394
  * def _deserialize_filters(raw: str | None) -> TaskFiltersPayload:
  *     if not raw:
  *         return TaskFiltersPayload()             # <<<<<<<<<<<<<<
@@ -12981,7 +13049,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_46_deserialize_filters(CY
 */
     __Pyx_XDECREF(__pyx_r);
     __pyx_t_4 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_TaskFiltersPayload); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 393, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_TaskFiltersPayload); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 394, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_6 = 1;
     #if CYTHON_UNPACK_METHODS
@@ -13000,14 +13068,14 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_46_deserialize_filters(CY
       __pyx_t_3 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_5, __pyx_callargs+__pyx_t_6, (1-__pyx_t_6) | (__pyx_t_6*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 393, __pyx_L1_error)
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 394, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
     }
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
 
-    /* "aiSelfTest/services/task.py":392
+    /* "aiSelfTest/services/task.py":393
  * 
  * def _deserialize_filters(raw: str | None) -> TaskFiltersPayload:
  *     if not raw:             # <<<<<<<<<<<<<<
@@ -13016,7 +13084,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_46_deserialize_filters(CY
 */
   }
 
-  /* "aiSelfTest/services/task.py":394
+  /* "aiSelfTest/services/task.py":395
  *     if not raw:
  *         return TaskFiltersPayload()
  *     return TaskFiltersPayload.model_validate(json.loads(raw))             # <<<<<<<<<<<<<<
@@ -13025,15 +13093,15 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_46_deserialize_filters(CY
 */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_5 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_TaskFiltersPayload); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 394, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_TaskFiltersPayload); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 395, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_model_validate); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 394, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_model_validate); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 395, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_8 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_json); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 394, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_json); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 395, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_loads); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 394, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_loads); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 395, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
   __pyx_t_6 = 1;
@@ -13053,7 +13121,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_46_deserialize_filters(CY
     __pyx_t_4 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_10, __pyx_callargs+__pyx_t_6, (2-__pyx_t_6) | (__pyx_t_6*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 394, __pyx_L1_error)
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 395, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
   }
   __pyx_t_6 = 1;
@@ -13074,14 +13142,14 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_46_deserialize_filters(CY
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 394, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 395, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
   }
   __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "aiSelfTest/services/task.py":391
+  /* "aiSelfTest/services/task.py":392
  * 
  * 
  * def _deserialize_filters(raw: str | None) -> TaskFiltersPayload:             # <<<<<<<<<<<<<<
@@ -13106,7 +13174,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_46_deserialize_filters(CY
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task.py":397
+/* "aiSelfTest/services/task.py":398
  * 
  * 
  * def _build_review_item(task: Task, task_item: TaskItem, session: Session) -> dict[str, object]:             # <<<<<<<<<<<<<<
@@ -13155,38 +13223,38 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_task,&__pyx_mstate_global->__pyx_n_u_task_item,&__pyx_mstate_global->__pyx_n_u_session,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 397, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 398, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 397, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 398, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 397, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 398, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 397, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 398, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "_build_review_item", 0) < (0)) __PYX_ERR(0, 397, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "_build_review_item", 0) < (0)) __PYX_ERR(0, 398, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 3; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("_build_review_item", 1, 3, 3, i); __PYX_ERR(0, 397, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("_build_review_item", 1, 3, 3, i); __PYX_ERR(0, 398, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 3)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 397, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 398, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 397, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 398, __pyx_L3_error)
       values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 397, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 398, __pyx_L3_error)
     }
     __pyx_v_task = values[0];
     __pyx_v_task_item = values[1];
@@ -13194,7 +13262,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_build_review_item", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 397, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_build_review_item", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 398, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -13251,7 +13319,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_build_review_item", 0);
 
-  /* "aiSelfTest/services/task.py":398
+  /* "aiSelfTest/services/task.py":399
  * 
  * def _build_review_item(task: Task, task_item: TaskItem, session: Session) -> dict[str, object]:
  *     data_rows = session.exec(             # <<<<<<<<<<<<<<
@@ -13261,7 +13329,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
   __pyx_t_4 = __pyx_v_session;
   __Pyx_INCREF(__pyx_t_4);
 
-  /* "aiSelfTest/services/task.py":399
+  /* "aiSelfTest/services/task.py":400
  * def _build_review_item(task: Task, task_item: TaskItem, session: Session) -> dict[str, object]:
  *     data_rows = session.exec(
  *         select(TaskItemData).where(TaskItemData.task_item_id == task_item.id).order_by(TaskItemData.id.desc())             # <<<<<<<<<<<<<<
@@ -13269,9 +13337,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
  *     review_rows = [_build_compat_review_row(row) for row in data_rows]
 */
   __pyx_t_10 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_select); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 399, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_select); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 400, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
-  __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_TaskItemData); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 399, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_TaskItemData); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 400, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
   __pyx_t_13 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -13291,19 +13359,19 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
     __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
     __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-    if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 399, __pyx_L1_error)
+    if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 400, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
   }
   __pyx_t_8 = __pyx_t_9;
   __Pyx_INCREF(__pyx_t_8);
-  __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_TaskItemData); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 399, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_TaskItemData); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 400, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
-  __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_task_item_id); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 399, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_task_item_id); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 400, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
   __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-  __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 399, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 400, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
-  __pyx_t_10 = PyObject_RichCompare(__pyx_t_12, __pyx_t_11, Py_EQ); __Pyx_XGOTREF(__pyx_t_10); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 399, __pyx_L1_error)
+  __pyx_t_10 = PyObject_RichCompare(__pyx_t_12, __pyx_t_11, Py_EQ); __Pyx_XGOTREF(__pyx_t_10); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 400, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
   __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
   __pyx_t_13 = 0;
@@ -13313,14 +13381,14 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
     __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 399, __pyx_L1_error)
+    if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 400, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
   }
   __pyx_t_6 = __pyx_t_7;
   __Pyx_INCREF(__pyx_t_6);
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_TaskItemData); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 399, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_TaskItemData); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 400, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 399, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 400, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __pyx_t_10 = __pyx_t_11;
@@ -13331,7 +13399,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
     __pyx_t_9 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_desc, __pyx_callargs+__pyx_t_13, (1-__pyx_t_13) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
     __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-    if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 399, __pyx_L1_error)
+    if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 400, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
   }
   __pyx_t_13 = 0;
@@ -13341,7 +13409,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 399, __pyx_L1_error)
+    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 400, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
   }
   __pyx_t_13 = 0;
@@ -13350,7 +13418,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
     __pyx_t_3 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_exec, __pyx_callargs+__pyx_t_13, (2-__pyx_t_13) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 398, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 399, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
   }
   __pyx_t_2 = __pyx_t_3;
@@ -13361,13 +13429,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_all, __pyx_callargs+__pyx_t_13, (1-__pyx_t_13) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 400, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 401, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_data_rows = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":401
+  /* "aiSelfTest/services/task.py":402
  *         select(TaskItemData).where(TaskItemData.task_item_id == task_item.id).order_by(TaskItemData.id.desc())
  *     ).all()
  *     review_rows = [_build_compat_review_row(row) for row in data_rows]             # <<<<<<<<<<<<<<
@@ -13375,16 +13443,16 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
  *     excluded_count = len([row for row in review_rows if row["decision"] == "exclude"])
 */
   { /* enter inner scope */
-    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 401, __pyx_L5_error)
+    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 402, __pyx_L5_error)
     __Pyx_GOTREF(__pyx_t_1);
     if (likely(PyList_CheckExact(__pyx_v_data_rows)) || PyTuple_CheckExact(__pyx_v_data_rows)) {
       __pyx_t_3 = __pyx_v_data_rows; __Pyx_INCREF(__pyx_t_3);
       __pyx_t_14 = 0;
       __pyx_t_15 = NULL;
     } else {
-      __pyx_t_14 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_v_data_rows); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 401, __pyx_L5_error)
+      __pyx_t_14 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_v_data_rows); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 402, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_15 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_3); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 401, __pyx_L5_error)
+      __pyx_t_15 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_3); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 402, __pyx_L5_error)
     }
     for (;;) {
       if (likely(!__pyx_t_15)) {
@@ -13392,7 +13460,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
           {
             Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_3);
             #if !CYTHON_ASSUME_SAFE_SIZE
-            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 401, __pyx_L5_error)
+            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 402, __pyx_L5_error)
             #endif
             if (__pyx_t_14 >= __pyx_temp) break;
           }
@@ -13402,7 +13470,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
           {
             Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_3);
             #if !CYTHON_ASSUME_SAFE_SIZE
-            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 401, __pyx_L5_error)
+            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 402, __pyx_L5_error)
             #endif
             if (__pyx_t_14 >= __pyx_temp) break;
           }
@@ -13413,13 +13481,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
           #endif
           ++__pyx_t_14;
         }
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 401, __pyx_L5_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 402, __pyx_L5_error)
       } else {
         __pyx_t_2 = __pyx_t_15(__pyx_t_3);
         if (unlikely(!__pyx_t_2)) {
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
-            if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 401, __pyx_L5_error)
+            if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 402, __pyx_L5_error)
             PyErr_Clear();
           }
           break;
@@ -13429,7 +13497,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
       __Pyx_XDECREF_SET(__pyx_8genexpr8__pyx_v_row, __pyx_t_2);
       __pyx_t_2 = 0;
       __pyx_t_5 = NULL;
-      __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_build_compat_review_row); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 401, __pyx_L5_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_build_compat_review_row); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 402, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_13 = 1;
       #if CYTHON_UNPACK_METHODS
@@ -13448,10 +13516,10 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
         __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_13, (2-__pyx_t_13) | (__pyx_t_13*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 401, __pyx_L5_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 402, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_2);
       }
-      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_2))) __PYX_ERR(0, 401, __pyx_L5_error)
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_2))) __PYX_ERR(0, 402, __pyx_L5_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     }
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -13465,7 +13533,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
   __pyx_v_review_rows = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":402
+  /* "aiSelfTest/services/task.py":403
  *     ).all()
  *     review_rows = [_build_compat_review_row(row) for row in data_rows]
  *     submit_count = len([row for row in review_rows if bool(row["willSubmit"])])             # <<<<<<<<<<<<<<
@@ -13473,7 +13541,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
  *     media_type = "video" if task_item.file_bmp == 2 else "image"
 */
   { /* enter inner scope */
-    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 402, __pyx_L12_error)
+    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 403, __pyx_L12_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_3 = __pyx_v_review_rows; __Pyx_INCREF(__pyx_t_3);
     __pyx_t_14 = 0;
@@ -13481,22 +13549,22 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
       {
         Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_3);
         #if !CYTHON_ASSUME_SAFE_SIZE
-        if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 402, __pyx_L12_error)
+        if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 403, __pyx_L12_error)
         #endif
         if (__pyx_t_14 >= __pyx_temp) break;
       }
       __pyx_t_2 = __Pyx_PyList_GetItemRefFast(__pyx_t_3, __pyx_t_14, __Pyx_ReferenceSharing_OwnStrongReference);
       ++__pyx_t_14;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 402, __pyx_L12_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 403, __pyx_L12_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_XDECREF_SET(__pyx_8genexpr9__pyx_v_row, __pyx_t_2);
       __pyx_t_2 = 0;
-      __pyx_t_2 = __Pyx_PyObject_Dict_GetItem(__pyx_8genexpr9__pyx_v_row, __pyx_mstate_global->__pyx_n_u_willSubmit); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 402, __pyx_L12_error)
+      __pyx_t_2 = __Pyx_PyObject_Dict_GetItem(__pyx_8genexpr9__pyx_v_row, __pyx_mstate_global->__pyx_n_u_willSubmit); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 403, __pyx_L12_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_16 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_16 < 0))) __PYX_ERR(0, 402, __pyx_L12_error)
+      __pyx_t_16 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_16 < 0))) __PYX_ERR(0, 403, __pyx_L12_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if ((!(!__pyx_t_16))) {
-        if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_8genexpr9__pyx_v_row))) __PYX_ERR(0, 402, __pyx_L12_error)
+        if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_8genexpr9__pyx_v_row))) __PYX_ERR(0, 403, __pyx_L12_error)
       }
     }
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -13507,11 +13575,11 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
     goto __pyx_L1_error;
     __pyx_L17_exit_scope:;
   } /* exit inner scope */
-  __pyx_t_14 = __Pyx_PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_14 == ((Py_ssize_t)-1))) __PYX_ERR(0, 402, __pyx_L1_error)
+  __pyx_t_14 = __Pyx_PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_14 == ((Py_ssize_t)-1))) __PYX_ERR(0, 403, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_submit_count = __pyx_t_14;
 
-  /* "aiSelfTest/services/task.py":403
+  /* "aiSelfTest/services/task.py":404
  *     review_rows = [_build_compat_review_row(row) for row in data_rows]
  *     submit_count = len([row for row in review_rows if bool(row["willSubmit"])])
  *     excluded_count = len([row for row in review_rows if row["decision"] == "exclude"])             # <<<<<<<<<<<<<<
@@ -13519,7 +13587,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
  *     ai_values = [str(row["aiName"]) for row in review_rows if row["aiName"]]
 */
   { /* enter inner scope */
-    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 403, __pyx_L20_error)
+    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 404, __pyx_L20_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_3 = __pyx_v_review_rows; __Pyx_INCREF(__pyx_t_3);
     __pyx_t_14 = 0;
@@ -13527,22 +13595,22 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
       {
         Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_3);
         #if !CYTHON_ASSUME_SAFE_SIZE
-        if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 403, __pyx_L20_error)
+        if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 404, __pyx_L20_error)
         #endif
         if (__pyx_t_14 >= __pyx_temp) break;
       }
       __pyx_t_2 = __Pyx_PyList_GetItemRefFast(__pyx_t_3, __pyx_t_14, __Pyx_ReferenceSharing_OwnStrongReference);
       ++__pyx_t_14;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 403, __pyx_L20_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 404, __pyx_L20_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_XDECREF_SET(__pyx_9genexpr10__pyx_v_row, __pyx_t_2);
       __pyx_t_2 = 0;
-      __pyx_t_2 = __Pyx_PyObject_Dict_GetItem(__pyx_9genexpr10__pyx_v_row, __pyx_mstate_global->__pyx_n_u_decision); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 403, __pyx_L20_error)
+      __pyx_t_2 = __Pyx_PyObject_Dict_GetItem(__pyx_9genexpr10__pyx_v_row, __pyx_mstate_global->__pyx_n_u_decision); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 404, __pyx_L20_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_16 = (__Pyx_PyUnicode_Equals(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_exclude, Py_EQ)); if (unlikely((__pyx_t_16 < 0))) __PYX_ERR(0, 403, __pyx_L20_error)
+      __pyx_t_16 = (__Pyx_PyUnicode_Equals(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_exclude, Py_EQ)); if (unlikely((__pyx_t_16 < 0))) __PYX_ERR(0, 404, __pyx_L20_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (__pyx_t_16) {
-        if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_9genexpr10__pyx_v_row))) __PYX_ERR(0, 403, __pyx_L20_error)
+        if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_9genexpr10__pyx_v_row))) __PYX_ERR(0, 404, __pyx_L20_error)
       }
     }
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -13553,20 +13621,20 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
     goto __pyx_L1_error;
     __pyx_L25_exit_scope:;
   } /* exit inner scope */
-  __pyx_t_14 = __Pyx_PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_14 == ((Py_ssize_t)-1))) __PYX_ERR(0, 403, __pyx_L1_error)
+  __pyx_t_14 = __Pyx_PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_14 == ((Py_ssize_t)-1))) __PYX_ERR(0, 404, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_excluded_count = __pyx_t_14;
 
-  /* "aiSelfTest/services/task.py":404
+  /* "aiSelfTest/services/task.py":405
  *     submit_count = len([row for row in review_rows if bool(row["willSubmit"])])
  *     excluded_count = len([row for row in review_rows if row["decision"] == "exclude"])
  *     media_type = "video" if task_item.file_bmp == 2 else "image"             # <<<<<<<<<<<<<<
  *     ai_values = [str(row["aiName"]) for row in review_rows if row["aiName"]]
  *     original_values = [str(row["originalName"]) for row in review_rows if row["originalName"]]
 */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_file_bmp); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 404, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_file_bmp); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 405, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_16 = (__Pyx_PyLong_BoolEqObjC(__pyx_t_3, __pyx_mstate_global->__pyx_int_2, 2, 0)); if (unlikely((__pyx_t_16 < 0))) __PYX_ERR(0, 404, __pyx_L1_error)
+  __pyx_t_16 = (__Pyx_PyLong_BoolEqObjC(__pyx_t_3, __pyx_mstate_global->__pyx_int_2, 2, 0)); if (unlikely((__pyx_t_16 < 0))) __PYX_ERR(0, 405, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (__pyx_t_16) {
     __Pyx_INCREF(__pyx_mstate_global->__pyx_n_u_video);
@@ -13578,7 +13646,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
   __pyx_v_media_type = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":405
+  /* "aiSelfTest/services/task.py":406
  *     excluded_count = len([row for row in review_rows if row["decision"] == "exclude"])
  *     media_type = "video" if task_item.file_bmp == 2 else "image"
  *     ai_values = [str(row["aiName"]) for row in review_rows if row["aiName"]]             # <<<<<<<<<<<<<<
@@ -13586,7 +13654,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
  *     return {
 */
   { /* enter inner scope */
-    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 405, __pyx_L28_error)
+    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 406, __pyx_L28_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_3 = __pyx_v_review_rows; __Pyx_INCREF(__pyx_t_3);
     __pyx_t_14 = 0;
@@ -13594,27 +13662,27 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
       {
         Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_3);
         #if !CYTHON_ASSUME_SAFE_SIZE
-        if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 405, __pyx_L28_error)
+        if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 406, __pyx_L28_error)
         #endif
         if (__pyx_t_14 >= __pyx_temp) break;
       }
       __pyx_t_2 = __Pyx_PyList_GetItemRefFast(__pyx_t_3, __pyx_t_14, __Pyx_ReferenceSharing_OwnStrongReference);
       ++__pyx_t_14;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 405, __pyx_L28_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 406, __pyx_L28_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_XDECREF_SET(__pyx_9genexpr11__pyx_v_row, __pyx_t_2);
       __pyx_t_2 = 0;
-      __pyx_t_2 = __Pyx_PyObject_Dict_GetItem(__pyx_9genexpr11__pyx_v_row, __pyx_mstate_global->__pyx_n_u_aiName); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 405, __pyx_L28_error)
+      __pyx_t_2 = __Pyx_PyObject_Dict_GetItem(__pyx_9genexpr11__pyx_v_row, __pyx_mstate_global->__pyx_n_u_aiName); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 406, __pyx_L28_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_16 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_16 < 0))) __PYX_ERR(0, 405, __pyx_L28_error)
+      __pyx_t_16 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_16 < 0))) __PYX_ERR(0, 406, __pyx_L28_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (__pyx_t_16) {
-        __pyx_t_2 = __Pyx_PyObject_Dict_GetItem(__pyx_9genexpr11__pyx_v_row, __pyx_mstate_global->__pyx_n_u_aiName); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 405, __pyx_L28_error)
+        __pyx_t_2 = __Pyx_PyObject_Dict_GetItem(__pyx_9genexpr11__pyx_v_row, __pyx_mstate_global->__pyx_n_u_aiName); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 406, __pyx_L28_error)
         __Pyx_GOTREF(__pyx_t_2);
-        __pyx_t_4 = __Pyx_PyObject_Unicode(__pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 405, __pyx_L28_error)
+        __pyx_t_4 = __Pyx_PyObject_Unicode(__pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 406, __pyx_L28_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-        if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_4))) __PYX_ERR(0, 405, __pyx_L28_error)
+        if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_4))) __PYX_ERR(0, 406, __pyx_L28_error)
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       }
     }
@@ -13629,7 +13697,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
   __pyx_v_ai_values = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":406
+  /* "aiSelfTest/services/task.py":407
  *     media_type = "video" if task_item.file_bmp == 2 else "image"
  *     ai_values = [str(row["aiName"]) for row in review_rows if row["aiName"]]
  *     original_values = [str(row["originalName"]) for row in review_rows if row["originalName"]]             # <<<<<<<<<<<<<<
@@ -13637,7 +13705,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
  *         "id": task_item.id or 0,
 */
   { /* enter inner scope */
-    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 406, __pyx_L36_error)
+    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 407, __pyx_L36_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_3 = __pyx_v_review_rows; __Pyx_INCREF(__pyx_t_3);
     __pyx_t_14 = 0;
@@ -13645,27 +13713,27 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
       {
         Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_3);
         #if !CYTHON_ASSUME_SAFE_SIZE
-        if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 406, __pyx_L36_error)
+        if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 407, __pyx_L36_error)
         #endif
         if (__pyx_t_14 >= __pyx_temp) break;
       }
       __pyx_t_4 = __Pyx_PyList_GetItemRefFast(__pyx_t_3, __pyx_t_14, __Pyx_ReferenceSharing_OwnStrongReference);
       ++__pyx_t_14;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 406, __pyx_L36_error)
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 407, __pyx_L36_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_XDECREF_SET(__pyx_9genexpr12__pyx_v_row, __pyx_t_4);
       __pyx_t_4 = 0;
-      __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_9genexpr12__pyx_v_row, __pyx_mstate_global->__pyx_n_u_originalName); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 406, __pyx_L36_error)
+      __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_9genexpr12__pyx_v_row, __pyx_mstate_global->__pyx_n_u_originalName); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 407, __pyx_L36_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_16 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely((__pyx_t_16 < 0))) __PYX_ERR(0, 406, __pyx_L36_error)
+      __pyx_t_16 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely((__pyx_t_16 < 0))) __PYX_ERR(0, 407, __pyx_L36_error)
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       if (__pyx_t_16) {
-        __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_9genexpr12__pyx_v_row, __pyx_mstate_global->__pyx_n_u_originalName); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 406, __pyx_L36_error)
+        __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_9genexpr12__pyx_v_row, __pyx_mstate_global->__pyx_n_u_originalName); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 407, __pyx_L36_error)
         __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_2 = __Pyx_PyObject_Unicode(__pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 406, __pyx_L36_error)
+        __pyx_t_2 = __Pyx_PyObject_Unicode(__pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 407, __pyx_L36_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_2))) __PYX_ERR(0, 406, __pyx_L36_error)
+        if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_2))) __PYX_ERR(0, 407, __pyx_L36_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       }
     }
@@ -13680,7 +13748,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
   __pyx_v_original_values = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":407
+  /* "aiSelfTest/services/task.py":408
  *     ai_values = [str(row["aiName"]) for row in review_rows if row["aiName"]]
  *     original_values = [str(row["originalName"]) for row in review_rows if row["originalName"]]
  *     return {             # <<<<<<<<<<<<<<
@@ -13689,18 +13757,18 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
 */
   __Pyx_XDECREF(__pyx_r);
 
-  /* "aiSelfTest/services/task.py":408
+  /* "aiSelfTest/services/task.py":409
  *     original_values = [str(row["originalName"]) for row in review_rows if row["originalName"]]
  *     return {
  *         "id": task_item.id or 0,             # <<<<<<<<<<<<<<
  *         "taskName": task.name,
  *         "mediaType": media_type,
 */
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(12); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 408, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(12); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 409, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 408, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 409, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_16 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_16 < 0))) __PYX_ERR(0, 408, __pyx_L1_error)
+  __pyx_t_16 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_16 < 0))) __PYX_ERR(0, 409, __pyx_L1_error)
   if (!__pyx_t_16) {
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   } else {
@@ -13709,144 +13777,144 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     goto __pyx_L42_bool_binop_done;
   }
-  __pyx_t_2 = __Pyx_PyLong_From_long(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 408, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyLong_From_long(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 409, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = __pyx_t_2;
   __pyx_t_2 = 0;
   __pyx_L42_bool_binop_done:;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_id, __pyx_t_3) < (0)) __PYX_ERR(0, 408, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_id, __pyx_t_3) < (0)) __PYX_ERR(0, 409, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "aiSelfTest/services/task.py":409
+  /* "aiSelfTest/services/task.py":410
  *     return {
  *         "id": task_item.id or 0,
  *         "taskName": task.name,             # <<<<<<<<<<<<<<
  *         "mediaType": media_type,
  *         "imageUrl": task_item.file_url,
 */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_name); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 409, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_name); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 410, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_taskName, __pyx_t_3) < (0)) __PYX_ERR(0, 408, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_taskName, __pyx_t_3) < (0)) __PYX_ERR(0, 409, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "aiSelfTest/services/task.py":410
+  /* "aiSelfTest/services/task.py":411
  *         "id": task_item.id or 0,
  *         "taskName": task.name,
  *         "mediaType": media_type,             # <<<<<<<<<<<<<<
  *         "imageUrl": task_item.file_url,
  *         "mediaUrl": task_item.file_url,
 */
-  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_mediaType, __pyx_v_media_type) < (0)) __PYX_ERR(0, 408, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_mediaType, __pyx_v_media_type) < (0)) __PYX_ERR(0, 409, __pyx_L1_error)
 
-  /* "aiSelfTest/services/task.py":411
+  /* "aiSelfTest/services/task.py":412
  *         "taskName": task.name,
  *         "mediaType": media_type,
  *         "imageUrl": task_item.file_url,             # <<<<<<<<<<<<<<
  *         "mediaUrl": task_item.file_url,
  *         "originalResult": "".join(original_values),
 */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_file_url); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 411, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_file_url); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 412, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_imageUrl, __pyx_t_3) < (0)) __PYX_ERR(0, 408, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_imageUrl, __pyx_t_3) < (0)) __PYX_ERR(0, 409, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "aiSelfTest/services/task.py":412
+  /* "aiSelfTest/services/task.py":413
  *         "mediaType": media_type,
  *         "imageUrl": task_item.file_url,
  *         "mediaUrl": task_item.file_url,             # <<<<<<<<<<<<<<
  *         "originalResult": "".join(original_values),
  *         "aiResult": "".join(ai_values),
 */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_file_url); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 412, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_file_url); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 413, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_mediaUrl, __pyx_t_3) < (0)) __PYX_ERR(0, 408, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_mediaUrl, __pyx_t_3) < (0)) __PYX_ERR(0, 409, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "aiSelfTest/services/task.py":413
+  /* "aiSelfTest/services/task.py":414
  *         "imageUrl": task_item.file_url,
  *         "mediaUrl": task_item.file_url,
  *         "originalResult": "".join(original_values),             # <<<<<<<<<<<<<<
  *         "aiResult": "".join(ai_values),
  *         "reviewRows": review_rows,
 */
-  __pyx_t_3 = PyUnicode_Join(__pyx_mstate_global->__pyx_kp_u__5, __pyx_v_original_values); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 413, __pyx_L1_error)
+  __pyx_t_3 = PyUnicode_Join(__pyx_mstate_global->__pyx_kp_u__6, __pyx_v_original_values); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 414, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_originalResult, __pyx_t_3) < (0)) __PYX_ERR(0, 408, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_originalResult, __pyx_t_3) < (0)) __PYX_ERR(0, 409, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "aiSelfTest/services/task.py":414
+  /* "aiSelfTest/services/task.py":415
  *         "mediaUrl": task_item.file_url,
  *         "originalResult": "".join(original_values),
  *         "aiResult": "".join(ai_values),             # <<<<<<<<<<<<<<
  *         "reviewRows": review_rows,
  *         "submitCount": submit_count,
 */
-  __pyx_t_3 = PyUnicode_Join(__pyx_mstate_global->__pyx_kp_u__5, __pyx_v_ai_values); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 414, __pyx_L1_error)
+  __pyx_t_3 = PyUnicode_Join(__pyx_mstate_global->__pyx_kp_u__6, __pyx_v_ai_values); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 415, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_aiResult, __pyx_t_3) < (0)) __PYX_ERR(0, 408, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_aiResult, __pyx_t_3) < (0)) __PYX_ERR(0, 409, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "aiSelfTest/services/task.py":415
+  /* "aiSelfTest/services/task.py":416
  *         "originalResult": "".join(original_values),
  *         "aiResult": "".join(ai_values),
  *         "reviewRows": review_rows,             # <<<<<<<<<<<<<<
  *         "submitCount": submit_count,
  *         "excludedCount": excluded_count,
 */
-  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_reviewRows, __pyx_v_review_rows) < (0)) __PYX_ERR(0, 408, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_reviewRows, __pyx_v_review_rows) < (0)) __PYX_ERR(0, 409, __pyx_L1_error)
 
-  /* "aiSelfTest/services/task.py":416
+  /* "aiSelfTest/services/task.py":417
  *         "aiResult": "".join(ai_values),
  *         "reviewRows": review_rows,
  *         "submitCount": submit_count,             # <<<<<<<<<<<<<<
  *         "excludedCount": excluded_count,
  *         "willSubmitEmptyArray": submit_count == 0,
 */
-  __pyx_t_3 = PyLong_FromSsize_t(__pyx_v_submit_count); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 416, __pyx_L1_error)
+  __pyx_t_3 = PyLong_FromSsize_t(__pyx_v_submit_count); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 417, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_submitCount, __pyx_t_3) < (0)) __PYX_ERR(0, 408, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_submitCount, __pyx_t_3) < (0)) __PYX_ERR(0, 409, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "aiSelfTest/services/task.py":417
+  /* "aiSelfTest/services/task.py":418
  *         "reviewRows": review_rows,
  *         "submitCount": submit_count,
  *         "excludedCount": excluded_count,             # <<<<<<<<<<<<<<
  *         "willSubmitEmptyArray": submit_count == 0,
  *         "remoteError": task_item.remote_error,
 */
-  __pyx_t_3 = PyLong_FromSsize_t(__pyx_v_excluded_count); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 417, __pyx_L1_error)
+  __pyx_t_3 = PyLong_FromSsize_t(__pyx_v_excluded_count); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 418, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_excludedCount, __pyx_t_3) < (0)) __PYX_ERR(0, 408, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_excludedCount, __pyx_t_3) < (0)) __PYX_ERR(0, 409, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "aiSelfTest/services/task.py":418
+  /* "aiSelfTest/services/task.py":419
  *         "submitCount": submit_count,
  *         "excludedCount": excluded_count,
  *         "willSubmitEmptyArray": submit_count == 0,             # <<<<<<<<<<<<<<
  *         "remoteError": task_item.remote_error,
  *     }
 */
-  __pyx_t_3 = __Pyx_PyBool_FromLong((__pyx_v_submit_count == 0)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 418, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyBool_FromLong((__pyx_v_submit_count == 0)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 419, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_willSubmitEmptyArray, __pyx_t_3) < (0)) __PYX_ERR(0, 408, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_willSubmitEmptyArray, __pyx_t_3) < (0)) __PYX_ERR(0, 409, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "aiSelfTest/services/task.py":419
+  /* "aiSelfTest/services/task.py":420
  *         "excludedCount": excluded_count,
  *         "willSubmitEmptyArray": submit_count == 0,
  *         "remoteError": task_item.remote_error,             # <<<<<<<<<<<<<<
  *     }
  * 
 */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_remote_error); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 419, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_task_item, __pyx_mstate_global->__pyx_n_u_remote_error); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 420, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_remoteError, __pyx_t_3) < (0)) __PYX_ERR(0, 408, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_remoteError, __pyx_t_3) < (0)) __PYX_ERR(0, 409, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_r = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "aiSelfTest/services/task.py":397
+  /* "aiSelfTest/services/task.py":398
  * 
  * 
  * def _build_review_item(task: Task, task_item: TaskItem, session: Session) -> dict[str, object]:             # <<<<<<<<<<<<<<
@@ -13886,7 +13954,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_48_build_review_item(CYTH
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task.py":423
+/* "aiSelfTest/services/task.py":424
  * 
  * 
  * def _build_compat_review_row(row: TaskItemData) -> dict[str, object]:             # <<<<<<<<<<<<<<
@@ -13933,32 +14001,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_row,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 423, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 424, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 423, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 424, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "_build_compat_review_row", 0) < (0)) __PYX_ERR(0, 423, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "_build_compat_review_row", 0) < (0)) __PYX_ERR(0, 424, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("_build_compat_review_row", 1, 1, 1, i); __PYX_ERR(0, 423, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("_build_compat_review_row", 1, 1, 1, i); __PYX_ERR(0, 424, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 423, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 424, __pyx_L3_error)
     }
     __pyx_v_row = values[0];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_build_compat_review_row", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 423, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_build_compat_review_row", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 424, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -13995,31 +14063,31 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_50_build_compat_review_ro
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_build_compat_review_row", 0);
 
-  /* "aiSelfTest/services/task.py":424
+  /* "aiSelfTest/services/task.py":425
  * 
  * def _build_compat_review_row(row: TaskItemData) -> dict[str, object]:
  *     if row.status == TaskItemDataStatus.DELETE.value:             # <<<<<<<<<<<<<<
  *         decision = "exclude"
  *     elif row.llm_name and row.name and row.llm_name.strip() == row.name.strip():
 */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_row, __pyx_mstate_global->__pyx_n_u_status); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 424, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_row, __pyx_mstate_global->__pyx_n_u_status); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 425, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_TaskItemDataStatus); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 424, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_TaskItemDataStatus); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 425, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_DELETE); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 424, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_DELETE); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 425, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_value); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 424, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_value); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 425, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 424, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 425, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely((__pyx_t_4 < 0))) __PYX_ERR(0, 424, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely((__pyx_t_4 < 0))) __PYX_ERR(0, 425, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (__pyx_t_4) {
 
-    /* "aiSelfTest/services/task.py":425
+    /* "aiSelfTest/services/task.py":426
  * def _build_compat_review_row(row: TaskItemData) -> dict[str, object]:
  *     if row.status == TaskItemDataStatus.DELETE.value:
  *         decision = "exclude"             # <<<<<<<<<<<<<<
@@ -14029,7 +14097,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_50_build_compat_review_ro
     __Pyx_INCREF(__pyx_mstate_global->__pyx_n_u_exclude);
     __pyx_v_decision = __pyx_mstate_global->__pyx_n_u_exclude;
 
-    /* "aiSelfTest/services/task.py":424
+    /* "aiSelfTest/services/task.py":425
  * 
  * def _build_compat_review_row(row: TaskItemData) -> dict[str, object]:
  *     if row.status == TaskItemDataStatus.DELETE.value:             # <<<<<<<<<<<<<<
@@ -14039,32 +14107,32 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_50_build_compat_review_ro
     goto __pyx_L3;
   }
 
-  /* "aiSelfTest/services/task.py":426
+  /* "aiSelfTest/services/task.py":427
  *     if row.status == TaskItemDataStatus.DELETE.value:
  *         decision = "exclude"
  *     elif row.llm_name and row.name and row.llm_name.strip() == row.name.strip():             # <<<<<<<<<<<<<<
  *         decision = "keep"
  *     elif row.llm_name:
 */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_row, __pyx_mstate_global->__pyx_n_u_llm_name); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 426, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_row, __pyx_mstate_global->__pyx_n_u_llm_name); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 427, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely((__pyx_t_5 < 0))) __PYX_ERR(0, 426, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely((__pyx_t_5 < 0))) __PYX_ERR(0, 427, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (__pyx_t_5) {
   } else {
     __pyx_t_4 = __pyx_t_5;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_row, __pyx_mstate_global->__pyx_n_u_name); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 426, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_row, __pyx_mstate_global->__pyx_n_u_name); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 427, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely((__pyx_t_5 < 0))) __PYX_ERR(0, 426, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely((__pyx_t_5 < 0))) __PYX_ERR(0, 427, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (__pyx_t_5) {
   } else {
     __pyx_t_4 = __pyx_t_5;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_row, __pyx_mstate_global->__pyx_n_u_llm_name); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 426, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_row, __pyx_mstate_global->__pyx_n_u_llm_name); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 427, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = __pyx_t_1;
   __Pyx_INCREF(__pyx_t_2);
@@ -14074,10 +14142,10 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_50_build_compat_review_ro
     __pyx_t_3 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_strip, __pyx_callargs+__pyx_t_6, (1-__pyx_t_6) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 426, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 427, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
   }
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_row, __pyx_mstate_global->__pyx_n_u_name); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 426, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_row, __pyx_mstate_global->__pyx_n_u_name); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 427, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __pyx_t_2 = __pyx_t_7;
   __Pyx_INCREF(__pyx_t_2);
@@ -14087,19 +14155,19 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_50_build_compat_review_ro
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_strip, __pyx_callargs+__pyx_t_6, (1-__pyx_t_6) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 426, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 427, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  __pyx_t_7 = PyObject_RichCompare(__pyx_t_3, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 426, __pyx_L1_error)
+  __pyx_t_7 = PyObject_RichCompare(__pyx_t_3, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 427, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely((__pyx_t_5 < 0))) __PYX_ERR(0, 426, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely((__pyx_t_5 < 0))) __PYX_ERR(0, 427, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __pyx_t_4 = __pyx_t_5;
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_4) {
 
-    /* "aiSelfTest/services/task.py":427
+    /* "aiSelfTest/services/task.py":428
  *         decision = "exclude"
  *     elif row.llm_name and row.name and row.llm_name.strip() == row.name.strip():
  *         decision = "keep"             # <<<<<<<<<<<<<<
@@ -14109,7 +14177,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_50_build_compat_review_ro
     __Pyx_INCREF(__pyx_mstate_global->__pyx_n_u_keep);
     __pyx_v_decision = __pyx_mstate_global->__pyx_n_u_keep;
 
-    /* "aiSelfTest/services/task.py":426
+    /* "aiSelfTest/services/task.py":427
  *     if row.status == TaskItemDataStatus.DELETE.value:
  *         decision = "exclude"
  *     elif row.llm_name and row.name and row.llm_name.strip() == row.name.strip():             # <<<<<<<<<<<<<<
@@ -14119,20 +14187,20 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_50_build_compat_review_ro
     goto __pyx_L3;
   }
 
-  /* "aiSelfTest/services/task.py":428
+  /* "aiSelfTest/services/task.py":429
  *     elif row.llm_name and row.name and row.llm_name.strip() == row.name.strip():
  *         decision = "keep"
  *     elif row.llm_name:             # <<<<<<<<<<<<<<
  *         decision = "rename"
  *     else:
 */
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_row, __pyx_mstate_global->__pyx_n_u_llm_name); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 428, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_row, __pyx_mstate_global->__pyx_n_u_llm_name); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 429, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely((__pyx_t_4 < 0))) __PYX_ERR(0, 428, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely((__pyx_t_4 < 0))) __PYX_ERR(0, 429, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   if (__pyx_t_4) {
 
-    /* "aiSelfTest/services/task.py":429
+    /* "aiSelfTest/services/task.py":430
  *         decision = "keep"
  *     elif row.llm_name:
  *         decision = "rename"             # <<<<<<<<<<<<<<
@@ -14142,7 +14210,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_50_build_compat_review_ro
     __Pyx_INCREF(__pyx_mstate_global->__pyx_n_u_rename);
     __pyx_v_decision = __pyx_mstate_global->__pyx_n_u_rename;
 
-    /* "aiSelfTest/services/task.py":428
+    /* "aiSelfTest/services/task.py":429
  *     elif row.llm_name and row.name and row.llm_name.strip() == row.name.strip():
  *         decision = "keep"
  *     elif row.llm_name:             # <<<<<<<<<<<<<<
@@ -14152,7 +14220,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_50_build_compat_review_ro
     goto __pyx_L3;
   }
 
-  /* "aiSelfTest/services/task.py":431
+  /* "aiSelfTest/services/task.py":432
  *         decision = "rename"
  *     else:
  *         decision = "exclude"             # <<<<<<<<<<<<<<
@@ -14165,7 +14233,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_50_build_compat_review_ro
   }
   __pyx_L3:;
 
-  /* "aiSelfTest/services/task.py":433
+  /* "aiSelfTest/services/task.py":434
  *         decision = "exclude"
  * 
  *     return {             # <<<<<<<<<<<<<<
@@ -14174,18 +14242,18 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_50_build_compat_review_ro
 */
   __Pyx_XDECREF(__pyx_r);
 
-  /* "aiSelfTest/services/task.py":434
+  /* "aiSelfTest/services/task.py":435
  * 
  *     return {
  *         "recordId": row.id or 0,             # <<<<<<<<<<<<<<
  *         "originalName": row.name,
  *         "aiName": row.llm_name,
 */
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 434, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyDict_NewPresized(6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 435, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_row, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 434, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_row, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 435, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely((__pyx_t_4 < 0))) __PYX_ERR(0, 434, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely((__pyx_t_4 < 0))) __PYX_ERR(0, 435, __pyx_L1_error)
   if (!__pyx_t_4) {
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else {
@@ -14194,81 +14262,81 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_50_build_compat_review_ro
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     goto __pyx_L7_bool_binop_done;
   }
-  __pyx_t_3 = __Pyx_PyLong_From_long(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 434, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyLong_From_long(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 435, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_1 = __pyx_t_3;
   __pyx_t_3 = 0;
   __pyx_L7_bool_binop_done:;
-  if (PyDict_SetItem(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_recordId, __pyx_t_1) < (0)) __PYX_ERR(0, 434, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_recordId, __pyx_t_1) < (0)) __PYX_ERR(0, 435, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":435
+  /* "aiSelfTest/services/task.py":436
  *     return {
  *         "recordId": row.id or 0,
  *         "originalName": row.name,             # <<<<<<<<<<<<<<
  *         "aiName": row.llm_name,
  *         "decision": decision,
 */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_row, __pyx_mstate_global->__pyx_n_u_name); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 435, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_row, __pyx_mstate_global->__pyx_n_u_name); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 436, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_originalName, __pyx_t_1) < (0)) __PYX_ERR(0, 434, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_originalName, __pyx_t_1) < (0)) __PYX_ERR(0, 435, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":436
+  /* "aiSelfTest/services/task.py":437
  *         "recordId": row.id or 0,
  *         "originalName": row.name,
  *         "aiName": row.llm_name,             # <<<<<<<<<<<<<<
  *         "decision": decision,
  *         "willSubmit": decision != "exclude" and bool(row.llm_name),
 */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_row, __pyx_mstate_global->__pyx_n_u_llm_name); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 436, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_row, __pyx_mstate_global->__pyx_n_u_llm_name); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 437, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_aiName, __pyx_t_1) < (0)) __PYX_ERR(0, 434, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_aiName, __pyx_t_1) < (0)) __PYX_ERR(0, 435, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":437
+  /* "aiSelfTest/services/task.py":438
  *         "originalName": row.name,
  *         "aiName": row.llm_name,
  *         "decision": decision,             # <<<<<<<<<<<<<<
  *         "willSubmit": decision != "exclude" and bool(row.llm_name),
  *         "groundingStatus": "structured",
 */
-  if (PyDict_SetItem(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_decision, __pyx_v_decision) < (0)) __PYX_ERR(0, 434, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_decision, __pyx_v_decision) < (0)) __PYX_ERR(0, 435, __pyx_L1_error)
 
-  /* "aiSelfTest/services/task.py":438
+  /* "aiSelfTest/services/task.py":439
  *         "aiName": row.llm_name,
  *         "decision": decision,
  *         "willSubmit": decision != "exclude" and bool(row.llm_name),             # <<<<<<<<<<<<<<
  *         "groundingStatus": "structured",
  *     }
 */
-  __pyx_t_4 = (__Pyx_PyUnicode_Equals(__pyx_v_decision, __pyx_mstate_global->__pyx_n_u_exclude, Py_NE)); if (unlikely((__pyx_t_4 < 0))) __PYX_ERR(0, 438, __pyx_L1_error)
+  __pyx_t_4 = (__Pyx_PyUnicode_Equals(__pyx_v_decision, __pyx_mstate_global->__pyx_n_u_exclude, Py_NE)); if (unlikely((__pyx_t_4 < 0))) __PYX_ERR(0, 439, __pyx_L1_error)
   if (__pyx_t_4) {
   } else {
-    __pyx_t_3 = __Pyx_PyBool_FromLong(__pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 438, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyBool_FromLong(__pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 439, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_1 = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L9_bool_binop_done;
   }
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_row, __pyx_mstate_global->__pyx_n_u_llm_name); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 438, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_row, __pyx_mstate_global->__pyx_n_u_llm_name); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely((__pyx_t_4 < 0))) __PYX_ERR(0, 438, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely((__pyx_t_4 < 0))) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyBool_FromLong((!(!__pyx_t_4))); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 438, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyBool_FromLong((!(!__pyx_t_4))); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_INCREF(__pyx_t_3);
   __pyx_t_1 = __pyx_t_3;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_L9_bool_binop_done:;
-  if (PyDict_SetItem(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_willSubmit, __pyx_t_1) < (0)) __PYX_ERR(0, 434, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_willSubmit, __pyx_t_1) < (0)) __PYX_ERR(0, 435, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_groundingStatus, __pyx_mstate_global->__pyx_n_u_structured) < (0)) __PYX_ERR(0, 434, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_groundingStatus, __pyx_mstate_global->__pyx_n_u_structured) < (0)) __PYX_ERR(0, 435, __pyx_L1_error)
   __pyx_r = ((PyObject*)__pyx_t_7);
   __pyx_t_7 = 0;
   goto __pyx_L0;
 
-  /* "aiSelfTest/services/task.py":423
+  /* "aiSelfTest/services/task.py":424
  * 
  * 
  * def _build_compat_review_row(row: TaskItemData) -> dict[str, object]:             # <<<<<<<<<<<<<<
@@ -14291,7 +14359,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_50_build_compat_review_ro
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task.py":443
+/* "aiSelfTest/services/task.py":444
  * 
  * 
  * def _get_task_or_raise(session: Session, task_id: int) -> Task:             # <<<<<<<<<<<<<<
@@ -14339,40 +14407,40 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_session,&__pyx_mstate_global->__pyx_n_u_task_id,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 443, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 444, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 443, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 444, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 443, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 444, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "_get_task_or_raise", 0) < (0)) __PYX_ERR(0, 443, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "_get_task_or_raise", 0) < (0)) __PYX_ERR(0, 444, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("_get_task_or_raise", 1, 2, 2, i); __PYX_ERR(0, 443, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("_get_task_or_raise", 1, 2, 2, i); __PYX_ERR(0, 444, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 443, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 444, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 443, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 444, __pyx_L3_error)
     }
     __pyx_v_session = values[0];
-    if (__Pyx_PyInt_FromNumber(&values[1], "task_id", 0) < (0)) __PYX_ERR(0, 443, __pyx_L3_error)
+    if (__Pyx_PyInt_FromNumber(&values[1], "task_id", 0) < (0)) __PYX_ERR(0, 444, __pyx_L3_error)
     __pyx_v_task_id = ((PyObject*)values[1]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_get_task_or_raise", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 443, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_get_task_or_raise", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 444, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -14383,7 +14451,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 443, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 444, __pyx_L1_error)
   __pyx_r = __pyx_pf_10aiSelfTest_8services_4task_52_get_task_or_raise(__pyx_self, __pyx_v_session, __pyx_v_task_id);
 
   /* function exit code */
@@ -14419,7 +14487,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_52_get_task_or_raise(CYTH
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_get_task_or_raise", 0);
 
-  /* "aiSelfTest/services/task.py":444
+  /* "aiSelfTest/services/task.py":445
  * 
  * def _get_task_or_raise(session: Session, task_id: int) -> Task:
  *     task = session.get(Task, task_id)             # <<<<<<<<<<<<<<
@@ -14428,7 +14496,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_52_get_task_or_raise(CYTH
 */
   __pyx_t_2 = __pyx_v_session;
   __Pyx_INCREF(__pyx_t_2);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_Task); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 444, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_Task); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 445, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = 0;
   {
@@ -14436,13 +14504,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_52_get_task_or_raise(CYTH
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_get, __pyx_callargs+__pyx_t_4, (3-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 444, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 445, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_task = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":445
+  /* "aiSelfTest/services/task.py":446
  * def _get_task_or_raise(session: Session, task_id: int) -> Task:
  *     task = session.get(Task, task_id)
  *     if task is None:             # <<<<<<<<<<<<<<
@@ -14452,7 +14520,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_52_get_task_or_raise(CYTH
   __pyx_t_5 = (__pyx_v_task == Py_None);
   if (unlikely(__pyx_t_5)) {
 
-    /* "aiSelfTest/services/task.py":446
+    /* "aiSelfTest/services/task.py":447
  *     task = session.get(Task, task_id)
  *     if task is None:
  *         raise AppException(             # <<<<<<<<<<<<<<
@@ -14460,19 +14528,19 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_52_get_task_or_raise(CYTH
  *             message="",
 */
     __pyx_t_3 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_AppException); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 446, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_AppException); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 447, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
 
-    /* "aiSelfTest/services/task.py":447
+    /* "aiSelfTest/services/task.py":448
  *     if task is None:
  *         raise AppException(
  *             code=ErrorCode.NOT_FOUND,             # <<<<<<<<<<<<<<
  *             message="",
  *             status_code=404,
 */
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_ErrorCode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 447, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_ErrorCode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 448, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_NOT_FOUND); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 447, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_NOT_FOUND); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 448, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_t_4 = 1;
@@ -14489,24 +14557,24 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_52_get_task_or_raise(CYTH
     #endif
     {
       PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 3 : 0)] = {__pyx_t_3, NULL};
-      __pyx_t_6 = __Pyx_MakeVectorcallBuilderKwds(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 446, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_MakeVectorcallBuilderKwds(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 447, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
-      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_code, __pyx_t_7, __pyx_t_6, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 446, __pyx_L1_error)
-      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_message, __pyx_mstate_global->__pyx_n_u__6, __pyx_t_6, __pyx_callargs+1, 1) < (0)) __PYX_ERR(0, 446, __pyx_L1_error)
-      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_status_code, __pyx_mstate_global->__pyx_int_404, __pyx_t_6, __pyx_callargs+1, 2) < (0)) __PYX_ERR(0, 446, __pyx_L1_error)
+      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_code, __pyx_t_7, __pyx_t_6, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 447, __pyx_L1_error)
+      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_message, __pyx_mstate_global->__pyx_n_u__7, __pyx_t_6, __pyx_callargs+1, 1) < (0)) __PYX_ERR(0, 447, __pyx_L1_error)
+      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_status_code, __pyx_mstate_global->__pyx_int_404, __pyx_t_6, __pyx_callargs+1, 2) < (0)) __PYX_ERR(0, 447, __pyx_L1_error)
       __pyx_t_1 = __Pyx_Object_Vectorcall_CallFromBuilder((PyObject*)__pyx_t_2, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_6);
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 446, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 447, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
     }
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 446, __pyx_L1_error)
+    __PYX_ERR(0, 447, __pyx_L1_error)
 
-    /* "aiSelfTest/services/task.py":445
+    /* "aiSelfTest/services/task.py":446
  * def _get_task_or_raise(session: Session, task_id: int) -> Task:
  *     task = session.get(Task, task_id)
  *     if task is None:             # <<<<<<<<<<<<<<
@@ -14515,7 +14583,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_52_get_task_or_raise(CYTH
 */
   }
 
-  /* "aiSelfTest/services/task.py":451
+  /* "aiSelfTest/services/task.py":452
  *             status_code=404,
  *         )
  *     return task             # <<<<<<<<<<<<<<
@@ -14527,7 +14595,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_52_get_task_or_raise(CYTH
   __pyx_r = __pyx_v_task;
   goto __pyx_L0;
 
-  /* "aiSelfTest/services/task.py":443
+  /* "aiSelfTest/services/task.py":444
  * 
  * 
  * def _get_task_or_raise(session: Session, task_id: int) -> Task:             # <<<<<<<<<<<<<<
@@ -14551,7 +14619,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_52_get_task_or_raise(CYTH
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task.py":454
+/* "aiSelfTest/services/task.py":455
  * 
  * 
  * def _get_task_item_or_raise(session: Session, task_item_id: int) -> TaskItem:             # <<<<<<<<<<<<<<
@@ -14599,40 +14667,40 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_session,&__pyx_mstate_global->__pyx_n_u_task_item_id,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 454, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 455, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 454, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 455, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 454, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 455, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "_get_task_item_or_raise", 0) < (0)) __PYX_ERR(0, 454, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "_get_task_item_or_raise", 0) < (0)) __PYX_ERR(0, 455, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("_get_task_item_or_raise", 1, 2, 2, i); __PYX_ERR(0, 454, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("_get_task_item_or_raise", 1, 2, 2, i); __PYX_ERR(0, 455, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 454, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 455, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 454, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 455, __pyx_L3_error)
     }
     __pyx_v_session = values[0];
-    if (__Pyx_PyInt_FromNumber(&values[1], "task_item_id", 0) < (0)) __PYX_ERR(0, 454, __pyx_L3_error)
+    if (__Pyx_PyInt_FromNumber(&values[1], "task_item_id", 0) < (0)) __PYX_ERR(0, 455, __pyx_L3_error)
     __pyx_v_task_item_id = ((PyObject*)values[1]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_get_task_item_or_raise", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 454, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_get_task_item_or_raise", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 455, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -14643,7 +14711,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_item_id), (&PyLong_Type), 0, "task_item_id", 2))) __PYX_ERR(0, 454, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_item_id), (&PyLong_Type), 0, "task_item_id", 2))) __PYX_ERR(0, 455, __pyx_L1_error)
   __pyx_r = __pyx_pf_10aiSelfTest_8services_4task_54_get_task_item_or_raise(__pyx_self, __pyx_v_session, __pyx_v_task_item_id);
 
   /* function exit code */
@@ -14679,7 +14747,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_54_get_task_item_or_raise
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_get_task_item_or_raise", 0);
 
-  /* "aiSelfTest/services/task.py":455
+  /* "aiSelfTest/services/task.py":456
  * 
  * def _get_task_item_or_raise(session: Session, task_item_id: int) -> TaskItem:
  *     task_item = session.get(TaskItem, task_item_id)             # <<<<<<<<<<<<<<
@@ -14688,7 +14756,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_54_get_task_item_or_raise
 */
   __pyx_t_2 = __pyx_v_session;
   __Pyx_INCREF(__pyx_t_2);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 455, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_TaskItem); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 456, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = 0;
   {
@@ -14696,13 +14764,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_54_get_task_item_or_raise
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_get, __pyx_callargs+__pyx_t_4, (3-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 455, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 456, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_task_item = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task.py":456
+  /* "aiSelfTest/services/task.py":457
  * def _get_task_item_or_raise(session: Session, task_item_id: int) -> TaskItem:
  *     task_item = session.get(TaskItem, task_item_id)
  *     if task_item is None:             # <<<<<<<<<<<<<<
@@ -14712,7 +14780,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_54_get_task_item_or_raise
   __pyx_t_5 = (__pyx_v_task_item == Py_None);
   if (unlikely(__pyx_t_5)) {
 
-    /* "aiSelfTest/services/task.py":457
+    /* "aiSelfTest/services/task.py":458
  *     task_item = session.get(TaskItem, task_item_id)
  *     if task_item is None:
  *         raise AppException(             # <<<<<<<<<<<<<<
@@ -14720,19 +14788,19 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_54_get_task_item_or_raise
  *             message="",
 */
     __pyx_t_3 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_AppException); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 457, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_AppException); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 458, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
 
-    /* "aiSelfTest/services/task.py":458
+    /* "aiSelfTest/services/task.py":459
  *     if task_item is None:
  *         raise AppException(
  *             code=ErrorCode.NOT_FOUND,             # <<<<<<<<<<<<<<
  *             message="",
  *             status_code=404,
 */
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_ErrorCode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 458, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_ErrorCode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 459, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_NOT_FOUND); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 458, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_NOT_FOUND); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 459, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_t_4 = 1;
@@ -14749,24 +14817,24 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_54_get_task_item_or_raise
     #endif
     {
       PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 3 : 0)] = {__pyx_t_3, NULL};
-      __pyx_t_6 = __Pyx_MakeVectorcallBuilderKwds(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 457, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_MakeVectorcallBuilderKwds(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 458, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
-      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_code, __pyx_t_7, __pyx_t_6, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 457, __pyx_L1_error)
-      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_message, __pyx_mstate_global->__pyx_n_u__7, __pyx_t_6, __pyx_callargs+1, 1) < (0)) __PYX_ERR(0, 457, __pyx_L1_error)
-      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_status_code, __pyx_mstate_global->__pyx_int_404, __pyx_t_6, __pyx_callargs+1, 2) < (0)) __PYX_ERR(0, 457, __pyx_L1_error)
+      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_code, __pyx_t_7, __pyx_t_6, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 458, __pyx_L1_error)
+      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_message, __pyx_mstate_global->__pyx_n_u__8, __pyx_t_6, __pyx_callargs+1, 1) < (0)) __PYX_ERR(0, 458, __pyx_L1_error)
+      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_status_code, __pyx_mstate_global->__pyx_int_404, __pyx_t_6, __pyx_callargs+1, 2) < (0)) __PYX_ERR(0, 458, __pyx_L1_error)
       __pyx_t_1 = __Pyx_Object_Vectorcall_CallFromBuilder((PyObject*)__pyx_t_2, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_6);
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 457, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 458, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
     }
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 457, __pyx_L1_error)
+    __PYX_ERR(0, 458, __pyx_L1_error)
 
-    /* "aiSelfTest/services/task.py":456
+    /* "aiSelfTest/services/task.py":457
  * def _get_task_item_or_raise(session: Session, task_item_id: int) -> TaskItem:
  *     task_item = session.get(TaskItem, task_item_id)
  *     if task_item is None:             # <<<<<<<<<<<<<<
@@ -14775,17 +14843,19 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_54_get_task_item_or_raise
 */
   }
 
-  /* "aiSelfTest/services/task.py":462
+  /* "aiSelfTest/services/task.py":463
  *             status_code=404,
  *         )
  *     return task_item             # <<<<<<<<<<<<<<
+ * 
+ * 
 */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_task_item);
   __pyx_r = __pyx_v_task_item;
   goto __pyx_L0;
 
-  /* "aiSelfTest/services/task.py":454
+  /* "aiSelfTest/services/task.py":455
  * 
  * 
  * def _get_task_item_or_raise(session: Session, task_item_id: int) -> TaskItem:             # <<<<<<<<<<<<<<
@@ -14804,6 +14874,241 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_4task_54_get_task_item_or_raise
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_task_item);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "aiSelfTest/services/task.py":466
+ * 
+ * 
+ * def _sync_scheduler(task_id: int | None) -> None:             # <<<<<<<<<<<<<<
+ *     """"""
+ * 
+*/
+
+/* Python wrapper */
+static PyObject *__pyx_pw_10aiSelfTest_8services_4task_57_sync_scheduler(PyObject *__pyx_self, 
+#if CYTHON_METH_FASTCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+); /*proto*/
+PyDoc_STRVAR(__pyx_doc_10aiSelfTest_8services_4task_56_sync_scheduler, "\345\220\214\346\255\245\345\215\225\350\277\233\347\250\213\350\260\203\345\272\246\345\231\250\357\274\233\347\274\272\345\205\250\345\261\200\350\260\203\345\272\246\345\231\250\346\227\266\345\256\211\345\205\250\350\267\263\350\277\207\343\200\202");
+static PyMethodDef __pyx_mdef_10aiSelfTest_8services_4task_57_sync_scheduler = {"_sync_scheduler", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_4task_57_sync_scheduler, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10aiSelfTest_8services_4task_56_sync_scheduler};
+static PyObject *__pyx_pw_10aiSelfTest_8services_4task_57_sync_scheduler(PyObject *__pyx_self, 
+#if CYTHON_METH_FASTCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+) {
+  PyObject *__pyx_v_task_id = 0;
+  #if !CYTHON_METH_FASTCALL
+  CYTHON_UNUSED Py_ssize_t __pyx_nargs;
+  #endif
+  CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
+  PyObject* values[1] = {0};
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("_sync_scheduler (wrapper)", 0);
+  #if !CYTHON_METH_FASTCALL
+  #if CYTHON_ASSUME_SAFE_SIZE
+  __pyx_nargs = PyTuple_GET_SIZE(__pyx_args);
+  #else
+  __pyx_nargs = PyTuple_Size(__pyx_args); if (unlikely(__pyx_nargs < 0)) return NULL;
+  #endif
+  #endif
+  __pyx_kwvalues = __Pyx_KwValues_FASTCALL(__pyx_args, __pyx_nargs);
+  {
+    PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_task_id,0};
+    const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 466, __pyx_L3_error)
+    if (__pyx_kwds_len > 0) {
+      switch (__pyx_nargs) {
+        case  1:
+        values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 466, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      const Py_ssize_t kwd_pos_args = __pyx_nargs;
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "_sync_scheduler", 0) < (0)) __PYX_ERR(0, 466, __pyx_L3_error)
+      for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("_sync_scheduler", 1, 1, 1, i); __PYX_ERR(0, 466, __pyx_L3_error) }
+      }
+    } else if (unlikely(__pyx_nargs != 1)) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 466, __pyx_L3_error)
+    }
+    if (__Pyx_PyInt_FromNumber(&values[0], "task_id", 1) < (0)) __PYX_ERR(0, 466, __pyx_L3_error)
+    __pyx_v_task_id = ((PyObject*)values[0]);
+  }
+  goto __pyx_L6_skip;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("_sync_scheduler", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 466, __pyx_L3_error)
+  __pyx_L6_skip:;
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L3_error:;
+  for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+    Py_XDECREF(values[__pyx_temp]);
+  }
+  __Pyx_AddTraceback("aiSelfTest.services.task._sync_scheduler", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 1, "task_id", 2))) __PYX_ERR(0, 466, __pyx_L1_error)
+  __pyx_r = __pyx_pf_10aiSelfTest_8services_4task_56_sync_scheduler(__pyx_self, __pyx_v_task_id);
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+    Py_XDECREF(values[__pyx_temp]);
+  }
+  goto __pyx_L7_cleaned_up;
+  __pyx_L0:;
+  for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+    Py_XDECREF(values[__pyx_temp]);
+  }
+  __pyx_L7_cleaned_up:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_10aiSelfTest_8services_4task_56_sync_scheduler(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_task_id) {
+  PyObject *__pyx_v_sync_global_task_scheduler = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  Py_ssize_t __pyx_t_4;
+  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_6 = NULL;
+  size_t __pyx_t_7;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("_sync_scheduler", 0);
+
+  /* "aiSelfTest/services/task.py":469
+ *     """"""
+ * 
+ *     if task_id is None:             # <<<<<<<<<<<<<<
+ *         return
+ *     from aiSelfTest.services.task_scheduler import sync_global_task_scheduler
+*/
+  __pyx_t_1 = (__pyx_v_task_id == ((PyObject*)Py_None));
+  if (__pyx_t_1) {
+
+    /* "aiSelfTest/services/task.py":470
+ * 
+ *     if task_id is None:
+ *         return             # <<<<<<<<<<<<<<
+ *     from aiSelfTest.services.task_scheduler import sync_global_task_scheduler
+ * 
+*/
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+    goto __pyx_L0;
+
+    /* "aiSelfTest/services/task.py":469
+ *     """"""
+ * 
+ *     if task_id is None:             # <<<<<<<<<<<<<<
+ *         return
+ *     from aiSelfTest.services.task_scheduler import sync_global_task_scheduler
+*/
+  }
+
+  /* "aiSelfTest/services/task.py":471
+ *     if task_id is None:
+ *         return
+ *     from aiSelfTest.services.task_scheduler import sync_global_task_scheduler             # <<<<<<<<<<<<<<
+ * 
+ *     sync_global_task_scheduler(task_id)
+*/
+  {
+    PyObject* const __pyx_imported_names[] = {__pyx_mstate_global->__pyx_n_u_sync_global_task_scheduler};
+    __pyx_t_3 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_imported_names, 1, NULL, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 471, __pyx_L1_error)
+  }
+  __pyx_t_2 = __pyx_t_3;
+  __Pyx_GOTREF(__pyx_t_2);
+  {
+    PyObject* const __pyx_imported_names[] = {__pyx_mstate_global->__pyx_n_u_sync_global_task_scheduler};
+    __pyx_t_4 = 0; {
+      __pyx_t_5 = __Pyx_ImportFrom(__pyx_t_2, __pyx_imported_names[__pyx_t_4]); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 471, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
+      switch (__pyx_t_4) {
+        case 0:
+        __Pyx_INCREF(__pyx_t_5);
+        __pyx_v_sync_global_task_scheduler = __pyx_t_5;
+        break;
+        default:;
+      }
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    }
+  }
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "aiSelfTest/services/task.py":473
+ *     from aiSelfTest.services.task_scheduler import sync_global_task_scheduler
+ * 
+ *     sync_global_task_scheduler(task_id)             # <<<<<<<<<<<<<<
+*/
+  __pyx_t_5 = NULL;
+  __Pyx_INCREF(__pyx_v_sync_global_task_scheduler);
+  __pyx_t_6 = __pyx_v_sync_global_task_scheduler; 
+  __pyx_t_7 = 1;
+  #if CYTHON_UNPACK_METHODS
+  if (unlikely(PyMethod_Check(__pyx_t_6))) {
+    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_6);
+    assert(__pyx_t_5);
+    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_6);
+    __Pyx_INCREF(__pyx_t_5);
+    __Pyx_INCREF(__pyx__function);
+    __Pyx_DECREF_SET(__pyx_t_6, __pyx__function);
+    __pyx_t_7 = 0;
+  }
+  #endif
+  {
+    PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_v_task_id};
+    __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_6, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 473, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+  }
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "aiSelfTest/services/task.py":466
+ * 
+ * 
+ * def _sync_scheduler(task_id: int | None) -> None:             # <<<<<<<<<<<<<<
+ *     """"""
+ * 
+*/
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_AddTraceback("aiSelfTest.services.task._sync_scheduler", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_sync_global_task_scheduler);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
@@ -14916,7 +15221,7 @@ namespace {
   {
       PyModuleDef_HEAD_INIT,
       "task",
-      __pyx_k__8, /* m_doc */
+      __pyx_k__9, /* m_doc */
     #if CYTHON_USE_MODULE_STATE
       sizeof(__pyx_mstatetype), /* m_size */
     #else
@@ -15381,131 +15686,131 @@ __Pyx_RefNannySetupContext("PyInit_task", 0);
   if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_update_task, __pyx_t_2) < (0)) __PYX_ERR(0, 68, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "aiSelfTest/services/task.py":91
+  /* "aiSelfTest/services/task.py":92
  * 
  * 
  * def delete_task(session: Session, task_id: int) -> TaskDeleteData:             # <<<<<<<<<<<<<<
  *     """"""
  * 
 */
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 92, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 91, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 91, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_TaskDeleteData) < (0)) __PYX_ERR(0, 91, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_9delete_task, 0, __pyx_mstate_global->__pyx_n_u_delete_task, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[4])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 91, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 92, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 92, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_TaskDeleteData) < (0)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_9delete_task, 0, __pyx_mstate_global->__pyx_n_u_delete_task, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[4])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 92, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_2);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_delete_task, __pyx_t_4) < (0)) __PYX_ERR(0, 91, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_delete_task, __pyx_t_4) < (0)) __PYX_ERR(0, 92, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "aiSelfTest/services/task.py":116
+  /* "aiSelfTest/services/task.py":118
  * 
  * 
  * def start_task(session: Session, task_id: int) -> TaskActionData:             # <<<<<<<<<<<<<<
  *     """"""
  * 
 */
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 116, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 116, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 116, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_TaskActionData) < (0)) __PYX_ERR(0, 116, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_11start_task, 0, __pyx_mstate_global->__pyx_n_u_start_task, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[5])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 116, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 118, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 118, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_TaskActionData) < (0)) __PYX_ERR(0, 118, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_11start_task, 0, __pyx_mstate_global->__pyx_n_u_start_task, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[5])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_2, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_start_task, __pyx_t_2) < (0)) __PYX_ERR(0, 116, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_start_task, __pyx_t_2) < (0)) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "aiSelfTest/services/task.py":128
+  /* "aiSelfTest/services/task.py":131
  * 
  * 
  * def stop_task(session: Session, task_id: int) -> TaskActionData:             # <<<<<<<<<<<<<<
  *     """"""
  * 
 */
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 128, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 131, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 128, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 128, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_TaskActionData) < (0)) __PYX_ERR(0, 128, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_13stop_task, 0, __pyx_mstate_global->__pyx_n_u_stop_task, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[6])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 128, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 131, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 131, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_TaskActionData) < (0)) __PYX_ERR(0, 131, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_13stop_task, 0, __pyx_mstate_global->__pyx_n_u_stop_task, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[6])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 131, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_2);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_stop_task, __pyx_t_4) < (0)) __PYX_ERR(0, 128, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_stop_task, __pyx_t_4) < (0)) __PYX_ERR(0, 131, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "aiSelfTest/services/task.py":140
+  /* "aiSelfTest/services/task.py":144
  * 
  * 
  * def run_task_once(session: Session, task_id: int) -> TaskActionData:             # <<<<<<<<<<<<<<
  *     """"""
  * 
 */
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 140, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 144, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 140, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 140, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_TaskActionData) < (0)) __PYX_ERR(0, 140, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_15run_task_once, 0, __pyx_mstate_global->__pyx_n_u_run_task_once, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[7])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 140, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 144, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 144, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_TaskActionData) < (0)) __PYX_ERR(0, 144, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_15run_task_once, 0, __pyx_mstate_global->__pyx_n_u_run_task_once, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[7])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 144, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_2, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_run_task_once, __pyx_t_2) < (0)) __PYX_ERR(0, 140, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_run_task_once, __pyx_t_2) < (0)) __PYX_ERR(0, 144, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "aiSelfTest/services/task.py":153
+  /* "aiSelfTest/services/task.py":154
  * 
  * 
  * def list_task_items(             # <<<<<<<<<<<<<<
  *     session: Session,
  *     *,
 */
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 153, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 154, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
-  /* "aiSelfTest/services/task.py":157
+  /* "aiSelfTest/services/task.py":158
  *     *,
  *     task_id: int,
  *     media_type: str | None = None,             # <<<<<<<<<<<<<<
  *     page: int = 1,
  *     page_size: int = 20,
 */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_media_type, Py_None) < (0)) __PYX_ERR(0, 153, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_page, ((PyObject*)__pyx_mstate_global->__pyx_int_1)) < (0)) __PYX_ERR(0, 153, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_page_size, ((PyObject*)__pyx_mstate_global->__pyx_int_20)) < (0)) __PYX_ERR(0, 153, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_media_type, Py_None) < (0)) __PYX_ERR(0, 154, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_page, ((PyObject*)__pyx_mstate_global->__pyx_int_1)) < (0)) __PYX_ERR(0, 154, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_page_size, ((PyObject*)__pyx_mstate_global->__pyx_int_20)) < (0)) __PYX_ERR(0, 154, __pyx_L1_error)
 
-  /* "aiSelfTest/services/task.py":153
+  /* "aiSelfTest/services/task.py":154
  * 
  * 
  * def list_task_items(             # <<<<<<<<<<<<<<
  *     session: Session,
  *     *,
 */
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 153, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 154, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 153, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 153, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_media_type, __pyx_mstate_global->__pyx_kp_u_str_None) < (0)) __PYX_ERR(0, 153, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_page, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 153, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_page_size, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 153, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_TaskItemListData) < (0)) __PYX_ERR(0, 153, __pyx_L1_error)
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_17list_task_items, 0, __pyx_mstate_global->__pyx_n_u_list_task_items, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[8])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 153, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 154, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 154, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_media_type, __pyx_mstate_global->__pyx_kp_u_str_None) < (0)) __PYX_ERR(0, 154, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_page, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 154, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_page_size, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 154, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_TaskItemListData) < (0)) __PYX_ERR(0, 154, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_17list_task_items, 0, __pyx_mstate_global->__pyx_n_u_list_task_items, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[8])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 154, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_5);
@@ -15514,433 +15819,454 @@ __Pyx_RefNannySetupContext("PyInit_task", 0);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_5, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_list_task_items, __pyx_t_5) < (0)) __PYX_ERR(0, 153, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_list_task_items, __pyx_t_5) < (0)) __PYX_ERR(0, 154, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "aiSelfTest/services/task.py":179
+  /* "aiSelfTest/services/task.py":180
  * 
  * 
  * def get_task_item_detail(session: Session, task_item_id: int) -> TaskItemDetailData:             # <<<<<<<<<<<<<<
  *     """ TaskItem """
  * 
 */
-  __pyx_t_5 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 179, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 180, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 179, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_task_item_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 179, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_TaskItemDetailData) < (0)) __PYX_ERR(0, 179, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_19get_task_item_detail, 0, __pyx_mstate_global->__pyx_n_u_get_task_item_detail, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[9])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 179, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 180, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_task_item_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 180, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_TaskItemDetailData) < (0)) __PYX_ERR(0, 180, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_19get_task_item_detail, 0, __pyx_mstate_global->__pyx_n_u_get_task_item_detail, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[9])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 180, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_5);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_get_task_item_detail, __pyx_t_4) < (0)) __PYX_ERR(0, 179, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_get_task_item_detail, __pyx_t_4) < (0)) __PYX_ERR(0, 180, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "aiSelfTest/services/task.py":190
+  /* "aiSelfTest/services/task.py":191
  * 
  * 
  * def confirm_task_item(             # <<<<<<<<<<<<<<
  *     session: Session,
  *     payload: TaskItemActionRequest,
 */
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 190, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 191, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 190, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_payload, __pyx_mstate_global->__pyx_n_u_TaskItemActionRequest) < (0)) __PYX_ERR(0, 190, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_TaskItemActionData) < (0)) __PYX_ERR(0, 190, __pyx_L1_error)
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_21confirm_task_item, 0, __pyx_mstate_global->__pyx_n_u_confirm_task_item, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[10])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 190, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 191, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_payload, __pyx_mstate_global->__pyx_n_u_TaskItemActionRequest) < (0)) __PYX_ERR(0, 191, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_TaskItemActionData) < (0)) __PYX_ERR(0, 191, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_21confirm_task_item, 0, __pyx_mstate_global->__pyx_n_u_confirm_task_item, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[10])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 191, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_5);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_5, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_confirm_task_item, __pyx_t_5) < (0)) __PYX_ERR(0, 190, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_confirm_task_item, __pyx_t_5) < (0)) __PYX_ERR(0, 191, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "aiSelfTest/services/task.py":206
+  /* "aiSelfTest/services/task.py":207
  * 
  * 
  * def reject_task_item(             # <<<<<<<<<<<<<<
  *     session: Session,
  *     payload: TaskItemRejectRequest,
 */
-  __pyx_t_5 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 206, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 207, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 206, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_payload, __pyx_mstate_global->__pyx_n_u_TaskItemRejectRequest) < (0)) __PYX_ERR(0, 206, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_TaskItemActionData) < (0)) __PYX_ERR(0, 206, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_23reject_task_item, 0, __pyx_mstate_global->__pyx_n_u_reject_task_item, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[11])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 206, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 207, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_payload, __pyx_mstate_global->__pyx_n_u_TaskItemRejectRequest) < (0)) __PYX_ERR(0, 207, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_TaskItemActionData) < (0)) __PYX_ERR(0, 207, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_23reject_task_item, 0, __pyx_mstate_global->__pyx_n_u_reject_task_item, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[11])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 207, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_5);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_reject_task_item, __pyx_t_4) < (0)) __PYX_ERR(0, 206, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_reject_task_item, __pyx_t_4) < (0)) __PYX_ERR(0, 207, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "aiSelfTest/services/task.py":221
+  /* "aiSelfTest/services/task.py":222
  * 
  * 
  * def delete_task_item_rows(             # <<<<<<<<<<<<<<
  *     session: Session,
  *     payload: TaskItemDeleteRequest,
 */
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 221, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 222, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 221, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_payload, __pyx_mstate_global->__pyx_n_u_TaskItemDeleteRequest) < (0)) __PYX_ERR(0, 221, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_TaskItemActionData) < (0)) __PYX_ERR(0, 221, __pyx_L1_error)
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_25delete_task_item_rows, 0, __pyx_mstate_global->__pyx_n_u_delete_task_item_rows, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[12])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 221, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 222, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_payload, __pyx_mstate_global->__pyx_n_u_TaskItemDeleteRequest) < (0)) __PYX_ERR(0, 222, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_TaskItemActionData) < (0)) __PYX_ERR(0, 222, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_25delete_task_item_rows, 0, __pyx_mstate_global->__pyx_n_u_delete_task_item_rows, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[12])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 222, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_5);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_5, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_delete_task_item_rows, __pyx_t_5) < (0)) __PYX_ERR(0, 221, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_delete_task_item_rows, __pyx_t_5) < (0)) __PYX_ERR(0, 222, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "aiSelfTest/services/task.py":242
+  /* "aiSelfTest/services/task.py":243
  * 
  * 
  * def submit_task_item(             # <<<<<<<<<<<<<<
  *     session: Session,
  *     payload: TaskItemActionRequest,
 */
-  __pyx_t_5 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 242, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 243, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 242, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_payload, __pyx_mstate_global->__pyx_n_u_TaskItemActionRequest) < (0)) __PYX_ERR(0, 242, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_TaskItemActionData) < (0)) __PYX_ERR(0, 242, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_27submit_task_item, 0, __pyx_mstate_global->__pyx_n_u_submit_task_item, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[13])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 242, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 243, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_payload, __pyx_mstate_global->__pyx_n_u_TaskItemActionRequest) < (0)) __PYX_ERR(0, 243, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_TaskItemActionData) < (0)) __PYX_ERR(0, 243, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_27submit_task_item, 0, __pyx_mstate_global->__pyx_n_u_submit_task_item, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[13])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 243, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_5);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_submit_task_item, __pyx_t_4) < (0)) __PYX_ERR(0, 242, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_submit_task_item, __pyx_t_4) < (0)) __PYX_ERR(0, 243, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "aiSelfTest/services/task.py":258
+  /* "aiSelfTest/services/task.py":259
  * 
  * 
  * def get_legacy_task_detail(session: Session, task_id: int) -> dict[str, object]:             # <<<<<<<<<<<<<<
  *     """ DataQuery """
  * 
 */
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 258, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 259, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 258, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 258, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_kp_u_dict_str_object) < (0)) __PYX_ERR(0, 258, __pyx_L1_error)
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_29get_legacy_task_detail, 0, __pyx_mstate_global->__pyx_n_u_get_legacy_task_detail, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[14])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 258, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 259, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 259, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_kp_u_dict_str_object) < (0)) __PYX_ERR(0, 259, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_29get_legacy_task_detail, 0, __pyx_mstate_global->__pyx_n_u_get_legacy_task_detail, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[14])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 259, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_5);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_5, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_get_legacy_task_detail, __pyx_t_5) < (0)) __PYX_ERR(0, 258, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_get_legacy_task_detail, __pyx_t_5) < (0)) __PYX_ERR(0, 259, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "aiSelfTest/services/task.py":291
+  /* "aiSelfTest/services/task.py":292
  * 
  * 
  * def query_legacy_task_data(session: Session, task_id: int) -> dict[str, object]:             # <<<<<<<<<<<<<<
  *     """ DataQuery """
  * 
 */
-  __pyx_t_5 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 291, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 292, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 291, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 291, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_kp_u_dict_str_object) < (0)) __PYX_ERR(0, 291, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_31query_legacy_task_data, 0, __pyx_mstate_global->__pyx_n_u_query_legacy_task_data, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[15])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 291, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 292, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 292, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_kp_u_dict_str_object) < (0)) __PYX_ERR(0, 292, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_31query_legacy_task_data, 0, __pyx_mstate_global->__pyx_n_u_query_legacy_task_data, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[15])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 292, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_5);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_query_legacy_task_data, __pyx_t_4) < (0)) __PYX_ERR(0, 291, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_query_legacy_task_data, __pyx_t_4) < (0)) __PYX_ERR(0, 292, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "aiSelfTest/services/task.py":314
+  /* "aiSelfTest/services/task.py":315
  * 
  * 
  * def run_legacy_task_execute(session: Session, task_id: int) -> dict[str, bool]:             # <<<<<<<<<<<<<<
  *     """ execute """
  * 
 */
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 314, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 315, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 314, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 314, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_kp_u_dict_str_bool) < (0)) __PYX_ERR(0, 314, __pyx_L1_error)
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_33run_legacy_task_execute, 0, __pyx_mstate_global->__pyx_n_u_run_legacy_task_execute, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[16])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 314, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 315, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 315, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_kp_u_dict_str_bool) < (0)) __PYX_ERR(0, 315, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_33run_legacy_task_execute, 0, __pyx_mstate_global->__pyx_n_u_run_legacy_task_execute, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[16])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 315, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_5);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_5, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_run_legacy_task_execute, __pyx_t_5) < (0)) __PYX_ERR(0, 314, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_run_legacy_task_execute, __pyx_t_5) < (0)) __PYX_ERR(0, 315, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "aiSelfTest/services/task.py":321
+  /* "aiSelfTest/services/task.py":322
  * 
  * 
  * def list_completed_review_tasks(session: Session) -> list[dict[str, int | str]]:             # <<<<<<<<<<<<<<
  *     """"""
  * 
 */
-  __pyx_t_5 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 321, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 322, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 321, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_kp_u_list_dict_str_int_str) < (0)) __PYX_ERR(0, 321, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_35list_completed_review_tasks, 0, __pyx_mstate_global->__pyx_n_u_list_completed_review_tasks, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[17])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 321, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 322, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_kp_u_list_dict_str_int_str) < (0)) __PYX_ERR(0, 322, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_35list_completed_review_tasks, 0, __pyx_mstate_global->__pyx_n_u_list_completed_review_tasks, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[17])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 322, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_5);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_list_completed_review_tasks, __pyx_t_4) < (0)) __PYX_ERR(0, 321, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_list_completed_review_tasks, __pyx_t_4) < (0)) __PYX_ERR(0, 322, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "aiSelfTest/services/task.py":332
+  /* "aiSelfTest/services/task.py":333
  * 
  * 
  * def list_review_items(session: Session, task_id: int) -> list[dict[str, object]]:             # <<<<<<<<<<<<<<
  *     """"""
  * 
 */
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 332, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 333, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 332, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 332, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_kp_u_list_dict_str_object) < (0)) __PYX_ERR(0, 332, __pyx_L1_error)
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_37list_review_items, 0, __pyx_mstate_global->__pyx_n_u_list_review_items, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[18])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 332, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 333, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 333, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_kp_u_list_dict_str_object) < (0)) __PYX_ERR(0, 333, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_37list_review_items, 0, __pyx_mstate_global->__pyx_n_u_list_review_items, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[18])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 333, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_5);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_5, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_list_review_items, __pyx_t_5) < (0)) __PYX_ERR(0, 332, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_list_review_items, __pyx_t_5) < (0)) __PYX_ERR(0, 333, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "aiSelfTest/services/task.py":340
+  /* "aiSelfTest/services/task.py":341
  * 
  * 
  * def confirm_review_items(session: Session, ids: list[str]) -> dict[str, object]:             # <<<<<<<<<<<<<<
  *     """"""
  * 
 */
-  __pyx_t_5 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 340, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 341, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 340, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_ids, __pyx_mstate_global->__pyx_kp_u_list_str) < (0)) __PYX_ERR(0, 340, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_kp_u_dict_str_object) < (0)) __PYX_ERR(0, 340, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_39confirm_review_items, 0, __pyx_mstate_global->__pyx_n_u_confirm_review_items, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[19])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 340, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 341, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_ids, __pyx_mstate_global->__pyx_kp_u_list_str) < (0)) __PYX_ERR(0, 341, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_kp_u_dict_str_object) < (0)) __PYX_ERR(0, 341, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_39confirm_review_items, 0, __pyx_mstate_global->__pyx_n_u_confirm_review_items, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[19])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 341, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_5);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_confirm_review_items, __pyx_t_4) < (0)) __PYX_ERR(0, 340, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_confirm_review_items, __pyx_t_4) < (0)) __PYX_ERR(0, 341, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "aiSelfTest/services/task.py":364
+  /* "aiSelfTest/services/task.py":365
  * 
  * 
  * def delete_review_item(session: Session, task_item_id: int) -> None:             # <<<<<<<<<<<<<<
  *     """"""
  * 
 */
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 364, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 365, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 364, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task_item_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 364, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 364, __pyx_L1_error)
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_41delete_review_item, 0, __pyx_mstate_global->__pyx_n_u_delete_review_item, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[20])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 364, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 365, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task_item_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 365, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 365, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_41delete_review_item, 0, __pyx_mstate_global->__pyx_n_u_delete_review_item, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[20])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 365, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_5);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_5, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_delete_review_item, __pyx_t_5) < (0)) __PYX_ERR(0, 364, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_delete_review_item, __pyx_t_5) < (0)) __PYX_ERR(0, 365, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "aiSelfTest/services/task.py":380
+  /* "aiSelfTest/services/task.py":381
  * 
  * 
  * def delete_review_items(session: Session, ids: list[str]) -> None:             # <<<<<<<<<<<<<<
  *     """"""
  * 
 */
-  __pyx_t_5 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 380, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 381, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 380, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_ids, __pyx_mstate_global->__pyx_kp_u_list_str) < (0)) __PYX_ERR(0, 380, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 380, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_43delete_review_items, 0, __pyx_mstate_global->__pyx_n_u_delete_review_items, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[21])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 380, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 381, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_ids, __pyx_mstate_global->__pyx_kp_u_list_str) < (0)) __PYX_ERR(0, 381, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 381, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_43delete_review_items, 0, __pyx_mstate_global->__pyx_n_u_delete_review_items, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[21])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 381, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_5);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_delete_review_items, __pyx_t_4) < (0)) __PYX_ERR(0, 380, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_delete_review_items, __pyx_t_4) < (0)) __PYX_ERR(0, 381, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "aiSelfTest/services/task.py":387
+  /* "aiSelfTest/services/task.py":388
  * 
  * 
  * def _serialize_filters(filters: TaskFiltersPayload) -> str:             # <<<<<<<<<<<<<<
  *     return filters.model_dump_json()
  * 
 */
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 387, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 388, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_filters, __pyx_mstate_global->__pyx_n_u_TaskFiltersPayload) < (0)) __PYX_ERR(0, 387, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_str) < (0)) __PYX_ERR(0, 387, __pyx_L1_error)
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_45_serialize_filters, 0, __pyx_mstate_global->__pyx_n_u_serialize_filters, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[22])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 387, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_filters, __pyx_mstate_global->__pyx_n_u_TaskFiltersPayload) < (0)) __PYX_ERR(0, 388, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_str) < (0)) __PYX_ERR(0, 388, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_45_serialize_filters, 0, __pyx_mstate_global->__pyx_n_u_serialize_filters, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[22])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 388, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_5);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_5, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_serialize_filters, __pyx_t_5) < (0)) __PYX_ERR(0, 387, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_serialize_filters, __pyx_t_5) < (0)) __PYX_ERR(0, 388, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "aiSelfTest/services/task.py":391
+  /* "aiSelfTest/services/task.py":392
  * 
  * 
  * def _deserialize_filters(raw: str | None) -> TaskFiltersPayload:             # <<<<<<<<<<<<<<
  *     if not raw:
  *         return TaskFiltersPayload()
 */
-  __pyx_t_5 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 391, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 392, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_raw, __pyx_mstate_global->__pyx_kp_u_str_None) < (0)) __PYX_ERR(0, 391, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_TaskFiltersPayload) < (0)) __PYX_ERR(0, 391, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_47_deserialize_filters, 0, __pyx_mstate_global->__pyx_n_u_deserialize_filters, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[23])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 391, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_raw, __pyx_mstate_global->__pyx_kp_u_str_None) < (0)) __PYX_ERR(0, 392, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_TaskFiltersPayload) < (0)) __PYX_ERR(0, 392, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_47_deserialize_filters, 0, __pyx_mstate_global->__pyx_n_u_deserialize_filters, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[23])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 392, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_5);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_deserialize_filters, __pyx_t_4) < (0)) __PYX_ERR(0, 391, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_deserialize_filters, __pyx_t_4) < (0)) __PYX_ERR(0, 392, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "aiSelfTest/services/task.py":397
+  /* "aiSelfTest/services/task.py":398
  * 
  * 
  * def _build_review_item(task: Task, task_item: TaskItem, session: Session) -> dict[str, object]:             # <<<<<<<<<<<<<<
  *     data_rows = session.exec(
  *         select(TaskItemData).where(TaskItemData.task_item_id == task_item.id).order_by(TaskItemData.id.desc())
 */
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 397, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 398, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task, __pyx_mstate_global->__pyx_n_u_Task) < (0)) __PYX_ERR(0, 397, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task_item, __pyx_mstate_global->__pyx_n_u_TaskItem) < (0)) __PYX_ERR(0, 397, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 397, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_kp_u_dict_str_object) < (0)) __PYX_ERR(0, 397, __pyx_L1_error)
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_49_build_review_item, 0, __pyx_mstate_global->__pyx_n_u_build_review_item, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[24])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 397, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task, __pyx_mstate_global->__pyx_n_u_Task) < (0)) __PYX_ERR(0, 398, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task_item, __pyx_mstate_global->__pyx_n_u_TaskItem) < (0)) __PYX_ERR(0, 398, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 398, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_kp_u_dict_str_object) < (0)) __PYX_ERR(0, 398, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_49_build_review_item, 0, __pyx_mstate_global->__pyx_n_u_build_review_item, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[24])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 398, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_5);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_5, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_build_review_item, __pyx_t_5) < (0)) __PYX_ERR(0, 397, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_build_review_item, __pyx_t_5) < (0)) __PYX_ERR(0, 398, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "aiSelfTest/services/task.py":423
+  /* "aiSelfTest/services/task.py":424
  * 
  * 
  * def _build_compat_review_row(row: TaskItemData) -> dict[str, object]:             # <<<<<<<<<<<<<<
  *     if row.status == TaskItemDataStatus.DELETE.value:
  *         decision = "exclude"
 */
-  __pyx_t_5 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 423, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 424, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_row, __pyx_mstate_global->__pyx_n_u_TaskItemData) < (0)) __PYX_ERR(0, 423, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_kp_u_dict_str_object) < (0)) __PYX_ERR(0, 423, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_51_build_compat_review_row, 0, __pyx_mstate_global->__pyx_n_u_build_compat_review_row, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[25])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 423, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_row, __pyx_mstate_global->__pyx_n_u_TaskItemData) < (0)) __PYX_ERR(0, 424, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_kp_u_dict_str_object) < (0)) __PYX_ERR(0, 424, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_51_build_compat_review_row, 0, __pyx_mstate_global->__pyx_n_u_build_compat_review_row, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[25])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 424, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_5);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_build_compat_review_row, __pyx_t_4) < (0)) __PYX_ERR(0, 423, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_build_compat_review_row, __pyx_t_4) < (0)) __PYX_ERR(0, 424, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "aiSelfTest/services/task.py":443
+  /* "aiSelfTest/services/task.py":444
  * 
  * 
  * def _get_task_or_raise(session: Session, task_id: int) -> Task:             # <<<<<<<<<<<<<<
  *     task = session.get(Task, task_id)
  *     if task is None:
 */
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 443, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 444, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 443, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 443, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_Task) < (0)) __PYX_ERR(0, 443, __pyx_L1_error)
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_53_get_task_or_raise, 0, __pyx_mstate_global->__pyx_n_u_get_task_or_raise, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[26])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 443, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 444, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 444, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_Task) < (0)) __PYX_ERR(0, 444, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_53_get_task_or_raise, 0, __pyx_mstate_global->__pyx_n_u_get_task_or_raise, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[26])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 444, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_5);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_5, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_get_task_or_raise, __pyx_t_5) < (0)) __PYX_ERR(0, 443, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_get_task_or_raise, __pyx_t_5) < (0)) __PYX_ERR(0, 444, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "aiSelfTest/services/task.py":454
+  /* "aiSelfTest/services/task.py":455
  * 
  * 
  * def _get_task_item_or_raise(session: Session, task_item_id: int) -> TaskItem:             # <<<<<<<<<<<<<<
  *     task_item = session.get(TaskItem, task_item_id)
  *     if task_item is None:
 */
-  __pyx_t_5 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 454, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 455, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 454, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_task_item_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 454, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_TaskItem) < (0)) __PYX_ERR(0, 454, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_55_get_task_item_or_raise, 0, __pyx_mstate_global->__pyx_n_u_get_task_item_or_raise, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[27])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 454, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 455, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_task_item_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 455, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_TaskItem) < (0)) __PYX_ERR(0, 455, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_55_get_task_item_or_raise, 0, __pyx_mstate_global->__pyx_n_u_get_task_item_or_raise, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[27])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 455, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_5);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_get_task_item_or_raise, __pyx_t_4) < (0)) __PYX_ERR(0, 454, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_get_task_item_or_raise, __pyx_t_4) < (0)) __PYX_ERR(0, 455, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "aiSelfTest/services/task.py":466
+ * 
+ * 
+ * def _sync_scheduler(task_id: int | None) -> None:             # <<<<<<<<<<<<<<
+ *     """"""
+ * 
+*/
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 466, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_kp_u_int_None) < (0)) __PYX_ERR(0, 466, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 466, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_4task_57_sync_scheduler, 0, __pyx_mstate_global->__pyx_n_u_sync_scheduler, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[28])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 466, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
+  PyUnstable_Object_EnableDeferredRefcount(__pyx_t_5);
+  #endif
+  __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_5, __pyx_t_4);
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_sync_scheduler, __pyx_t_5) < (0)) __PYX_ERR(0, 466, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
   /* "aiSelfTest/services/task.py":1
  * """"""             # <<<<<<<<<<<<<<
  * 
  * from __future__ import annotations
 */
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_test, __pyx_t_4) < (0)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_5 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_test, __pyx_t_5) < (0)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
   /*--- Wrapped vars code ---*/
 
@@ -15997,14 +16323,14 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
   CYTHON_UNUSED_VAR(__pyx_mstate);
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "aiSelfTest/services/task.py":94
+  /* "aiSelfTest/services/task.py":95
  *     """"""
  * 
  *     with session.begin():             # <<<<<<<<<<<<<<
  *         task = _get_task_or_raise(session, task_id)
  *         task_items = session.exec(select(TaskItem).where(TaskItem.task_id == task_id)).all()
 */
-  __pyx_mstate_global->__pyx_tuple[0] = PyTuple_Pack(3, Py_None, Py_None, Py_None); if (unlikely(!__pyx_mstate_global->__pyx_tuple[0])) __PYX_ERR(0, 94, __pyx_L1_error)
+  __pyx_mstate_global->__pyx_tuple[0] = PyTuple_Pack(3, Py_None, Py_None, Py_None); if (unlikely(!__pyx_mstate_global->__pyx_tuple[0])) __PYX_ERR(0, 95, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[0]);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[0]);
   #if CYTHON_IMMORTAL_CONSTANTS
@@ -16037,34 +16363,34 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 static int __Pyx_InitConstants(__pyx_mstatetype *__pyx_mstate) {
   CYTHON_UNUSED_VAR(__pyx_mstate);
   {
-    const struct { const unsigned int length: 9; } index[] = {{2},{179},{17},{1},{10},{13},{3},{1},{8},{27},{15},{17},{26},{23},{9},{10},{12},{6},{9},{9},{4},{20},{7},{4},{14},{17},{14},{18},{8},{18},{21},{12},{18},{21},{18},{16},{15},{21},{17},{12},{12},{17},{6},{15},{18},{6},{3},{6},{8},{21},{22},{23},{24},{9},{3},{18},{12},{5},{24},{18},{8},{12},{13},{9},{18},{4},{6},{9},{20},{13},{17},{12},{8},{11},{10},{7},{9},{8},{6},{8},{6},{18},{19},{11},{21},{4},{20},{11},{3},{7},{6},{9},{3},{7},{13},{14},{4},{14},{16},{8},{6},{12},{13},{7},{8},{7},{8},{8},{7},{12},{5},{5},{10},{8},{3},{22},{15},{20},{23},{18},{15},{2},{6},{7},{15},{3},{5},{8},{3},{3},{8},{14},{13},{4},{5},{4},{4},{7},{19},{27},{17},{15},{10},{8},{5},{8},{16},{9},{8},{10},{11},{7},{15},{14},{10},{4},{8},{3},{2},{8},{12},{14},{15},{4},{9},{11},{7},{3},{12},{5},{22},{3},{6},{8},{7},{16},{8},{11},{9},{12},{12},{6},{7},{6},{10},{11},{3},{4},{23},{13},{6},{18},{7},{12},{10},{4},{6},{10},{7},{12},{8},{5},{9},{8},{10},{10},{6},{11},{9},{3},{8},{5},{10},{11},{12},{16},{7},{12},{13},{4},{8},{7},{9},{18},{19},{12},{13},{10},{5},{8},{5},{11},{10},{10},{11},{12},{5},{6},{5},{5},{10},{20},{96},{61},{137},{207},{187},{18},{28},{111},{195},{110},{121},{83},{308},{61},{31},{129},{99},{99},{152},{113},{134},{40},{106},{95},{107},{216},{159},{46}};
-    #if (CYTHON_COMPRESS_STRINGS) == 2 /* compression: bz2 (3181 bytes) */
-const char* const cstring = "BZh91AY&SY\354=k\234\000\002B\377\377\377\377\377\377\377\377\377\377\277\377\377\377\377\377\377\377`RHF\344C@h@@@@O\340@\000`\013\335\3609^\265 \031\032\006\206\224:4&\300oWJ\0007\207\r\010\224\232h\320\311\246CC!\352xCSO0\200\t\003jh\332\230\311\242i\247\250i\352z\236\247\2502d\320\365\000\320\006\232d\032\006\203A(\"i\246\204\321\241\2421\t=\010\365'\350)\206\201\000\001\240\000\000\000\014\215\032\000d4\302\000\000\000\rL\010HDz\200z\200mC \000\000\320\320\000\000\003@\000\000\0002\032\r\014\206\200\0004\032h\210\2211\014\217)\204h\r\001\200\000\rOP\003\020\006\232d\311\200\0012\006# hh\033P\036\240h\0104\304h\304i\223L\230L\023\023LLC\001\006&\230\214\004\304\300@\r\030\001\030#C!\223\010\310\032h\320\004\212L\020I\252~SS\324=\252z\217Q\372S\364\241\345\032hz\215\003@\000\000\006\200\000\006@\000\000\000h\001\240\004\001\020J\010\203\345\351\325\t$0\224e\023%\315\000@\316-\001FT\372\026v\250F\023h\262\212T*p\370lhl\033\022c\030\320\r\2446\233I6\000V\265\270\210\2614\301\022%+\247\220?\341\"sD\311\233\241M)\nR\221L.W\261\214\023`\233M\211\030\306\233\033\264\027\333<v\004E\200]p\245v\242\307R\340\274J\001\026\010m \275\245z0h\002L\300\217\024\325\023d!])%Z!T,\245*\321SK\013\002\222P\030I\027\331\231\nD%V\2635y!H\261F\001\253H\304\216S2\027\032/\314$ \253\r\031\214\0220T\036\267\322\360&\322l\326[j\\\3141\001@gB\204\311\2412eR\222gV\022\364\225\264-\215u\261u\215\016\rD[\211\337u\304\346\312B\003\322\255\022\322\323\205\244\325\006\301\306\345)\250\3063\013\343Ei<\301+\211\222\220\244\3673\316ev\327\027'2h\2044)c9\"\0165\034+\257\337\263\332xy\274v\327\276M\216\257\277\347\266F\364\030Y\324i\372\330]\330\330!\3064\335\352\325\206\236\310b\315\351\331#\265\003zr\234\tAC\221\202\016\201\016ve\026eJ\026I\367\025D\335\3575\361bd\302`V\373\310\3342Y\371\234E\301j\307yi\223\2709\036\270\304\212\343\254\306\330y\224\245i\207s\274\021k0\235Kd\240\360\361|K\253\252\364\325\342\220\315\252i\274?7\332\365\376F]-\333;8\034-\255\007\310\311\252u6Y\n\035[\3238\304\031\203""\213%\236R\326&\365\260\260\224\241\232p\225\262\"\310\267\032\300\214B\272\360\"\035dI\255\376\245DP\265)^X\254O\034\256\241\022\th\226\236\332q\277\301\316\350\030\005\263\2724\214\014'\364|\210\306\300\261\033\302\276\372T\026\247\330\333\314o\360j\225\326\352\247\276\351\211R\006:\252p\202*\254\305eE\320\313m\177\003\255\341C\233\233\035\326\321\n\031\357\315\341}mmr\267\237ys\231[\244\273\"\373\357\177/\351\364yW\375]\036\205\323\371\036n\315;\n\220\321\237\204\020\323\030\351:\221 K\206\275\366\332\210P\225-\261\321\307\352B1\216<U\257\026\254\370|\375\017\367#\227\236\334\036\231i\337\351\254N\236\247\225\214\266'=\207\222\233v\202r\360\336\356\243o\213(\340/\026\005\016m\373:\252\353\227\027\025Q\374\346\371\324\207\262\363\275d\314\311\335&\234\023:}\376;P\373\332-\316\272\024n5c\026\3533\353\327\245\010\265M\025\321\222bbc\320\235\234\372\023GM\345\335;\356\247\010\033\026\3040*\300\356\340~\013*\013\034\204\215\023\344~T\215$\332\321#\370\274\310\013\013\214\034W\036wAj\321euAM\200\251\201\242\362\322\262S\256v7i]\300\315\021\222=p\020\314\032\344f\354\372\232\025d\311f+\3233\021\251\022B\006\t\014\3169:y\t\tJ\302\222B\016\252\252\213j\243\346\357\251&\256\341\354d\215Q\203N3\202\261\201\n\242\262\036\226\305\232\004\212\251I;9\025Q\340\311\005rLQ\344Fs\024h_\336\256\256,\217;u\300HTS?\241\317\2556\007\207{\024\325\244]\215\215WC`\352\347J\212J\363Q\360\177C)\224\272<\324B\336n\210c\033m\375\033\233\354&\223y\300\033L\000\313\254\2259\037\303\003P9\251\205Y3b\354\260AP\323\214O\002m\312\235\2609\204\354\034\207z9\350\366\242\352\244\245'\031UF\214$\230n5\357\345\035\014x\224U\335\214\022\256\266\216\201\312\272\021\355\356\211\305\353\353\035\034x.\353\023\253\204\324\214i\010IYz\312\025sW\034\001ET_\306\215z\343&GL\270\3160\335\270N\373w\242w\373hn\265\360f\202\032\024\311\2321!\247:\234\321Sc\025\034\225\213\251\026\265G\333\262\273\271*\032\3034n\212\243O\202\206\376\223\246vR\222\302>{\273\243)u\333\367\357\023v\343ws\322\350\333\330\331\247\206\230""\234|\006J\242v\245\007p\014\342w\242.\366\214$P\022\241\222p{:AV\362\022 d\320\304<\242\001\320h-l\203WG9\244x\212\361\222tf\352\231\255\247=&\224J\373#!\343 \267)\231\0205*\\-\263\006\020\203G9\312\374\220\232\327\224\263\231\220\246K,Zwg-\200\014u\3050\240\372lu\3026fY_!\364X\375\264*\013j\242\275e(\363\320\252\032kJ\341\254\010\3319\223\256\310 j\020^\235\032\347\202\273;w\333z\233\371\372\322\320\205y\251\r\255\226\311\303N\2269\245\254\251L\331g\272\r}\032e\304j\242+o*\243$\362\222U{\232W\275oR\034\347cE\300(`_\324G\016\020l\321\240\325Q\335B\020\020\201j\367\325\245\206\361\320d\300\360\034!\002\222\257\231\027B\307\226\353\331\032\006\334;\330B\255l\024\032o%1\245Z^W\250W$\333y\315\226\246##Pbx\0221\033z\273i8\227\215,\344^\360T\312\353\026\274\\\021\014\352re#\251\004IH\345\326h*\265\326\014\313D6U\266\2447)%\314\214%\352$H\r9\301[\2452\314\223 V+\322\277\323\016\325\250\266\216\267LEK\222\0109\204v\235s\266\340\030\336\327\252\225\230\016\352\226\"4\033\030T\261\214UP\316\303d\033\252k2\241\r\235\026\302\001\214\275\031\267\253\210\205\3279\231P\022D*IU)\020K\020\036^\370\260\2741r\210wd(\000\202#ue\371\342U4R`\314\301_k?\031\025\274K\217K\212\241\025_\273\266\350\247-\210\030/`\202&\304~\031.i\326Ku\271j\224I\r\225\331\301\245\035\022UUU\315\204\007\354\215J\331\035S\235\360\254\306\326\032\261\264\301\275F\3232\004\005\251\235#\303\271\262\242\256J\266Z\344\216A\006\310\031\003B\r\303\223\211\013\024\034XE\3564\347\274d\312:1V2\213\324\360+\336\206\246aF\032\203\360\356\270\265\311\024\341\274\331\224\033\206\3167\235\353r\367m\267\206q\031^\245\0272.\362\345/\021\247bt\310\235\212\230\257\010\025\365\313\206P\245\332\204['\024M\2654b\307VL=\3634s\264\343\021q\222sk\320\253U\265VH\315_\233be\002v\311b\227\251:\260\277\004\020L\030Y\365\322\246J\226*\306t\223\242\2305\005\205\360E\351\203M\221e,v\337\223\025\357\t+\251i\205\333|\350q\0160\216-\024,\211\205\245\317\t#\037\007Qlh4\031\371*W6\010\306\307\273\330\261\032l\2006\220\275\234V\010C<\300\310U\354""\260=\020N\270\n\026xM\274i\340 \332=\242\252\240*\312pE\035C%b\316\343\n\251}\246\024\251U\331F\030UeVS0\256`\336\n!$\020yC:\034\216[\006\nO\214: \375Y\314\207\n#\226;\2152\026J\214\210\261d*\203\013|\t\202\306\214\205\324\231E\016\035\034\211\311\321\277\rY\273n\231(\252\2321H\n*\nv\023\216&*\325&V K\177\036D >\225\331\006H(\356)MZCN7X\252S6\302\217\022\014!\256s\346\262%ik\000\327\263q\301\221/\260\260:\225u\353D\036\211\304co\215\257B\232\221w\3474\355\337\337\330\252\202\254\373\030[\212l0-\332\031i\206O$\274h\232\242\021\251\303\304\362\275\377\217\333_-\023\374[\364\003\311P\032\340\231\270\013U\244y-!\260C[m\034\006\206\006\367\314[\326-\372\n\247\277B-\361\177?\205\024~j\206\310\0172\025kd!{\226\273\236j\001\314Y\230\267\036\322\002\262\014\361\373\331\361\317|\302\300\264\360Pp\021\302\033k\326{\026\020\r\241\355 \365=\377_\315\2270\260\024c\260ete\351*\376y\213\265xC\360\261\355\034=\014\312\301<\346\024zl&\243D\021\2509@k\034\251\213J\350\030+2\226\205\334\207\205G\275\001\021\020\361\265\372\303O\336\026\275\261\345\224\000\304F>@B\355\341y\243(-Zk\234\262Y\033s=\370\341\200\212X\204\243#\210\265*\237\2378DH\232Qtr\014\230Up\317\001\027\205\030\031\034\177\231\311W\221e/H\306\314\345\212~\220\nL\264\253|h\035\234\252\200\231\n\306\312<}b\212T+\022-@\356\240\220\240\007\3728\261\315\235\220\265z\201\2549\303#W\363\332)2e\036\251\241\324\355\336J9\005$\004\306w\214Y\000$\202\030\362\344\255i*\271q,#\343\000\221d\241\023\274Xn\010qc\320\033\n\005\350\016E\211\243\n\205xMU\t\355\272\"d\014P\014\214\221\226\033H?\335p\320o\373K\310\315\0028`\3340X-\206\354\352\256yO\010\277\276#-B\001\306\025\003\343\261\202\214\222#L6\274\035\2149\241\377\203+\n\016\227\356\000\233J\010h\t\255`\266\316\207\302\307\320\340c\017\252VM\r\177\3630~L\241\373=l\206\207[\270\200N\206\260\302\0318\363\325LN\234\204\3443Mj.f\010\270s\307U1P\014:X\216#\224\247\316\332\216Pp\232\264\304k-A\004\016#\353\311\275\022$\017\363\335\276\333]\335\\M\017\003\332<\314\014\n\317\250\251v\265""\036\207\312\201\373\001\363\241\326\3164w\320\276\016\203\315q\241(QP\356\215>\023\327\271!\362\007v\217e\312MS^N\243\356\203*\276\323'\202\354SyP\357\344O\240\3525\343\245G\336\\\330\271om3\247j\220\257\312\325\311\233:\226:6\327\3632f.\336\347k\270\333\335 j(~\256O\tu\347`k[\003\210\004\262\025H\214Wm\200\217\240\037\202\177`\037Z5\000_\264\350K\315\033\234\334\262\244/\205\350\243R\207%\233\213+;:\362\275\367\026\346D\031\2454\351\275\035L\262\253\315\030\364\273\037@\317{\3468\030#\213\340\220W\033\274\254\241\251\251`\344a\031[\232\027j3\234(\343e\226N>\206(\251\204\220A\302\010(A\252\260\215#+*\2078\207@d(\223\311\364jr)\220&v\004j\217\000\267\"l\356$\216\022\034\260FS\244DL\354hM&wfX\305\320,QMUb\265\212*\263\213m(\2401\031\0020d\346\342*(%D*\3115\006\356f\n\"`\231\246\325\004$ \224D\230\304X\034]Q\211\004\320FW\377\253s\366{\255\305\360\373\177\207\266\374\365\033\353\233\352\225pXK\205\214\350\315\025\231\236\002\270,o\370\273\222)\302\204\207a\353\\\340";
-    PyObject *data = __Pyx_DecompressString(cstring, 3181, 2);
+    const struct { const unsigned int length: 9; } index[] = {{1},{179},{17},{1},{2},{10},{13},{3},{8},{27},{15},{17},{10},{26},{23},{9},{10},{12},{6},{9},{9},{4},{20},{7},{4},{14},{17},{14},{18},{8},{18},{21},{12},{18},{21},{18},{16},{15},{21},{17},{12},{12},{17},{6},{15},{18},{6},{3},{6},{8},{21},{22},{23},{24},{34},{34},{9},{3},{18},{12},{5},{24},{18},{8},{12},{13},{9},{18},{4},{6},{9},{20},{13},{17},{12},{8},{11},{10},{7},{9},{8},{6},{8},{6},{18},{19},{11},{21},{4},{20},{11},{3},{7},{6},{9},{3},{7},{13},{14},{4},{14},{16},{8},{6},{12},{13},{7},{8},{7},{8},{8},{7},{12},{5},{5},{10},{8},{3},{22},{15},{20},{23},{18},{15},{2},{6},{7},{15},{3},{5},{8},{3},{3},{8},{14},{13},{4},{5},{4},{4},{7},{27},{17},{15},{10},{8},{5},{8},{16},{9},{8},{10},{11},{7},{15},{14},{10},{4},{8},{3},{2},{8},{12},{14},{15},{4},{9},{11},{7},{3},{12},{5},{22},{3},{6},{8},{7},{16},{8},{11},{9},{12},{12},{6},{7},{6},{10},{11},{3},{4},{23},{18},{13},{6},{18},{7},{12},{10},{4},{6},{10},{7},{12},{8},{5},{9},{8},{10},{6},{11},{9},{3},{8},{5},{10},{11},{12},{16},{7},{12},{13},{26},{15},{4},{8},{7},{9},{18},{19},{12},{13},{10},{5},{8},{5},{11},{10},{10},{11},{12},{5},{6},{5},{5},{10},{20},{96},{61},{137},{207},{187},{18},{28},{111},{202},{110},{121},{83},{308},{36},{61},{31},{129},{108},{108},{161},{73},{134},{40},{106},{95},{107},{216},{159},{46}};
+    #if (CYTHON_COMPRESS_STRINGS) == 2 /* compression: bz2 (3251 bytes) */
+const char* const cstring = "BZh91AY&SY\025\254\003s\000\002M\377\377\377\377\377\377\377\377\377\377\277\377\377\377\377\377\377\377`RHF\344C@h@@@@O\340@\000`\014\035\360'y\335\316\354\003u\235\306;jqK+X\326\033\023\325\351\350\000\260\360\320\211A\0314\311\246\206 \321\351\204\021\343\t415\003ji\201\251\351\244\311\2200\023\324b4\017P\320\3024i\246\324\321\241\246#A\241\002bh\002d\032CH\310\322\237\265P\330\232hF#\032\230\206\r\001\000\r\001\210\321\243&\312z\231\222z\230\236\240\320h\030\rL\010I\245=@\006M\003\3242\000\000h\r\000\000\000\032\000\000\003@\r\001\240d\320\000\003A)\242\010\232\002i'\250\365=\014\214P\365\007\246\241\345\006\236\246\236\220\000\000\000\000\000\000\000\001\210\r\001\240\000\203LF\214F\2314\311\204\30114\304\3040\020bi\210\300LL\004\000\321\200\021\20242\0310\214\201\246\215\000H\240D\304\32155<\232\237\252{I\244\321\351\017Pz\207\251\345\006@\001\240\000h\00044z\201\240\000\000\000\001\240\005\031\230\34431\370\3618\303q\3109\013\220\270\357(\243\004\250\312jP\232\035\2775\022\343\n%\032#R\235Eg\037\216\306\206\301\260Lc`\332Cb\033\0046!6\223m\327]v\022\026\021\246\010\2319\331L\340\377\222E(\212\0247B\242S\024\3472\253\254\013X\306\t\260M\246\304\214CM\253,\021\366U\212*b\241@\262\301R\312\264\003\024\013B\274\002Q\t\261\003b\013X\026\242\346\200&\312\022\321j\244\331\010W|\305]HU\204j\252\266\212\313\356\210U5\001\204\325\261\312\2052\023\255\254\255ZLS!\244\341\237YH\226a\211\214\006f\034CJIK3\021\215\247$\304Y\031\261\"\327\253\342\275~\373`w\034\220\340\340(b\342\322\326--)Z\266D\343aj\337\270N\311\246A(\"\306\264\211\034\203c\010\006\264\303\221\001\3213\210\250\271\036\032N\006`\022\321\006x*\253\201Qc\t\211\326\0025D\304b\010O\022i9\211S&A9\211\302\001p$(4\021\205,\241)\210T\373\366.\032\036o\025\265\330\361\3545]\337=\2625\321\205\235V\237\3213\345\305|aUWR\206\216E\301\336\231\214\313\233'\244\2032\336\032\205Ra\274\201(\201-7t\312\322\210/V4\nL\327\330\321\301\201\024\n\001e\327\022\274\"{\356w\001x\007\2251\017\025\364\306\317\014H\204\324\314-\235}X""\306b\253\241\313\004s\n\236\323\203\226\245\367]\314\246m\005\177t\027M\357,\200\353\376\257\257\371\273\347\343\303\3038\360y\234\003\3320\032Bo\001JG\016\221\3343\201\013\0200\341\253\263Y\007+#\n\247b\307Vl\024\202\221,\214*\211\002\005\2140\241\327m\223*\\=\014\010+,Jw\021Q\\\"\272!Ia\026\023\261\301<[Y\"\002\260'|\231\026,V\377C\362\261\220\002\004\235\032(\213@\374\362-\033\006\276\203])\357\217Ok\003A[z\023L\005\221\231\274\032\031\035\211\004\235\376_\017E{6[\252S\220\210\262\232\272>\216d\221\247^\201%\014'\002\361+\305\024P\257S\361s=:?%\235\211?\354\365q\273\020\322\026W\255d.c.\033\030\026\035\2576S\316D\"\035\031\340\242PV\362\330\306[\242c\321}u~\013\025\352\263\016\272kTp\273#\337\201q\354\364\355n%\310\200\347\226|\340\026\356\274\224\243\t\223\020\302\200\007\242\241\021\275\226<\223Q\341\243CY\331\031=\244]/g\276x\244\267\312\352\212\262\365\264\316C\366Y=ga\204\322h-N\004Vl\327\0211\032\214;0+E\242\336\"\333]\205g\035\002\\yJ:\32618\020\2506\241\312X\365\340\320 \240\267\013\037\270\255\322d\\\231\210\231\354u\026(\375\2679{\311\326\013\262\033:\3207\260\n\270\n=v\226\tMs\255t\225\334\014\311\031#\327\202\031\232\344&\354\366\324*\311\222\314W\244\314\256\n\250d8\241\336q^b\376\235\245\266\341\272\031\250\222L\257\246\214\\\365\325{0\221A\301\235\224\346\323R1\177\n\354Q\tR\2263\220\254\363\022\246GME\016HaY\tGJ\304T$\247\206\312@\302.na\337\240`=\235R\0008\031\030\257\261\310\300\261\003\265B\010\337p<\351kd\274\342\343]\014\034f\014=A\243\315\367+R\013\004Y\315X\020\3479\014cm\277\237g\203\206\210o\223\000m0A\272\323\025Z\221\350@\320\010\233\247\022\253\276l:\223&7Yfl\332\372-\260\301\244\315\316\032'2A\305\340N\022+Z\300\351!\347*\266=-\331\235\274\202\030\313\236\204\2642\242MM\\\315b\002z\315\027\364\313Bqf\374\326\345q\255\013\315\251\216\324NwJUN\2724\024\322\262x\301\t2\370\331\350;\\\204\024Xi\032@\325\250\027;W\360\034\374\361\032\247UH\213+\014`\210\306\005\335Y\215\346\030\305\003F\344\300\357#\230\311Y\361\232[\215\t\001K$\303$~""\263\003-\243k\341\030\272\246v\024\245\022\030\222\024\262\313 5j\032\273\216\317\026}\270\335\256\346\r:\302\023X>k\226\246\200\207\023\273\021w\264a\"\200\225\014\223\203\331\324\n\276\310H\201\223@a\236Q\007A\240)\033\017f\026\277#J\303\202\242\2266\266=C\036\013\264\356\265\256k5\307cm\231W\003\230\331\202\243)\003\236\000  \264ecu[\213y\315\203\253\025\020\216\006\353\205\312\205\026\211,\203S@r\3022_\010\314\272\026I\335\215W\025H\313z6\031\250\027\351r\213\013\256\213r\243\002\371\212e\322\000d\036\360\371\240\262\002\360@\370\354\314\372\215H\244.n}\231r8\035a\024\324\305y\322\3055.r\215\244Y\023\235\246\306\332\006\357\005\302\001s\022\301>\"b[\t\022\302j\260}\005\367\306\250\321o\216k&\021\0141\227\357Q\020\315(b\235\244)lb\302R\021\"\347\317V\2544\310\242\013\031\263\020\224\213j\257U<\216{\3147\301BF\226=}y\316\255\030\005\303\006\314\225\343J\272\256+\352\225\2116\336\370\337\265A\031\032\203\010\347\014\022\034zx\310\264\236\242\206\351\361\003,e\003\232\325\000\001Vcw\027\r\365\2219\303W@\310R\350\271@\203\265\023\322\2324\331Gz\212\210\260\260&L\205u\311\3029L\267\253\t\225\2166\340\372\245\316\\\235\271\234\235\366\t\253\324\221\023\034\364\215cb \013iJL\304\302\260\245\031@\211\026\226-\246\3060\314\205\210\023\0002jC\010\205\343\305~R\014\265\342\332\373\223\030\301\202Q\016\302H\253\210w\023XZ\202jy\305\025fB\223\225\337\247H\004\"x,0\344\233P\265\221h;\270Y\300\311\276&\250\"\220\354\350h#5r\247\223\013z\000\205G\264\226E\211(n`t\276`\355S\341{\230\034>v\014\200\365\236eRI,X\344F\270\367X\355\t\265#\035\206[\356=\203\346\311\372]#\022\t\016\220\212\236m\255\335\njSw\201\315\032\240o\300\316\rd\033'-\"Q\223D8I\033)\2256\021B\252\250Ju\234R$Y\273ct\356!\304\352 \365\357\350\314\3421\257!\216\013Mx\351S\3509\037)3\353\254\022\032\232`\351#\310H\305\000\221\360.[\203\340ei\353X\233\204H!\201\031^J4\202\2510\006v\243\030\200rM\306\252^,\344#\330\300qqR[\331\2543t\234\3610\232b\375\320,\026\037;\215\205A\214\024\307~4\tc\200\360k*AQ\315\300\316UE2""\346\240\256\266\tZ\2304f\003\220\353\223\316\021)\244\361<>W@\n\215h\266\3608)b4\010\034\354 \223\325\351o\3476\236\251\252i\352\331v\201\205\233\"\026\276\2441\311!\301&\254\342I\351R'He\023\207\244\331\214\371\006\214L7\234\246hoUs\251\034\233\273\t:i\202!\005\311\313\335\003\2116\013\346+\250\224:\034q'I\3239\211\366\231\2120\304RX\330\321\202\3518^\267@5\245\032\266\332K{sAy\021\005\244^\255\316\314\252\354RN<r\300\016v\301\030m\300Z\3036l\313\227\313\213>\375\210\255\0066\263\262)\014hcig\001\202\303F\226h\020\016\323\2630Z\302\255<\026\204\263\nP0#u\240l\266P3\021\247\021\0250\005\240!\231\357\336\203\004\305:\000\022\204M+B*  \006\306\360\314@\232\270\226\201l\375\336k\014^G\225b\342\317\227:\006d\014\337\266\271\356\003\021P\2378\031\371\362\321\215J\365\t\234\204\302t\210t^\217u\302\330|`\3425\374a\210wlMy\346]\305\310\261\034F!\264\201\255v\215\306\206\006\337\230\266\330\270`q^\2546\230\265\026\366\361Y\215\277\000p\001\356B\233\307B\017\363WYx\200\\\254\314U\215P\004\336R\203\246'\030\322\237\351XD,<=\306\223\003\355\033k\325|\254H\006\270\365\320q\275\357[\213=\211\004X\230b|\216\300\313L\250{F,U\352\035\000\261\252\037\350\347MC?y\205\036\303\t9\302G\031\357\201z]:t\366\256\200\321\014\222+\255`pf\200(J\005\253\375\357\205\317\264\037>\03259\230\001\010\214}\200\262\314\276\367Z\250-[\013\224\262Y\033v\237<\020\300E,BQ\221\303Z\225\221\357\362\210i\017^\317[\264d\302\247\207\230\004]\365\25028\233'\031Z\013(\272\346(\216\330d\352\000Qm\222dsB^\253\273\tp\336\021\367m\356nBgN<$p\203\327n\033\201>&\347L\270;h\341\030\033\203\004amm\346\001\026,c\3324<\274\333\010\307\020\242\200\230\016\360\013\010\004\210]\233h\253ZF\236]\r\256\000\t\016*\021V\337\302lB\207i,O\313-0\334;-g%\320\004\332P\224\3178\212\001_\200`\031$\026\031H\037\335\360\310k\373\215\241\006Y\034 m\230+\246\203T\323\027(\245\004_\352L\026\\\001\266\025\003\353C\005\031$F\230mw\"\206\025\320\261\233\337\274\203;v\000\272\306\202\032\002\351\256\273l\346\353\321\3518\030\275\307*V\206\377""\371\230;,\241\374~\014\206\206O\215\000\223d\260\302\0318\363S I\222\204\345\221\246\346!9\234,\357\245\014d\277@/\261d\270\216b\312\354R\016\260p\232\247\222\326j\202\010\017\337X]\366\310\220X\371\235\276\341\327\327r\356\303\300\367\022\346\342\342k\354\265.\243)\350|\250\033\240>t2s\315\035\342G\016\203\315\361\243\030v\324<\243b\265\353\3340\371\003\272w\266\321\223\362k\303\234\373\021\225G\330'\202\274d<\312;x\222\245\272\264\260t\253Z\276e\033\225\\i\035\352\204\205nU\016H\242\312\243\326\343[\310\303\220\272\256e'\027\211\\\204\325\230\261WV\265t\007\3005\254\330~^\316Lr\023\0003\006()\200\211\2429\340\271\364b\272\241\270\"Cn\304|\361S\237\234X\343\242\037\216\346^\005\273U\224\264\324\324\005\003\344\\x\255^\025\341\344\327\014l\342\231z0q\374?\200\337\243dsn\307Nlb\345\324\342\342\211\323\257mm\233q\263\252\335\260\266\232\036\275%e\352a\240T\230\t;\201dC\270\366\300@\212\262M\016\210\207@d*I\344\366\252r)\220&v\200#Tx\005\271\023w'\022G\t\016X#)\324\"&v4&\223;\263,b\350\026(\246\252\261[\022\212\254\342\325\250\2401\031\0020d\346\342*(%D+\004\232\203w3\005\0210L\323j\242\022\020J\"Lb,\016.\254\244\t\004\320FW\337\253s\274\275\267\036\341q\376\027\227\311\336y\235N\324\257\264\\\236\302a\202fj\224\300\021a0\371\005\334\221N\024$\005k\000\334\300";
+    PyObject *data = __Pyx_DecompressString(cstring, 3251, 2);
     if (unlikely(!data)) __PYX_ERR(0, 1, __pyx_L1_error)
     const char* const bytes = __Pyx_PyBytes_AsString(data);
     #if !CYTHON_ASSUME_SAFE_MACROS
     if (likely(bytes)); else { Py_DECREF(data); __PYX_ERR(0, 1, __pyx_L1_error) }
     #endif
-    #elif (CYTHON_COMPRESS_STRINGS) != 0 /* compression: zlib (3080 bytes) */
-const char* const cstring = "x\332\265V\313s\333\306\031\027k\311\242\034\3126-[\217*\216I=\"+\251\224\260V\375H\334f\030=\374\214bI\224\355\304Q\020\010XJ\260@\202\304\002\222\351\330\035\367\306\311Lf0\323\013\016\355\004\231\311\001\227fpD'\027\036y\334#\217\232i\234\264\267\376\t\375\276]\360a\271N\322\246\235!\261\337~X\354\367\372}\277\335\231\231e\303\")k[\266R\363\025k\333(\2464\232R\211\256m\022S\266\210^IQ\313\324\024\213\230\270\250\230\272\265xkf\356\342\\J.\252)\223\334'\212ES\324\336Tt\231RBSF>\265ik\272\245\025SV\245D\350l\352Z>U1\354T\221\0205e\031\251\022\254\353\374\300\332&\305\024%\026\n\251)\271X4,\331\322\214\242\004\237k\305\255\251\224\252\231`D\333%\370\365\222\254S2;\371\301\314dafRMM^}k\362\275\267&\327\336y\372\325\347\337y\341?\276\374k*\365\375\227_\377\375\353\257\276\253:O?\373\342oO\3760+\253\252\004\233\022Y[#z>G\250\365\006%\346\256\246\020\372\206%\323\235\331RE\205\370\356A\230\277Jm\032\206\276\321\236\032\233\030\340\206\256Q\353^[\253\025\255\324#L\313\306\3017\321z\241\306\005\360\207\245\313F\221dK\245\305\007\n)al\013\2137\027s\213\213\246i\230\363\206J\226\337\317IK\357\257//\340:I\272Uy\000\377\005\330TZ&\017\254U\222_#\224\302g9\360\026\377Y\205o\"[2\316\346M\002uZ%e\033BC\305\002\321\211E\232\257\227\240\030\304\244\267\344\212n\310*j\256Y\244\320\034\237\335\252\255\351\330\016\225\235\013P^\203\032\331\264\245\341\006\017~B,Y\323;?\274\tI98_5\366\232\323U\016\246\003\273\254\222]\215\354E\253:7X%\264d\024)Ay\275\244\2663\360\3757\177\374\356\317_|\373\3157O?\373\362\333\360\363\247\177q\237\376\311\027S\200GK#sH\0016dmY.\0008`C[\267\332 \231%\315j\321\016e\001\312\245\323Y\304M\207\226*\333\244 ?\257\216`\026\351\245]Y\007\017e\035\220_)*\2321\253\030\246aC\253\200\322\266\014I1\212y\315,l\222-\255(a\027\251\240*\224dK2y\032$\323\330\213\364\221B\203\024\361F\322\362\225\346\210Yj\312\222\316'\032)Z\222\246\202\000\370\202\275-SV\310\246\254\354(\020\016\230(h\026\267\275\205\213\204\023\235\026hSG\241\354\2449\301\240\204\003BATI\206mv\211\271n""\352\n\007%_#D\376\3226M\360\004\212%c(\024\253fi\360!\301\022\200'\032\242\\\345h\022\317N/\236\327\320H\205V:D\376N\030 T\221\340ALM\326\265\207D\312\213fP\t\326E*\202U\002\366\212jN\343\022\370(I\340!1a\200\362?Pt[%\321\240\316\0336\274\212&P\031>#\n\376m\316X\010\216\366\214\362\036\301\2154\3305\017\315@T|\332&\341;E\262\330\010\034#\357\026J8\240/8B\026q\2206\205Z\262\371\034\335\217\006\351>\345\231\247V^\267\351v\3364\n\334\005\035\254\331EE\222\266\210\005?I'[\262R\021\251QyW\242\366\337My\342\204NzVi\230\222)k\224\264\325M\315\026@\270\250\002S\013N\320TM\315\001\361k*\0228\014\220N\004\"5lS\201)\325\n\362\026\341\017\010\020\260\010d\252a\306\2419\232\243\264\r\213\251\244Q\251\325 \350\004/9\306\274CHi\207T\366\014S\005\234Cw\330<\333\246@\031B\236\367\r\207Q\023/\3503\345\257:\001\304\025\255(\333S\252\353\005\016\017\344L\250aA\006O\341Y\264\301\273\026\336\341\247\311\030,\027 \034>\362\270\333\022-\000yC\264\2422\252](\361\272\211)\006\215] a\341l(27\332z\032{\306\016\004\tp\334\254\030\246\006\264 \353\330*MYpVs\026\361K\t\214\341_\242\200x\024T\021\\I\234\000%\243$Ie\210C\330\000\3164+\374\361,N\240GMy\017~@\tp\376\202\027\327`\314\233\204n\213S\277\23561'\360\272\000\307,?\325\204\010\305\210\004\322\241\344$\002<\000\346M\356?5\211e\233E\263I\365\264\315v\024\376|\200\nw\272'\272\214\240Z\200\261\0104\013\014\000n=\327\354T\034\236\022\274\261\242\304\202\244\222\274\214\266a!-aN\305\023\311\223\226\370\262h\340\024J\313\272`~D\031\177`\227r\001\202\024#\307M\013\205\242\373#\016@\232\245\026$^\254\201\2165\363\026\337\300\324J\360\260\025H\000Q\341V\004 \347\344 D\301\r\221\334\206\251\255@\2644\032\242\345\\\026\353q!\3761\036\361\221\332\372\266\243\315\221\205\241\037\017h0\333mU\307\227\317\254\345\022\364\205\005!\300\023\256l\272\315\017a\356\245\0201\013v\211_:\240\r\204\304;\242C\244\034\262\002\267\273\300\025\306\3366\200bO\323\3655\036t[Z,\224\254J\3264\345\n\353:\303\316d\202\3410\371\317\303]=\t\366\322iw\305\325\274r\243;Q\275\342""\374\306\215\271\203n\331\353\363\007\375r\020\017\373j\003\265\253\365kl\3756\273\3751\373Xfr\236\345\357\263\373EV4\032\335/U3,\361\212+\273\273\336m\377R\260\020\306k1\326\225b\251_\007g\3034\276\277\340L8\262\263\353\2564\272{\237\330\325\371j\271\021?Z\325\335t#\221tFp8\351d\033\211a7\266\317w\353\032cc\347\202\014\256\246\325\263\3168;5\345\355\371r#>\340d\032}\211\352uGu\307\335\333\336\234G\375\351\340|8\020\316\207\2646Y\333\255\257\264\326d\271\264\317\037\335=\215\370Ig\336\261\334s.\3542\354\036r3\215\370\tg\334Y\301\027\260t\320\321\\\352\275\346/\004\335A6X\013c\215\370\250\013\216L\260\211\363\301v(\037\314\322Qvt\314K\203\003 \237p\246\334$\372\372\3109\007a\226#\027N9k\220\306d\333\r\\\t\026\235-w\303O\373\027\202)v\351f=\013{U\025'\351L\261\221i?\351O\005C\354\342r]\346>\037\255\252\2209\00579\356t\243\237}\215\304\313\356\025/\323H\0149{\020Kb\020\266[i$F\334!/\326R\016\201\023\211_b^\007\0359J.\350\236\rg\010|\255\300G\274>\223N\331=\014%\254\370\207}\331\177\020Tj\207j\027\353\227Xn\235\255o\260\215O\330'\204\021\215i\005V(\242\307\362~\002\203\311\271\003n\026\r\314\013\213\343\350\213H/\037\336\3664\277\314\336\274Z?\304n|\304>\332@7(\372\025\255\031qG\275y\357a0\020\\\t3-\355 \206\274\037G$B\355\022\325\033\350:\340\351BP\346\336\262\023\220{\3265\311&/\004\017\3022\006s\00228\r\337\302\352%'\035\255\216\336%\331\361)\257\354\367\005P\244\343N\257c\203\313\220Z\271\372\330]\202\032^\366\177\037\256\325b\215\236\276*,\030\301d\3675\342\247EVG\274\tO\361\223\215\304\031h\207C\034pc\000\222\336\340!\264\304|\315\252_`\253k\254k\204\215\274\356_\0142`\356H\3229\014I\217\037c\307\322^\322\233\366\001i\247\234;\356\"L^\365c\376H\360j\030\013\207k#\365\361\372\007\354\366\207\354\303{\210\310\030dr\301\353\366\256\370o\007\n\000z\241\326[+\357\307\241\033\032\2111o\312?\005\360?\016\325t\036{K\200\236\313\301\343\332B=VO6\372\223\016\270\207q\225\033\307y\375](\305\200s\276\225B\234]p\323\010\371c\325]ge\037\206=\004*6\333\357\334$V\215\267\334%p+""\371\2233\326\217\356\337aw\024\246\000\033\354\260\035=J\341\t(\300\300\204w\003\250\243'\310\205C5\304\030\366\316=\010\1774\270\211\354\200\tc\257g\205\271Du\016\031\241\277z\007!.\332\2519$\235!\027\232\361\024R@\331\357\365a\235\0009Oj\026C\342q\300\016N\204eN9\027\235\014l\006\302e\347Sp\371\274?\034\014\205`x\330MxYa\264\215z\333\273\346\257\370j0\036\254\207\023\241ZK#\216\262H\r7\240\354\207\275m6\373n-]\233\253\201\365D\365\252\223\335\347\033\363\217Y\327ivz\226\315fk/\003\373\2748]}\365\223?\230\260\327\375\214\277\030\234\014\356\204\340\366\200`\022\267\0330\321\353=\n\316\005j\230\016\317\205r\010\035\020\021\213;\341\252\000\214\227\201\255\016\205\231\360f\375P\035\360\237tF\335k\336\207>\r\246B^\275\2303\340d\371\027\243\336\002$\360\021l\243\324\222\030#\302\t\272\021I\221\235y\023\230\357Jx\271F\001\227+u\271!\370Gkr\346Ig\201\327A0\3465\267=`\327\257C\230\031\301\261\020<j\221x\342\310Cq\336Q)\257\337_\013b\250\002\316\341\275{9\274Z\313\212\204Yn\306\275\356\311\310\241\017\321\335\0379\035\322\336+\220\322\025\254b_\365\010\324\033|H\273\227\200I\312>\354=\r9\341/\373;\216\262\0368\2332\376\002{\363\335\332xm\275>\315\326r,w\227\335\275\307\356\001\271\251L\335f\333\032?\313\032}\307\252\2263\007\231\031w\357z9h~Q\363F\374ED9W\263\353Kl\025\250\0229\0160\306\206_\363\317\006\351\203\207F\234;\013\303Qg\033j\307q\372B\334\212\306\314y'\2755\377\020\234\026\023\201\306\336\271\305n\345\220\223\273\206\330\3204@:\371\1773\361$\326\350?\032\375z\016?o&\316\t\007\204~\336\206\235B\302\271\202L\034gP\226)/\311\245a\267\327-\013\t\223\203\307_\247\233\377I\007\217\262\321\031\377\256\250\360\263>\265b\0063g\\\313\313\374or=\346\315\006G\305\231y\n\327#\032\273'< \001\221m<\224G\261K\220x\271;l\352r\230\r7\352i>\027\374;\006\010\337\tF\303% \022\316\304\217\361\344|\346\365\375\340%\321\343\374\360\037\306~\343\017\270;\260\256W\\\303\347\367'\253\232i\236.\021\257J~\326\317\005\203A9\214\265\312&j\326\"r\310\\\243\273\237\365\243\275\356\376\352\206{""\026\0166\031\305\217\335\213\342\032\363\342\374\210$+\336\210?\341+pV\277\007\207W\372\307,\301\205\360\277\334~\2716]\317\374\264\3551 \321\243?\327\324>\230B\266lt\037\251\302'p\252D\226[\327$~\263p.qJ\277\010\367\334\371\000\352\324\373\344Sq\213<\356\3648\267\201\306\256z\327a\347d\243O\334\211\016\352\367[\267\255\036\367\003O\366\036\000QO\006V8\027\362\253w\266*\2717 \316\036\250\247\210\264\272\356\214\301N&\3360\217T_u~\201\001\235h\322\020\017\t.\252\340\324\214\277\213\367V8\302O\325\362\365\353p\322\374`\n{\237\354U\361\226\0027\001\202w.8\203\234\337\302Q'\267N\233\013pD\364\365WW\032\315[\304\261\352C\274\346`\347\002d\347\300\203\330\317I;?8\337\000\n-\037\354\344\216\226g\231\305\332JM\255\247\377\005:\312Vo";
-    PyObject *data = __Pyx_DecompressString(cstring, 3080, 1);
+    #elif (CYTHON_COMPRESS_STRINGS) != 0 /* compression: zlib (3138 bytes) */
+const char* const cstring = "x\332\265VKs\333\326\025\226j\311\242\034\3126-[\217*\216\251Wd%\265\022\326\252\037\211\333\014\243\207\237Q\254\227\355\304Q\020\010\270\222`\221\004\t\200\222\3508\035w\307\311Lf0\323\r\026\355\004\231\311\002\233f\260D'\033.\271\274K.5\3238iw\375\t\375\316\005\370\220\\'\231f:C\342\336{pq\317\353;\337\271S\013\272\305\222\326\226l%gJ\326\226\236KjfRe\031m\235\031\262\3052\245\244i\031\232b1\2036\345\222w\347\356^\230\2762\235\224sj\322`\217\230b\231I\263\270\256dd\323dfR\337H\256\027\265\214\245\345\222V)\317\314\251\344\315\215dI/&s\214\251IKO\346\261\257\365\003k\213\345\222&\263h\222\234\220s9\335\222-M\317I\370\\\313mN$U\315\200\022m\207\321\327\363r\306dS\343\037\\\030\317^\030W\223\3437\336\032\177\357\255\361\345w.\\x\366\365\027\337\273\301\277\276\372{2\371\303W\337\374\363\233\257\277/\333\317>\377\362\037O\377$\253\252\204S\231\254-\263\314\306\n3\2557Lf\354h\n3\337\260ds{*_R\341\340C\370\371\233\344\272\256g\326\232K}\235<\\\323rV\362IrA\317!.\246\365\260\371>|\201\351\332\332\2417\321\227\241\2306\340\037\235\221\316\347\347\366\024\226'7g\347\356\314\255\314\315\031\206n\314\350*[x\177E\232\177\177ua\226\366I\322\335\322\036\376\2638TZ`{\326\022\333Xf\246\211\317V`7\375\323\2128D\266dZ\315\030\014)[b\205\"\234$\301,\3130\213\325_\317#/\3140\357\312\245\214.\253$\271i\261l}<xTS\322r\034\t[7\320|\031\351*\232\r\211Px\370\023f\311Z\246\365\303;\010\312\341\365\222\276[_.\t\\\035:e\211\355hl7\332\325z\300\0223\363z\316d4_\315\253\315\010\374\360\355\237\277\377\353\227\337}\373\355\263\317\277\372.\370\342\331\337\234g\177\361\302%p\322\220\310\002]@\211\254-\310Y\300\004\007\0263V\023.S\254\236-\263E\230E\2722\346\024!\250Ej*[,+?/\216\000\367\243r\211\3551\245Hz^\270\203\216W\213\031\224\246&\355\310\031x)gPH\245\234\242\351S\212n\350\370<\007a\321\322%E\317mhFv\235mj9\211\212R\205(\233\227-\311\020\241\224\014}7\222G\002\ra\026u\251m\224\352#E\272>\2272b\241\261\234%i*&\300(\316\266\014Ya\353\262\262\255 $P\221\325,\241{\2236\205F\264j0\3532\023\320a""\365\205pO\030\020\n\230*\3118f\207\031\253FF\021\300\026{\302\251xY4\014X\202\204\313\344\212I\231\2674|\310(\215\260D\243JQ\005\"\303g\253\025\317K\314HDZZ\246\342]\250\200\231\212\204\007349\243=f\322FXP*\243\014I9he\320\227SW41\203\215\222\004\013\231\201\001\020\332S2E\225E\203:\243\027\361*Z 3b\305\224\006\006$\002Xse\212:\243\2034\234\272\201\202b*=\213\006\023'E\363\360 \030\306\336\315\346i [hD\024i\220\326C\261T\024k2?\032\244G\246\210\274imd\212\346\326\206\241g\205\t\031h+\346\024I\332d\026~R\206m\312J)\014\215**\233\244\377m)\002\027\312\244\203B\335\220\200`\2235\305u\311& \234SA\374!\257h\252\246\256\240\217h*\365\003\014\010'\001\321\324\213\206\202\245\251e\345M&\036p\020X\004!k\024q\024G}\224\266\260\331\2244Sj\024\010\031!RN>o3\226\337f\245]\335P\t\337\242H\004f\352\340 \003M\361\252\025-B\320p\251\27143\231\254\300\002\221,\022\226\225a\026\236\271\"Li\200\033?M&\317\304\004\266\213Q8\331\234\231Y\260=\\\013\323\240\026\263y\221\244pI\036\022\344%\312\022(A\022J\033O}W\337\206G\300\336zI74p\200\234\241\272\250\317C\222\253\257\"2\311C\031\375%\023\360\246\211\032:\227\017[F^\317KR\001~\204:@\262FI<\016\202\002\005i\310\273\370\241\376\321\273a\305M\214\033\0063\267\302\033C3l\341\232\341u\026\035Z\264\301p\212\332\211&\254E(\030\003E\017\365\206\260\3374\230U4rF\2757\230Mj3\361\027C1w\300\274\260\244\030\211\017\222nC\242\347\300\267 \000\030\372\\\255\233a\377\225\360\306\212B\215\231\3126d\262\006\033\315<E9|\022w\232y\261-\032\004\203\232\205L\330<\020'K<\250H\305\004n\207\243@\222(\201\250\360\211[M\013\t\010\337\240L\215\rK|fhy<\212\n\002\301T\334\254\200l\301\010\3414$\204h\336\204kQ\201\217f4D\333\305<\332\217\216\"mf\364u@\343`\343\221\304\253\306\222^\322\237\334\rOW\033JZH\2008\032\325zHB\351i\212Z\276<\260W\314PH\026|\305\023\367\303LQ\264yaY8%\256-\346\305\265\006u\023\316D\t\265LM\201\361\020\350;`\022}w\013(\332\3252\231e\021\235\346l.\233\267Ji\303\220K\274\355\034?\227\362\007\202\304\277\217\266u\306\371Kg\235EGs\013\265\216x""\371\272\375;\247\335\351s\nn\267\327\347\025\374X\320]\351\255\334\250\336\344\253\367\370\275\217\371\3072\2277\370\306#\376(\307sz\255\343\245r\212\307_qdg\307\275\347]\365g\203X\245\235\267%y\362\267\376\371`\230\336_\266\307l\331\336q\026k\035]O\213\345\231r\241\026;^\3168\303\265x\302\036\244\341\264\235\256\305\007\234\366}qZ\333\010\037\271\350\247h\267Y>o\217\3623\023\356\256'\327b\275v\252\326\035/\337\262Ug\324\271\347N\273\2467\351_\nz\203\231\300\254\214Wv\252\213\215=i1\333\027\217\216\316Z\354\264=c[\316E\007\247\0148G\234T-v\312\036\265\027\351\005\266\366\331\232c\272\257y\263~\207\237\366\227\203\366Zl\310\201!c|\354\222\277\025\310\207\243t\234\037\037q\207a\000\346\247\354\t'A\266>\261/\302\315Bd\302\031{\031aL4\315\240\235\320ho:k\336\260w\331\237\340W\357T\3238\253\254\330\t{\202\017Nz\to\302\357\347W\026\252\262\260\371xYE\344\024:\344\244\335Avv\327\342/;\327\335T-\336o\357\302\227x\037\216[\254\305\007\235~\267\275!\354\207\021\361_S\\\373l9\n.d\007\335\351\207\255%|$\3623n\027\234\243Ha\311;\352\311\336\236_\252\034\251\\\251^\345+\253|u\215\257}\302?a\234i\\\313\362l\216,\226\367\343\344\314\212\323\353\244I\301L\250q\224l\t\303+\206\267]\315+\3607oT\217\360\333\037\361\217\326\310\014\223\354\212\366\014:C\356\214\373\330\357\365\257\007\251\206\264\217\\\336\217\021\022\221\273x\3716\231\016<]\366\013\302Z~\n\261\347m\343|\374\262\277\027\024\310\231S\210\340$\276\305\356y{8\332\035\275K\360\223\023n\301\353\366\221\244\223v\227]\204\311\010\255\\\376\314\231G\016\257y\177\014\226+\355\265\316\35626\014R\260\273k\261\263aT\007\3351W\361\022\265\3709\224\303\021\001\270\021\200\244\313\177\214\222\230\251X\325\313|i\231\267\r\362\301\327\275+~\n\352\216%\354\243\010z\354\004?1\354&\334I\017H;c\337w\346\260x\325k\367\006\375W\203\366`\2402X\035\255~\300\357}\310?|H\210lG$g\335\016\367\272\367\266\257\000\320\263\225\256Ja?\206j\250\305G\334\t\357\014\340\177\022\331\264?s\347\201\236k\376g\225\331j{5Q\353I\3300\217\374*\324N\212\374;HE""\257}\251\021BZ]v\206\t\362'\312;\366\342>\206]\002\352~\007P\tl \246\177p\022\224<QyWa]\342g\007\256\207\274\270\317\357+\\\001)l\363\355L\024\311S\310C\357\230{\033\014\322\351\257\004\375\025\202\032\225\320CDa\310\277C$Aq\343\257\247Cu\361\3624\021CO\371>!=\254\252\372\220\260\373\035\324\344\031b\202\202\327\345a_\210u\021\3334yV \356\300\tv\004i\301<W\352\016^\263?\205\311\227\274\001\277?\200\342\001'\356\246C\245M\360\027\335\233\336\242\247\372\243\376j0\026\250\225a\202S\232\030\3426\262\177\324\335\342S\357V\206+\323\025h\217\227o\330\351}q\260\370\230\267\235\345g\247\370T\272\3622H\350\305\341\352\256\236\376\321\200\275\356\245\2749\377\264\177?\200\331\275!\2418\035\200F\227\373\304\277\350\253\301pp1\220\003\024B\304/\316\230\243\002\037/\203\264\216\004\251\340N\365H\025e\220\260\207\234\233\356\207\236\351O\004\"{\355v\257\235\026_\014\271\263\010\340\023\034\243T\022\344#\241\nEI\334\310\317\275\t\002\274\036\\\253\230\200\347bU\256\2054\244\325\251\363\264=+\362\020\022\347M\2479P\361\257\302\315TH\265p\236\244\304?1\242\243\230(\254\244\333\343-\373\355$\002\365 f\216\344\2114\304\236\356\225M\244\014\245\327\321\315\273A\376\373\035\324R\n\242\314\257\0057*\3510\250\226\223rn\2712\321\355cr\351'\032\311\260\373\n\302\276H*\272\313\307H\001h\321\271\n\322)x\320?\211\270\211\227=-]\257\023m,\345\315\3627\337\255\214VV\253\223|y\205\257<\340\017\036\362\207\340A\225\253[|K\023m\257\326}\242l\331\323\210\336\250\363\300]\001O\204\270\250\305^\304\251\323\225bu\236/\201U\211\016\201C>\360\232w\336\037>\334_b\302X\014\307\355-\344W`\371\005\330\246\032\246\2444\252x\305=\355.{G\320a\306|\215\277s\227\337]!\036o\353\347\375\223\300\177\342\377\257\353i{\255\347x\364\353<\372\274\276\230`+LzD\361\266N\342\366u\242\361\030G\242&\334\204\230\r8]N!\234Q\270\250w\266\332\273\377\263\354=D\000C|\350\202\367 L\376\261\010p}\215\216\330b\355OEu\304\235\362\217\207\035\365\014\251$\000v\214\271\340\2060\256\324\262\207\250x\210\226\305\251|\342Z\220\016\326""\252\303b\035\262\363\010@\275\355\017\005\363\340\027\301\323\237Q_=\360\372\221\377RX\372\342j0@e(\036\360\221\267\275\342\350\236\270]Y\345T\275\367D~\240\302\274\025\277\317/\004\355\215\274\204Ii\360;\"R\353\350\341=\244\257\243\247\274\346\234G\333\223i\372\261s%\274\344\274\230Z\303X)\356\2407\346)\350\344\357\241\265\r\377\224&\324\366\377x\374Be\262\232\372y\307\223CaY\376RU\373PE$Z\3538V\306'h6\221\346\306%J\334;\354\253\202\351\257\340\026<\343#O]O?\r\357\230'\355N\373\036\230\353\206{\013''j\335\341\215\351\260|\277q\027\353t>pew\017\374=\356[\301t .\346\351\262\344\334\206\237\235\310g\350iy\325\036\301I\006\335?\217\225_\265\177E\016\235\2523\217p\t\327X\030u\301\333\241[-:\373\231\312F\365\026\032\320\217\206\260\353\351n\231\3560\270'0\272\221\2415\331\277G\007\224\033M\3502:GwOy\261V\277c\234(?\246K\020\225& ;\r\013\332\177I\330E?}\003\254Y8L\037-\245\314Ss\225\305\212Z\035\376\017k\301\2148";
+    PyObject *data = __Pyx_DecompressString(cstring, 3138, 1);
     if (unlikely(!data)) __PYX_ERR(0, 1, __pyx_L1_error)
     const char* const bytes = __Pyx_PyBytes_AsString(data);
     #if !CYTHON_ASSUME_SAFE_MACROS
     if (likely(bytes)); else { Py_DECREF(data); __PYX_ERR(0, 1, __pyx_L1_error) }
     #endif
-    #else /* compression: none (5987 bytes) */
-const char* const bytes = "--Note that Cython is deliberately stricter than PEP-484 and rejects subclasses of builtin types. If you need to pass subclasses then set the 'annotation_typing' directive to False.%Y-%m-%d %H:%M:%S?\345\244\215\346\240\270\351\241\271  \347\241\256\350\256\244\346\210\220\345\212\237\343\200\201.add_noteaiSelfTest/services/task.pydict[str, bool]dict[str, object]list[dict[str, int | str]]list[dict[str, object]]list[str]str | NoneAppExceptionDELETEErrorCodeNOT_FOUNDNone__Pyx_PyDict_NextRefSessionTaskTaskActionDataTaskCreateRequestTaskDeleteDataTaskFiltersPayloadTaskItemTaskItemActionDataTaskItemActionRequestTaskItemDataTaskItemDataStatusTaskItemDeleteRequestTaskItemDetailDataTaskItemListDataTaskItemListRowTaskItemRejectRequestTaskItemReviewRowTaskListDataTaskResponseTaskUpdateRequest\347\273\223\346\235\237\344\273\273\345\212\241\344\270\215\345\255\230\345\234\250\344\273\273\345\212\241\351\241\271\344\270\215\345\255\230\345\234\250activeaddaiNameaiResultaiSelfTest.exceptionsaiSelfTest.models.taskaiSelfTest.schemas.taskaiSelfTest.services.taskai_valuesallasyncio.coroutinesauto_confirmbegin_build_compat_review_row_build_review_itemclassifyclassifyListclassify_listclient_idcline_in_tracebackcodecommitconfig_idconfirm_review_itemsconfirm_stateconfirm_task_itemconfirmed_atcoverUrlcreate_taskcreated_atcurrentdata_rowsdatetimedeNamedecisiondeletedelete_review_itemdelete_review_itemsdelete_taskdelete_task_item_rowsdesc_deserialize_filtersdevice_nameendendTimeend_at__enter__excexcludeexcludedCountexcluded_countexecexecution_modeexecution_status__exit__failedfailureCountfailure_countfileBmpfileTimefileUrlfile_bmpfile_urlfiltersfilters_jsonfirstflushfrom_model__func__getget_legacy_task_detailget_task_detailget_task_item_detail_get_task_item_or_raise_get_task_or_raisegroundingStatusididTypeid_typeidentify_sourceidsimageimageUrlin_intintervalinterval_hours_is_coroutineitemitemsjsonkeepkeywordlast_run_started_atlist_completed_review_taskslist_review_itemslist_task_itemslist_t""asksllm_nameloads__main__manual_confirmedmediaTypemediaUrlmedia_typemedia_typesmessagemodel_dump_jsonmodel_validate__module__name__name__nowokorder_byoriginalNameoriginalResultoriginal_valuespagepage_sizepaged_itemspayloadpop__qualname__queryquery_legacy_task_datarawraw_idrecordIdrefreshreject_task_itemrejectedremoteErrorremote_atremote_errorremote_staterenameresultsreturnreviewRowsreview_rowsrowrowsrun_legacy_task_executerun_task_onceselect_serialize_filterssession__set_name__setdefaultsizespNamespNameListsp_namesp_name_listsqlmodelstartstartTimestart_atstart_taskstarted_atstatusstatus_codestop_taskstrstrftimestripstructuredsubmitCountsubmit_countsubmit_task_itemsuccesssuccessCountsuccess_counttasktaskNametask_idtask_itemtask_item_data_idstask_item_data_rowstask_item_idtask_item_idstask_itemstasks__test__totalupdate_taskupdated_atuploadTypeupload_typeupload_typesvaluevaluesvideowherewillSubmitwillSubmitEmptyArray\320\000\037\320\0371\260\030\270\021\360\006\000\005\014\320\013\035\230Q\230i\240q\330\004\014\210G\2205\230\001\230\026\230q\240\t\250\026\250q\260\010\270\t\300\023\300H\310I\320UV\320V^\320^a\320af\320fj\320jn\320no\330\004\013\2101\320\014\036\230a\230v\240V\2509\260D\270\010\300\001\320\000 \320 2\260(\270!\330\004\013\2107\220$\220a\220v\230Q\330\004\007\200u\210C\210q\330\010\016\210l\230!\330\014\021\220\031\230!\330\014\024\220A\330\014\030\230\001\340\004\013\2101\320\000\"\320\"3\2601\330\004\007\200s\210(\220#\320\025'\240w\250a\330\010\023\2201\330\t\014\210J\220d\230#\230V\2404\240s\250)\2606\270\023\270C\270s\300%\300v\310Q\330\010\023\2201\330\t\014\210A\330\010\023\2201\340\010\023\2201\340\004\005\330\010\024\220C\220t\2303\230a\330\010\030\230\003\2301\330\010\022\220#\220Q\330\010\024\220A\330\010\026\220i\230s\240*\250D\260\004\260A\260S\270\001\330\010\033\2301\320\000$\320$6\260h\270a\360\006\000\005\014\320\013\035\230Q\230i\240q\330\004\016\320\016\"\240!\2404\240q\330\004\022\220'\230\021\330\004\007\200|\2203\220a\220q\330\010""\023\2201\330\t\025\220S\230\001\230\021\330\010\023\2201\340\010\023\2201\330\004\022\220#\220Q\220g\230]\250!\2507\260'\3209L\310A\330\004\016\210c\220\021\220'\320\031)\250\021\250'\260\027\3208N\310a\340\004\005\330\010\016\210d\220$\220c\230\021\330\010\020\220\004\220A\330\010\t\330\014\034\230G\2401\330\014\027\220w\230a\330\014\026\220g\230Q\330\014\031\230\027\240\001\330\014\027\220w\230a\330\014\027\220q\330\014\032\230!\330\014\026\220a\330\014\024\220A\330\014\027\220q\320\000$\320$6\260h\270a\360\006\000\005\027\220a\220y\240\001\330\004\013\2107\220%\220q\230\006\230a\230y\250\006\250a\250x\260y\300\003\3008\3109\320TU\320U]\320]`\320`e\320ei\320im\320mn\330\004\016\210a\340\014\022\220#\220T\230\023\230A\330\014\024\220C\220q\330\014\032\230#\230Q\330\014\030\230\003\2301\330\014\030\230\003\230;\240i\250q\3200H\310\003\320K\\\320\\]\330\014\027\220s\230!\330\014\030\230\003\2301\330\014\031\230\033\240C\240z\260\023\260G\2701\330\014\030\230\003\2301\330\014\026\220c\230\021\340\010\014\210G\2201\340\004\014\210K\220q\320\000 \320 7\260q\330\004\013\2107\320\022\"\240!\320\000%\320%7\260x\270q\360\006\000\005\022\220\021\220)\2301\330\004\014\210F\220!\320\000 \320 7\260x\270q\360\006\000\005\021\320\020'\240q\250\t\260\021\330\004\020\220\007\220u\230A\330\010\016\210a\210}\230F\240!\240<\250~\270S\300\001\330\005\t\210\021\330\004\031\230\021\330\010\t\330\010\035\230Q\330\014\031\230\031\240$\240c\250\021\330\014\037\230q\240\003\2404\240s\250\"\250D\260\007\260z\300\023\300C\300t\3107\320RS\320\000\031\320\031+\2508\2601\360\006\000\n\021\220\006\220a\330\010\017\320\017!\240\021\240)\2501\330\010\025\220W\230E\240\021\240&\250\001\250\031\260&\270\001\270\030\300\031\310#\310Y\320VZ\320Z[\330\010\030\230\001\230\023\230D\240\004\240G\250;\260c\270\023\270D\300\007\300q\340\010\013\2101\330\014\"\240'\250\025\250a\330\020\026\220a\220}\240F\250!\250<\260}\300D\310\001\310\021\330\r\021\220\021\330\014\020\220\007\220q\330\020\027\220w\230a\230q""\330\014\023\2206\230\021\340\010\014\210G\2201\330\014\023\2207\230!\2301\330\010\017\210v\220Q\340\010\017\210w\220a\220q\340\004\013\210>\230\021\230#\230Q\320\000\"\320\"9\270\030\300\021\360\006\000\005\021\320\020'\240q\250\t\260\021\330\004\020\220\007\220u\230A\330\010\016\210a\210}\230F\240!\240<\250~\270S\300\r\310Y\320VW\320Wc\320cf\320fk\320kl\330\005\t\210\021\330\004\022\220!\320\023$\240K\250q\260\005\260T\270\027\300\001\330\004\013\320\013\035\230[\250\001\250\033\260L\300\001\320\000\031\320\031+\320+A\300\021\360\006\000\005\014\2104\210q\330\010\r\210W\220A\330\010\022\220'\230\021\330\010\022\220'\230\021\330\010\021\220\027\230\001\330\010\025\320\025'\240q\250\007\250q\330\010\027\220w\230a\330\010\025\220W\230A\330\010\017\210q\340\004\013\2104\210q\220\001\330\004\013\2107\220!\330\004\013\2108\2201\220A\330\004\013\210<\220{\240!\2406\250\030\260\027\270\001\320\000\030\230\014\240A\360\006\000\005\014\2107\220%\220q\230\006\230a\230u\240I\250Q\250d\260#\260U\270$\270d\300!\330\004\014\210A\330\010\024\220K\230q\240\006\240h\320.B\300!\3004\300q\330\010\014\210H\220A\340\004\013\210<\220q\230\006\230a\320\000\035\320\035.\320.A\300\034\310Q\330\004\020\220\007\220u\230A\330\010\016\210a\210}\230F\240!\240<\250~\270S\300\t\310\024\310Y\320VW\320Wc\320cf\320fk\320kl\330\005\t\210\021\330\004\022\220!\320\023+\2501\250E\260\024\260W\270A\330\004\023\2203\220a\220q\230\004\230D\240\007\240|\2603\260d\270!\2703\270a\270q\330\004\025\220S\230\001\230\021\230$\230d\240'\250\034\260S\270\003\2701\270L\310\003\3101\330\004\021\220\033\230I\240Z\250s\260'\270\021\330\004\020\220\001\220\023\220A\220S\230\001\230\033\240D\250\007\250|\2703\270c\300\021\300!\330\004\026\220a\220s\230!\2303\230a\320\0370\260\004\260G\270<\300s\310#\310Q\310a\330\004\005\330\010\016\210i\220t\2303\230a\330\010\024\220D\230\001\330\010\025\220Q\330\010\024\220I\230Q\330\010\024\220I\230Q\330\010\032\230#\230U\240!\2401\330\010\024\220C\220u\230A\230Q\330\010\026\220a\330""\010\027\220q\330\010\031\230\021\330\010 \240\r\250S\260\001\330\010\027\220y\240\001\320\000%\320%<\270H\300A\330\004\020\220\007\220t\2301\230J\240a\330\004\007\200z\220\023\220A\330\010\016\210l\230!\330\014\021\220\031\230!\330\014\024\220A\330\014\030\230\001\340\004\013\2101\320\000!\240\036\250~\270Q\360\006\000\005\t\210\n\220!\330\010\032\230!\2309\240C\240q\250\001\320\000)\250\034\260Q\360\006\000\005\r\210G\2205\230\001\230\026\230q\240\005\240V\2501\250D\3200B\300#\300U\310)\320ST\320TX\320X[\320[`\320`d\320dh\320hi\330\004\013\2101\330\t\017\210t\2204\220s\230#\230X\240T\250\021\330\010\014\210H\220A\330\010\013\2107\220%\220q\230\006\230a\230y\250\006\250a\250x\260y\300\003\3004\300u\310F\320RU\320U\\\320\\]\320\000\030\320\030*\250(\260!\360\006\000\005\014\320\013\035\230Q\230i\240q\330\004\010\210\n\220!\330\004\010\210\016\220h\230d\240!\330\004\013\2104\210q\220\001\330\004\013\2107\220!\330\004\013\2108\2201\220A\330\004\013\210>\230\021\230#\230T\240\024\240S\250\003\2507\260$\260i\320?P\320PT\320TU\320\000\027\320\027)\250\030\260\021\360\006\000\005\014\320\013\035\230Q\230i\240q\330\004\010\210\n\220!\330\004\010\210\016\220h\230d\240!\330\004\013\2104\210q\220\001\330\004\013\2107\220!\330\004\013\2108\2201\220A\330\004\013\210>\230\021\230#\230T\240\024\240S\250\003\2507\260$\260i\320?P\320PT\320TU\200\001\330\r\016\330\r\016\330\r\016\330\005\006\360\006\000\005\014\320\013\035\230Q\230i\240q\330\004\010\210\010\220\007\220q\330\004\010\210\r\220W\230A\330\004\010\210\r\220W\230A\330\004\010\210\014\220G\2301\330\004\010\320\010\032\230'\240\021\330\004\010\320\010\030\230\007\230q\330\004\010\320\010\030\320\030*\250!\2507\260!\330\004\010\210\016\220h\230d\240!\340\004\013\2104\210q\220\001\330\004\013\2107\220!\330\004\013\2108\2201\220A\330\004\013\210<\220{\240!\2406\250\030\260\027\270\001\320\000\033\320\033-\250X\260Q\360\006\000\005\014\320\013\035\230Q\230i\240q\330\004\010\210\016\220h\230d\240!\330\004\010\320\010\037\230t""\2401\330\004\010\210\016\220h\230d\240!\330\004\013\2104\210q\220\001\330\004\013\2107\220!\330\004\013\2108\2201\220A\330\004\013\210>\230\021\230#\230T\240\024\240S\250\003\2507\260$\260i\320?P\320PT\320TU\320\000\"\240.\260\016\270a\360\006\000\005\025\220A\330\004\024\220A\330\004$\240A\340\004\010\210\n\220!\330\010\t\330\014\033\2303\230a\230q\330\014\035\230Q\230i\320'<\270A\270]\310!\330\014\035\230Q\330\014\023\2207\230\"\230J\240k\260\033\270F\300!\3001\330\010\017\210}\230A\330\014\035\230Q\330\014\023\2207\230\"\230J\240j\260\013\2703\270a\270q\340\004\005\330\010\030\230\001\330\010\030\230\001\330\010\023\2201\320\000\036\230o\250Q\330\004\007\200t\2101\330\010\017\320\017!\240\021\330\004\013\320\013\035\230_\250A\250T\260\026\260q\270\001\200\001\330\r\016\330\r\016\330\005\006\360\006\000\005\021\320\020'\240q\250\t\260\027\270\001\330\004\r\320\r\035\230Q\330\004\r\210]\230(\240$\240a\330\004\r\210^\2308\2404\240q\330\004\013\2104\210q\220\001\330\004\013\2107\220!\330\004\013\2108\2201\220A\330\004\013\320\013\035\230Q\230c\240\031\250$\250c\260\023\260M\300\031\310!\200\001\330\r\016\330\r\016\330\005\006\360\006\000\005\021\320\020'\240q\250\t\260\027\270\001\330\004\r\320\r\036\230a\330\004\r\210^\2308\2404\240q\330\004\013\2104\210q\220\001\330\004\013\2107\220!\330\004\013\2108\2201\220A\330\004\013\320\013\035\230Q\230c\240\031\250$\250c\260\023\260N\300)\3101\200\001\330\r\016\330\r\016\330\005\006\360\006\000\005\021\320\020'\240q\250\t\260\027\270\001\330\004\r\320\r\036\230a\330\004\r\320\r\035\230X\240T\250\021\330\004\r\210^\2308\2404\240q\330\004\013\2104\210q\220\001\330\004\013\2107\220!\330\004\013\2108\2201\220A\330\004\013\320\013\035\230Q\230c\240\031\250$\250c\260\023\260N\300)\3101\200\001\330\r\016\340\r\016\330\004\020\220\001\330\004\n\210!\330\004\017\210q\330\005\006\360\006\000\005\027\220a\220y\240\001\330\004\014\210F\220!\2209\230F\240!\2408\2509\260C\260q\340\004\007\200{\220#\220Q\330\010\020\220\005\220V\2301\230H""\240J\250c\260\021\330\t\024\220C\220q\330\010\020\220\005\220V\2301\230H\240J\250c\260\021\340\004\013\2107\220%\220q\230\005\230Y\240a\240x\250s\260%\260t\2704\270q\330\004\014\210A\210_\230K\240q\250\005\250T\260\027\270\001\330\004\r\210U\220\"\220C\220r\230\021\330\004\n\210&\220\002\220!\330\004\022\220%\220q\230\006\230a\330\004\013\320\013\033\2301\230F\240-\250v\260S\270\001\270\030\300\025\300f\310J\320VW\200\001\330\r\016\330\r\016\330\005\006\360\006\000\005\021\320\020'\240q\250\t\260\027\270\001\330\004\007\200w\210a\330\010\017\210w\220e\2301\330\014\022\220!\220=\240\006\240a\240|\2603\260d\270!\2707\300!\330\t\r\210Q\330\010\014\210G\2201\330\014\017\210z\320\031+\2507\260!\330\014\023\2204\220q\230\001\330\004\r\210^\2308\2404\240q\330\004\013\2104\210q\220\001\330\004\013\2107\220!\330\004\013\2108\2201\220A\330\004\013\320\013\035\230Q\230c\240\031\250$\250c\260\023\260N\300)\3101\320\000\035\320\035/\250x\260q\360\006\000\005\014\320\013\035\230Q\230i\240q\330\004\013\210<\220{\240!\2406\250\030\3201E\300Q\300d\310!";
+    #else /* compression: none (6125 bytes) */
+const char* const bytes = ".Note that Cython is deliberately stricter than PEP-484 and rejects subclasses of builtin types. If you need to pass subclasses then set the 'annotation_typing' directive to False.%Y-%m-%d %H:%M:%S?--\345\244\215\346\240\270\351\241\271  \347\241\256\350\256\244\346\210\220\345\212\237\343\200\201add_noteaiSelfTest/services/task.pydict[str, bool]dict[str, object]int | Nonelist[dict[str, int | str]]list[dict[str, object]]list[str]str | NoneAppExceptionDELETEErrorCodeNOT_FOUNDNone__Pyx_PyDict_NextRefSessionTaskTaskActionDataTaskCreateRequestTaskDeleteDataTaskFiltersPayloadTaskItemTaskItemActionDataTaskItemActionRequestTaskItemDataTaskItemDataStatusTaskItemDeleteRequestTaskItemDetailDataTaskItemListDataTaskItemListRowTaskItemRejectRequestTaskItemReviewRowTaskListDataTaskResponseTaskUpdateRequest\347\273\223\346\235\237\344\273\273\345\212\241\344\270\215\345\255\230\345\234\250\344\273\273\345\212\241\351\241\271\344\270\215\345\255\230\345\234\250activeaddaiNameaiResultaiSelfTest.exceptionsaiSelfTest.models.taskaiSelfTest.schemas.taskaiSelfTest.services.taskaiSelfTest.services.task_executionaiSelfTest.services.task_schedulerai_valuesallasyncio.coroutinesauto_confirmbegin_build_compat_review_row_build_review_itemclassifyclassifyListclassify_listclient_idcline_in_tracebackcodecommitconfig_idconfirm_review_itemsconfirm_stateconfirm_task_itemconfirmed_atcoverUrlcreate_taskcreated_atcurrentdata_rowsdatetimedeNamedecisiondeletedelete_review_itemdelete_review_itemsdelete_taskdelete_task_item_rowsdesc_deserialize_filtersdevice_nameendendTimeend_at__enter__excexcludeexcludedCountexcluded_countexecexecution_modeexecution_status__exit__failedfailureCountfailure_countfileBmpfileTimefileUrlfile_bmpfile_urlfiltersfilters_jsonfirstflushfrom_model__func__getget_legacy_task_detailget_task_detailget_task_item_detail_get_task_item_or_raise_get_task_or_raisegroundingStatusididTypeid_typeidentify_sourceidsimageimageUrlin_intintervalinterval_hours_is_coroutineitemitemsjsonkeepkeywordlist_c""ompleted_review_taskslist_review_itemslist_task_itemslist_tasksllm_nameloads__main__manual_confirmedmediaTypemediaUrlmedia_typemedia_typesmessagemodel_dump_jsonmodel_validate__module__name__name__nowokorder_byoriginalNameoriginalResultoriginal_valuespagepage_sizepaged_itemspayloadpop__qualname__queryquery_legacy_task_datarawraw_idrecordIdrefreshreject_task_itemrejectedremoteErrorremote_atremote_errorremote_staterenameresultsreturnreviewRowsreview_rowsrowrowsrun_legacy_task_executerun_task_executionrun_task_onceselect_serialize_filterssession__set_name__setdefaultsizespNamespNameListsp_namesp_name_listsqlmodelstartstartTimestart_atstart_taskstatusstatus_codestop_taskstrstrftimestripstructuredsubmitCountsubmit_countsubmit_task_itemsuccesssuccessCountsuccess_countsync_global_task_scheduler_sync_schedulertasktaskNametask_idtask_itemtask_item_data_idstask_item_data_rowstask_item_idtask_item_idstask_itemstasks__test__totalupdate_taskupdated_atuploadTypeupload_typeupload_typesvaluevaluesvideowherewillSubmitwillSubmitEmptyArray\320\000\037\320\0371\260\030\270\021\360\006\000\005\014\320\013\035\230Q\230i\240q\330\004\014\210G\2205\230\001\230\026\230q\240\t\250\026\250q\260\010\270\t\300\023\300H\310I\320UV\320V^\320^a\320af\320fj\320jn\320no\330\004\013\2101\320\014\036\230a\230v\240V\2509\260D\270\010\300\001\320\000 \320 2\260(\270!\330\004\013\2107\220$\220a\220v\230Q\330\004\007\200u\210C\210q\330\010\016\210l\230!\330\014\021\220\031\230!\330\014\024\220A\330\014\030\230\001\340\004\013\2101\320\000\"\320\"3\2601\330\004\007\200s\210(\220#\320\025'\240w\250a\330\010\023\2201\330\t\014\210J\220d\230#\230V\2404\240s\250)\2606\270\023\270C\270s\300%\300v\310Q\330\010\023\2201\330\t\014\210A\330\010\023\2201\340\010\023\2201\340\004\005\330\010\024\220C\220t\2303\230a\330\010\030\230\003\2301\330\010\022\220#\220Q\330\010\024\220A\330\010\026\220i\230s\240*\250D\260\004\260A\260S\270\001\330\010\033\2301\320\000$\320$6\260h\270a\360\006\000\005\014\320\013\035\230Q\230i""\240q\330\004\016\320\016\"\240!\2404\240q\330\004\022\220'\230\021\330\004\007\200|\2203\220a\220q\330\010\023\2201\330\t\025\220S\230\001\230\021\330\010\023\2201\340\010\023\2201\330\004\022\220#\220Q\220g\230]\250!\2507\260'\3209L\310A\330\004\016\210c\220\021\220'\320\031)\250\021\250'\260\027\3208N\310a\340\004\005\330\010\016\210d\220$\220c\230\021\330\010\020\220\004\220A\330\010\t\330\014\034\230G\2401\330\014\027\220w\230a\330\014\026\220g\230Q\330\014\031\230\027\240\001\330\014\027\220w\230a\330\014\027\220q\330\014\032\230!\330\014\026\220a\330\014\024\220A\330\014\027\220q\320\000$\320$6\260h\270a\360\006\000\005\027\220a\220y\240\001\330\004\013\2107\220%\220q\230\006\230a\230y\250\006\250a\250x\260y\300\003\3008\3109\320TU\320U]\320]`\320`e\320ei\320im\320mn\330\004\016\210a\340\014\022\220#\220T\230\023\230A\330\014\024\220C\220q\330\014\032\230#\230Q\330\014\030\230\003\2301\330\014\030\230\003\230;\240i\250q\3200H\310\003\320K\\\320\\]\330\014\027\220s\230!\330\014\030\230\003\2301\330\014\031\230\033\240C\240z\260\023\260G\2701\330\014\030\230\003\2301\330\014\026\220c\230\021\340\010\014\210G\2201\340\004\014\210K\220q\320\000 \320 7\260q\330\004\013\2107\320\022\"\240!\320\000%\320%7\260x\270q\360\006\000\005\022\220\021\220)\2301\330\004\014\210F\220!\320\000 \320 7\260x\270q\360\006\000\005\021\320\020'\240q\250\t\260\021\330\004\020\220\007\220u\230A\330\010\016\210a\210}\230F\240!\240<\250~\270S\300\001\330\005\t\210\021\330\004\031\230\021\330\010\t\330\010\035\230Q\330\014\031\230\031\240$\240c\250\021\330\014\037\230q\240\003\2404\240s\250\"\250D\260\007\260z\300\023\300C\300t\3107\320RS\320\000\031\320\031+\2508\2601\360\006\000\n\021\220\006\220a\330\010\017\320\017!\240\021\240)\2501\330\010\025\220W\230E\240\021\240&\250\001\250\031\260&\270\001\270\030\300\031\310#\310Y\320VZ\320Z[\330\010\030\230\001\230\023\230D\240\004\240G\250;\260c\270\023\270D\300\007\300q\340\010\013\2101\330\014\"\240'\250\025\250a\330\020\026\220a\220}\240F""\250!\250<\260}\300D\310\001\310\021\330\r\021\220\021\330\014\020\220\007\220q\330\020\027\220w\230a\230q\330\014\023\2206\230\021\340\010\014\210G\2201\330\014\023\2207\230!\2301\330\010\017\210v\220Q\340\010\017\210w\220a\220q\340\004\023\2201\220A\330\004\013\210>\230\021\230#\230Q\320\000\"\320\"9\270\030\300\021\360\006\000\005\021\320\020'\240q\250\t\260\021\330\004\020\220\007\220u\230A\330\010\016\210a\210}\230F\240!\240<\250~\270S\300\r\310Y\320VW\320Wc\320cf\320fk\320kl\330\005\t\210\021\330\004\022\220!\320\023$\240K\250q\260\005\260T\270\027\300\001\330\004\013\320\013\035\230[\250\001\250\033\260L\300\001\320\000\031\320\031+\320+A\300\021\360\006\000\005\014\2104\210q\330\010\r\210W\220A\330\010\022\220'\230\021\330\010\022\220'\230\021\330\010\021\220\027\230\001\330\010\025\320\025'\240q\250\007\250q\330\010\027\220w\230a\330\010\025\220W\230A\330\010\017\210q\340\004\013\2104\210q\220\001\330\004\013\2107\220!\330\004\013\2108\2201\220A\330\004\013\210<\220{\240!\2406\250\030\260\027\270\001\320\000\030\230\014\240A\360\006\000\005\014\2107\220%\220q\230\006\230a\230u\240I\250Q\250d\260#\260U\270$\270d\300!\330\004\014\210A\330\010\024\220K\230q\240\006\240h\320.B\300!\3004\300q\330\010\014\210H\220A\340\004\013\210<\220q\230\006\230a\320\000\035\320\035.\320.A\300\034\310Q\330\004\020\220\007\220u\230A\330\010\016\210a\210}\230F\240!\240<\250~\270S\300\t\310\024\310Y\320VW\320Wc\320cf\320fk\320kl\330\005\t\210\021\330\004\022\220!\320\023+\2501\250E\260\024\260W\270A\330\004\023\2203\220a\220q\230\004\230D\240\007\240|\2603\260d\270!\2703\270a\270q\330\004\025\220S\230\001\230\021\230$\230d\240'\250\034\260S\270\003\2701\270L\310\003\3101\330\004\021\220\033\230I\240Z\250s\260'\270\021\330\004\020\220\001\220\023\220A\220S\230\001\230\033\240D\250\007\250|\2703\270c\300\021\300!\330\004\026\220a\220s\230!\2303\230a\320\0370\260\004\260G\270<\300s\310#\310Q\310a\330\004\005\330\010\016\210i\220t\2303\230a\330\010\024\220D\230\001\330\010\025\220Q""\330\010\024\220I\230Q\330\010\024\220I\230Q\330\010\032\230#\230U\240!\2401\330\010\024\220C\220u\230A\230Q\330\010\026\220a\330\010\027\220q\330\010\031\230\021\330\010 \240\r\250S\260\001\330\010\027\220y\240\001\320\000\035\230_\250A\360\006\000\005\010\200x\210s\220!\330\010\t\330\004\t\320\t3\2601\340\004\036\230a\230q\320\000%\320%<\270H\300A\330\004\020\220\007\220t\2301\230J\240a\330\004\007\200z\220\023\220A\330\010\016\210l\230!\330\014\021\220\031\230!\330\014\024\220A\330\014\030\230\001\340\004\013\2101\320\000!\240\036\250~\270Q\360\006\000\005\t\210\n\220!\330\010\032\230!\2309\240C\240q\250\001\320\000)\250\034\260Q\360\006\000\005\r\210G\2205\230\001\230\026\230q\240\005\240V\2501\250D\3200B\300#\300U\310)\320ST\320TX\320X[\320[`\320`d\320dh\320hi\330\004\013\2101\330\t\017\210t\2204\220s\230#\230X\240T\250\021\330\010\014\210H\220A\330\010\013\2107\220%\220q\230\006\230a\230y\250\006\250a\250x\260y\300\003\3004\300u\310F\320RU\320U\\\320\\]\320\000\030\320\030*\250(\260!\360\006\000\005\014\320\013\035\230Q\230i\240q\330\004\010\210\n\220!\330\004\010\210\016\220h\230d\240!\330\004\013\2104\210q\220\001\330\004\013\2107\220!\330\004\013\2108\2201\220A\330\004\023\2201\220D\230\001\330\004\013\210>\230\021\230#\230T\240\024\240S\250\003\2507\260$\260i\320?P\320PT\320TU\320\000\027\320\027)\250\030\260\021\360\006\000\005\014\320\013\035\230Q\230i\240q\330\004\010\210\n\220!\330\004\010\210\016\220h\230d\240!\330\004\013\2104\210q\220\001\330\004\013\2107\220!\330\004\013\2108\2201\220A\330\004\023\2201\220D\230\001\330\004\013\210>\230\021\230#\230T\240\024\240S\250\003\2507\260$\260i\320?P\320PT\320TU\200\001\330\r\016\330\r\016\330\r\016\330\005\006\360\006\000\005\014\320\013\035\230Q\230i\240q\330\004\010\210\010\220\007\220q\330\004\010\210\r\220W\230A\330\004\010\210\r\220W\230A\330\004\010\210\014\220G\2301\330\004\010\320\010\032\230'\240\021\330\004\010\320\010\030\230\007\230q\330\004\010\320\010\030\320\030*\250!\2507\260!\330\004\010""\210\016\220h\230d\240!\340\004\013\2104\210q\220\001\330\004\013\2107\220!\330\004\013\2108\2201\220A\330\004\023\2201\220D\230\001\330\004\013\210<\220{\240!\2406\250\030\260\027\270\001\320\000\033\320\033-\250X\260Q\360\006\000\005\n\320\t3\2601\340\004\026\220a\220y\240\001\330\004\013\320\013\035\230Q\230i\240q\330\004\013\210>\230\021\230#\230T\240\024\240S\250\003\2507\260$\260i\320?P\320PT\320TU\320\000\"\240.\260\016\270a\360\006\000\005\025\220A\330\004\024\220A\330\004$\240A\340\004\010\210\n\220!\330\010\t\330\014\033\2303\230a\230q\330\014\035\230Q\230i\320'<\270A\270]\310!\330\014\035\230Q\330\014\023\2207\230\"\230J\240k\260\033\270F\300!\3001\330\010\017\210}\230A\330\014\035\230Q\330\014\023\2207\230\"\230J\240j\260\013\2703\270a\270q\340\004\005\330\010\030\230\001\330\010\030\230\001\330\010\023\2201\320\000\036\230o\250Q\330\004\007\200t\2101\330\010\017\320\017!\240\021\330\004\013\320\013\035\230_\250A\250T\260\026\260q\270\001\200\001\330\r\016\330\r\016\330\005\006\360\006\000\005\021\320\020'\240q\250\t\260\027\270\001\330\004\r\320\r\035\230Q\330\004\r\210]\230(\240$\240a\330\004\r\210^\2308\2404\240q\330\004\013\2104\210q\220\001\330\004\013\2107\220!\330\004\013\2108\2201\220A\330\004\013\320\013\035\230Q\230c\240\031\250$\250c\260\023\260M\300\031\310!\200\001\330\r\016\330\r\016\330\005\006\360\006\000\005\021\320\020'\240q\250\t\260\027\270\001\330\004\r\320\r\036\230a\330\004\r\210^\2308\2404\240q\330\004\013\2104\210q\220\001\330\004\013\2107\220!\330\004\013\2108\2201\220A\330\004\013\320\013\035\230Q\230c\240\031\250$\250c\260\023\260N\300)\3101\200\001\330\r\016\330\r\016\330\005\006\360\006\000\005\021\320\020'\240q\250\t\260\027\270\001\330\004\r\320\r\036\230a\330\004\r\320\r\035\230X\240T\250\021\330\004\r\210^\2308\2404\240q\330\004\013\2104\210q\220\001\330\004\013\2107\220!\330\004\013\2108\2201\220A\330\004\013\320\013\035\230Q\230c\240\031\250$\250c\260\023\260N\300)\3101\200\001\330\r\016\340\r\016\330\004\020\220\001""\330\004\n\210!\330\004\017\210q\330\005\006\360\006\000\005\027\220a\220y\240\001\330\004\014\210F\220!\2209\230F\240!\2408\2509\260C\260q\340\004\007\200{\220#\220Q\330\010\020\220\005\220V\2301\230H\240J\250c\260\021\330\t\024\220C\220q\330\010\020\220\005\220V\2301\230H\240J\250c\260\021\340\004\013\2107\220%\220q\230\005\230Y\240a\240x\250s\260%\260t\2704\270q\330\004\014\210A\210_\230K\240q\250\005\250T\260\027\270\001\330\004\r\210U\220\"\220C\220r\230\021\330\004\n\210&\220\002\220!\330\004\022\220%\220q\230\006\230a\330\004\013\320\013\033\2301\230F\240-\250v\260S\270\001\270\030\300\025\300f\310J\320VW\200\001\330\r\016\330\r\016\330\005\006\360\006\000\005\021\320\020'\240q\250\t\260\027\270\001\330\004\007\200w\210a\330\010\017\210w\220e\2301\330\014\022\220!\220=\240\006\240a\240|\2603\260d\270!\2707\300!\330\t\r\210Q\330\010\014\210G\2201\330\014\017\210z\320\031+\2507\260!\330\014\023\2204\220q\230\001\330\004\r\210^\2308\2404\240q\330\004\013\2104\210q\220\001\330\004\013\2107\220!\330\004\013\2108\2201\220A\330\004\013\320\013\035\230Q\230c\240\031\250$\250c\260\023\260N\300)\3101\320\000\035\320\035/\250x\260q\360\006\000\005\014\320\013\035\230Q\230i\240q\330\004\013\210<\220{\240!\2406\250\030\3201E\300Q\300d\310!";
     PyObject *data = NULL;
     CYTHON_UNUSED_VAR(__Pyx_DecompressString);
     #endif
     PyObject **stringtab = __pyx_mstate->__pyx_string_tab;
     Py_ssize_t pos = 0;
-    for (int i = 0; i < 242; i++) {
+    for (int i = 0; i < 246; i++) {
       Py_ssize_t bytes_length = index[i].length;
       PyObject *string = PyUnicode_DecodeUTF8(bytes + pos, bytes_length, NULL);
-      if (likely(string) && i >= 16) PyUnicode_InternInPlace(&string);
+      if (likely(string) && i >= 17) PyUnicode_InternInPlace(&string);
       if (unlikely(!string)) {
         Py_XDECREF(data);
         __PYX_ERR(0, 1, __pyx_L1_error)
@@ -16072,7 +16398,7 @@ const char* const bytes = "--Note that Cython is deliberately stricter than PEP-
       stringtab[i] = string;
       pos += bytes_length;
     }
-    for (int i = 242; i < 270; i++) {
+    for (int i = 246; i < 275; i++) {
       Py_ssize_t bytes_length = index[i].length;
       PyObject *string = PyBytes_FromStringAndSize(bytes + pos, bytes_length);
       stringtab[i] = string;
@@ -16083,15 +16409,15 @@ const char* const bytes = "--Note that Cython is deliberately stricter than PEP-
       }
     }
     Py_XDECREF(data);
-    for (Py_ssize_t i = 0; i < 270; i++) {
+    for (Py_ssize_t i = 0; i < 275; i++) {
       if (unlikely(PyObject_Hash(stringtab[i]) == -1)) {
         __PYX_ERR(0, 1, __pyx_L1_error)
       }
     }
     #if CYTHON_IMMORTAL_CONSTANTS
     {
-      PyObject **table = stringtab + 242;
-      for (Py_ssize_t i=0; i<28; ++i) {
+      PyObject **table = stringtab + 246;
+      for (Py_ssize_t i=0; i<29; ++i) {
         #if CYTHON_COMPILING_IN_CPYTHON_FREETHREADING
         #if PY_VERSION_HEX < 0x030E0000
         if (_Py_IsOwnedByCurrentThread(table[i]) && Py_REFCNT(table[i]) == 1)
@@ -16184,124 +16510,129 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
     __pyx_mstate_global->__pyx_codeobj_tab[3] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_update_task, __pyx_mstate->__pyx_kp_b_iso88591_Qiq_q_WA_WA_G1_q_7_hd_4q_7_81A, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[3])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 8, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 91};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 8, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 92};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_task_id, __pyx_mstate->__pyx_n_u_task, __pyx_mstate->__pyx_n_u_task_items, __pyx_mstate->__pyx_n_u_task_item_ids, __pyx_mstate->__pyx_n_u_task_item_data_rows, __pyx_mstate->__pyx_n_u_row, __pyx_mstate->__pyx_n_u_row};
     __pyx_mstate_global->__pyx_codeobj_tab[4] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_delete_task, __pyx_mstate->__pyx_kp_b_iso88591_81_a_1_WE_YVZZ_D_G_c_D_q_1_a_a, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[4])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 116};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 118};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_task_id, __pyx_mstate->__pyx_n_u_task};
-    __pyx_mstate_global->__pyx_codeobj_tab[5] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_start_task, __pyx_mstate->__pyx_kp_b_iso88591_Qiq_hd_4q_7_81A_T_S_7_i_PPTTU, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[5])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[5] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_start_task, __pyx_mstate->__pyx_kp_b_iso88591_Qiq_hd_4q_7_81A_1D_T_S_7_i_PPTT, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[5])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 128};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 131};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_task_id, __pyx_mstate->__pyx_n_u_task};
-    __pyx_mstate_global->__pyx_codeobj_tab[6] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_stop_task, __pyx_mstate->__pyx_kp_b_iso88591_Qiq_hd_4q_7_81A_T_S_7_i_PPTTU_2, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[6])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[6] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_stop_task, __pyx_mstate->__pyx_kp_b_iso88591_Qiq_hd_4q_7_81A_1D_T_S_7_i_PPTT_2, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[6])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 140};
-    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_task_id, __pyx_mstate->__pyx_n_u_task};
-    __pyx_mstate_global->__pyx_codeobj_tab[7] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_run_task_once, __pyx_mstate->__pyx_kp_b_iso88591_XQ_Qiq_hd_t1_hd_4q_7_81A_T_S_7, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[7])) goto bad;
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 144};
+    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_task_id, __pyx_mstate->__pyx_n_u_run_task_execution, __pyx_mstate->__pyx_n_u_task};
+    __pyx_mstate_global->__pyx_codeobj_tab[7] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_run_task_once, __pyx_mstate->__pyx_kp_b_iso88591_XQ_31_ay_Qiq_T_S_7_i_PPTTU, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[7])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 4, 12, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 153};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 4, 12, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 154};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_task_id, __pyx_mstate->__pyx_n_u_media_type, __pyx_mstate->__pyx_n_u_page, __pyx_mstate->__pyx_n_u_page_size, __pyx_mstate->__pyx_n_u_query, __pyx_mstate->__pyx_n_u_rows, __pyx_mstate->__pyx_n_u_items, __pyx_mstate->__pyx_n_u_start, __pyx_mstate->__pyx_n_u_end, __pyx_mstate->__pyx_n_u_paged_items, __pyx_mstate->__pyx_n_u_row};
     __pyx_mstate_global->__pyx_codeobj_tab[8] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_list_task_items, __pyx_mstate->__pyx_kp_b_iso88591_q_ay_F_9F_89Cq_Q_V1HJc_Cq_V1HJc, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[8])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 6, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 179};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 6, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 180};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_task_item_id, __pyx_mstate->__pyx_n_u_task_item, __pyx_mstate->__pyx_n_u_data_rows, __pyx_mstate->__pyx_n_u_review_rows, __pyx_mstate->__pyx_n_u_row};
     __pyx_mstate_global->__pyx_codeobj_tab[9] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_get_task_item_detail, __pyx_mstate->__pyx_kp_b_iso88591_9_q_uA_a_F_S_YVWWccffkkl_Kq_T_L, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[9])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 190};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 191};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_payload, __pyx_mstate->__pyx_n_u_task_item};
     __pyx_mstate_global->__pyx_codeobj_tab[10] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_confirm_task_item, __pyx_mstate->__pyx_kp_b_iso88591_q_a_XT_84q_4q_7_81A_Qc_c_N_1, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[10])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 206};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 207};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_payload, __pyx_mstate->__pyx_n_u_task_item};
     __pyx_mstate_global->__pyx_codeobj_tab[11] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_reject_task_item, __pyx_mstate->__pyx_kp_b_iso88591_q_a_84q_4q_7_81A_Qc_c_N_1, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[11])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 5, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 221};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 5, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 222};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_payload, __pyx_mstate->__pyx_n_u_task_item, __pyx_mstate->__pyx_n_u_rows, __pyx_mstate->__pyx_n_u_row};
     __pyx_mstate_global->__pyx_codeobj_tab[12] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_delete_task_item_rows, __pyx_mstate->__pyx_kp_b_iso88591_q_wa_we1_a_3d_7_Q_G1_z_7_4q_84q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[12])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 242};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 243};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_payload, __pyx_mstate->__pyx_n_u_task_item};
     __pyx_mstate_global->__pyx_codeobj_tab[13] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_submit_task_item, __pyx_mstate->__pyx_kp_b_iso88591_q_Q_a_84q_4q_7_81A_Qc_c_M, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[13])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 8, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 258};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 8, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 259};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_task_id, __pyx_mstate->__pyx_n_u_task, __pyx_mstate->__pyx_n_u_filters, __pyx_mstate->__pyx_n_u_media_types, __pyx_mstate->__pyx_n_u_file_bmp, __pyx_mstate->__pyx_n_u_upload_type, __pyx_mstate->__pyx_n_u_id_type};
     __pyx_mstate_global->__pyx_codeobj_tab[14] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_get_legacy_task_detail, __pyx_mstate->__pyx_kp_b_iso88591_6ha_Qiq_4q_3aq_1_S_1_1_Qg_7_9LA, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[14])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 5, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 291};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 5, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 292};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_task_id, __pyx_mstate->__pyx_n_u_rows, __pyx_mstate->__pyx_n_u_results, __pyx_mstate->__pyx_n_u_row};
     __pyx_mstate_global->__pyx_codeobj_tab[15] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_query_legacy_task_data, __pyx_mstate->__pyx_kp_b_iso88591_6ha_ay_7_q_ay_axy_89TUU_eeiimmn, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[15])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 314};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 315};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_task_id};
     __pyx_mstate_global->__pyx_codeobj_tab[16] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_run_legacy_task_execute, __pyx_mstate->__pyx_kp_b_iso88591_7xq_1_F, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[16])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 321};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 322};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_tasks, __pyx_mstate->__pyx_n_u_task};
     __pyx_mstate_global->__pyx_codeobj_tab[17] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_list_completed_review_tasks, __pyx_mstate->__pyx_kp_b_iso88591_Q_G5_q_V1D0B_U_STTXX_ddhhi_1_t4, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[17])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 5, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 332};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 5, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 333};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_task_id, __pyx_mstate->__pyx_n_u_task, __pyx_mstate->__pyx_n_u_items, __pyx_mstate->__pyx_n_u_item};
     __pyx_mstate_global->__pyx_codeobj_tab[18] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_list_review_items, __pyx_mstate->__pyx_kp_b_iso88591_1_Qiq_G5_q_q_HIUVV_aaffjjnno_1, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[18])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 8, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 340};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 8, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 341};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_ids, __pyx_mstate->__pyx_n_u_success_count, __pyx_mstate->__pyx_n_u_failure_count, __pyx_mstate->__pyx_n_u_results, __pyx_mstate->__pyx_n_u_raw_id, __pyx_mstate->__pyx_n_u_task_item_id, __pyx_mstate->__pyx_n_u_exc};
     __pyx_mstate_global->__pyx_codeobj_tab[19] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_confirm_review_items, __pyx_mstate->__pyx_kp_b_iso88591_a_A_A_A_3aq_Qi_A_Q_7_Jk_F_1_A_Q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[19])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 5, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 364};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 5, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 365};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_task_item_id, __pyx_mstate->__pyx_n_u_task_item, __pyx_mstate->__pyx_n_u_data_rows, __pyx_mstate->__pyx_n_u_row};
     __pyx_mstate_global->__pyx_codeobj_tab[20] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_delete_review_item, __pyx_mstate->__pyx_kp_b_iso88591_7xq_q_uA_a_F_S_Q_c_q_4s_D_z_Ct7, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[20])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 380};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 381};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_ids, __pyx_mstate->__pyx_n_u_raw_id};
     __pyx_mstate_global->__pyx_codeobj_tab[21] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_delete_review_items, __pyx_mstate->__pyx_kp_b_iso88591_Q_9Cq, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[21])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 387};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 388};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_filters};
     __pyx_mstate_global->__pyx_codeobj_tab[22] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_serialize_filters, __pyx_mstate->__pyx_kp_b_iso88591_7q_7, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[22])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 391};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 392};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_raw};
     __pyx_mstate_global->__pyx_codeobj_tab[23] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_deserialize_filters, __pyx_mstate->__pyx_kp_b_iso88591_oQ_t1__AT_q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[23])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 15, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 397};
+    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 15, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 398};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_task, __pyx_mstate->__pyx_n_u_task_item, __pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_data_rows, __pyx_mstate->__pyx_n_u_review_rows, __pyx_mstate->__pyx_n_u_submit_count, __pyx_mstate->__pyx_n_u_excluded_count, __pyx_mstate->__pyx_n_u_media_type, __pyx_mstate->__pyx_n_u_ai_values, __pyx_mstate->__pyx_n_u_original_values, __pyx_mstate->__pyx_n_u_row, __pyx_mstate->__pyx_n_u_row, __pyx_mstate->__pyx_n_u_row, __pyx_mstate->__pyx_n_u_row, __pyx_mstate->__pyx_n_u_row};
     __pyx_mstate_global->__pyx_codeobj_tab[24] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_build_review_item, __pyx_mstate->__pyx_kp_b_iso88591_A_Q_uA_a_F_S_YVWWccffkkl_1E_WA, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[24])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 423};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 424};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_row, __pyx_mstate->__pyx_n_u_decision};
     __pyx_mstate_global->__pyx_codeobj_tab[25] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_build_compat_review_row, __pyx_mstate->__pyx_kp_b_iso88591_31_s_wa_1_Jd_V4s_6_Cs_vQ_1_A_1, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[25])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 443};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 444};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_task_id, __pyx_mstate->__pyx_n_u_task};
     __pyx_mstate_global->__pyx_codeobj_tab[26] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_get_task_or_raise, __pyx_mstate->__pyx_kp_b_iso88591_2_7_avQ_uCq_l_A_1, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[26])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 454};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 455};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_task_item_id, __pyx_mstate->__pyx_n_u_task_item};
     __pyx_mstate_global->__pyx_codeobj_tab[27] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_get_task_item_or_raise, __pyx_mstate->__pyx_kp_b_iso88591_HA_t1Ja_z_A_l_A_1, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[27])) goto bad;
+  }
+  {
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 466};
+    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_task_id, __pyx_mstate->__pyx_n_u_sync_global_task_scheduler};
+    __pyx_mstate_global->__pyx_codeobj_tab[28] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_py, __pyx_mstate->__pyx_n_u_sync_scheduler, __pyx_mstate->__pyx_kp_b_iso88591_A_xs_31_aq, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[28])) goto bad;
   }
   Py_DECREF(tuple_dedup_map);
   return 0;
@@ -17968,6 +18299,183 @@ bad:
 #endif
 }
 
+/* HasAttr (used by ImportImpl) */
+#if __PYX_LIMITED_VERSION_HEX < 0x030d0000
+static CYTHON_INLINE int __Pyx_HasAttr(PyObject *o, PyObject *n) {
+    PyObject *r;
+    if (unlikely(!PyUnicode_Check(n))) {
+        PyErr_SetString(PyExc_TypeError,
+                        "hasattr(): attribute name must be string");
+        return -1;
+    }
+    r = __Pyx_PyObject_GetAttrStrNoError(o, n);
+    if (!r) {
+        return (unlikely(PyErr_Occurred())) ? -1 : 0;
+    } else {
+        Py_DECREF(r);
+        return 1;
+    }
+}
+#endif
+
+/* ImportImpl (used by Import) */
+static int __Pyx__Import_GetModule(PyObject *qualname, PyObject **module) {
+    PyObject *imported_module = PyImport_GetModule(qualname);
+    if (unlikely(!imported_module)) {
+        *module = NULL;
+        if (PyErr_Occurred()) {
+            return -1;
+        }
+        return 0;
+    }
+    *module = imported_module;
+    return 1;
+}
+static int __Pyx__Import_Lookup(PyObject *qualname, PyObject *const *imported_names, Py_ssize_t len_imported_names, PyObject **module) {
+    PyObject *imported_module;
+    PyObject *top_level_package_name;
+    Py_ssize_t i;
+    int status, module_found;
+    Py_ssize_t dot_index;
+    module_found = __Pyx__Import_GetModule(qualname, &imported_module);
+    if (unlikely(!module_found || module_found == -1)) {
+        *module = NULL;
+        return module_found;
+    }
+    if (imported_names) {
+        for (i = 0; i < len_imported_names; i++) {
+            PyObject *imported_name = imported_names[i];
+#if __PYX_LIMITED_VERSION_HEX < 0x030d0000
+            int has_imported_attribute = PyObject_HasAttr(imported_module, imported_name);
+#else
+            int has_imported_attribute = PyObject_HasAttrWithError(imported_module, imported_name);
+            if (unlikely(has_imported_attribute == -1)) goto error;
+#endif
+            if (!has_imported_attribute) {
+                goto not_found;
+            }
+        }
+        *module = imported_module;
+        return 1;
+    }
+    dot_index = PyUnicode_FindChar(qualname, '.', 0, PY_SSIZE_T_MAX, 1);
+    if (dot_index == -1) {
+        *module = imported_module;
+        return 1;
+    }
+    if (unlikely(dot_index == -2)) goto error;
+    top_level_package_name = PyUnicode_Substring(qualname, 0, dot_index);
+    if (unlikely(!top_level_package_name)) goto error;
+    Py_DECREF(imported_module);
+    status = __Pyx__Import_GetModule(top_level_package_name, module);
+    Py_DECREF(top_level_package_name);
+    return status;
+error:
+    Py_DECREF(imported_module);
+    *module = NULL;
+    return -1;
+not_found:
+    Py_DECREF(imported_module);
+    *module = NULL;
+    return 0;
+}
+static PyObject *__Pyx__Import(PyObject *name, PyObject *const *imported_names, Py_ssize_t len_imported_names, PyObject *qualname, PyObject *moddict, int level) {
+    PyObject *module = 0;
+    PyObject *empty_dict = 0;
+    PyObject *from_list = 0;
+    int module_found;
+    if (!qualname) {
+        qualname = name;
+    }
+    module_found = __Pyx__Import_Lookup(qualname, imported_names, len_imported_names, &module);
+    if (likely(module_found == 1)) {
+        return module;
+    } else if (unlikely(module_found == -1)) {
+        return NULL;
+    }
+    empty_dict = PyDict_New();
+    if (unlikely(!empty_dict))
+        goto bad;
+    if (imported_names) {
+#if CYTHON_COMPILING_IN_CPYTHON
+        from_list = __Pyx_PyList_FromArray(imported_names, len_imported_names);
+        if (unlikely(!from_list))
+            goto bad;
+#else
+        from_list = PyList_New(len_imported_names);
+        if (unlikely(!from_list)) goto bad;
+        for (Py_ssize_t i=0; i<len_imported_names; ++i) {
+            if (PyList_SetItem(from_list, i, __Pyx_NewRef(imported_names[i])) < 0) goto bad;
+        }
+#endif
+    }
+    if (level == -1) {
+        const char* package_sep = strchr(__Pyx_MODULE_NAME, '.');
+        if (package_sep != (0)) {
+            module = PyImport_ImportModuleLevelObject(
+                name, moddict, empty_dict, from_list, 1);
+            if (unlikely(!module)) {
+                if (unlikely(!PyErr_ExceptionMatches(PyExc_ImportError)))
+                    goto bad;
+                PyErr_Clear();
+            }
+        }
+        level = 0;
+    }
+    if (!module) {
+        module = PyImport_ImportModuleLevelObject(
+            name, moddict, empty_dict, from_list, level);
+    }
+bad:
+    Py_XDECREF(from_list);
+    Py_XDECREF(empty_dict);
+    return module;
+}
+
+/* Import */
+static PyObject *__Pyx_Import(PyObject *name, PyObject *const *imported_names, Py_ssize_t len_imported_names, PyObject *qualname, int level) {
+    return __Pyx__Import(name, imported_names, len_imported_names, qualname, __pyx_mstate_global->__pyx_d, level);
+}
+
+/* ImportFrom */
+static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name) {
+    PyObject* value = __Pyx_PyObject_GetAttrStr(module, name);
+    if (unlikely(!value) && PyErr_ExceptionMatches(PyExc_AttributeError)) {
+        const char* module_name_str = 0;
+        PyObject* module_name = 0;
+        PyObject* module_dot = 0;
+        PyObject* full_name = 0;
+        PyErr_Clear();
+        module_name_str = PyModule_GetName(module);
+        if (unlikely(!module_name_str)) { goto modbad; }
+        module_name = PyUnicode_FromString(module_name_str);
+        if (unlikely(!module_name)) { goto modbad; }
+        module_dot = PyUnicode_Concat(module_name, __pyx_mstate_global->__pyx_kp_u_);
+        if (unlikely(!module_dot)) { goto modbad; }
+        full_name = PyUnicode_Concat(module_dot, name);
+        if (unlikely(!full_name)) { goto modbad; }
+        #if (CYTHON_COMPILING_IN_PYPY && PYPY_VERSION_NUM  < 0x07030400) ||\
+                CYTHON_COMPILING_IN_GRAAL
+        {
+            PyObject *modules = PyImport_GetModuleDict();
+            if (unlikely(!modules))
+                goto modbad;
+            value = PyObject_GetItem(modules, full_name);
+        }
+        #else
+        value = PyImport_GetModule(full_name);
+        #endif
+      modbad:
+        Py_XDECREF(full_name);
+        Py_XDECREF(module_dot);
+        Py_XDECREF(module_name);
+    }
+    if (unlikely(!value)) {
+        PyErr_Format(PyExc_ImportError, "cannot import name %S", name);
+    }
+    return value;
+}
+
 /* RaiseKeywordRequired */
 static void __Pyx_RaiseKeywordRequired(const char* func_name, PyObject* kw_name) {
     PyErr_Format(PyExc_TypeError,
@@ -18707,183 +19215,6 @@ static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject 
 bad:
     Py_XDECREF(owned_instance);
     return;
-}
-
-/* HasAttr (used by ImportImpl) */
-#if __PYX_LIMITED_VERSION_HEX < 0x030d0000
-static CYTHON_INLINE int __Pyx_HasAttr(PyObject *o, PyObject *n) {
-    PyObject *r;
-    if (unlikely(!PyUnicode_Check(n))) {
-        PyErr_SetString(PyExc_TypeError,
-                        "hasattr(): attribute name must be string");
-        return -1;
-    }
-    r = __Pyx_PyObject_GetAttrStrNoError(o, n);
-    if (!r) {
-        return (unlikely(PyErr_Occurred())) ? -1 : 0;
-    } else {
-        Py_DECREF(r);
-        return 1;
-    }
-}
-#endif
-
-/* ImportImpl (used by Import) */
-static int __Pyx__Import_GetModule(PyObject *qualname, PyObject **module) {
-    PyObject *imported_module = PyImport_GetModule(qualname);
-    if (unlikely(!imported_module)) {
-        *module = NULL;
-        if (PyErr_Occurred()) {
-            return -1;
-        }
-        return 0;
-    }
-    *module = imported_module;
-    return 1;
-}
-static int __Pyx__Import_Lookup(PyObject *qualname, PyObject *const *imported_names, Py_ssize_t len_imported_names, PyObject **module) {
-    PyObject *imported_module;
-    PyObject *top_level_package_name;
-    Py_ssize_t i;
-    int status, module_found;
-    Py_ssize_t dot_index;
-    module_found = __Pyx__Import_GetModule(qualname, &imported_module);
-    if (unlikely(!module_found || module_found == -1)) {
-        *module = NULL;
-        return module_found;
-    }
-    if (imported_names) {
-        for (i = 0; i < len_imported_names; i++) {
-            PyObject *imported_name = imported_names[i];
-#if __PYX_LIMITED_VERSION_HEX < 0x030d0000
-            int has_imported_attribute = PyObject_HasAttr(imported_module, imported_name);
-#else
-            int has_imported_attribute = PyObject_HasAttrWithError(imported_module, imported_name);
-            if (unlikely(has_imported_attribute == -1)) goto error;
-#endif
-            if (!has_imported_attribute) {
-                goto not_found;
-            }
-        }
-        *module = imported_module;
-        return 1;
-    }
-    dot_index = PyUnicode_FindChar(qualname, '.', 0, PY_SSIZE_T_MAX, 1);
-    if (dot_index == -1) {
-        *module = imported_module;
-        return 1;
-    }
-    if (unlikely(dot_index == -2)) goto error;
-    top_level_package_name = PyUnicode_Substring(qualname, 0, dot_index);
-    if (unlikely(!top_level_package_name)) goto error;
-    Py_DECREF(imported_module);
-    status = __Pyx__Import_GetModule(top_level_package_name, module);
-    Py_DECREF(top_level_package_name);
-    return status;
-error:
-    Py_DECREF(imported_module);
-    *module = NULL;
-    return -1;
-not_found:
-    Py_DECREF(imported_module);
-    *module = NULL;
-    return 0;
-}
-static PyObject *__Pyx__Import(PyObject *name, PyObject *const *imported_names, Py_ssize_t len_imported_names, PyObject *qualname, PyObject *moddict, int level) {
-    PyObject *module = 0;
-    PyObject *empty_dict = 0;
-    PyObject *from_list = 0;
-    int module_found;
-    if (!qualname) {
-        qualname = name;
-    }
-    module_found = __Pyx__Import_Lookup(qualname, imported_names, len_imported_names, &module);
-    if (likely(module_found == 1)) {
-        return module;
-    } else if (unlikely(module_found == -1)) {
-        return NULL;
-    }
-    empty_dict = PyDict_New();
-    if (unlikely(!empty_dict))
-        goto bad;
-    if (imported_names) {
-#if CYTHON_COMPILING_IN_CPYTHON
-        from_list = __Pyx_PyList_FromArray(imported_names, len_imported_names);
-        if (unlikely(!from_list))
-            goto bad;
-#else
-        from_list = PyList_New(len_imported_names);
-        if (unlikely(!from_list)) goto bad;
-        for (Py_ssize_t i=0; i<len_imported_names; ++i) {
-            if (PyList_SetItem(from_list, i, __Pyx_NewRef(imported_names[i])) < 0) goto bad;
-        }
-#endif
-    }
-    if (level == -1) {
-        const char* package_sep = strchr(__Pyx_MODULE_NAME, '.');
-        if (package_sep != (0)) {
-            module = PyImport_ImportModuleLevelObject(
-                name, moddict, empty_dict, from_list, 1);
-            if (unlikely(!module)) {
-                if (unlikely(!PyErr_ExceptionMatches(PyExc_ImportError)))
-                    goto bad;
-                PyErr_Clear();
-            }
-        }
-        level = 0;
-    }
-    if (!module) {
-        module = PyImport_ImportModuleLevelObject(
-            name, moddict, empty_dict, from_list, level);
-    }
-bad:
-    Py_XDECREF(from_list);
-    Py_XDECREF(empty_dict);
-    return module;
-}
-
-/* Import */
-static PyObject *__Pyx_Import(PyObject *name, PyObject *const *imported_names, Py_ssize_t len_imported_names, PyObject *qualname, int level) {
-    return __Pyx__Import(name, imported_names, len_imported_names, qualname, __pyx_mstate_global->__pyx_d, level);
-}
-
-/* ImportFrom */
-static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name) {
-    PyObject* value = __Pyx_PyObject_GetAttrStr(module, name);
-    if (unlikely(!value) && PyErr_ExceptionMatches(PyExc_AttributeError)) {
-        const char* module_name_str = 0;
-        PyObject* module_name = 0;
-        PyObject* module_dot = 0;
-        PyObject* full_name = 0;
-        PyErr_Clear();
-        module_name_str = PyModule_GetName(module);
-        if (unlikely(!module_name_str)) { goto modbad; }
-        module_name = PyUnicode_FromString(module_name_str);
-        if (unlikely(!module_name)) { goto modbad; }
-        module_dot = PyUnicode_Concat(module_name, __pyx_mstate_global->__pyx_kp_u__9);
-        if (unlikely(!module_dot)) { goto modbad; }
-        full_name = PyUnicode_Concat(module_dot, name);
-        if (unlikely(!full_name)) { goto modbad; }
-        #if (CYTHON_COMPILING_IN_PYPY && PYPY_VERSION_NUM  < 0x07030400) ||\
-                CYTHON_COMPILING_IN_GRAAL
-        {
-            PyObject *modules = PyImport_GetModuleDict();
-            if (unlikely(!modules))
-                goto modbad;
-            value = PyObject_GetItem(modules, full_name);
-        }
-        #else
-        value = PyImport_GetModule(full_name);
-        #endif
-      modbad:
-        Py_XDECREF(full_name);
-        Py_XDECREF(module_dot);
-        Py_XDECREF(module_name);
-    }
-    if (unlikely(!value)) {
-        PyErr_Format(PyExc_ImportError, "cannot import name %S", name);
-    }
-    return value;
 }
 
 /* dict_setdefault (used by FetchCommonType) */
