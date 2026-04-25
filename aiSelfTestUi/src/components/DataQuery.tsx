@@ -1,6 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowLeft, Search, CheckSquare, Square, Play, Image as ImageIcon, ZoomIn } from 'lucide-react';
 import { classifyOptions, defaultTaskFilters, fileBmpOptions, normalizeTaskFiltersForForm, resolveApiFileBmpValue } from '../constants/taskFilters';
+import { fetchApi } from '../utils/api';
+
+type TaskDetailData = {
+  filters?: Record<string, unknown>;
+};
+
+type TaskItemListData = {
+  items: Array<{
+    id: number;
+    media_type: 'image' | 'video';
+    name: string;
+    file_url: string;
+    status: string;
+  }>;
+  total: number;
+};
 
 const classifyLabelMap: Record<number, string> = {
   1: '确种',
@@ -28,9 +44,7 @@ export default function DataQuery({ taskId, onBack }: { taskId: number, onBack: 
   useEffect(() => {
     const fetchTaskFilters = async () => {
       try {
-        const response = await fetch(`/api/tasks/${taskId}`);
-        const data = await response.json().catch(() => ({}));
-        if (!response.ok) return;
+        const data = await fetchApi<TaskDetailData>(`/api/tasks/detail/${taskId}`);
         setFormData(normalizeTaskFiltersForForm(data.filters || {}));
       } catch (e) {
         console.error(e);
@@ -46,61 +60,34 @@ export default function DataQuery({ taskId, onBack }: { taskId: number, onBack: 
     setLoading(true);
     setQueryError('');
     try {
-      const finalPayload: Record<string, unknown> = {
-        size: formData.size,
-        current: formData.current
-      };
-
-      if (formData.keyword.trim()) {
-        finalPayload.keyword = formData.keyword.trim();
-      }
-      if (formData.spName.trim()) {
-        finalPayload.spName = formData.spName.trim();
-      }
-      if (formData.classifyList.length > 0) {
-        finalPayload.classifyList = formData.classifyList;
-      }
-      if (formData.startTime) {
-        finalPayload.startTime = formData.startTime;
-      }
-      if (formData.endTime) {
-        finalPayload.endTime = formData.endTime;
-      }
+      const params = new URLSearchParams({
+        task_id: String(taskId),
+        page: String(formData.current || 1),
+        page_size: String(formData.size || 50),
+      });
       if (formData.fileBmp !== 'all') {
         const apiFileBmpValue = resolveApiFileBmpValue(formData.fileBmp);
-        if (apiFileBmpValue !== null) {
-          finalPayload.fileBmp = [apiFileBmpValue];
-        }
-      }
-      if (formData.uploadType !== 'all') {
-        finalPayload.uploadType = [Number(formData.uploadType)];
-      }
-      if (formData.idType !== 'all') {
-        finalPayload.idType = Number(formData.idType);
+        if (apiFileBmpValue === 1) params.set('media_type', 'image');
+        if (apiFileBmpValue === 2) params.set('media_type', 'video');
       }
 
-      const res = await fetch(`/api/tasks/${taskId}/query-data`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(finalPayload)
-      });
-      const data = await res.json().catch(() => ({} as Record<string, unknown>));
-      if (!res.ok) {
-        setResults([]);
-        setQueryError(String((data as any).message || (data as any).error || '查询失败，请检查筛选条件与客户端连接状态。'));
-        return;
-      }
-
-      const resolvedResults = Array.isArray((data as any).results)
-        ? (data as any).results
-        : Array.isArray((data as any).data?.results)
-          ? (data as any).data.results
-          : [];
-      setResults(resolvedResults);
+      const data = await fetchApi<TaskItemListData>(`/api/task-items/list?${params.toString()}`);
+      setResults(data.items.map((item) => ({
+        id: item.id,
+        name: item.name,
+        spNameList: item.status,
+        classify: item.status === '核查' ? 1 : 4,
+        fileTime: '--',
+        fileUrl: item.file_url,
+        coverUrl: item.file_url,
+        mediaType: item.media_type,
+        mediaUrl: item.file_url,
+        deName: '--',
+      })));
       setSelectedIds(new Set()); // Reset selection on new search
     } catch(e) {
       setResults([]);
-      setQueryError('查询请求失败，请稍后重试。');
+      setQueryError((e as Error).message || '任务项加载失败，请稍后重试。');
       console.error(e);
     }
     setLoading(false);
@@ -133,32 +120,9 @@ export default function DataQuery({ taskId, onBack }: { taskId: number, onBack: 
 
   const handleExecute = async () => {
     try {
-      const selectedItems = results
-        .filter(item => selectedIds.has(item.id))
-        .map(item => ({
-          id: item.id,
-          name: item.name,
-          spNameList: item.spNameList,
-          classify: item.classify,
-          fileTime: item.fileTime,
-          fileUrl: item.fileUrl,
-          coverUrl: item.coverUrl,
-          mediaType: item.mediaType,
-          mediaUrl: item.mediaUrl
-        }));
-
-      const res = await fetch(`/api/tasks/${taskId}/execute`, {
+      await fetchApi(`/api/tasks/action-run/${taskId}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fileIds: Array.from(selectedIds),
-          selectedItems
-        })
       });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || data.message || '执行失败');
-      }
       onBack(); // Go back to task management after starting
     } catch(e) {
       console.error(e);
@@ -188,7 +152,7 @@ export default function DataQuery({ taskId, onBack }: { taskId: number, onBack: 
           className="px-6 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors bg-green-600 hover:bg-green-700 text-white shadow-md"
         >
           <Play className="w-4 h-4" />
-          立即执行任务{selectedIds.size > 0 ? `（已选 ${selectedIds.size} 项）` : ''}
+          立即执行任务
         </button>
       </div>
 
@@ -294,7 +258,7 @@ export default function DataQuery({ taskId, onBack }: { taskId: number, onBack: 
       <div className="flex-1 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden flex flex-col transition-colors">
         <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/80">
           <h3 className="font-semibold text-gray-700 dark:text-gray-200">
-            查询结果 {results.length > 0 && <span className="ml-2 font-normal text-sm bg-gray-200 dark:bg-gray-700 px-2 py-0.5 rounded-full">{results.length} 项</span>}
+            任务项列表 {results.length > 0 && <span className="ml-2 font-normal text-sm bg-gray-200 dark:bg-gray-700 px-2 py-0.5 rounded-full">{results.length} 项</span>}
           </h3>
           {results.length > 0 && (
             <button onClick={handleSelectAll} className="text-sm flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors font-medium">
