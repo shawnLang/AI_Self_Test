@@ -56,20 +56,27 @@ const normalizeDateInputValue = (value: unknown) => {
   return match ? match[1] : trimmed;
 };
 
-export const normalizeTaskFiltersForForm = (filters: Partial<TaskFilterFormData> | null | undefined): TaskFilterFormData => {
-  const source = filters && typeof filters === 'object' ? filters : {};
+export const normalizeTaskFiltersForForm = (filters: Record<string, unknown> | Partial<TaskFilterFormData> | null | undefined): TaskFilterFormData => {
+  const source = filters && typeof filters === 'object' ? filters as Record<string, unknown> : {};
+  const classifyList = source.classifyList ?? source.classify_list;
+  const mediaTypes = Array.isArray(source.media_types) ? source.media_types : [];
+  const uploadTypes = source.uploadType ?? source.upload_types;
+  const identifySource = source.idType ?? source.identify_source;
+  const canonicalFileBmp = mediaTypes.length === 1 ? mediaTypes[0] : undefined;
+  const canonicalUploadType = Array.isArray(uploadTypes) ? uploadTypes[0] : uploadTypes;
+  const canonicalIdType = Array.isArray(identifySource) ? identifySource[0] : identifySource;
 
   return {
-    classifyList: Array.isArray(source.classifyList)
-      ? source.classifyList.map(Number).filter((value) => Number.isFinite(value))
+    classifyList: Array.isArray(classifyList)
+      ? classifyList.map(Number).filter((value) => Number.isFinite(value))
       : [...defaultTaskFilters.classifyList],
     keyword: String(source.keyword || '').trim(),
-    spName: String(source.spName || '').trim(),
-    startTime: normalizeDateInputValue(source.startTime),
-    endTime: normalizeDateInputValue(source.endTime),
-    fileBmp: fileBmpValueMap[String(source.fileBmp ?? 'all').trim()] || 'all',
-    uploadType: source.uploadType === undefined || source.uploadType === null || source.uploadType === '' ? 'all' : String(source.uploadType),
-    idType: source.idType === undefined || source.idType === null || source.idType === '' ? 'all' : String(source.idType),
+    spName: String(source.spName ?? source.sp_name ?? '').trim(),
+    startTime: normalizeDateInputValue(source.startTime ?? source.start_at),
+    endTime: normalizeDateInputValue(source.endTime ?? source.end_at),
+    fileBmp: fileBmpValueMap[String(source.fileBmp ?? canonicalFileBmp ?? 'all').trim()] || 'all',
+    uploadType: canonicalUploadType === undefined || canonicalUploadType === null || canonicalUploadType === '' ? 'all' : String(canonicalUploadType),
+    idType: canonicalIdType === undefined || canonicalIdType === null || canonicalIdType === '' ? 'all' : String(canonicalIdType),
     size: Number(source.size) > 0 ? Number(source.size) : defaultTaskFilters.size,
     current: Number(source.current) > 0 ? Number(source.current) : defaultTaskFilters.current
   };
