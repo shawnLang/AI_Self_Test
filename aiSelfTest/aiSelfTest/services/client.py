@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-from sqlalchemy import delete
 from sqlmodel import Session, select
 
-from aiSelfTest.exceptions import AppException
+from aiSelfTest.exceptions import AppException, ErrorCode
 from aiSelfTest.models.client import Client
 from aiSelfTest.models.task import Task, TaskItem, TaskItemData
 from aiSelfTest.schemas.client import (
@@ -71,22 +70,41 @@ def update_client(
 def delete_client(session: Session, client_id: int) -> int:
     """删除客户端及其关联任务数据。"""
 
-    client = _get_client_or_raise(session, client_id)
-    task_ids = session.exec(select(Task.id).where(Task.client_id == client_id)).all()
+    with session.begin():
+        client = _get_client_or_raise(session, client_id)
+        tasks = session.exec(select(Task).where(Task.client_id == client_id)).all()
+        task_ids = [task.id for task in tasks if task.id is not None]
 
-    if task_ids:
-        task_item_ids = session.exec(
-            select(TaskItem.id).where(TaskItem.task_id.in_(task_ids))
-        ).all()
-        if task_item_ids:
-            session.exec(
-                delete(TaskItemData).where(TaskItemData.task_item_id.in_(task_item_ids))
-            )
-        session.exec(delete(TaskItem).where(TaskItem.task_id.in_(task_ids)))
-        session.exec(delete(Task).where(Task.id.in_(task_ids)))
+        task_items = []
+        task_item_data_rows = []
+        if task_ids:
+            task_items = session.exec(
+                select(TaskItem).where(TaskItem.task_id.in_(task_ids))
+            ).all()
+            task_item_ids = [
+                task_item.id for task_item in task_items if task_item.id is not None
+            ]
+            if task_item_ids:
+                task_item_data_rows = session.exec(
+                    select(TaskItemData).where(
+                        TaskItemData.task_item_id.in_(task_item_ids)
+                    )
+                ).all()
 
-    session.delete(client)
-    session.commit()
+        for task_item_data in task_item_data_rows:
+            session.delete(task_item_data)
+        session.flush()
+
+        for task_item in task_items:
+            session.delete(task_item)
+        session.flush()
+
+        for task in tasks:
+            session.delete(task)
+        session.flush()
+
+        session.delete(client)
+
     return client_id
 
 
@@ -96,7 +114,7 @@ def _get_client_or_raise(session: Session, client_id: int) -> Client:
     client = session.get(Client, client_id)
     if client is None:
         raise AppException(
-            code=1002,
+            code=ErrorCode.NOT_FOUND,
             message="客户端不存在",
             status_code=404,
         )

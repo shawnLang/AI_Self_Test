@@ -25,7 +25,7 @@ from aiSelfTest.services.client import (
 )
 
 
-router = APIRouter(prefix="/clients", tags=["clients"])
+router = APIRouter(prefix="/clients")
 
 
 @router.get("/list", response_model=ApiResponse[ClientListData])

@@ -13,66 +13,20 @@ import {
   Waves,
   X
 } from 'lucide-react';
-import { fetchApi } from '../utils/api';
-
-type MultimodalModel = {
-  id: number;
-  modelName: string;
-  endpointUrl: string;
-  status: '启用' | '停用';
-};
-
-type MultimodalModelListData = {
-  items: MultimodalModel[];
-};
-
-type MultimodalChatSession = {
-  id: number;
-  modelId: number;
-  modelName: string;
-  title: string;
-  messageCount: number;
-  createdAt: string;
-  updatedAt: string;
-  lastMessageAt: string | null;
-};
-
-type MultimodalChatSessionListData = {
-  items: MultimodalChatSession[];
-};
-
-type MultimodalChatData = {
-  reply: string;
-  modelName: string;
-  usedUrl: string;
-  sessionId: number;
-};
-
-type AttachmentPayload = {
-  name: string;
-  mimeType: string;
-  kind: 'image' | 'video' | 'audio' | 'document';
-  dataUrl?: string;
-  textContent?: string;
-};
-
-type StoredChatMessage = {
-  id: number;
-  role: 'system' | 'user' | 'assistant';
-  content: string;
-  attachments: AttachmentPayload[];
-  usedUrl?: string | null;
-  createdAt: string;
-};
-
-type MultimodalChatSessionDetailData = {
-  session: MultimodalChatSession;
-  messages: StoredChatMessage[];
-};
-
-type DeleteSessionData = {
-  id: number;
-};
+import {
+  deleteMultimodalChatSession,
+  getMultimodalChatSessionDetail,
+  sendMultimodalChat,
+  streamMultimodalChat,
+  type AttachmentPayload,
+  type MultimodalChatSession,
+  type StoredChatMessage,
+} from '../api/multimodalChat';
+import {
+  useEnabledMultimodalModels,
+  useInvalidateMultimodalChat,
+  useMultimodalChatSessions,
+} from '../hooks/useChatSession';
 
 type ChatMessage = {
   id: string;
@@ -216,17 +170,24 @@ const parseSseEvent = (rawEvent: string) => {
 };
 
 export default function MultimodalChat({ onOpenModelManager }: { onOpenModelManager: () => void }) {
-  const [models, setModels] = useState<MultimodalModel[]>([]);
   const [selectedModelId, setSelectedModelId] = useState('');
-  const [sessions, setSessions] = useState<MultimodalChatSession[]>([]);
+  const {
+    data: models = [],
+    isLoading: loadingModels,
+    refetch: refetchModels,
+  } = useEnabledMultimodalModels();
+  const {
+    data: sessions = [],
+    isLoading: loadingSessions,
+    refetch: refetchSessions,
+  } = useMultimodalChatSessions(selectedModelId);
+  const { invalidateSessions } = useInvalidateMultimodalChat();
   const [activeSessionId, setActiveSessionId] = useState<number | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState('');
   const [pendingAttachments, setPendingAttachments] = useState<AttachmentPayload[]>([]);
   const [streamMode, setStreamMode] = useState(true);
   const [sending, setSending] = useState(false);
-  const [loadingModels, setLoadingModels] = useState(false);
-  const [loadingSessions, setLoadingSessions] = useState(false);
   const [loadingSessionDetail, setLoadingSessionDetail] = useState(false);
   const [error, setError] = useState('');
   const [previewAttachment, setPreviewAttachment] = useState<AttachmentPayload | null>(null);
@@ -234,44 +195,30 @@ export default function MultimodalChat({ onOpenModelManager }: { onOpenModelMana
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
   const fetchModels = async () => {
-    setLoadingModels(true);
-    try {
-      const data = await fetchApi<MultimodalModelListData>('/api/multimodal-models/list');
-      const nextModels = data.items.filter((item) => item.status === '启用');
-      setModels(nextModels);
-      setError('');
-    } catch (fetchError) {
-      setError((fetchError as Error).message || '加载模型失败');
-      setModels([]);
-    } finally {
-      setLoadingModels(false);
+    const result = await refetchModels();
+    if (result.error) {
+      setError((result.error as Error).message || '加载模型失败');
+      return;
     }
+    setError('');
   };
 
-  const fetchSessions = async (modelId: string) => {
-    if (!modelId) {
-      setSessions([]);
+  const fetchSessions = async () => {
+    if (!selectedModelId) return [] as MultimodalChatSession[];
+
+    const result = await refetchSessions();
+    if (result.error) {
+      setError((result.error as Error).message || '加载历史会话失败');
       return [] as MultimodalChatSession[];
     }
 
-    setLoadingSessions(true);
-    try {
-      const data = await fetchApi<MultimodalChatSessionListData>(`/api/multimodal-models/session-list/${modelId}`);
-      setSessions(data.items);
-      return data.items;
-    } catch (fetchError) {
-      setError((fetchError as Error).message || '加载历史会话失败');
-      setSessions([]);
-      return [] as MultimodalChatSession[];
-    } finally {
-      setLoadingSessions(false);
-    }
+    return result.data || [];
   };
 
   const loadSessionDetail = async (sessionId: number) => {
     setLoadingSessionDetail(true);
     try {
-      const data = await fetchApi<MultimodalChatSessionDetailData>(`/api/multimodal-models/session-detail/${sessionId}`);
+      const data = await getMultimodalChatSessionDetail(sessionId);
       setActiveSessionId(data.session.id);
       setMessages(data.messages.map(toUiMessage));
       setError('');
@@ -281,10 +228,6 @@ export default function MultimodalChat({ onOpenModelManager }: { onOpenModelMana
       setLoadingSessionDetail(false);
     }
   };
-
-  useEffect(() => {
-    fetchModels();
-  }, []);
 
   useEffect(() => {
     if (models.length === 0) {
@@ -299,7 +242,6 @@ export default function MultimodalChat({ onOpenModelManager }: { onOpenModelMana
   }, [models, selectedModelId]);
 
   useEffect(() => {
-    setSessions([]);
     setActiveSessionId(null);
     setMessages([]);
     setPendingAttachments([]);
@@ -310,7 +252,6 @@ export default function MultimodalChat({ onOpenModelManager }: { onOpenModelMana
       return;
     }
 
-    void fetchSessions(selectedModelId);
   }, [selectedModelId]);
 
   useEffect(() => {
@@ -361,11 +302,8 @@ export default function MultimodalChat({ onOpenModelManager }: { onOpenModelMana
     if (!shouldDelete) return;
 
     try {
-      await fetchApi<DeleteSessionData>(`/api/multimodal-models/delete-session/${sessionItem.id}`, {
-        method: 'DELETE'
-      });
-
-      setSessions((prev) => prev.filter((item) => item.id !== sessionItem.id));
+      await deleteMultimodalChatSession(sessionItem.id);
+      await invalidateSessions(selectedModelId);
       if (activeSessionId === sessionItem.id) {
         handleStartNewSession();
       }
@@ -403,11 +341,7 @@ export default function MultimodalChat({ onOpenModelManager }: { onOpenModelMana
     messageId: string,
     body: string
   ) => {
-    const response = await fetch(`/api/multimodal-models/chat-stream/${modelId}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body
-    });
+    const response = await streamMultimodalChat(modelId, body);
 
     if (!response.ok) {
       throw new Error(await extractErrorMessage(response));
@@ -520,7 +454,7 @@ export default function MultimodalChat({ onOpenModelManager }: { onOpenModelMana
       try {
         const donePayload = await sendStreamingChat(selectedModelId, assistantMessageId, requestBody);
         setActiveSessionId(donePayload.sessionId);
-        const nextSessions = await fetchSessions(selectedModelId);
+        const nextSessions = await fetchSessions();
         if (nextSessions.some((item) => item.id === donePayload.sessionId)) {
           setActiveSessionId(donePayload.sessionId);
         }
@@ -536,11 +470,7 @@ export default function MultimodalChat({ onOpenModelManager }: { onOpenModelMana
 
     setMessages((prev) => [...prev, userMessage]);
     try {
-      const data = await fetchApi<MultimodalChatData>(`/api/multimodal-models/chat/${selectedModelId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: requestBody
-      });
+      const data = await sendMultimodalChat(selectedModelId, requestBody);
 
       setActiveSessionId(data.sessionId);
       setMessages((prev) => [...prev, {
@@ -550,7 +480,7 @@ export default function MultimodalChat({ onOpenModelManager }: { onOpenModelMana
         attachments: [],
         usedUrl: data.usedUrl
       }]);
-      await fetchSessions(selectedModelId);
+      await fetchSessions();
     } catch (sendError) {
       const message = (sendError as Error).message || '模型调用失败';
       setError(message);
@@ -684,7 +614,7 @@ export default function MultimodalChat({ onOpenModelManager }: { onOpenModelMana
           <div className="p-3 border-b border-gray-200 dark:border-gray-700">
             <button
               type="button"
-              onClick={() => selectedModelId && void fetchSessions(selectedModelId)}
+              onClick={() => selectedModelId && void fetchSessions()}
               disabled={!selectedModelId || loadingSessions}
               className="w-full inline-flex items-center justify-center gap-2 h-10 rounded-lg border border-gray-300 dark:border-gray-600 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-60 transition-colors"
             >

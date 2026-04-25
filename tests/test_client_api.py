@@ -33,6 +33,26 @@ def test_health_endpoint_returns_ok(app_client: TestClient) -> None:
     assert response.json() == {"status": "ok"}
 
 
+def test_request_id_header_is_returned(app_client: TestClient) -> None:
+    request_id = "test-request-id-001"
+
+    response = app_client.get("/health", headers={"X-Request-ID": request_id})
+
+    assert response.status_code == 200
+    assert response.headers["X-Request-ID"] == request_id
+
+
+def test_openapi_uses_chinese_router_tags(app_client: TestClient) -> None:
+    response = app_client.get("/openapi.json")
+
+    assert response.status_code == 200
+    paths = response.json()["paths"]
+    assert paths["/api/clients/list"]["get"]["tags"] == ["客户端"]
+    assert paths["/api/configs/list"]["get"]["tags"] == ["提示词"]
+    assert paths["/api/dashboard/stats"]["get"]["tags"] == ["首页统计"]
+    assert paths["/api/multimodal-models/list"]["get"]["tags"] == ["多模态模型"]
+
+
 def test_dashboard_stats_returns_frontend_compatible_shape(app_client: TestClient) -> None:
     response = app_client.get("/api/dashboard/stats")
 

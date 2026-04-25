@@ -165,7 +165,7 @@ def test_detect_multimodal_models_tries_candidate_urls_and_returns_models(
     app_client: TestClient,
     monkeypatch,
 ) -> None:
-    service_module = importlib.import_module("aiSelfTest.services.multimodal_model")
+    service_module = importlib.import_module("aiSelfTest.services.multimodal_model_crud")
     calls: list[tuple[str, str, dict[str, str] | None]] = []
 
     def fake_request(method: str, url: str, **kwargs: Any) -> FakeResponse:
@@ -205,7 +205,7 @@ def test_detect_multimodal_models_supports_x_api_key_fallback(
     app_client: TestClient,
     monkeypatch,
 ) -> None:
-    service_module = importlib.import_module("aiSelfTest.services.multimodal_model")
+    service_module = importlib.import_module("aiSelfTest.services.multimodal_model_crud")
     headers_seen: list[dict[str, str] | None] = []
 
     def fake_request(method: str, url: str, **kwargs: Any) -> FakeResponse:
@@ -247,7 +247,7 @@ def test_chat_with_multimodal_model_normalizes_attachments_and_returns_reply(
     )
     model_id = _unwrap_success(create_response.json())["id"]
 
-    service_module = importlib.import_module("aiSelfTest.services.multimodal_model")
+    service_module = importlib.import_module("aiSelfTest.services.multimodal_chat")
     captured_payloads: list[dict[str, Any]] = []
 
     def fake_request(method: str, url: str, **kwargs: Any) -> FakeResponse:
@@ -337,7 +337,7 @@ def test_chat_with_multimodal_model_supports_output_text_response_shape(
     )
     model_id = _unwrap_success(create_response.json())["id"]
 
-    service_module = importlib.import_module("aiSelfTest.services.multimodal_model")
+    service_module = importlib.import_module("aiSelfTest.services.multimodal_chat")
 
     def fake_request(method: str, url: str, **kwargs: Any) -> FakeResponse:
         return FakeResponse(200, {"output_text": "这是 output_text 回复"})
@@ -364,7 +364,7 @@ def test_chat_with_multimodal_model_supports_output_content_response_shape(
     )
     model_id = _unwrap_success(create_response.json())["id"]
 
-    service_module = importlib.import_module("aiSelfTest.services.multimodal_model")
+    service_module = importlib.import_module("aiSelfTest.services.multimodal_chat")
 
     def fake_request(method: str, url: str, **kwargs: Any) -> FakeResponse:
         return FakeResponse(
@@ -403,7 +403,7 @@ def test_chat_with_multimodal_model_creates_session_and_persists_messages(
     )
     model_id = _unwrap_success(create_response.json())["id"]
 
-    service_module = importlib.import_module("aiSelfTest.services.multimodal_model")
+    service_module = importlib.import_module("aiSelfTest.services.multimodal_chat")
 
     def fake_request(method: str, url: str, **kwargs: Any) -> FakeResponse:
         assert kwargs["json"]["messages"][0]["content"] == "第一轮问题"
@@ -450,7 +450,7 @@ def test_chat_with_multimodal_model_uses_stored_session_context(
     )
     model_id = _unwrap_success(create_response.json())["id"]
 
-    service_module = importlib.import_module("aiSelfTest.services.multimodal_model")
+    service_module = importlib.import_module("aiSelfTest.services.multimodal_chat")
     captured_payloads: list[dict[str, Any]] = []
     replies = iter(["第一轮回答", "第二轮回答"])
 
@@ -495,7 +495,7 @@ def test_list_and_detail_multimodal_chat_sessions(
     )
     model_id = _unwrap_success(create_response.json())["id"]
 
-    service_module = importlib.import_module("aiSelfTest.services.multimodal_model")
+    service_module = importlib.import_module("aiSelfTest.services.multimodal_chat")
 
     def fake_request(method: str, url: str, **kwargs: Any) -> FakeResponse:
         return FakeResponse(
@@ -538,7 +538,7 @@ def test_delete_multimodal_chat_session_removes_session_and_messages(
     )
     model_id = _unwrap_success(create_response.json())["id"]
 
-    service_module = importlib.import_module("aiSelfTest.services.multimodal_model")
+    service_module = importlib.import_module("aiSelfTest.services.multimodal_chat")
 
     def fake_request(method: str, url: str, **kwargs: Any) -> FakeResponse:
         return FakeResponse(
@@ -582,7 +582,7 @@ def test_stream_chat_with_multimodal_model_returns_sse_and_persists_messages(
     )
     model_id = _unwrap_success(create_response.json())["id"]
 
-    service_module = importlib.import_module("aiSelfTest.services.multimodal_model")
+    service_module = importlib.import_module("aiSelfTest.services.multimodal_chat")
 
     def fake_request(method: str, url: str, **kwargs: Any) -> FakeResponse:
         assert kwargs["json"]["stream"] is True

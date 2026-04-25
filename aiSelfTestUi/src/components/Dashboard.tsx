@@ -1,22 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Activity, CheckCircle2, AlertCircle, Clock } from 'lucide-react';
-import { fetchApi } from '../utils/api';
-
-
-type DashboardStats = {
-  activeTasks: number;
-  processedToday: number;
-  pendingReviews: number;
-  anomalies: number;
-  recentActivities: Array<{
-    id: number;
-    name: string;
-    status: string;
-    processedCount: number;
-    totalCount: number;
-    finishedAt: string;
-  }>;
-};
+import type { DashboardStats } from '../api/dashboard';
+import { useDashboardStats } from '../hooks/useDashboardStats';
 
 
 const emptyStats: DashboardStats = {
@@ -28,16 +13,8 @@ const emptyStats: DashboardStats = {
 };
 
 export default function Dashboard() {
-  const [stats, setStats] = useState<DashboardStats>(emptyStats);
-
-  useEffect(() => {
-    fetchApi<DashboardStats>('/api/dashboard/stats')
-      .then(data => setStats(data))
-      .catch(e => {
-        console.error(e);
-        setStats(emptyStats);
-      });
-  }, []);
+  const { data, isError } = useDashboardStats();
+  const stats = isError ? emptyStats : (data || emptyStats);
 
   return (
     <div className="p-8">

@@ -28,11 +28,11 @@ class FakeResponse:
 
 
 def _future_timestamp(seconds: int = 3600) -> int:
-    return int((time.time() + seconds) * 1000)
+    return int(time.time() + seconds)
 
 
 def _expired_timestamp(seconds: int = 3600) -> int:
-    return int((time.time() - seconds) * 1000)
+    return int(time.time() - seconds)
 
 
 def _create_client(
@@ -40,7 +40,9 @@ def _create_client(
     *,
     access_token: str | None = None,
     refresh_token: str | None = None,
-    expires_in: int | None = None,
+    expires_at: int | None = None,
+    auth_header_style: str | None = None,
+    working_url_path: str | None = None,
 ) -> Any:
     client_model = import_client_model()
     client = client_model(
@@ -51,7 +53,9 @@ def _create_client(
         status="启用",
         access_token=access_token,
         refresh_token=refresh_token,
-        expires_in=expires_in,
+        expires_at=expires_at,
+        auth_header_style=auth_header_style,
+        working_url_path=working_url_path,
     )
     db_session.add(client)
     db_session.commit()
@@ -68,7 +72,7 @@ def test_authenticate_client_route_reuses_valid_access_token(
         db_session,
         access_token="cached-token",
         refresh_token="refresh-token",
-        expires_in=_future_timestamp(),
+        expires_at=_future_timestamp(),
     )
 
     client_auth_module = importlib.import_module("aiSelfTest.services.client_auth")
@@ -103,7 +107,7 @@ def test_authenticate_client_route_logs_in_when_tokens_missing(
                 {
                     "accessToken": "login-access-token",
                     "refreshToken": "login-refresh-token",
-                    "expiresIn": _future_timestamp(),
+                    "expiresIn": 3600,
                 },
             )
         raise AssertionError(f"未预期的请求: {method} {url}")
@@ -122,6 +126,8 @@ def test_authenticate_client_route_logs_in_when_tokens_missing(
     ).one()
     assert refreshed_client.access_token == "login-access-token"
     assert refreshed_client.refresh_token == "login-refresh-token"
+    assert refreshed_client.expires_at is not None
+    assert refreshed_client.expires_at > int(time.time())
     assert len(calls) == 1
     assert calls[0][0] == "POST"
     assert calls[0][1].endswith("/auth/login")
@@ -141,7 +147,7 @@ def test_authenticate_client_route_refreshes_expired_token(
         db_session,
         access_token="expired-access-token",
         refresh_token="refresh-token",
-        expires_in=_expired_timestamp(),
+        expires_at=_expired_timestamp(),
     )
     client_auth_module = importlib.import_module("aiSelfTest.services.client_auth")
     calls: list[tuple[str, str, dict[str, str] | None]] = []
@@ -155,7 +161,7 @@ def test_authenticate_client_route_refreshes_expired_token(
                 {
                     "accessToken": "refresh-access-token",
                     "refreshToken": "refresh-token-2",
-                    "expiresIn": _future_timestamp(),
+                    "expiresIn": 3600,
                 },
             )
         raise AssertionError(f"未预期的请求: {method} {url}")
@@ -179,7 +185,7 @@ def test_authenticate_client_route_falls_back_to_login_when_refresh_fails(
         db_session,
         access_token="expired-access-token",
         refresh_token="refresh-token",
-        expires_in=_expired_timestamp(),
+        expires_at=_expired_timestamp(),
     )
     client_auth_module = importlib.import_module("aiSelfTest.services.client_auth")
     calls: list[tuple[str, str]] = []
@@ -194,7 +200,7 @@ def test_authenticate_client_route_falls_back_to_login_when_refresh_fails(
                 {
                     "accessToken": "login-access-token",
                     "refreshToken": "login-refresh-token",
-                    "expiresIn": _future_timestamp(),
+                    "expiresIn": 3600,
                 },
             )
         raise AssertionError(f"未预期的请求: {method} {url}")
@@ -221,7 +227,7 @@ def test_perform_authenticated_request_supports_bearer_fallback(
         db_session,
         access_token="plain-token",
         refresh_token="refresh-token",
-        expires_in=_future_timestamp(),
+        expires_at=_future_timestamp(),
     )
     client_auth_module = importlib.import_module("aiSelfTest.services.client_auth")
     calls: list[str] = []
@@ -247,6 +253,46 @@ def test_perform_authenticated_request_supports_bearer_fallback(
 
     assert response.status_code == 200
     assert calls == ["plain-token", "Bearer plain-token"]
+    db_session.expire_all()
+    refreshed_client = db_session.exec(
+        select(import_client_model()).where(import_client_model().id == client.id)
+    ).one()
+    assert refreshed_client.auth_header_style == "bearer"
+    assert refreshed_client.working_url_path == "/openApi/icFile/findFilePage"
+
+
+def test_perform_authenticated_request_uses_cached_authorization_style(
+    db_session: Session,
+    monkeypatch,
+) -> None:
+    client = _create_client(
+        db_session,
+        access_token="cached-token",
+        refresh_token="refresh-token",
+        expires_at=_future_timestamp(),
+        auth_header_style="bearer",
+        working_url_path="/openApi/icFile/findFilePage",
+    )
+    client_auth_module = importlib.import_module("aiSelfTest.services.client_auth")
+    calls: list[str] = []
+
+    def fake_request(method: str, url: str, **kwargs):
+        authorization = kwargs["headers"]["Authorization"]
+        calls.append(authorization)
+        return FakeResponse(200, {"results": []})
+
+    monkeypatch.setattr(client_auth_module.requests, "request", fake_request)
+
+    response = client_auth_module.perform_authenticated_request(
+        db_session,
+        client.id,
+        "POST",
+        "/openApi/icFile/findFilePage",
+        json={"size": 10, "current": 1},
+    )
+
+    assert response.status_code == 200
+    assert calls == ["Bearer cached-token"]
 
 
 def test_perform_authenticated_request_reauthenticates_when_token_invalid(
@@ -257,7 +303,7 @@ def test_perform_authenticated_request_reauthenticates_when_token_invalid(
         db_session,
         access_token="stale-token",
         refresh_token="refresh-token",
-        expires_in=_future_timestamp(),
+        expires_at=_future_timestamp(),
     )
     client_auth_module = importlib.import_module("aiSelfTest.services.client_auth")
     calls: list[tuple[str, str, str | None]] = []
@@ -282,7 +328,7 @@ def test_perform_authenticated_request_reauthenticates_when_token_invalid(
                 {
                     "accessToken": "fresh-token",
                     "refreshToken": "fresh-refresh-token",
-                    "expiresIn": _future_timestamp(),
+                    "expiresIn": 3600,
                 },
             )
 

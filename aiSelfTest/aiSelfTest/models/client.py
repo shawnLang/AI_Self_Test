@@ -25,4 +25,6 @@ class Client(SQLModel, table=True):
     status: str = Field(default=ClientStatusType.Enable.value, max_length=10, description="状态")
     access_token: Optional[str] = Field(default=None, max_length=4000, description="token")
     refresh_token: Optional[str] = Field(default=None, max_length=4000, description="刷新token")
-    expires_in: Optional[int] = Field(default=None, description="过期时间")
+    expires_at: Optional[int] = Field(default=None, description="token过期绝对时间戳")
+    auth_header_style: Optional[str] = Field(default=None, max_length=20, description="认证头格式")
+    working_url_path: Optional[str] = Field(default=None, max_length=200, description="可用请求路径")

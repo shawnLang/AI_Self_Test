@@ -7,13 +7,18 @@ import sqlalchemy as sa
 
 
 revision = "20260423_0001"
-down_revision = None
+down_revision = "20260423_0000"
 branch_labels = None
 depends_on = None
 
 
 def upgrade() -> None:
     """升级到包含多模态聊天会话与消息表的版本。"""
+
+    inspector = sa.inspect(op.get_bind())
+    existing_tables = set(inspector.get_table_names())
+    if "multimodal_chat_session" in existing_tables:
+        return
 
     op.create_table(
         "multimodal_chat_session",

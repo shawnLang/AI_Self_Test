@@ -1,90 +1,64 @@
 import React, { useState } from 'react';
 import { Check, Trash2, List, LayoutGrid, Image as ImageIcon, CheckSquare, ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+  confirmReviews,
+  deleteReview,
+  deleteReviews,
+  type ReviewItem,
+  type ReviewTaskOption,
+} from '../api/review';
+import {
+  useCompletedReviewTasks,
+  useInvalidateReviews,
+  useReviews,
+} from '../hooks/useReviewQueries';
+import {
+  getReviewRows,
+  isResultMatched,
+  useReviewItem,
+  type ConsistencyFilter,
+} from '../hooks/useReviewItem';
 
 export default function Review({ initialTaskId = null }: { initialTaskId?: number | null }) {
   const [viewMode, setViewMode] = useState<'list' | 'grid' | 'gallery'>('grid');
-  const [items, setItems] = useState<any[]>([]);
   const [activeItemId, setActiveItemId] = useState<string | null>(null);
-  const [taskOptions, setTaskOptions] = useState<any[]>([]);
   const [selectedTaskId, setSelectedTaskId] = useState<string>(initialTaskId ? String(initialTaskId) : '');
-  const [consistencyFilter, setConsistencyFilter] = useState<'all' | 'matched' | 'mismatched'>('all');
-  const [previewItem, setPreviewItem] = useState<any | null>(null);
-
-  const fetchTaskOptions = async () => {
-    try {
-      const res = await fetch('/api/reviews/completed-tasks');
-      const data = await res.json();
-      setTaskOptions(data || []);
-      if (Array.isArray(data) && data.length > 0) {
-        const initialId = initialTaskId ? String(initialTaskId) : '';
-        const hasInitial = initialId ? data.some((task: any) => String(task.id) === initialId) : false;
-        setSelectedTaskId((current) => {
-          if (current && data.some((task: any) => String(task.id) === current)) return current;
-          if (hasInitial) return initialId;
-          return String(data[0].id);
-        });
-      } else {
-        setSelectedTaskId('');
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const fetchReviews = async (taskId = selectedTaskId) => {
-    try {
-      if (!taskId) {
-        setItems([]);
-        setActiveItemId(null);
-        return;
-      }
-
-      const query = `?taskId=${taskId}`;
-      const res = await fetch(`/api/reviews${query}`);
-      const data = await res.json();
-      setItems(data);
-      if (data.length > 0) {
-        const hasActive = data.some((x: any) => x.id === activeItemId);
-        if (!hasActive) setActiveItemId(data[0].id);
-      } else {
-        setActiveItemId(null);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  const [consistencyFilter, setConsistencyFilter] = useState<ConsistencyFilter>('all');
+  const [previewItem, setPreviewItem] = useState<ReviewItem | null>(null);
+  const { data: taskOptions = [] } = useCompletedReviewTasks();
+  const { data: items = [] } = useReviews(selectedTaskId);
+  const { invalidateTasks, invalidateReviews } = useInvalidateReviews();
 
   React.useEffect(() => {
-    fetchTaskOptions();
-  }, []);
-
-  React.useEffect(() => {
-    if (selectedTaskId) {
-      fetchReviews(selectedTaskId);
+    if (Array.isArray(taskOptions) && taskOptions.length > 0) {
+      const initialId = initialTaskId ? String(initialTaskId) : '';
+      const hasInitial = initialId ? taskOptions.some((task) => String(task.id) === initialId) : false;
+      setSelectedTaskId((current) => {
+        if (current && taskOptions.some((task) => String(task.id) === current)) return current;
+        if (hasInitial) return initialId;
+        return String(taskOptions[0].id);
+      });
+    } else {
+      setSelectedTaskId('');
     }
-  }, [selectedTaskId]);
+  }, [taskOptions, initialTaskId]);
 
   const handleConfirm = async (id: string) => {
     try {
-      const response = await fetch('/api/reviews/confirm', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ids: [id] })
-      });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok || Number(data.failureCount || 0) > 0) {
-        const failed = Array.isArray(data.results) ? data.results.filter((item: any) => item.status === 'failed') : [];
-        const message = failed.map((item: any) => item.message).filter(Boolean).join('\n') || data.error || '确认回写失败';
+      const data = await confirmReviews([id]);
+      if (Number(data.failureCount || 0) > 0) {
+        const failed = Array.isArray(data.results) ? data.results.filter((item) => item.status === 'failed') : [];
+        const message = failed.map((item) => item.message).filter(Boolean).join('\n') || data.error || '确认回写失败';
         window.alert(message);
       }
-      fetchReviews();
+      await invalidateReviews(selectedTaskId);
     } catch (e) { console.error(e); }
   };
 
   const handleDelete = async (id: string) => {
     try {
-      await fetch(`/api/reviews/${id}`, { method: 'DELETE' });
-      fetchReviews();
+      await deleteReview(id);
+      await invalidateReviews(selectedTaskId);
     } catch (e) { console.error(e); }
   };
 
@@ -94,32 +68,24 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
       return;
     }
     try {
-      await fetch('/api/reviews/delete', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ids: filteredItems.map(i => i.id) })
-      });
-      fetchReviews();
+      await deleteReviews(filteredItems.map(i => String(i.id)));
+      await invalidateReviews(selectedTaskId);
+      await invalidateTasks();
     } catch (e) { console.error(e); }
   };
 
   const handleBatchConfirm = async () => {
     if (!filteredItems.length) return;
     try {
-      const response = await fetch('/api/reviews/confirm', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ids: filteredItems.map(i => i.id) })
-      });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok || Number(data.failureCount || 0) > 0) {
+      const data = await confirmReviews(filteredItems.map(i => String(i.id)));
+      if (Number(data.failureCount || 0) > 0) {
         window.alert(`批量确认完成：成功 ${Number(data.successCount || 0)} 条，失败 ${Number(data.failureCount || 0)} 条。失败项仍保留在待复核列表。`);
       }
-      fetchReviews();
+      await invalidateReviews(selectedTaskId);
     } catch (e) { console.error(e); }
   };
 
-  const openPreview = (item: any) => {
+  const openPreview = (item: ReviewItem) => {
     setPreviewItem(item);
   };
 
@@ -127,45 +93,12 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
     setPreviewItem(null);
   };
 
-  const normalizeCompareValue = (value: string) => String(value || '').trim().toLowerCase().replace(/\s+/g, '');
-
-  const getCompareTokens = (value: string) => {
-    const trimmed = String(value || '').trim();
-    if (!trimmed) return [];
-
-    const parts = trimmed
-      .split(/[、,，;；|/]+/)
-      .map(normalizeCompareValue)
-      .filter(Boolean);
-
-    return parts.length > 0 ? parts : [normalizeCompareValue(trimmed)];
-  };
-
-  const isResultMatched = (item: any) => {
-    const rows = getReviewRows(item);
-    if (Array.isArray(item.reviewRows)) {
-      return rows.length > 0 && rows.every((row: any) => row.decision === 'keep' && row.willSubmit);
-    }
-
-    const aiValue = normalizeCompareValue(item.aiResult || '');
-    if (!aiValue || aiValue.startsWith('识别失败:')) return false;
-
-    const originalTokens = getCompareTokens(item.originalResult || '');
-    if (originalTokens.length === 0) return false;
-
-    return originalTokens.some((token) => token === aiValue || token.includes(aiValue) || aiValue.includes(token));
-  };
-
-  const filteredItems = items.filter((item) => {
-    const matched = isResultMatched(item);
-    if (consistencyFilter === 'matched') return matched;
-    if (consistencyFilter === 'mismatched') return !matched;
-    return true;
-  });
-
-  const matchedCount = items.filter((item) => isResultMatched(item)).length;
-  const mismatchedCount = items.length - matchedCount;
-  const totalCount = items.length;
+  const {
+    filteredItems,
+    matchedCount,
+    mismatchedCount,
+    totalCount,
+  } = useReviewItem(items, consistencyFilter);
 
   React.useEffect(() => {
     if (filteredItems.length === 0) {
@@ -173,13 +106,13 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
       return;
     }
 
-    const stillExists = filteredItems.some((item) => item.id === activeItemId);
+    const stillExists = filteredItems.some((item) => String(item.id) === activeItemId);
     if (!stillExists) {
-      setActiveItemId(filteredItems[0].id);
+      setActiveItemId(String(filteredItems[0].id));
     }
   }, [filteredItems, activeItemId]);
 
-  const getActiveIndex = () => filteredItems.findIndex((item) => item.id === activeItemId);
+  const getActiveIndex = () => filteredItems.findIndex((item) => String(item.id) === activeItemId);
 
   const switchGalleryItem = (direction: 'prev' | 'next') => {
     if (filteredItems.length <= 1) return;
@@ -191,7 +124,7 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
       : Math.min(filteredItems.length - 1, safeIndex + 1);
 
     if (nextIndex !== safeIndex) {
-      setActiveItemId(filteredItems[nextIndex].id);
+      setActiveItemId(String(filteredItems[nextIndex].id));
     }
   };
 
@@ -309,21 +242,6 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
       </div>
     );
   };
-
-  function getReviewRows(item: any) {
-    if (Array.isArray(item.reviewRows)) return item.reviewRows;
-    const aiValue = normalizeCompareValue(item.aiResult || '');
-    const originalTokens = getCompareTokens(item.originalResult || '');
-    const matched = Boolean(aiValue) && !aiValue.startsWith('识别失败:') && originalTokens.some((token) => token === aiValue || token.includes(aiValue) || aiValue.includes(token));
-    return [{
-      originalName: item.originalResult,
-      aiName: item.aiResult,
-      decision: matched ? 'keep' : 'rename',
-      willSubmit: Boolean(item.aiResult),
-      groundingStatus: 'legacy',
-      legacy: true
-    }];
-  }
 
   const getDecisionLabel = (row: any) => {
     if (row.decision === 'keep') return '提交';
@@ -457,8 +375,8 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
                 </span>
               </td>
               <td className="px-4 py-3 whitespace-nowrap text-right space-x-2">
-                <button onClick={() => handleConfirm(item.id)} className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 text-sm font-medium">确认</button>
-                <button onClick={() => handleDelete(item.id)} className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 text-sm font-medium">删除</button>
+                <button onClick={() => handleConfirm(String(item.id))} className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 text-sm font-medium">确认</button>
+                <button onClick={() => handleDelete(String(item.id))} className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 text-sm font-medium">删除</button>
               </td>
             </tr>
           )})}
@@ -511,14 +429,14 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
 
             <div className="flex gap-2 mt-6">
               <button 
-                onClick={() => handleConfirm(item.id)}
+                onClick={() => handleConfirm(String(item.id))}
                 className="flex-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
               >
                 <Check className="w-4 h-4" />
                 确认并更新
               </button>
               <button 
-                onClick={() => handleDelete(item.id)}
+                onClick={() => handleDelete(String(item.id))}
                 className="px-4 bg-gray-50 dark:bg-gray-700 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 border border-gray-200 dark:border-gray-600 hover:border-red-200 dark:hover:border-red-800 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center"
                 title="删除记录"
               >
@@ -532,7 +450,7 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
   );
 
   const renderGalleryView = () => {
-    const activeItem = filteredItems.find(i => i.id === activeItemId) || filteredItems[0];
+    const activeItem = filteredItems.find(i => String(i.id) === activeItemId) || filteredItems[0];
     if (!activeItem) return null;
     const activeIndex = filteredItems.findIndex(i => i.id === activeItem.id);
     const hasPrevious = activeIndex > 0;
@@ -582,9 +500,9 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
           {/* 缩略图条 */}
           <div className="flex gap-2 overflow-x-auto flex-shrink-0 pb-1">
             {filteredItems.map(item => (
-              <button key={item.id} onClick={() => setActiveItemId(item.id)}
+              <button key={item.id} onClick={() => setActiveItemId(String(item.id))}
                 className={`flex-shrink-0 w-20 h-14 rounded-md overflow-hidden border-2 transition-colors ${
-                  activeItemId === item.id
+                  activeItemId === String(item.id)
                     ? (isResultMatched(item) ? 'border-green-500 dark:border-green-400' : 'border-red-500 dark:border-red-400')
                     : 'border-transparent opacity-60 hover:opacity-100'
                 }`}>
@@ -619,11 +537,11 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
             )}
           </div>
           <div className="p-4 flex flex-col gap-2 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
-            <button onClick={() => handleConfirm(activeItem.id)}
+            <button onClick={() => handleConfirm(String(activeItem.id))}
               className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
               <Check className="w-4 h-4" />确认并更新
             </button>
-            <button onClick={() => handleDelete(activeItem.id)}
+            <button onClick={() => handleDelete(String(activeItem.id))}
               className="w-full bg-white dark:bg-gray-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 border border-gray-200 dark:border-gray-700 hover:border-red-200 dark:hover:border-red-800 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
               <Trash2 className="w-4 h-4" />删除记录
             </button>

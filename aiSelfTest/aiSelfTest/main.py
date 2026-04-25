@@ -16,7 +16,7 @@ from aiSelfTest.api.config import router as config_router
 from aiSelfTest.api.dashboard import router as dashboard_router
 from aiSelfTest.api.multimodal_model import router as multimodal_model_router
 from aiSelfTest.config import get_settings
-from aiSelfTest.database import init_db
+from aiSelfTest.database import run_migrations
 from aiSelfTest.exceptions import (
     AppException,
     app_exception_handler,
@@ -35,7 +35,7 @@ async def lifespan(app: FastAPI):
     settings.log_dir.mkdir(parents=True, exist_ok=True)
 
     logger.info("启动 aiSelfTest FastAPI 应用...")
-    init_db()
+    run_migrations()
     yield
     logger.info("关闭 aiSelfTest FastAPI 应用...")
 
@@ -56,7 +56,7 @@ def create_app() -> FastAPI:
 
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["http://localhost:5173", "http://localhost:3000"],
+        allow_origins=get_settings().cors_origins,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -65,14 +65,15 @@ def create_app() -> FastAPI:
     @app.middleware("http")
     async def request_id_middleware(request: Request, call_next):
         request_id = request.headers.get("X-Request-ID", str(uuid4()))
-        response = await call_next(request)
+        with logger.contextualize(request_id=request_id):
+            response = await call_next(request)
         response.headers["X-Request-ID"] = request_id
         return response
 
-    app.include_router(client_router, prefix="/api")
-    app.include_router(config_router, prefix="/api")
-    app.include_router(dashboard_router, prefix="/api")
-    app.include_router(multimodal_model_router, prefix="/api")
+    app.include_router(client_router, prefix="/api", tags=["客户端"])
+    app.include_router(config_router, prefix="/api", tags=["提示词"])
+    app.include_router(dashboard_router, prefix="/api", tags=["首页统计"])
+    app.include_router(multimodal_model_router, prefix="/api", tags=["多模态模型"])
 
     @app.get("/")
     async def root() -> dict[str, str]:

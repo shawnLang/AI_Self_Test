@@ -23,7 +23,7 @@ from aiSelfTest.services.config import (
 )
 
 
-router = APIRouter(prefix="/configs", tags=["configs"])
+router = APIRouter(prefix="/configs")
 
 
 @router.get("/list", response_model=ApiResponse[ConfigListData])

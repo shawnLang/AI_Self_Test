@@ -8,7 +8,7 @@ from aiSelfTest.schemas.common import ApiResponse
 from aiSelfTest.schemas.dashboard import DashboardStatsData
 
 
-router = APIRouter(prefix="/dashboard", tags=["dashboard"])
+router = APIRouter(prefix="/dashboard")
 
 
 @router.get("/stats", response_model=ApiResponse[DashboardStatsData])

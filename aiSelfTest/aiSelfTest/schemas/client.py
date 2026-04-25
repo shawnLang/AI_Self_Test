@@ -25,10 +25,10 @@ class ClientPayloadBase(BaseModel):
 
     model_config = ConfigDict(populate_by_name=True, str_strip_whitespace=True)
 
-    name: str = Field(min_length=1, max_length=200)
-    api_url: str = Field(alias="apiUrl", min_length=1, max_length=1000)
-    account: str = Field(min_length=1, max_length=50)
-    status: ClientStatusValue = "启用"
+    name: str = Field(min_length=1, max_length=200, description="项目名称")
+    api_url: str = Field(alias="apiUrl", min_length=1, max_length=1000, description="API 地址")
+    account: str = Field(min_length=1, max_length=50, description="账号")
+    status: ClientStatusValue = Field(default="启用", description="状态")
 
     @field_validator("api_url")
     @classmethod
@@ -41,13 +41,13 @@ class ClientPayloadBase(BaseModel):
 class ClientCreateRequest(ClientPayloadBase):
     """创建客户端请求。"""
 
-    password: str = Field(min_length=1, max_length=50)
+    password: str = Field(min_length=1, max_length=50, description="密码")
 
 
 class ClientUpdateRequest(ClientPayloadBase):
     """更新客户端请求。"""
 
-    password: str | None = Field(default=None, max_length=50)
+    password: str | None = Field(default=None, max_length=50, description="密码")
 
 
 class ClientResponse(BaseModel):
@@ -64,7 +64,7 @@ class ClientResponse(BaseModel):
     password: str
     access_token: str = Field(alias="accessToken")
     refresh_token: str = Field(alias="refreshToken")
-    expires_in: int | None = Field(alias="expiresIn")
+    expires_at: int | None = Field(alias="expiresIn")
 
     @classmethod
     def from_model(cls, client: Client) -> "ClientResponse":
@@ -80,7 +80,7 @@ class ClientResponse(BaseModel):
             password=_masked_value(client.password),
             access_token=_masked_value(client.access_token),
             refresh_token=_masked_value(client.refresh_token),
-            expires_in=client.expires_in,
+            expires_at=client.expires_at,
         )
 
 
@@ -110,18 +110,17 @@ def _client_auth_status(client: Client) -> ClientAuthStatusValue:
 
     if not client.access_token:
         return "未认证"
-    if _will_expire_soon(client.expires_in):
+    if _will_expire_soon(client.expires_at):
         return "即将过期"
     return "已认证"
 
 
-def _will_expire_soon(expires_in: int | None) -> bool:
+def _will_expire_soon(expires_at: int | None) -> bool:
     """判断 token 是否已过期或即将过期。"""
 
     from time import time
 
-    if expires_in is None:
+    if expires_at is None:
         return True
 
-    expires_at_seconds = expires_in / 1000 if expires_in > 10**11 else expires_in
-    return expires_at_seconds - time() <= 60
+    return expires_at - time() <= 60

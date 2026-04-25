@@ -1,18 +1,37 @@
 """全局异常处理器。"""
+from enum import IntEnum
+from functools import lru_cache
+import importlib
+import inspect
 from typing import Any
 
 from fastapi import Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from loguru import logger
-from pydantic import ValidationError
+from pydantic import BaseModel, ValidationError
+
+
+class ErrorCode(IntEnum):
+    """统一业务错误码。"""
+
+    SUCCESS = 0
+    PARAM_INVALID = 1001
+    NOT_FOUND = 1002
+    EXISTS = 1003
+    AUTH_FAILED = 2001
+    PERMISSION_DENIED = 2002
+    TOKEN_EXPIRED = 2003
+    TASK_FAILED = 3001
+    RESOURCE_BUSY = 3002
+    INTERNAL_ERROR = 5001
 
 
 class AppException(Exception):
     """统一业务异常。"""
 
-    def __init__(self, *, code: int, message: str, status_code: int) -> None:
-        self.code = code
+    def __init__(self, *, code: ErrorCode | int, message: str, status_code: int) -> None:
+        self.code = int(code)
         self.message = message
         self.status_code = status_code
         super().__init__(message)
@@ -20,6 +39,10 @@ class AppException(Exception):
 
 def get_field_display_name(field: str) -> str:
     """获取字段的中文显示名称。"""
+    schema_description = _get_schema_field_descriptions().get(field)
+    if schema_description:
+        return schema_description
+
     field_map = {
         "username": "用户名",
         "password": "密码",
@@ -48,6 +71,38 @@ def get_field_display_name(field: str) -> str:
         "format": "解析格式",
     }
     return field_map.get(field, field)
+
+
+@lru_cache(maxsize=1)
+def _get_schema_field_descriptions() -> dict[str, str]:
+    """从 Pydantic schema 字段描述中收集中文字段名。"""
+
+    descriptions: dict[str, str] = {}
+    schema_modules = (
+        "aiSelfTest.schemas.client",
+        "aiSelfTest.schemas.config",
+        "aiSelfTest.schemas.multimodal_model",
+        "aiSelfTest.schemas.task",
+        "aiSelfTest.schemas.dashboard",
+    )
+    for module_name in schema_modules:
+        try:
+            module = importlib.import_module(module_name)
+        except ImportError:
+            continue
+
+        for _, model_class in inspect.getmembers(module, inspect.isclass):
+            if not issubclass(model_class, BaseModel):
+                continue
+            for field_name, field_info in model_class.model_fields.items():
+                description = field_info.description
+                if not description:
+                    continue
+                descriptions.setdefault(field_name, description)
+                if field_info.alias:
+                    descriptions.setdefault(str(field_info.alias), description)
+
+    return descriptions
 
 
 def parse_validation_error(error: dict[str, Any]) -> str:
@@ -117,7 +172,7 @@ async def validation_exception_handler(
     return JSONResponse(
         status_code=status.HTTP_400_BAD_REQUEST,
         content={
-            "code": 1001,  # 参数错误
+            "code": ErrorCode.PARAM_INVALID,
             "message": detail,
             "data": None
         }
@@ -141,7 +196,7 @@ async def pydantic_validation_exception_handler(
     return JSONResponse(
         status_code=status.HTTP_400_BAD_REQUEST,
         content={
-            "code": 1001,
+            "code": ErrorCode.PARAM_INVALID,
             "message": detail,
             "data": None
         }

@@ -112,3 +112,5 @@ server/db/
 aiSelfTestUi/node_modules/
 aiSelfTestUi/dist/
 /.pytest_tmp/
+aiSelfTest/uv.lock
+.codex

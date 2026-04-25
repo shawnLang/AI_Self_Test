@@ -22,21 +22,23 @@ from aiSelfTest.schemas.multimodal_model import (
     MultimodalModelResponse,
     MultimodalModelUpdateRequest,
 )
-from aiSelfTest.services.multimodal_model import (
+from aiSelfTest.services.multimodal_chat import (
     chat_with_multimodal_model,
-    create_multimodal_model,
     delete_multimodal_chat_session,
-    delete_multimodal_model,
-    detect_multimodal_models,
     get_multimodal_chat_session_detail,
-    list_multimodal_models,
     list_multimodal_chat_sessions,
     stream_chat_with_multimodal_model,
+)
+from aiSelfTest.services.multimodal_model_crud import (
+    create_multimodal_model,
+    delete_multimodal_model,
+    detect_multimodal_models,
+    list_multimodal_models,
     update_multimodal_model,
 )
 
 
-router = APIRouter(prefix="/multimodal-models", tags=["multimodal-models"])
+router = APIRouter(prefix="/multimodal-models")
 
 
 @router.get("/list", response_model=ApiResponse[MultimodalModelListData])

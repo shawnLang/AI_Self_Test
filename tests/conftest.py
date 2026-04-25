@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib
+import shutil
 import sys
 from pathlib import Path
 from typing import Generator
@@ -44,14 +45,18 @@ def app_client(monkeypatch: pytest.MonkeyPatch) -> Generator[TestClient, None, N
 
     temp_root = PROJECT_ROOT / ".pytest_tmp"
     temp_root.mkdir(exist_ok=True)
-    data_dir = temp_root / str(uuid4()) / "data"
+    test_root = temp_root / str(uuid4())
+    data_dir = test_root / "data"
     monkeypatch.setenv("AI_SELF_TEST_DATA_DIR", str(data_dir))
     _reload_backend_modules()
 
     main_module = importlib.import_module("aiSelfTest.main")
 
-    with TestClient(main_module.app) as client:
-        yield client
+    try:
+        with TestClient(main_module.app) as client:
+            yield client
+    finally:
+        shutil.rmtree(test_root, ignore_errors=True)
 
 
 @pytest.fixture

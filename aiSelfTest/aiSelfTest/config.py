@@ -12,6 +12,17 @@ def _env_path(name: str, default: Path) -> Path:
     return Path(value).expanduser().resolve() if value else default
 
 
+def _env_list(name: str, default: list[str]) -> list[str]:
+    """读取逗号分隔的列表环境变量。"""
+
+    value = os.getenv(name)
+    if not value:
+        return default
+
+    items = [item.strip() for item in value.split(",")]
+    return [item for item in items if item]
+
+
 @dataclass(frozen=True)
 class Settings:
     """集中保存服务启动所需的运行时配置。"""
@@ -22,6 +33,7 @@ class Settings:
     log_dir: Path
     static_dir: Path
     request_timeout_seconds: int
+    cors_origins: list[str]
 
     @property
     def database_url(self) -> str:
@@ -42,6 +54,10 @@ def get_settings() -> Settings:
     data_dir = _env_path("AI_SELF_TEST_DATA_DIR", package_dir / ".aiSelfTest")
     database_path = data_dir / "database.sqlite"
     log_dir = data_dir / "logs"
+    cors_origins = _env_list(
+        "AI_SELF_TEST_CORS_ORIGINS",
+        ["http://localhost:5173", "http://localhost:3000"],
+    )
     return Settings(
         package_dir=package_dir,
         data_dir=data_dir,
@@ -49,4 +65,5 @@ def get_settings() -> Settings:
         log_dir=log_dir,
         static_dir=package_dir / "static",
         request_timeout_seconds=30,
+        cors_origins=cors_origins,
     )

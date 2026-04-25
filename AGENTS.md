@@ -8,7 +8,7 @@ This file provides guidance to codex when working with code in this repository.
 
 ## uv 操作规范
 
-- 初始化或同步环境：`uv sync`
+- 初始化或同步环境：`uv sync --no-install-project`
 - 运行 Python 脚本：`uv run python <script.py>`
 - 运行项目命令：`uv run <command>`
 - 运行测试：`uv run pytest`

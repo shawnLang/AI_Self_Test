@@ -129,7 +129,7 @@ def build(path: Path, build_ignore: Sequence[str]) -> Tuple[List[str], List[Exte
     python_files = []
     extensions = []
     # 需要排除编译的目录（alembic 需要保持原始 Python 文件）
-    exclude_dirs = ['alembic']
+    exclude_dirs = ['alembic', '.venv', 'venv', 'env', '__pycache__']
 
     for dir_path, dir_list, file_list in os.walk(path.as_posix()):
         dir_path = Path(dir_path)

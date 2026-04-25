@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from sqlmodel import Session, select
 
-from aiSelfTest.exceptions import AppException
+from aiSelfTest.exceptions import AppException, ErrorCode
 from aiSelfTest.models.config import Config
 from aiSelfTest.schemas.config import (
     ConfigCreateRequest,
@@ -79,7 +79,7 @@ def _get_config_or_raise(session: Session, config_id: int) -> Config:
     config = session.get(Config, config_id)
     if config is None:
         raise AppException(
-            code=1002,
+            code=ErrorCode.NOT_FOUND,
             message="模型提示词配置不存在",
             status_code=404,
         )

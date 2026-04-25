@@ -2,12 +2,12 @@
 from typing import Generator
 
 import aiSelfTest.models  # noqa: F401
+from alembic import command
+from alembic.config import Config
 from loguru import logger
 from sqlalchemy import event
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
-from sqlmodel import Session, create_engine, SQLModel
+from sqlmodel import Session, create_engine
 
 from aiSelfTest.config import get_settings
 
@@ -35,36 +35,8 @@ def _set_sqlite_pragma(dbapi_connection, _connection_record) -> None:
     cursor.close()
 
 
-# 异步引擎 (用于 FastAPI 异步操作) - 延迟导入
-async_engine = None
-AsyncSessionLocal = None
-
-
-def init_async_engine():
-    """初始化异步引擎 (需要安装 asyncpg)。"""
-    global async_engine, AsyncSessionLocal
-
-    try:
-
-        async_engine = create_async_engine(
-            settings.database_url,
-            connect_args={"check_same_thread": False},
-            # SQLite 本地文件更适合短连接，避免跨线程复用连接产生意外状态。
-            poolclass=NullPool,
-        )
-
-        AsyncSessionLocal = sessionmaker(
-            bind=async_engine,
-            class_=AsyncSession,
-            expire_on_commit=False
-        )
-        logger.info("异步数据库引擎初始化成功")
-    except ImportError:
-        logger.warning("asyncpg 未安装，异步数据库功能不可用")
-
-
 def get_session() -> Generator[Session, None, None]:
-    """获取同步数据库会话 (用于 Celery 任务等同步场景)。"""
+    """获取同步数据库会话 (用于 FastAPI 同步路由)。"""
     with Session(engine) as session:
         try:
             yield session
@@ -76,28 +48,23 @@ def get_session() -> Generator[Session, None, None]:
             session.close()
 
 
-async def get_async_session():
-    """获取异步数据库会话 (用于 FastAPI 路由)。"""
-    if AsyncSessionLocal is None:
-        raise RuntimeError("异步引擎未初始化，请先调用 init_async_engine()")
+def run_migrations() -> None:
+    """执行 Alembic 数据库迁移。"""
 
-    async with AsyncSessionLocal() as session:
-        try:
-            yield session
-        except Exception as e:
-            logger.exception("异步数据库会话异常")
-            await session.rollback()
-            raise
-        finally:
-            await session.close()
+    logger.info("开始执行数据库迁移...")
+    alembic_config = _build_alembic_config()
+    command.upgrade(alembic_config, "head")
+    logger.info("数据库迁移完成")
 
 
-def init_db() -> None:
-    """初始化数据库 (创建所有表)。
+def _build_alembic_config() -> Config:
+    """构建绑定当前运行时数据库地址的 Alembic 配置。"""
 
-    注意: 生产环境应使用 Alembic 迁移，此函数仅用于开发测试。
-    """
-
-    logger.info("开始创建数据库表...")
-    SQLModel.metadata.create_all(engine)
-    logger.info("数据库表创建完成")
+    config_path = settings.package_dir / "alembic.ini"
+    alembic_config = Config(config_path.as_posix())
+    alembic_config.set_main_option(
+        "script_location",
+        (settings.package_dir / "alembic").as_posix(),
+    )
+    alembic_config.set_main_option("sqlalchemy.url", settings.database_url)
+    return alembic_config
