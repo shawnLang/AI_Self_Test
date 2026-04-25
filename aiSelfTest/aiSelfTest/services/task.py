@@ -85,6 +85,7 @@ def update_task(
     session.add(task)
     session.commit()
     session.refresh(task)
+    _sync_scheduler(task.id)
     return TaskResponse.from_model(task, filters=payload.filters)
 
 
@@ -110,6 +111,7 @@ def delete_task(session: Session, task_id: int) -> TaskDeleteData:
 
         session.delete(task)
 
+    _sync_scheduler(task_id)
     return TaskDeleteData(id=task_id)
 
 
@@ -122,6 +124,7 @@ def start_task(session: Session, task_id: int) -> TaskActionData:
     session.add(task)
     session.commit()
     session.refresh(task)
+    _sync_scheduler(task.id)
     return TaskActionData(id=task.id or 0, active=task.active, execution_status=task.execution_status)
 
 
@@ -134,19 +137,17 @@ def stop_task(session: Session, task_id: int) -> TaskActionData:
     session.add(task)
     session.commit()
     session.refresh(task)
+    _sync_scheduler(task.id)
     return TaskActionData(id=task.id or 0, active=task.active, execution_status=task.execution_status)
 
 
 def run_task_once(session: Session, task_id: int) -> TaskActionData:
     """立即执行一次任务。"""
 
+    from aiSelfTest.services.task_execution import run_task_execution
+
+    run_task_execution(session, task_id)
     task = _get_task_or_raise(session, task_id)
-    task.started_at = datetime.now()
-    task.last_run_started_at = task.started_at
-    task.updated_at = datetime.now()
-    session.add(task)
-    session.commit()
-    session.refresh(task)
     return TaskActionData(id=task.id or 0, active=task.active, execution_status=task.execution_status)
 
 
@@ -474,3 +475,13 @@ def _get_task_item_or_raise(session: Session, task_item_id: int) -> TaskItem:
             status_code=404,
         )
     return task_item
+
+
+def _sync_scheduler(task_id: int | None) -> None:
+    """同步单进程调度器；缺全局调度器时安全跳过。"""
+
+    if task_id is None:
+        return
+    from aiSelfTest.services.task_scheduler import sync_global_task_scheduler
+
+    sync_global_task_scheduler(task_id)

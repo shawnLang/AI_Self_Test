@@ -19,6 +19,7 @@ dependencies = [
     "sqlalchemy",
     "numpy",
     "requests",
+    "apscheduler",
 ]
 requires-python = ">=3.10" # Python 最低版本
 authors = []
