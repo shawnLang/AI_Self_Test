@@ -132,10 +132,6 @@ export default function DataQuery({ taskId, onBack }: { taskId: number, onBack: 
   };
 
   const handleExecute = async () => {
-    if (selectedIds.size === 0) {
-      alert("请至少选择一条影像数据后再执行任务。");
-      return;
-    }
     try {
       const selectedItems = results
         .filter(item => selectedIds.has(item.id))
@@ -185,19 +181,14 @@ export default function DataQuery({ taskId, onBack }: { taskId: number, onBack: 
           <button onClick={onBack} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">检视三方实时数据并下发任务</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">任务详情与任务项工作区</h2>
         </div>
         <button 
           onClick={handleExecute}
-          disabled={selectedIds.size === 0}
-          className={`px-6 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors ${
-            selectedIds.size > 0 
-              ? 'bg-green-600 hover:bg-green-700 text-white shadow-md' 
-              : 'bg-gray-200 dark:bg-gray-800 text-gray-400 cursor-not-allowed'
-          }`}
+          className="px-6 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors bg-green-600 hover:bg-green-700 text-white shadow-md"
         >
           <Play className="w-4 h-4" />
-          下发任务（已选 {selectedIds.size} 项）
+          立即执行任务{selectedIds.size > 0 ? `（已选 ${selectedIds.size} 项）` : ''}
         </button>
       </div>
 

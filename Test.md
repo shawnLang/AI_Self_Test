@@ -1,90 +1,191 @@
-# 模型提示词配置管理功能 Test.md
+# Task 执行链路 V1 - Test.md
 
 ## 1. 本轮目标
 
-本轮实现范围只包含 `config` 表对应的模型提示词配置管理能力。
+本轮围绕 **Task 执行链路 V1** 建立测试先行基线，
+并逐步完成从契约到实现的闭环。
 
-- 提供提示词配置列表、详情、新增、更新、删除接口
-- 提供前端提示词配置页面和新增入口
-- 保持统一响应格式 `{code, message, data}`
-- 校验提示词名称、正文和解析格式
-- 注册 `/api/configs` 路由
-- 不接入 `task` 任务链路
-- 不修改模型测试、模型聊天或多模态模型管理逻辑
+当前需求范围以：
 
-## 2. 验收标准
+- `.omx/plans/prd-task-execution-v1-20260425T092838Z.md`
+- `.omx/plans/test-spec-task-execution-v1-20260425T092838Z.md`
 
-### 2.1 配置列表
+为准。
 
-- 空库时返回空列表
-- 创建配置后，列表按 ID 倒序返回
-- 返回字段至少包含：
-  - `id`
+V1 必须覆盖：
+
+- 后端 + 前端
+- 图片 + 视频
+- 自动 + 手动
+- Task / TaskItem / TaskItem Actions
+
+## 2. 本轮执行策略
+
+遵循 **Phase0 → Phase1** 顺序推进：
+
+1. 先把任务执行链的测试基线写成**可执行失败测试**
+2. 再实现 canonical contract、schema、migration 与基础路由
+3. 之后再进入共享主干、媒体分支与前端语义重构
+
+当前阶段**不允许**跳过测试直接写实现。
+
+## 3. Phase0 验收标准
+
+### 3.1 测试文档
+
+- `Test.md` 已切换为当前 Task 执行链任务
+- 测试范围与 PRD / test-spec 对齐
+
+### 3.2 可执行失败测试
+
+必须存在可执行测试，并且当前失败点正确地指向：
+
+- `task` 正式路由尚未实现
+- `task` schema 尚未实现
+- `task` router 尚未接入 `main.py`
+- `TaskItem` / `TaskItem Actions` 契约尚未实现
+
+### 3.3 失败必须是“正确失败”
+
+允许当前失败的原因：
+
+- 404（路由缺失）
+- schema / service 未实现导致的业务失败
+- 断言接口返回结构不匹配
+
+不允许当前失败的原因：
+
+- 测试夹具损坏
+- 数据库未初始化
+- 仓库路径错误
+- 非 task 模块无关异常
+
+## 4. 核心验收标准
+
+### 4.1 Task Contract
+
+- 提供以下正式路由：
+  - `GET /api/tasks/list`
+  - `POST /api/tasks/create`
+  - `GET /api/tasks/detail/{task_id}`
+  - `POST /api/tasks/update/{task_id}`
+  - `DELETE /api/tasks/delete/{task_id}`
+  - `POST /api/tasks/action-start/{task_id}`
+  - `POST /api/tasks/action-stop/{task_id}`
+  - `POST /api/tasks/action-run/{task_id}`
+
+- 所有接口统一返回：
+
+```json
+{
+  "code": 0,
+  "message": "success",
+  "data": {}
+}
+```
+
+### 4.2 Task Create
+
+- 创建任务时必须保存：
   - `name`
-  - `remark`
-  - `text`
-  - `format`
+  - `client_id`
+  - `config_id`
+  - `interval_hours`
+  - `execution_mode`
+  - `auto_confirm`
+  - `filters`
 
-### 2.2 配置详情
+- `config_id` 缺失时必须返回参数错误
+- `interval_hours` 非法时必须返回参数错误
 
-- 存在的配置可按 ID 查询详情
-- 不存在的配置返回资源不存在错误码 `1002`
+### 4.3 TaskItem / TaskItem Actions
 
-### 2.3 新增配置
+- 提供以下正式路由：
+  - `GET /api/task-items/list`
+  - `GET /api/task-items/detail/{task_item_id}`
+  - `POST /api/task-items/action-confirm`
+  - `POST /api/task-items/action-reject`
+  - `POST /api/task-items/action-delete`
+  - `POST /api/task-items/action-submit`
 
-- `name` 必填，禁止纯空白
-- `text` 必填，禁止纯空白
-- `remark` 可为空字符串
-- `format` 必须是受控值
-- 创建成功后可正常回读
+- `delete` 的规范必须固定：
+  - **不删除源媒体**
+  - **不删除源 TaskItem**
+  - 只作用于当前复核层对象或待提交差异集合
 
-### 2.4 更新配置
+### 4.4 Scheduler Contract
 
-- 可更新 `name`、`remark`、`text`、`format`
-- 更新后列表和详情返回最新值
-- 更新不存在的配置返回资源不存在错误码 `1002`
+- `active=true` 时可注册任务
+- `start / stop / run` 契约明确
+- 运行中任务不能重入
+- 重启后 active 任务可恢复
 
-### 2.5 删除配置
+### 4.5 Shared Trunk
 
-- 删除存在的配置返回被删除的 ID
-- 删除后详情接口返回 `1002`
-- 删除不存在的配置返回 `1002`
+- 支持 Task 创建后进入共享主干
+- 支持生成 `TaskItem`
+- 支持去重策略：
+  - `(task_id, file_fid)` 唯一
 
-### 2.6 前端配置管理
+### 4.6 Image Branch
 
-- 侧边栏提供“提示词配置”入口
-- 页面加载时调用 `/api/configs/list`
-- 点击“添加提示词”可打开创建弹窗
-- 创建弹窗包含 `name`、`remark`、`text`、`format` 字段
-- 保存成功后关闭弹窗并刷新列表
-- 可编辑已有提示词配置
-- 可删除已有提示词配置
-- 模型测试页面不展示也不使用提示词内容
+- 支持图片下载
+- 支持图片识别
+- 支持 bbox 匹配
+- 支持 `ADD / UPDATE / DELETE`
 
-## 3. 验证方式
+### 4.7 Video Branch
 
-### 3.1 自动验证
+- 支持视频下载
+- 支持 `result.json`
+- 支持抽帧
+- 支持 `track_id` 匹配
+- 视频不产生 `ADD`
 
-- `pytest tests/test_config_api.py`
-- `pytest`
-- `npm run lint`
-- `npm run build`
+### 4.8 Frontend Contract
 
-### 3.2 手工验证
+- `Tasks` 页面切换到新 task 契约
+- `CreateTask` 页面显式提交 `config_id`
+- `DataQuery` 不再以“实时查询并下发任务”为主语义
+- `Review` 只做基础确认，不扩成复杂审核工作台
 
-1. 启动后端服务
-2. 调用 `/api/configs/create` 新增提示词配置
-3. 调用 `/api/configs/list` 确认列表包含新增项
-4. 调用 `/api/configs/detail/{config_id}` 确认详情正确
-5. 调用 `/api/configs/update/{config_id}` 修改配置
-6. 再次查询详情，确认已更新
-7. 调用 `/api/configs/delete/{config_id}` 删除配置
-8. 再次查询详情，确认返回资源不存在
-9. 打开前端“提示词配置”页面
-10. 点击“添加提示词”并保存，确认列表刷新
-11. 编辑和删除该提示词，确认页面状态同步更新
+## 5. 自动验证
 
-## 4. 风险点
+当前阶段至少运行：
 
-- 当前 `format` 字段已有数据库模型但没有业务枚举，本轮需要先定义最小受控值。
-- 本轮不处理已被任务引用的配置删除规则，因为任务相关能力不在本轮范围内。
+- `uv run pytest tests/test_task_api.py`
+- `uv run pytest tests/test_task_item_api.py`
+
+后续阶段逐步增加：
+
+- `uv run pytest`
+- 前端测试 / 构建验证
+
+## 6. 手工验证
+
+在后续实现可运行后，至少手工验证：
+
+1. 创建一个任务
+2. 查询任务列表
+3. 查看任务详情
+4. 查看 TaskItem 列表
+5. 执行基础确认动作
+6. 验证图片链路样本
+7. 验证视频链路样本
+
+## 7. 风险点
+
+- `delete` 语义最容易漂移，必须单独写测试固定
+- `/api/reviews` 只能做 compat adapter，不能重新长成主模型
+- `DataQuery` 旧语义必须彻底退场
+- `CreateTask` 当前没有 `config_id` 显式输入，必须在实现阶段补齐
+
+## 8. 当前阶段结论
+
+当前进入 **Phase0：测试先行**。
+
+在以下条件满足前，不进入实现：
+
+- [ ] `Test.md` 已更新为当前任务
+- [ ] task 相关可执行失败测试已写好
+- [ ] 失败点已验证为“正确失败”

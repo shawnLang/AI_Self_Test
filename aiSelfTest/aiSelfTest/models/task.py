@@ -3,6 +3,7 @@ from datetime import datetime
 from enum import Enum, IntEnum
 from typing import Optional
 
+from sqlalchemy import UniqueConstraint
 from sqlmodel import Field, SQLModel
 
 
@@ -69,6 +70,9 @@ class Task(SQLModel, table=True):
     processed_count: int = Field(default=0, description="处理次数")
     started_at: Optional[datetime] = Field(default=None, description="开始时间")
     finished_at: Optional[datetime] = Field(default=None, description="完成时间")
+    last_pull_end_at: Optional[datetime] = Field(default=None, description="上次拉取结束时间")
+    last_run_started_at: Optional[datetime] = Field(default=None, description="上次执行发起时间")
+    skipped_count: int = Field(default=0, description="累计跳过重复条数")
     last_error: Optional[str] = Field(default=None, description="最后错误")
     created_at: datetime = Field(default_factory=datetime.now, description="创建时间")
     updated_at: datetime = Field(default_factory=datetime.now, description="更新时间")
@@ -78,6 +82,9 @@ class TaskItem(SQLModel, table=True):
     """任务文件列表"""
 
     __tablename__ = "task_item"
+    __table_args__ = (
+        UniqueConstraint("task_id", "file_fid", name="uq_task_item_task_id_file_fid"),
+    )
 
     id: Optional[int] = Field(default=None, primary_key=True)
     task_id: int = Field(

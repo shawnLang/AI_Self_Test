@@ -1,10 +1,34 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { classifyOptions, defaultTaskFilters, fileBmpOptions, intervalOptions, type TaskFilterFormData } from '../constants/taskFilters';
+import { classifyOptions, defaultTaskFilters, fileBmpOptions, resolveApiFileBmpValue, type TaskFilterFormData } from '../constants/taskFilters';
 import type { ClientItem, ClientListData } from '../types/client';
 import { fetchApi } from '../utils/api';
 
 type ExecutionMode = 'auto' | 'manual';
+type ConfigOption = {
+  id: number;
+  name: string;
+  remark: string;
+  text: string;
+  format: 0 | 1 | 2;
+};
+
+type ConfigListData = {
+  items: ConfigOption[];
+};
+
+type IntervalOption = {
+  label: string;
+  value: number;
+};
+
+const intervalOptions: IntervalOption[] = [
+  { label: '每小时', value: 1 },
+  { label: '每 6 小时', value: 6 },
+  { label: '每 12 小时', value: 12 },
+  { label: '每天', value: 24 },
+  { label: '每周', value: 168 },
+];
 
 const buildTaskName = (projectName: string, executionMode: ExecutionMode) => {
   const now = new Date();
@@ -19,34 +43,48 @@ const inputClass = 'w-full bg-white dark:bg-gray-900 border border-gray-300 dark
 
 export default function CreateTask({ onBack }: { onBack: () => void }) {
   const [clients, setClients] = useState<ClientItem[]>([]);
+  const [configs, setConfigs] = useState<ConfigOption[]>([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState<{
     clientId: string;
-    interval: string;
+    configId: string;
+    intervalHours: number;
     executionMode: ExecutionMode;
     filters: TaskFilterFormData;
   }>({
     clientId: '',
-    interval: intervalOptions[2] || '每小时',
+    configId: '',
+    intervalHours: intervalOptions[0]?.value || 1,
     executionMode: 'manual',
     filters: { ...defaultTaskFilters }
   });
 
   useEffect(() => {
-    const fetchClients = async () => {
+    const initializeOptions = async () => {
       try {
-        const data = await fetchApi<ClientListData>('/api/clients/list');
-        setClients(data.items);
-        if (data.items.length > 0) {
-          setFormData((prev) => ({ ...prev, clientId: String(data.items[0].id) }));
+        const [clientData, configData] = await Promise.all([
+          fetchApi<ClientListData>('/api/clients/list'),
+          fetchApi<ConfigListData>('/api/configs/list'),
+        ]);
+        setClients(clientData.items);
+        setConfigs(configData.items);
+        setFormData((prev) => ({
+          ...prev,
+          clientId: prev.clientId || (clientData.items[0] ? String(clientData.items[0].id) : ''),
+          configId: prev.configId || (configData.items[0] ? String(configData.items[0].id) : ''),
+        }));
+        if (clientData.items.length === 0) {
+          setError('请先创建客户端。');
+        } else if (configData.items.length === 0) {
+          setError('请先创建提示词配置。');
         }
       } catch (e) {
         console.error(e);
-        setError((e as Error).message || '客户端列表加载失败');
+        setError((e as Error).message || '任务配置选项加载失败');
       }
     };
-    fetchClients();
+    initializeOptions();
   }, []);
 
   const selectedClient = useMemo(
@@ -85,29 +123,44 @@ export default function CreateTask({ onBack }: { onBack: () => void }) {
       setError('请先选择一个项目。');
       return;
     }
+    if (!formData.configId) {
+      setError('请先选择一个提示词配置。');
+      return;
+    }
 
     setSaving(true);
     setError('');
 
     try {
-      const response = await fetch('/api/tasks', {
+      const mediaTypeValue = resolveApiFileBmpValue(formData.filters.fileBmp);
+      const mediaTypes = mediaTypeValue === 1
+        ? ['image']
+        : mediaTypeValue === 2
+          ? ['video']
+          : [];
+
+      await fetchApi('/api/tasks/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: buildTaskName(selectedClient?.name || '项目', formData.executionMode),
-          clientId: parseInt(formData.clientId, 10),
-          interval: formData.interval,
-          threshold: 0,
-          filters: formData.filters,
-          executionMode: formData.executionMode,
-          autoConfirm: false,
-          active: false
+          client_id: parseInt(formData.clientId, 10),
+          config_id: parseInt(formData.configId, 10),
+          interval_hours: formData.intervalHours,
+          execution_mode: formData.executionMode,
+          auto_confirm: false,
+          filters: {
+            classify_list: formData.filters.classifyList,
+            keyword: formData.filters.keyword,
+            sp_name: formData.filters.spName,
+            start_at: formData.filters.startTime,
+            end_at: formData.filters.endTime,
+            media_types: mediaTypes,
+            upload_types: formData.filters.uploadType === 'all' ? [] : [Number(formData.filters.uploadType)],
+            identify_source: formData.filters.idType === 'all' ? [] : [Number(formData.filters.idType)],
+          },
         })
       });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok) {
-        throw new Error(data.error || data.message || '创建任务失败');
-      }
       onBack();
     } catch (e) {
       console.error(e);
@@ -155,17 +208,36 @@ export default function CreateTask({ onBack }: { onBack: () => void }) {
             <section className="space-y-4">
               <div className="flex items-center gap-3">
                 <span className="w-8 h-8 rounded-full bg-blue-600 text-white text-sm font-semibold flex items-center justify-center">2</span>
+                <h3 className={sectionTitleClass}>选择提示词配置</h3>
+              </div>
+              <div>
+                <label className={labelClass}>提示词配置</label>
+                <select
+                  value={formData.configId}
+                  onChange={(e) => setFormData({ ...formData, configId: e.target.value })}
+                  className={inputClass}
+                >
+                  {configs.map((config) => (
+                    <option key={config.id} value={config.id}>{config.name}</option>
+                  ))}
+                </select>
+              </div>
+            </section>
+
+            <section className="space-y-4">
+              <div className="flex items-center gap-3">
+                <span className="w-8 h-8 rounded-full bg-blue-600 text-white text-sm font-semibold flex items-center justify-center">3</span>
                 <h3 className={sectionTitleClass}>选择执行间隔时间（定时器）</h3>
               </div>
               <div>
                 <label className={labelClass}>执行间隔</label>
                 <select
-                  value={formData.interval}
-                  onChange={(e) => setFormData({ ...formData, interval: e.target.value })}
+                  value={String(formData.intervalHours)}
+                  onChange={(e) => setFormData({ ...formData, intervalHours: Number(e.target.value) })}
                   className={inputClass}
                 >
                   {intervalOptions.map((option) => (
-                    <option key={option} value={option}>{option}</option>
+                    <option key={option.value} value={option.value}>{option.label}</option>
                   ))}
                 </select>
               </div>
@@ -174,10 +246,10 @@ export default function CreateTask({ onBack }: { onBack: () => void }) {
 
           <section className="space-y-5">
             <div className="flex items-center gap-3">
-              <span className="w-8 h-8 rounded-full bg-blue-600 text-white text-sm font-semibold flex items-center justify-center">3</span>
+              <span className="w-8 h-8 rounded-full bg-blue-600 text-white text-sm font-semibold flex items-center justify-center">4</span>
               <div>
                 <h3 className={sectionTitleClass}>筛选条件</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">支持按“检视三方实时数据并下发任务”同样的条件保存筛选规则。</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">保存任务执行所需的筛选条件，后续由任务主干统一生成 TaskItem。</p>
               </div>
             </div>
 
@@ -292,7 +364,7 @@ export default function CreateTask({ onBack }: { onBack: () => void }) {
 
           <section className="space-y-4">
             <div className="flex items-center gap-3">
-              <span className="w-8 h-8 rounded-full bg-blue-600 text-white text-sm font-semibold flex items-center justify-center">4</span>
+              <span className="w-8 h-8 rounded-full bg-blue-600 text-white text-sm font-semibold flex items-center justify-center">5</span>
               <h3 className={sectionTitleClass}>选择自动执行还是手动执行</h3>
             </div>
 
@@ -335,12 +407,19 @@ export default function CreateTask({ onBack }: { onBack: () => void }) {
               <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold mb-1">目标客户端</p>
               <div className="text-base text-gray-900 dark:text-gray-100 font-medium">{selectedClient?.name || '未选择客户端'}</div>
             </div>
+
+            <div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold mb-1">提示词配置</p>
+              <div className="text-base text-gray-900 dark:text-gray-100 font-medium">
+                {configs.find((item) => String(item.id) === formData.configId)?.name || '未选择提示词配置'}
+              </div>
+            </div>
             
             <div>
               <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold mb-1">执行调度</p>
               <div className="text-base text-gray-900 dark:text-gray-100 font-medium">
                 {formData.executionMode === 'auto' ? '自动执行' : '手动执行'}
-                <span className="text-gray-400 ml-2">({formData.interval})</span>
+                <span className="text-gray-400 ml-2">({intervalOptions.find((option) => option.value === formData.intervalHours)?.label || `${formData.intervalHours} 小时`})</span>
               </div>
             </div>
 

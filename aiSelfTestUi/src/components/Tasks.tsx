@@ -1,5 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Clock, Settings2, Trash2, Pause, Square, AlertTriangle, CheckSquare, Play } from 'lucide-react';
+import { fetchApi } from '../utils/api';
+
+type TaskItem = {
+  id: number;
+  name: string;
+  client_id: number;
+  config_id: number;
+  interval_hours: number;
+  execution_mode: 'auto' | 'manual';
+  auto_confirm: boolean;
+  active: boolean;
+  execution_status: string;
+  total_count: number;
+  processed_count: number;
+  last_error: string | null;
+};
+
+type TaskListData = {
+  items: TaskItem[];
+};
+
+const intervalLabelMap: Record<number, string> = {
+  1: '每小时',
+  6: '每 6 小时',
+  12: '每 12 小时',
+  24: '每天',
+  168: '每周',
+};
+
+const statusTextMap: Record<string, string> = {
+  创建: '未开始',
+  下载: '下载中',
+  模型识别: '识别中',
+  核查: '待核查',
+  提交: '提交中',
+  结束: '已完成',
+  失败: '执行失败',
+};
 
 export default function Tasks({
   onCreateTask,
@@ -10,15 +48,19 @@ export default function Tasks({
   onQueryData: (taskId: number) => void,
   onReview: (taskId: number) => void
 }) {
-  const [tasks, setTasks] = useState<any[]>([]);
+  const [tasks, setTasks] = useState<TaskItem[]>([]);
   const [runningNowTaskId, setRunningNowTaskId] = useState<number | null>(null);
+  const [error, setError] = useState('');
 
   const fetchTasks = async () => {
     try {
-      const res = await fetch('/api/tasks');
-      const data = await res.json();
-      setTasks(data);
-    } catch(e) { console.error(e); }
+      const data = await fetchApi<TaskListData>('/api/tasks/list');
+      setTasks(data.items);
+      setError('');
+    } catch(e) {
+      console.error(e);
+      setError((e as Error).message || '任务列表加载失败');
+    }
   };
 
   useEffect(() => {
@@ -30,38 +72,33 @@ export default function Tasks({
   const handleDelete = async (id: number) => {
     if(!confirm('确定删除此任务吗？')) return;
     try {
-      await fetch(`/api/tasks/${id}`, { method: 'DELETE' });
-      fetchTasks();
+      await fetchApi(`/api/tasks/delete/${id}`, { method: 'DELETE' });
+      await fetchTasks();
     } catch (e) {
       console.error(e);
+      alert(`删除任务失败：${(e as Error).message || '未知错误'}`);
     }
   };
 
   const updateTaskStatus = async (id: number, active: boolean) => {
     try {
-      await fetch(`/api/tasks/${id}/status`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ active })
+      await fetchApi(active ? `/api/tasks/action-start/${id}` : `/api/tasks/action-stop/${id}`, {
+        method: 'POST',
       });
-      fetchTasks();
+      await fetchTasks();
     } catch (e) {
       console.error(e);
+      alert(`${active ? '启动' : '停止'}任务失败：${(e as Error).message || '未知错误'}`);
     }
   };
 
   const runTaskNow = async (id: number) => {
     setRunningNowTaskId(id);
     try {
-      const res = await fetch(`/api/tasks/${id}/run-now`, {
+      await fetchApi(`/api/tasks/action-run/${id}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
       });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        throw new Error(data.error || data.message || '立即执行失败');
-      }
-      fetchTasks();
+      await fetchTasks();
     } catch (e) {
       console.error(e);
       alert(`立即执行失败：${(e as Error).message || '未知错误'}`);
@@ -83,13 +120,19 @@ export default function Tasks({
         </button>
       </div>
 
+      {error && (
+        <div className="mb-4 rounded-lg border border-red-200 bg-red-50 text-red-700 dark:border-red-900/40 dark:bg-red-900/20 dark:text-red-300 px-4 py-3 text-sm">
+          {error}
+        </div>
+      )}
+
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {tasks.length === 0 ? (
           <div className="xl:col-span-2 text-center py-12 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
             <p className="text-gray-500 dark:text-gray-400 mb-4">暂无任务，请点击上方按钮创建</p>
           </div>
         ) : (
-          tasks.map(task => (
+          tasks.map((task) => (
             <TaskMonitorCard 
               key={task.id}
               task={task}
@@ -107,21 +150,31 @@ export default function Tasks({
   );
 }
 
-function TaskMonitorCard({ task, onDelete, onStatusChange, onRunNow, runningNow, onQueryData, onReview }: any) {
-  const isRunning = task.active;
-  const progress = Number(task.progress || 0);
-  const processed = Number(task.processedCount || 0);
-  const total = Number(task.totalCount || 0);
-  const isCompleted = task.executionStatus === 'completed' && progress >= 100;
+type TaskMonitorCardProps = {
+  task: TaskItem;
+  onDelete: () => void;
+  onStatusChange: (active: boolean) => void;
+  onRunNow: () => void;
+  runningNow: boolean;
+  onQueryData: () => void;
+  onReview: () => void;
+};
 
-  const statusTextMap: Record<string, string> = {
-    running: '运行中',
-    completed: '已完成',
-    failed: '执行失败',
-    paused: '已暂停',
-    idle: '未开始'
-  };
-  const statusText = statusTextMap[task.executionStatus] || '未开始';
+const TaskMonitorCard: React.FC<TaskMonitorCardProps> = ({
+  task,
+  onDelete,
+  onStatusChange,
+  onRunNow,
+  runningNow,
+  onQueryData,
+  onReview,
+}) => {
+  const isRunning = task.active;
+  const processed = Number(task.processed_count || 0);
+  const total = Number(task.total_count || 0);
+  const progress = total > 0 ? Math.min(100, Math.round((processed / total) * 100)) : 0;
+  const isCompleted = task.execution_status === '结束';
+  const statusText = statusTextMap[task.execution_status] || task.execution_status || '未开始';
   
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm transition-colors">
@@ -140,19 +193,27 @@ function TaskMonitorCard({ task, onDelete, onStatusChange, onRunNow, runningNow,
             )}
           </div>
           <div className="flex flex-wrap gap-4 text-sm text-gray-500 dark:text-gray-400 mt-2">
-            <span className="flex items-center gap-1"><Settings2 className="w-4 h-4" /> {task.clientName}</span>
-            <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> {task.interval}</span>
-            <span className="flex items-center gap-1">执行方式: {task.executionMode === 'auto' ? '自动执行' : '手动执行'}</span>
+            <span className="flex items-center gap-1"><Settings2 className="w-4 h-4" /> 项目 #{task.client_id}</span>
+            <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> {intervalLabelMap[task.interval_hours] || `${task.interval_hours} 小时`}</span>
+            <span className="flex items-center gap-1">执行方式: {task.execution_mode === 'auto' ? '自动执行' : '手动执行'}</span>
           </div>
         </div>
         
         <div className="flex gap-2 items-center">
+          <button 
+            onClick={onQueryData}
+            className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 dark:text-blue-400 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 border border-blue-200 dark:border-blue-800 rounded-lg flex items-center gap-2 transition-colors"
+          >
+            🔍 查看任务详情
+          </button>
+
           {!isRunning && (
             <button 
-              onClick={onQueryData}
-              className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 dark:text-blue-400 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 border border-blue-200 dark:border-blue-800 rounded-lg flex items-center gap-2 transition-colors"
+              onClick={() => onStatusChange(true)}
+              className="p-2 text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/40 rounded-lg transition-colors" 
+              title="启动"
             >
-              🔍 查询数据并执行
+              <Play className="w-5 h-5" />
             </button>
           )}
 
@@ -227,7 +288,7 @@ function TaskMonitorCard({ task, onDelete, onStatusChange, onRunNow, runningNow,
           <span className="block text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">预计剩余时间</span>
           <span className="font-medium">{isRunning ? '处理中...' : '--'}</span>
         </div>
-        {task.executionStatus === 'failed' && (
+        {task.execution_status === '失败' && (
           <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400 ml-auto">
             <AlertTriangle className="w-4 h-4" />
             <span>{task.last_error || '任务执行失败，请重试。'}</span>
@@ -236,4 +297,4 @@ function TaskMonitorCard({ task, onDelete, onStatusChange, onRunNow, runningNow,
       </div>
     </div>
   );
-}
+};
