@@ -58,13 +58,12 @@ def create_task(session: Session, payload: TaskCreateRequest) -> TaskResponse:
     session.commit()
     session.refresh(task)
     logger.info(
-        "任务创建完成: task_id={}, name={}, client_id={}, config_id={}, execution_mode={}, active={}",
+        "创建任务成功: task_id={}, client_id={}, config_id={}, execution_mode={}, auto_confirm={}",
         task.id,
-        task.name,
         task.client_id,
         task.config_id,
         task.execution_mode,
-        task.active,
+        task.auto_confirm,
     )
     return TaskResponse.from_model(task, filters=payload.filters)
 
@@ -97,6 +96,14 @@ def update_task(
     session.add(task)
     session.commit()
     session.refresh(task)
+    logger.info(
+        "更新任务成功: task_id={}, client_id={}, config_id={}, execution_mode={}, auto_confirm={}",
+        task.id,
+        task.client_id,
+        task.config_id,
+        task.execution_mode,
+        task.auto_confirm,
+    )
     _sync_scheduler(task.id)
     logger.info(
         "任务更新完成: task_id={}, name={}, execution_mode={}, active={}",
@@ -130,6 +137,7 @@ def delete_task(session: Session, task_id: int) -> TaskDeleteData:
 
         session.delete(task)
 
+    logger.info("删除任务成功: task_id={}, task_item_count={}", task_id, len(task_item_ids))
     _sync_scheduler(task_id)
     logger.info(
         "任务删除完成: task_id={}, task_item_count={}, task_item_data_count={}",
@@ -149,6 +157,7 @@ def start_task(session: Session, task_id: int) -> TaskActionData:
     session.add(task)
     session.commit()
     session.refresh(task)
+    logger.info("任务已启动: task_id={}, execution_status={}", task.id, task.execution_status)
     _sync_scheduler(task.id)
     logger.info("任务启动完成: task_id={}, execution_status={}", task.id, task.execution_status)
     return TaskActionData(id=task.id or 0, active=task.active, execution_status=task.execution_status)
@@ -248,11 +257,7 @@ def confirm_task_item(
     session.add(task_item)
     session.commit()
     session.refresh(task_item)
-    logger.info(
-        "任务项确认完成: task_item_id={}, confirm_state={}",
-        task_item.id,
-        task_item.confirm_state,
-    )
+    logger.info("确认任务项成功: task_item_id={}, confirm_state={}", task_item.id, task_item.confirm_state)
     return TaskItemActionData(id=task_item.id or 0, confirm_state=task_item.confirm_state)
 
 
@@ -268,11 +273,7 @@ def reject_task_item(
     session.add(task_item)
     session.commit()
     session.refresh(task_item)
-    logger.info(
-        "任务项拒绝完成: task_item_id={}, confirm_state={}",
-        task_item.id,
-        task_item.confirm_state,
-    )
+    logger.info("拒绝任务项成功: task_item_id={}, confirm_state={}", task_item.id, task_item.confirm_state)
     return TaskItemActionData(id=task_item.id or 0, confirm_state=task_item.confirm_state)
 
 
@@ -295,7 +296,7 @@ def delete_task_item_rows(
     session.commit()
     session.refresh(task_item)
     logger.info(
-        "任务项复核数据删除标记完成: task_item_id={}, row_count={}",
+        "标记任务项复核行删除成功: task_item_id={}, data_row_count={}",
         task_item.id,
         len(payload.task_item_data_ids),
     )
@@ -322,11 +323,7 @@ def submit_task_item(
     session.add(task_item)
     session.commit()
     session.refresh(task_item)
-    logger.info(
-        "任务项提交完成: task_item_id={}, remote_state={}",
-        task_item.id,
-        task_item.remote_state,
-    )
+    logger.info("提交任务项成功: task_item_id={}, remote_state={}", task_item.id, task_item.remote_state)
     return TaskItemActionData(id=task_item.id or 0, remote_state=task_item.remote_state)
 
 
@@ -432,7 +429,7 @@ def confirm_review_items(session: Session, ids: list[str]) -> dict[str, object]:
             results.append({"status": "success", "message": f"复核项 {task_item_id} 确认成功"})
         except Exception as exc:  # noqa: BLE001
             failure_count += 1
-            logger.warning("兼容复核项确认失败: raw_id={}, error={}", raw_id, exc)
+            logger.warning("批量确认复核项失败: raw_id={}, error={}", raw_id, exc)
             results.append({"status": "failed", "message": str(exc)})
 
     logger.info(
@@ -477,13 +474,13 @@ def delete_review_items(session: Session, ids: list[str]) -> None:
 
 
 def _serialize_filters(filters: TaskFiltersPayload) -> str:
-    """将任务筛选条件序列化为数据库 JSON 字符串。"""
+    """将任务筛选条件序列化为数据库保存的 JSON 字符串。"""
 
     return filters.model_dump_json()
 
 
 def _deserialize_filters(raw: str | None) -> TaskFiltersPayload:
-    """将数据库 JSON 字符串还原为任务筛选条件。"""
+    """从数据库 JSON 字段恢复筛选条件，兼容空历史值。"""
 
     if not raw:
         return TaskFiltersPayload()
@@ -491,7 +488,7 @@ def _deserialize_filters(raw: str | None) -> TaskFiltersPayload:
 
 
 def _build_review_item(task: Task, task_item: TaskItem, session: Session) -> dict[str, object]:
-    """将 TaskItem 与识别明细组合为旧复核页面行结构。"""
+    """组装旧复核页面需要的单条任务项展示结构。"""
 
     data_rows = session.exec(
         select(TaskItemData).where(TaskItemData.task_item_id == task_item.id).order_by(TaskItemData.id.desc())
@@ -519,7 +516,7 @@ def _build_review_item(task: Task, task_item: TaskItem, session: Session) -> dic
 
 
 def _build_compat_review_row(row: TaskItemData) -> dict[str, object]:
-    """将 TaskItemData 转换为旧复核页面兼容行。"""
+    """把 TaskItemData 转换为旧复核表格行并推导提交决策。"""
 
     if row.status == TaskItemDataStatus.DELETE.value:
         decision = "exclude"
@@ -541,7 +538,7 @@ def _build_compat_review_row(row: TaskItemData) -> dict[str, object]:
 
 
 def _get_task_or_raise(session: Session, task_id: int) -> Task:
-    """按 ID 查询任务，不存在时抛出统一异常。"""
+    """按 ID 查询任务，不存在时抛出统一 404 业务异常。"""
 
     task = session.get(Task, task_id)
     if task is None:
@@ -554,7 +551,7 @@ def _get_task_or_raise(session: Session, task_id: int) -> Task:
 
 
 def _get_task_item_or_raise(session: Session, task_item_id: int) -> TaskItem:
-    """按 ID 查询任务项，不存在时抛出统一异常。"""
+    """按 ID 查询任务项，不存在时抛出统一 404 业务异常。"""
 
     task_item = session.get(TaskItem, task_item_id)
     if task_item is None:
