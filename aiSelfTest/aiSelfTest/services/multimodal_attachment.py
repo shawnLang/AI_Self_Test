@@ -6,6 +6,8 @@ import binascii
 import re
 from typing import Any
 
+from loguru import logger
+
 from aiSelfTest.schemas.multimodal_model import (
     MultimodalAttachmentPayload,
     MultimodalChatMessagePayload,
@@ -13,6 +15,7 @@ from aiSelfTest.schemas.multimodal_model import (
 
 TEXT_ATTACHMENT_LIMIT = 4000
 DATA_URL_PATTERN = re.compile(r"^data:(?P<mime>[^;]+);base64,(?P<data>.+)$", re.IGNORECASE)
+
 
 def _build_gateway_chat_payload(
     *,
@@ -31,6 +34,12 @@ def _build_gateway_chat_payload(
     }
     if stream:
         payload["stream"] = True
+    logger.debug(
+        "多模态网关聊天载荷构建完成: model_name={}, message_count={}, stream={}",
+        model_name,
+        len(messages),
+        stream,
+    )
     return payload
 
 
@@ -74,6 +83,11 @@ def _normalize_attachment(attachment: MultimodalAttachmentPayload) -> list[dict[
                     "input_audio": audio_content,
                 }
             ]
+        logger.warning(
+            "忽略无法解析的音频附件 data URL: attachment_name={}, mime_type={}",
+            attachment.name,
+            attachment.mime_type,
+        )
 
     if attachment.text_content:
         preview_text = attachment.text_content.strip()[:TEXT_ATTACHMENT_LIMIT]
@@ -118,4 +132,3 @@ def _parse_audio_data_url(data_url: str) -> dict[str, str] | None:
         "data": base64_data,
         "format": audio_format,
     }
-

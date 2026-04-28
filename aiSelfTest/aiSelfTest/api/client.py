@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, status
+from loguru import logger
 from sqlmodel import Session
 
 from aiSelfTest.database import get_session
@@ -34,6 +35,7 @@ def list_client_route(
 ) -> ApiResponse[ClientListData]:
     """查询客户端列表。"""
 
+    logger.info("API 请求客户端列表")
     items = list_clients(session)
     return ApiResponse(
         code=0,
@@ -49,6 +51,7 @@ def get_client_detail_route(
 ) -> ApiResponse[ClientResponse]:
     """查询客户端详情。"""
 
+    logger.info("API 请求客户端详情: client_id={}", client_id)
     return ApiResponse(
         code=0,
         message="success",
@@ -67,6 +70,11 @@ def create_client_route(
 ) -> ApiResponse[ClientResponse]:
     """创建客户端。"""
 
+    logger.info(
+        "API 请求创建客户端: name={}, status={}",
+        payload.name,
+        payload.status,
+    )
     return ApiResponse(
         code=0,
         message="success",
@@ -82,6 +90,12 @@ def update_client_route(
 ) -> ApiResponse[ClientResponse]:
     """更新客户端。"""
 
+    logger.info(
+        "API 请求更新客户端: client_id={}, name={}, status={}",
+        client_id,
+        payload.name,
+        payload.status,
+    )
     return ApiResponse(
         code=0,
         message="success",
@@ -96,6 +110,7 @@ def delete_client_route(
 ) -> ApiResponse[ClientDeleteData]:
     """删除客户端。"""
 
+    logger.info("API 请求删除客户端: client_id={}", client_id)
     deleted_client_id = delete_client(session, client_id)
     return ApiResponse(
         code=0,
@@ -111,6 +126,7 @@ def authenticate_client_route(
 ) -> ApiResponse[ClientAuthenticateData]:
     """手动触发客户端认证。"""
 
+    logger.info("API 请求认证客户端: client_id={}", client_id)
     auth_result = authenticate_client(session, client_id)
     return ApiResponse(
         code=0,

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import StreamingResponse
+from loguru import logger
 from sqlmodel import Session
 
 from aiSelfTest.database import get_session
@@ -47,6 +48,7 @@ def list_multimodal_models_route(
 ) -> ApiResponse[MultimodalModelListData]:
     """查询模型配置列表。"""
 
+    logger.info("API 请求多模态模型配置列表")
     items = list_multimodal_models(session)
     return ApiResponse(
         code=0,
@@ -66,6 +68,11 @@ def create_multimodal_model_route(
 ) -> ApiResponse[MultimodalModelResponse]:
     """创建模型配置。"""
 
+    logger.info(
+        "API 请求创建多模态模型配置: model_name={}, status={}",
+        payload.model_name,
+        payload.status,
+    )
     return ApiResponse(
         code=0,
         message="success",
@@ -81,6 +88,12 @@ def update_multimodal_model_route(
 ) -> ApiResponse[MultimodalModelResponse]:
     """更新模型配置。"""
 
+    logger.info(
+        "API 请求更新多模态模型配置: model_id={}, model_name={}, status={}",
+        model_id,
+        payload.model_name,
+        payload.status,
+    )
     return ApiResponse(
         code=0,
         message="success",
@@ -95,6 +108,7 @@ def delete_multimodal_model_route(
 ) -> ApiResponse[MultimodalModelDeleteData]:
     """删除模型配置。"""
 
+    logger.info("API 请求删除多模态模型配置: model_id={}", model_id)
     deleted_model_id = delete_multimodal_model(session, model_id)
     return ApiResponse(
         code=0,
@@ -109,6 +123,7 @@ def detect_multimodal_models_route(
 ) -> ApiResponse[MultimodalModelDetectData]:
     """探测远端可用模型。"""
 
+    logger.info("API 请求探测多模态模型: endpoint_url={}", payload.endpoint_url)
     return ApiResponse(
         code=0,
         message="success",
@@ -124,6 +139,12 @@ def chat_with_multimodal_model_route(
 ) -> ApiResponse[MultimodalChatData]:
     """对指定模型配置发起聊天测试。"""
 
+    logger.info(
+        "API 请求多模态聊天: model_id={}, session_id={}, message_count={}",
+        model_id,
+        payload.session_id,
+        len(payload.messages),
+    )
     return ApiResponse(
         code=0,
         message="success",
@@ -139,6 +160,12 @@ def stream_chat_with_multimodal_model_route(
 ) -> StreamingResponse:
     """对指定模型配置发起流式聊天测试。"""
 
+    logger.info(
+        "API 请求多模态流式聊天: model_id={}, session_id={}, message_count={}",
+        model_id,
+        payload.session_id,
+        len(payload.messages),
+    )
     event_stream = stream_chat_with_multimodal_model(session, model_id, payload)
     return StreamingResponse(
         event_stream,
@@ -160,6 +187,7 @@ def list_multimodal_chat_sessions_route(
 ) -> ApiResponse[MultimodalChatSessionListData]:
     """查询指定模型下的聊天会话列表。"""
 
+    logger.info("API 请求多模态聊天会话列表: model_id={}", model_id)
     return ApiResponse(
         code=0,
         message="success",
@@ -177,6 +205,7 @@ def get_multimodal_chat_session_detail_route(
 ) -> ApiResponse[MultimodalChatSessionDetailData]:
     """查询聊天会话详情。"""
 
+    logger.info("API 请求多模态聊天会话详情: session_id={}", session_id)
     return ApiResponse(
         code=0,
         message="success",
@@ -194,6 +223,7 @@ def delete_multimodal_chat_session_route(
 ) -> ApiResponse[MultimodalChatSessionDeleteData]:
     """删除聊天会话。"""
 
+    logger.info("API 请求删除多模态聊天会话: session_id={}", session_id)
     deleted_session_id = delete_multimodal_chat_session(session, session_id)
     return ApiResponse(
         code=0,
