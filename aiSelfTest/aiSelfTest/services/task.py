@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from datetime import datetime
 
+from loguru import logger
 from sqlmodel import Session, select
 
 from aiSelfTest.exceptions import AppException, ErrorCode
@@ -32,6 +33,7 @@ def list_tasks(session: Session) -> TaskListData:
     """查询任务列表。"""
 
     rows = session.exec(select(Task).order_by(Task.id.desc())).all()
+    logger.debug("任务列表查询完成: count={}", len(rows))
     items = [
         TaskResponse.from_model(task, filters=_deserialize_filters(task.filters_json))
         for task in rows
@@ -55,6 +57,15 @@ def create_task(session: Session, payload: TaskCreateRequest) -> TaskResponse:
     session.add(task)
     session.commit()
     session.refresh(task)
+    logger.info(
+        "任务创建完成: task_id={}, name={}, client_id={}, config_id={}, execution_mode={}, active={}",
+        task.id,
+        task.name,
+        task.client_id,
+        task.config_id,
+        task.execution_mode,
+        task.active,
+    )
     return TaskResponse.from_model(task, filters=payload.filters)
 
 
@@ -62,6 +73,7 @@ def get_task_detail(session: Session, task_id: int) -> TaskResponse:
     """查询任务详情。"""
 
     task = _get_task_or_raise(session, task_id)
+    logger.debug("任务详情查询完成: task_id={}, execution_status={}", task_id, task.execution_status)
     return TaskResponse.from_model(task, filters=_deserialize_filters(task.filters_json))
 
 
@@ -86,6 +98,13 @@ def update_task(
     session.commit()
     session.refresh(task)
     _sync_scheduler(task.id)
+    logger.info(
+        "任务更新完成: task_id={}, name={}, execution_mode={}, active={}",
+        task.id,
+        task.name,
+        task.execution_mode,
+        task.active,
+    )
     return TaskResponse.from_model(task, filters=payload.filters)
 
 
@@ -112,6 +131,12 @@ def delete_task(session: Session, task_id: int) -> TaskDeleteData:
         session.delete(task)
 
     _sync_scheduler(task_id)
+    logger.info(
+        "任务删除完成: task_id={}, task_item_count={}, task_item_data_count={}",
+        task_id,
+        len(task_items),
+        len(task_item_data_rows) if task_item_ids else 0,
+    )
     return TaskDeleteData(id=task_id)
 
 
@@ -125,6 +150,7 @@ def start_task(session: Session, task_id: int) -> TaskActionData:
     session.commit()
     session.refresh(task)
     _sync_scheduler(task.id)
+    logger.info("任务启动完成: task_id={}, execution_status={}", task.id, task.execution_status)
     return TaskActionData(id=task.id or 0, active=task.active, execution_status=task.execution_status)
 
 
@@ -138,6 +164,7 @@ def stop_task(session: Session, task_id: int) -> TaskActionData:
     session.commit()
     session.refresh(task)
     _sync_scheduler(task.id)
+    logger.info("任务停止完成: task_id={}, execution_status={}", task.id, task.execution_status)
     return TaskActionData(id=task.id or 0, active=task.active, execution_status=task.execution_status)
 
 
@@ -148,6 +175,7 @@ def run_task_once(session: Session, task_id: int) -> TaskActionData:
 
     run_task_execution(session, task_id)
     task = _get_task_or_raise(session, task_id)
+    logger.info("任务立即执行完成: task_id={}, execution_status={}", task.id, task.execution_status)
     return TaskActionData(id=task.id or 0, active=task.active, execution_status=task.execution_status)
 
 
@@ -181,6 +209,13 @@ def list_task_items(
     start = (page - 1) * page_size
     end = start + page_size
     paged_items = items[start:end]
+    logger.debug(
+        "任务项列表查询完成: task_id={}, total={}, page={}, page_size={}",
+        task_id,
+        len(items),
+        page,
+        page_size,
+    )
     return TaskItemListData(items=paged_items, total=len(items), page=page, page_size=page_size)
 
 
@@ -192,6 +227,11 @@ def get_task_item_detail(session: Session, task_item_id: int) -> TaskItemDetailD
         select(TaskItemData).where(TaskItemData.task_item_id == task_item_id).order_by(TaskItemData.id.desc())
     ).all()
     review_rows = [TaskItemReviewRow.from_model(row) for row in data_rows]
+    logger.debug(
+        "任务项详情查询完成: task_item_id={}, review_row_count={}",
+        task_item_id,
+        len(review_rows),
+    )
     return TaskItemDetailData.from_model(task_item, review_rows=review_rows)
 
 
@@ -208,6 +248,11 @@ def confirm_task_item(
     session.add(task_item)
     session.commit()
     session.refresh(task_item)
+    logger.info(
+        "任务项确认完成: task_item_id={}, confirm_state={}",
+        task_item.id,
+        task_item.confirm_state,
+    )
     return TaskItemActionData(id=task_item.id or 0, confirm_state=task_item.confirm_state)
 
 
@@ -223,6 +268,11 @@ def reject_task_item(
     session.add(task_item)
     session.commit()
     session.refresh(task_item)
+    logger.info(
+        "任务项拒绝完成: task_item_id={}, confirm_state={}",
+        task_item.id,
+        task_item.confirm_state,
+    )
     return TaskItemActionData(id=task_item.id or 0, confirm_state=task_item.confirm_state)
 
 
@@ -244,6 +294,11 @@ def delete_task_item_rows(
     session.add(task_item)
     session.commit()
     session.refresh(task_item)
+    logger.info(
+        "任务项复核数据删除标记完成: task_item_id={}, row_count={}",
+        task_item.id,
+        len(payload.task_item_data_ids),
+    )
     return TaskItemActionData(id=task_item.id or 0, confirm_state=task_item.confirm_state)
 
 
@@ -267,6 +322,11 @@ def submit_task_item(
     session.add(task_item)
     session.commit()
     session.refresh(task_item)
+    logger.info(
+        "任务项提交完成: task_item_id={}, remote_state={}",
+        task_item.id,
+        task_item.remote_state,
+    )
     return TaskItemActionData(id=task_item.id or 0, remote_state=task_item.remote_state)
 
 
@@ -308,6 +368,7 @@ def query_legacy_task_data(session: Session, task_id: int) -> dict[str, object]:
 
     _get_task_or_raise(session, task_id)
     rows = session.exec(select(TaskItem).where(TaskItem.task_id == task_id).order_by(TaskItem.id.desc())).all()
+    logger.debug("兼容任务数据查询完成: task_id={}, row_count={}", task_id, len(rows))
     results = [
         {
             "id": row.id or 0,
@@ -330,6 +391,7 @@ def run_legacy_task_execute(session: Session, task_id: int) -> dict[str, bool]:
     """旧 execute 兼容入口。"""
 
     run_task_once(session, task_id)
+    logger.info("兼容任务执行完成: task_id={}", task_id)
     return {"ok": True}
 
 
@@ -337,11 +399,13 @@ def list_completed_review_tasks(session: Session) -> list[dict[str, int | str]]:
     """查询可复核任务列表（兼容层）。"""
 
     tasks = session.exec(select(Task).where(Task.execution_status == "结束").order_by(Task.id.desc())).all()
-    return [
+    results = [
         {"id": task.id or 0, "name": task.name}
         for task in tasks
         if session.exec(select(TaskItem).where(TaskItem.task_id == task.id)).first() is not None
     ]
+    logger.debug("兼容复核任务列表查询完成: count={}", len(results))
+    return results
 
 
 def list_review_items(session: Session, task_id: int) -> list[dict[str, object]]:
@@ -349,6 +413,7 @@ def list_review_items(session: Session, task_id: int) -> list[dict[str, object]]
 
     task = _get_task_or_raise(session, task_id)
     items = session.exec(select(TaskItem).where(TaskItem.task_id == task_id).order_by(TaskItem.id.desc())).all()
+    logger.debug("兼容复核项列表查询完成: task_id={}, count={}", task_id, len(items))
     return [_build_review_item(task, item, session) for item in items]
 
 
@@ -367,8 +432,14 @@ def confirm_review_items(session: Session, ids: list[str]) -> dict[str, object]:
             results.append({"status": "success", "message": f"复核项 {task_item_id} 确认成功"})
         except Exception as exc:  # noqa: BLE001
             failure_count += 1
+            logger.warning("兼容复核项确认失败: raw_id={}, error={}", raw_id, exc)
             results.append({"status": "failed", "message": str(exc)})
 
+    logger.info(
+        "兼容复核项批量确认完成: success_count={}, failure_count={}",
+        success_count,
+        failure_count,
+    )
     return {
         "successCount": success_count,
         "failureCount": failure_count,
@@ -390,6 +461,11 @@ def delete_review_item(session: Session, task_item_id: int) -> None:
             task_item_data_ids=[row.id or 0 for row in data_rows if row.id is not None],
         ),
     )
+    logger.info(
+        "兼容复核项删除完成: task_item_id={}, data_row_count={}",
+        task_item_id,
+        len(data_rows),
+    )
 
 
 def delete_review_items(session: Session, ids: list[str]) -> None:
@@ -397,19 +473,26 @@ def delete_review_items(session: Session, ids: list[str]) -> None:
 
     for raw_id in ids:
         delete_review_item(session, int(raw_id))
+    logger.info("兼容复核项批量删除完成: count={}", len(ids))
 
 
 def _serialize_filters(filters: TaskFiltersPayload) -> str:
+    """将任务筛选条件序列化为数据库 JSON 字符串。"""
+
     return filters.model_dump_json()
 
 
 def _deserialize_filters(raw: str | None) -> TaskFiltersPayload:
+    """将数据库 JSON 字符串还原为任务筛选条件。"""
+
     if not raw:
         return TaskFiltersPayload()
     return TaskFiltersPayload.model_validate(json.loads(raw))
 
 
 def _build_review_item(task: Task, task_item: TaskItem, session: Session) -> dict[str, object]:
+    """将 TaskItem 与识别明细组合为旧复核页面行结构。"""
+
     data_rows = session.exec(
         select(TaskItemData).where(TaskItemData.task_item_id == task_item.id).order_by(TaskItemData.id.desc())
     ).all()
@@ -436,6 +519,8 @@ def _build_review_item(task: Task, task_item: TaskItem, session: Session) -> dic
 
 
 def _build_compat_review_row(row: TaskItemData) -> dict[str, object]:
+    """将 TaskItemData 转换为旧复核页面兼容行。"""
+
     if row.status == TaskItemDataStatus.DELETE.value:
         decision = "exclude"
     elif row.llm_name and row.name and row.llm_name.strip() == row.name.strip():
@@ -456,6 +541,8 @@ def _build_compat_review_row(row: TaskItemData) -> dict[str, object]:
 
 
 def _get_task_or_raise(session: Session, task_id: int) -> Task:
+    """按 ID 查询任务，不存在时抛出统一异常。"""
+
     task = session.get(Task, task_id)
     if task is None:
         raise AppException(
@@ -467,6 +554,8 @@ def _get_task_or_raise(session: Session, task_id: int) -> Task:
 
 
 def _get_task_item_or_raise(session: Session, task_item_id: int) -> TaskItem:
+    """按 ID 查询任务项，不存在时抛出统一异常。"""
+
     task_item = session.get(TaskItem, task_item_id)
     if task_item is None:
         raise AppException(
