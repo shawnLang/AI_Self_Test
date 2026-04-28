@@ -2412,7 +2412,7 @@ int __pyx_module_is_main_aiSelfTest__services__task_scheduler = 0;
 /* Implementation of "aiSelfTest.services.task_scheduler" */
 /* #### Code section: global_var ### */
 /* #### Code section: string_decls ### */
-static const char __pyx_k_Task_2[] = "\345\215\225\350\277\233\347\250\213 Task \350\260\203\345\272\246\345\231\250\345\260\201\350\243\205\343\200\202";
+static const char __pyx_k_Task_5[] = "\345\215\225\350\277\233\347\250\213 Task \350\260\203\345\272\246\345\231\250\345\260\201\350\243\205\343\200\202";
 /* #### Code section: decls ### */
 static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_start(CYTHON_UNUSED PyObject *__pyx_self, CYTHON_UNUSED PyObject *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_2shutdown(CYTHON_UNUSED PyObject *__pyx_self, CYTHON_UNUSED PyObject *__pyx_v_self); /* proto */
@@ -2457,7 +2457,7 @@ typedef struct {
   __Pyx_CachedCFunction __pyx_umethod_PyDict_Type_values;
   PyObject *__pyx_tuple[1];
   PyObject *__pyx_codeobj_tab[18];
-  PyObject *__pyx_string_tab[154];
+  PyObject *__pyx_string_tab[167];
   PyObject *__pyx_number_tab[3];
 /* #### Code section: module_state_contents ### */
 /* CommonTypesMetaclass.module_state_decls */
@@ -2505,154 +2505,167 @@ static __pyx_mstatetype * const __pyx_mstate_global = &__pyx_mstate_global_stati
 #define __pyx_kp_u_APScheduler_Task __pyx_string_tab[3]
 #define __pyx_kp_u_Any_None __pyx_string_tab[4]
 #define __pyx_kp_u_Note_that_Cython_is_deliberately __pyx_string_tab[5]
-#define __pyx_kp_u_TaskScheduler_NoopTaskScheduler __pyx_string_tab[6]
-#define __pyx_kp_u_TaskScheduler_NoopTaskScheduler_2 __pyx_string_tab[7]
-#define __pyx_kp_u_Task_APScheduler __pyx_string_tab[8]
-#define __pyx_kp_u_Task_APScheduler_job __pyx_string_tab[9]
-#define __pyx_kp_u__2 __pyx_string_tab[10]
-#define __pyx_kp_u__4 __pyx_string_tab[11]
-#define __pyx_kp_u_add_note __pyx_string_tab[12]
-#define __pyx_kp_u_aiSelfTest_services_task_schedul_2 __pyx_string_tab[13]
-#define __pyx_kp_u_datetime_None __pyx_string_tab[14]
-#define __pyx_n_u_Any __pyx_string_tab[15]
-#define __pyx_n_u_AsyncIOScheduler __pyx_string_tab[16]
-#define __pyx_n_u_FAIL __pyx_string_tab[17]
-#define __pyx_n_u_None __pyx_string_tab[18]
-#define __pyx_n_u_NoopTaskScheduler __pyx_string_tab[19]
-#define __pyx_n_u_NoopTaskScheduler_recover_zombie __pyx_string_tab[20]
-#define __pyx_n_u_NoopTaskScheduler_restore_active __pyx_string_tab[21]
-#define __pyx_n_u_NoopTaskScheduler_shutdown __pyx_string_tab[22]
-#define __pyx_n_u_NoopTaskScheduler_start __pyx_string_tab[23]
-#define __pyx_n_u_NoopTaskScheduler_sync_task __pyx_string_tab[24]
-#define __pyx_n_u_Pyx_PyDict_NextRef __pyx_string_tab[25]
-#define __pyx_n_u_Session __pyx_string_tab[26]
-#define __pyx_n_u_TASK_JOB_PREFIX __pyx_string_tab[27]
-#define __pyx_n_u_Task __pyx_string_tab[28]
-#define __pyx_n_u_TaskExecutionStatus __pyx_string_tab[29]
-#define __pyx_n_u_TaskScheduler __pyx_string_tab[30]
-#define __pyx_n_u_TaskScheduler___init __pyx_string_tab[31]
-#define __pyx_n_u_TaskScheduler__remove_task __pyx_string_tab[32]
-#define __pyx_n_u_TaskScheduler__schedule_task __pyx_string_tab[33]
-#define __pyx_n_u_TaskScheduler_restore_active_tas __pyx_string_tab[34]
-#define __pyx_n_u_TaskScheduler_run_task_job __pyx_string_tab[35]
-#define __pyx_n_u_TaskScheduler_shutdown __pyx_string_tab[36]
-#define __pyx_n_u_TaskScheduler_start __pyx_string_tab[37]
-#define __pyx_n_u_TaskScheduler_sync_task __pyx_string_tab[38]
-#define __pyx_n_u_ZOMBIE_TASK_ERROR __pyx_string_tab[39]
-#define __pyx_n_u__3 __pyx_string_tab[40]
-#define __pyx_n_u_active __pyx_string_tab[41]
-#define __pyx_n_u_add __pyx_string_tab[42]
-#define __pyx_n_u_add_job __pyx_string_tab[43]
-#define __pyx_n_u_aiSelfTest_database __pyx_string_tab[44]
-#define __pyx_n_u_aiSelfTest_models_task __pyx_string_tab[45]
-#define __pyx_n_u_aiSelfTest_services_task_executi __pyx_string_tab[46]
-#define __pyx_n_u_aiSelfTest_services_task_schedul __pyx_string_tab[47]
-#define __pyx_n_u_all __pyx_string_tab[48]
-#define __pyx_n_u_apscheduler_schedulers_asyncio __pyx_string_tab[49]
-#define __pyx_n_u_args __pyx_string_tab[50]
-#define __pyx_n_u_asyncio_coroutines __pyx_string_tab[51]
-#define __pyx_n_u_available __pyx_string_tab[52]
-#define __pyx_n_u_cline_in_traceback __pyx_string_tab[53]
-#define __pyx_n_u_coalesce __pyx_string_tab[54]
-#define __pyx_n_u_commit __pyx_string_tab[55]
-#define __pyx_n_u_create_task_scheduler __pyx_string_tab[56]
-#define __pyx_n_u_current __pyx_string_tab[57]
-#define __pyx_n_u_datetime __pyx_string_tab[58]
-#define __pyx_n_u_debug __pyx_string_tab[59]
-#define __pyx_n_u_doc __pyx_string_tab[60]
-#define __pyx_n_u_engine __pyx_string_tab[61]
-#define __pyx_n_u_enter __pyx_string_tab[62]
-#define __pyx_n_u_exec __pyx_string_tab[63]
-#define __pyx_n_u_execution_status __pyx_string_tab[64]
-#define __pyx_n_u_exit __pyx_string_tab[65]
-#define __pyx_n_u_func __pyx_string_tab[66]
-#define __pyx_n_u_get __pyx_string_tab[67]
-#define __pyx_n_u_get_job __pyx_string_tab[68]
-#define __pyx_n_u_global_scheduler __pyx_string_tab[69]
-#define __pyx_n_u_hours __pyx_string_tab[70]
-#define __pyx_n_u_id __pyx_string_tab[71]
-#define __pyx_n_u_init __pyx_string_tab[72]
-#define __pyx_n_u_int __pyx_string_tab[73]
-#define __pyx_n_u_interval __pyx_string_tab[74]
-#define __pyx_n_u_is_coroutine __pyx_string_tab[75]
-#define __pyx_n_u_is_task_running __pyx_string_tab[76]
-#define __pyx_n_u_items __pyx_string_tab[77]
-#define __pyx_n_u_job_id __pyx_string_tab[78]
-#define __pyx_n_u_job_id_2 __pyx_string_tab[79]
-#define __pyx_n_u_last_error __pyx_string_tab[80]
-#define __pyx_n_u_last_run_started_at __pyx_string_tab[81]
-#define __pyx_n_u_logger __pyx_string_tab[82]
-#define __pyx_n_u_loguru __pyx_string_tab[83]
-#define __pyx_n_u_main __pyx_string_tab[84]
-#define __pyx_n_u_marker __pyx_string_tab[85]
-#define __pyx_n_u_max_instances __pyx_string_tab[86]
-#define __pyx_n_u_metaclass __pyx_string_tab[87]
-#define __pyx_n_u_module __pyx_string_tab[88]
-#define __pyx_n_u_name __pyx_string_tab[89]
-#define __pyx_n_u_now __pyx_string_tab[90]
-#define __pyx_n_u_pop __pyx_string_tab[91]
-#define __pyx_n_u_prepare __pyx_string_tab[92]
-#define __pyx_n_u_qualname __pyx_string_tab[93]
-#define __pyx_n_u_recover_zombie_tasks __pyx_string_tab[94]
-#define __pyx_n_u_recovered __pyx_string_tab[95]
-#define __pyx_n_u_remove_job __pyx_string_tab[96]
-#define __pyx_n_u_remove_task __pyx_string_tab[97]
-#define __pyx_n_u_replace_existing __pyx_string_tab[98]
-#define __pyx_n_u_restore_active_tasks __pyx_string_tab[99]
-#define __pyx_n_u_return __pyx_string_tab[100]
-#define __pyx_n_u_run_task_execution __pyx_string_tab[101]
-#define __pyx_n_u_run_task_job __pyx_string_tab[102]
-#define __pyx_n_u_running __pyx_string_tab[103]
-#define __pyx_n_u_running_tasks __pyx_string_tab[104]
-#define __pyx_n_u_schedule_task __pyx_string_tab[105]
-#define __pyx_n_u_scheduler __pyx_string_tab[106]
-#define __pyx_n_u_select __pyx_string_tab[107]
-#define __pyx_n_u_self __pyx_string_tab[108]
-#define __pyx_n_u_session __pyx_string_tab[109]
-#define __pyx_n_u_set_global_task_scheduler __pyx_string_tab[110]
-#define __pyx_n_u_set_name __pyx_string_tab[111]
-#define __pyx_n_u_setdefault __pyx_string_tab[112]
-#define __pyx_n_u_shutdown __pyx_string_tab[113]
-#define __pyx_n_u_skipped_count __pyx_string_tab[114]
-#define __pyx_n_u_sqlmodel __pyx_string_tab[115]
-#define __pyx_n_u_stale_after_hours __pyx_string_tab[116]
-#define __pyx_n_u_start __pyx_string_tab[117]
-#define __pyx_n_u_started_at __pyx_string_tab[118]
-#define __pyx_n_u_str __pyx_string_tab[119]
-#define __pyx_n_u_sync_global_task_scheduler __pyx_string_tab[120]
-#define __pyx_n_u_sync_task __pyx_string_tab[121]
-#define __pyx_n_u_task __pyx_string_tab[122]
-#define __pyx_n_u_task_2 __pyx_string_tab[123]
-#define __pyx_n_u_task_id __pyx_string_tab[124]
-#define __pyx_n_u_tasks __pyx_string_tab[125]
-#define __pyx_n_u_test __pyx_string_tab[126]
-#define __pyx_n_u_threshold __pyx_string_tab[127]
-#define __pyx_n_u_timedelta __pyx_string_tab[128]
-#define __pyx_n_u_typing __pyx_string_tab[129]
-#define __pyx_n_u_updated_at __pyx_string_tab[130]
-#define __pyx_n_u_value __pyx_string_tab[131]
-#define __pyx_n_u_values __pyx_string_tab[132]
-#define __pyx_n_u_wait __pyx_string_tab[133]
-#define __pyx_n_u_warning __pyx_string_tab[134]
-#define __pyx_n_u_where __pyx_string_tab[135]
-#define __pyx_kp_b_iso88591_1_S_T_2_Q_aq_M_3_6a __pyx_string_tab[136]
-#define __pyx_kp_b_iso88591_7_4_a_1E __pyx_string_tab[137]
-#define __pyx_kp_b_iso88591_9A_4t3a_Jha_a_wat1_a_Q_Q __pyx_string_tab[138]
-#define __pyx_kp_b_iso88591_A_7_avQ_uCuCt4q_M_q __pyx_string_tab[139]
-#define __pyx_kp_b_iso88591_A_Q_1_1IT_6H __pyx_string_tab[140]
-#define __pyx_kp_b_iso88591_A_Zq __pyx_string_tab[141]
-#define __pyx_kp_b_iso88591_HA_4z_Qa __pyx_string_tab[142]
-#define __pyx_kp_b_iso88591_HA_A_7_avQ_uCq_M_aq_a_N_a_t1A_w __pyx_string_tab[143]
-#define __pyx_kp_b_iso88591_L_q __pyx_string_tab[144]
-#define __pyx_kp_b_iso88591_L_uAV1E_q_HCvT_HA_q __pyx_string_tab[145]
-#define __pyx_kp_b_iso88591_VVW __pyx_string_tab[146]
-#define __pyx_kp_b_iso88591_XQ_2Q_aq __pyx_string_tab[147]
-#define __pyx_kp_b_iso88591_fA_8 __pyx_string_tab[148]
-#define __pyx_kp_b_iso88591_q __pyx_string_tab[149]
-#define __pyx_kp_b_iso88591_q_1 __pyx_string_tab[150]
-#define __pyx_kp_b_iso88591_q_A_Qa_4wat __pyx_string_tab[151]
-#define __pyx_kp_b_iso88591_q_d_XT_1F_G5_q_d_4_aq_T_S_A_7_g __pyx_string_tab[152]
-#define __pyx_kp_b_iso88591_q_haq __pyx_string_tab[153]
+#define __pyx_kp_u_Task __pyx_string_tab[6]
+#define __pyx_kp_u_TaskScheduler_NoopTaskScheduler __pyx_string_tab[7]
+#define __pyx_kp_u_TaskScheduler_NoopTaskScheduler_2 __pyx_string_tab[8]
+#define __pyx_kp_u_Task_2 __pyx_string_tab[9]
+#define __pyx_kp_u_Task_3 __pyx_string_tab[10]
+#define __pyx_kp_u_Task_APScheduler __pyx_string_tab[11]
+#define __pyx_kp_u_Task_APScheduler_job __pyx_string_tab[12]
+#define __pyx_kp_u__2 __pyx_string_tab[13]
+#define __pyx_kp_u__4 __pyx_string_tab[14]
+#define __pyx_kp_u_add_note __pyx_string_tab[15]
+#define __pyx_kp_u_aiSelfTest_services_task_schedul_2 __pyx_string_tab[16]
+#define __pyx_kp_u_count __pyx_string_tab[17]
+#define __pyx_kp_u_datetime_None __pyx_string_tab[18]
+#define __pyx_kp_u_job_task_id __pyx_string_tab[19]
+#define __pyx_kp_u_recovered_count __pyx_string_tab[20]
+#define __pyx_kp_u_task_id_2 __pyx_string_tab[21]
+#define __pyx_kp_u_task_id_3 __pyx_string_tab[22]
+#define __pyx_kp_u_task_id_4 __pyx_string_tab[23]
+#define __pyx_kp_u_task_id_interval_hours __pyx_string_tab[24]
+#define __pyx_kp_u_task_id_previous_status_marker __pyx_string_tab[25]
+#define __pyx_n_u_Any __pyx_string_tab[26]
+#define __pyx_n_u_AsyncIOScheduler __pyx_string_tab[27]
+#define __pyx_n_u_FAIL __pyx_string_tab[28]
+#define __pyx_n_u_None __pyx_string_tab[29]
+#define __pyx_n_u_NoopTaskScheduler __pyx_string_tab[30]
+#define __pyx_n_u_NoopTaskScheduler_recover_zombie __pyx_string_tab[31]
+#define __pyx_n_u_NoopTaskScheduler_restore_active __pyx_string_tab[32]
+#define __pyx_n_u_NoopTaskScheduler_shutdown __pyx_string_tab[33]
+#define __pyx_n_u_NoopTaskScheduler_start __pyx_string_tab[34]
+#define __pyx_n_u_NoopTaskScheduler_sync_task __pyx_string_tab[35]
+#define __pyx_n_u_Pyx_PyDict_NextRef __pyx_string_tab[36]
+#define __pyx_n_u_Session __pyx_string_tab[37]
+#define __pyx_n_u_TASK_JOB_PREFIX __pyx_string_tab[38]
+#define __pyx_n_u_TaskExecutionStatus __pyx_string_tab[39]
+#define __pyx_n_u_TaskScheduler __pyx_string_tab[40]
+#define __pyx_n_u_TaskScheduler___init __pyx_string_tab[41]
+#define __pyx_n_u_TaskScheduler__remove_task __pyx_string_tab[42]
+#define __pyx_n_u_TaskScheduler__schedule_task __pyx_string_tab[43]
+#define __pyx_n_u_TaskScheduler_restore_active_tas __pyx_string_tab[44]
+#define __pyx_n_u_TaskScheduler_run_task_job __pyx_string_tab[45]
+#define __pyx_n_u_TaskScheduler_shutdown __pyx_string_tab[46]
+#define __pyx_n_u_TaskScheduler_start __pyx_string_tab[47]
+#define __pyx_n_u_TaskScheduler_sync_task __pyx_string_tab[48]
+#define __pyx_n_u_Task_4 __pyx_string_tab[49]
+#define __pyx_n_u_ZOMBIE_TASK_ERROR __pyx_string_tab[50]
+#define __pyx_n_u__3 __pyx_string_tab[51]
+#define __pyx_n_u_active __pyx_string_tab[52]
+#define __pyx_n_u_add __pyx_string_tab[53]
+#define __pyx_n_u_add_job __pyx_string_tab[54]
+#define __pyx_n_u_aiSelfTest_database __pyx_string_tab[55]
+#define __pyx_n_u_aiSelfTest_models_task __pyx_string_tab[56]
+#define __pyx_n_u_aiSelfTest_services_task_executi __pyx_string_tab[57]
+#define __pyx_n_u_aiSelfTest_services_task_schedul __pyx_string_tab[58]
+#define __pyx_n_u_all __pyx_string_tab[59]
+#define __pyx_n_u_apscheduler_schedulers_asyncio __pyx_string_tab[60]
+#define __pyx_n_u_args __pyx_string_tab[61]
+#define __pyx_n_u_asyncio_coroutines __pyx_string_tab[62]
+#define __pyx_n_u_available __pyx_string_tab[63]
+#define __pyx_n_u_cline_in_traceback __pyx_string_tab[64]
+#define __pyx_n_u_coalesce __pyx_string_tab[65]
+#define __pyx_n_u_commit __pyx_string_tab[66]
+#define __pyx_n_u_create_task_scheduler __pyx_string_tab[67]
+#define __pyx_n_u_current __pyx_string_tab[68]
+#define __pyx_n_u_datetime __pyx_string_tab[69]
+#define __pyx_n_u_debug __pyx_string_tab[70]
+#define __pyx_n_u_doc __pyx_string_tab[71]
+#define __pyx_n_u_engine __pyx_string_tab[72]
+#define __pyx_n_u_enter __pyx_string_tab[73]
+#define __pyx_n_u_exec __pyx_string_tab[74]
+#define __pyx_n_u_execution_status __pyx_string_tab[75]
+#define __pyx_n_u_exit __pyx_string_tab[76]
+#define __pyx_n_u_func __pyx_string_tab[77]
+#define __pyx_n_u_get __pyx_string_tab[78]
+#define __pyx_n_u_get_job __pyx_string_tab[79]
+#define __pyx_n_u_global_scheduler __pyx_string_tab[80]
+#define __pyx_n_u_hours __pyx_string_tab[81]
+#define __pyx_n_u_id __pyx_string_tab[82]
+#define __pyx_n_u_info __pyx_string_tab[83]
+#define __pyx_n_u_init __pyx_string_tab[84]
+#define __pyx_n_u_int __pyx_string_tab[85]
+#define __pyx_n_u_interval __pyx_string_tab[86]
+#define __pyx_n_u_is_coroutine __pyx_string_tab[87]
+#define __pyx_n_u_is_task_running __pyx_string_tab[88]
+#define __pyx_n_u_items __pyx_string_tab[89]
+#define __pyx_n_u_job_id __pyx_string_tab[90]
+#define __pyx_n_u_job_id_2 __pyx_string_tab[91]
+#define __pyx_n_u_last_error __pyx_string_tab[92]
+#define __pyx_n_u_last_run_started_at __pyx_string_tab[93]
+#define __pyx_n_u_logger __pyx_string_tab[94]
+#define __pyx_n_u_loguru __pyx_string_tab[95]
+#define __pyx_n_u_main __pyx_string_tab[96]
+#define __pyx_n_u_marker __pyx_string_tab[97]
+#define __pyx_n_u_max_instances __pyx_string_tab[98]
+#define __pyx_n_u_metaclass __pyx_string_tab[99]
+#define __pyx_n_u_module __pyx_string_tab[100]
+#define __pyx_n_u_name __pyx_string_tab[101]
+#define __pyx_n_u_now __pyx_string_tab[102]
+#define __pyx_n_u_pop __pyx_string_tab[103]
+#define __pyx_n_u_prepare __pyx_string_tab[104]
+#define __pyx_n_u_previous_status __pyx_string_tab[105]
+#define __pyx_n_u_qualname __pyx_string_tab[106]
+#define __pyx_n_u_recover_zombie_tasks __pyx_string_tab[107]
+#define __pyx_n_u_recovered __pyx_string_tab[108]
+#define __pyx_n_u_remove_job __pyx_string_tab[109]
+#define __pyx_n_u_remove_task __pyx_string_tab[110]
+#define __pyx_n_u_replace_existing __pyx_string_tab[111]
+#define __pyx_n_u_restore_active_tasks __pyx_string_tab[112]
+#define __pyx_n_u_return __pyx_string_tab[113]
+#define __pyx_n_u_run_task_execution __pyx_string_tab[114]
+#define __pyx_n_u_run_task_job __pyx_string_tab[115]
+#define __pyx_n_u_running __pyx_string_tab[116]
+#define __pyx_n_u_running_tasks __pyx_string_tab[117]
+#define __pyx_n_u_schedule_task __pyx_string_tab[118]
+#define __pyx_n_u_scheduler __pyx_string_tab[119]
+#define __pyx_n_u_select __pyx_string_tab[120]
+#define __pyx_n_u_self __pyx_string_tab[121]
+#define __pyx_n_u_session __pyx_string_tab[122]
+#define __pyx_n_u_set_global_task_scheduler __pyx_string_tab[123]
+#define __pyx_n_u_set_name __pyx_string_tab[124]
+#define __pyx_n_u_setdefault __pyx_string_tab[125]
+#define __pyx_n_u_shutdown __pyx_string_tab[126]
+#define __pyx_n_u_skipped_count __pyx_string_tab[127]
+#define __pyx_n_u_sqlmodel __pyx_string_tab[128]
+#define __pyx_n_u_stale_after_hours __pyx_string_tab[129]
+#define __pyx_n_u_start __pyx_string_tab[130]
+#define __pyx_n_u_started_at __pyx_string_tab[131]
+#define __pyx_n_u_str __pyx_string_tab[132]
+#define __pyx_n_u_sync_global_task_scheduler __pyx_string_tab[133]
+#define __pyx_n_u_sync_task __pyx_string_tab[134]
+#define __pyx_n_u_task __pyx_string_tab[135]
+#define __pyx_n_u_task_2 __pyx_string_tab[136]
+#define __pyx_n_u_task_id __pyx_string_tab[137]
+#define __pyx_n_u_tasks __pyx_string_tab[138]
+#define __pyx_n_u_test __pyx_string_tab[139]
+#define __pyx_n_u_threshold __pyx_string_tab[140]
+#define __pyx_n_u_timedelta __pyx_string_tab[141]
+#define __pyx_n_u_typing __pyx_string_tab[142]
+#define __pyx_n_u_updated_at __pyx_string_tab[143]
+#define __pyx_n_u_value __pyx_string_tab[144]
+#define __pyx_n_u_values __pyx_string_tab[145]
+#define __pyx_n_u_wait __pyx_string_tab[146]
+#define __pyx_n_u_warning __pyx_string_tab[147]
+#define __pyx_n_u_where __pyx_string_tab[148]
+#define __pyx_kp_b_iso88591_1_S_T_2_Q_aq_M_3_6a __pyx_string_tab[149]
+#define __pyx_kp_b_iso88591_7_4_a_1E_q __pyx_string_tab[150]
+#define __pyx_kp_b_iso88591_9A_4t3a_Jha_a_wat1_a_Q_Q_e1_d_t __pyx_string_tab[151]
+#define __pyx_kp_b_iso88591_A_7_avQ_uCuCt4q_M_fA_A_q __pyx_string_tab[152]
+#define __pyx_kp_b_iso88591_A_Q_1_1IT_6H __pyx_string_tab[153]
+#define __pyx_kp_b_iso88591_A_Zq __pyx_string_tab[154]
+#define __pyx_kp_b_iso88591_HA_4z_Qa_q_q __pyx_string_tab[155]
+#define __pyx_kp_b_iso88591_HA_e1_A_A_7_avQ_uCq_M_ha_a_aq_a __pyx_string_tab[156]
+#define __pyx_kp_b_iso88591_L_q __pyx_string_tab[157]
+#define __pyx_kp_b_iso88591_L_uAV1E_q_HCvT_e1_Qa_HA_q __pyx_string_tab[158]
+#define __pyx_kp_b_iso88591_VVW __pyx_string_tab[159]
+#define __pyx_kp_b_iso88591_XQ_2Q_aq __pyx_string_tab[160]
+#define __pyx_kp_b_iso88591_fA_8 __pyx_string_tab[161]
+#define __pyx_kp_b_iso88591_q __pyx_string_tab[162]
+#define __pyx_kp_b_iso88591_q_1 __pyx_string_tab[163]
+#define __pyx_kp_b_iso88591_q_d_XT_1F_G5_q_d_4_aq_T_S_A_7_g __pyx_string_tab[164]
+#define __pyx_kp_b_iso88591_q_e1A_A_AQ_q_ha_Qa_4wat_q __pyx_string_tab[165]
+#define __pyx_kp_b_iso88591_q_haq __pyx_string_tab[166]
 #define __pyx_int_0 __pyx_number_tab[0]
 #define __pyx_int_1 __pyx_number_tab[1]
 #define __pyx_int_6 __pyx_number_tab[2]
@@ -2672,7 +2685,7 @@ static CYTHON_SMALL_CODE int __pyx_m_clear(PyObject *m) {
   #endif
   for (int i=0; i<1; ++i) { Py_CLEAR(clear_module_state->__pyx_tuple[i]); }
   for (int i=0; i<18; ++i) { Py_CLEAR(clear_module_state->__pyx_codeobj_tab[i]); }
-  for (int i=0; i<154; ++i) { Py_CLEAR(clear_module_state->__pyx_string_tab[i]); }
+  for (int i=0; i<167; ++i) { Py_CLEAR(clear_module_state->__pyx_string_tab[i]); }
   for (int i=0; i<3; ++i) { Py_CLEAR(clear_module_state->__pyx_number_tab[i]); }
 /* #### Code section: module_state_clear_contents ### */
 /* CommonTypesMetaclass.module_state_clear */
@@ -2698,7 +2711,7 @@ static CYTHON_SMALL_CODE int __pyx_m_traverse(PyObject *m, visitproc visit, void
   __Pyx_VISIT_CONST(traverse_module_state->__pyx_empty_unicode);
   for (int i=0; i<1; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_tuple[i]); }
   for (int i=0; i<18; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_codeobj_tab[i]); }
-  for (int i=0; i<154; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_string_tab[i]); }
+  for (int i=0; i<167; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_string_tab[i]); }
   for (int i=0; i<3; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_number_tab[i]); }
 /* #### Code section: module_state_traverse_contents ### */
 /* CommonTypesMetaclass.module_state_traverse */
@@ -2717,7 +2730,7 @@ return 0;
  *     available = False
  * 
  *     def start(self) -> None:             # <<<<<<<<<<<<<<
- *         logger.warning("APScheduler Task ")
+ *         """"""
  * 
 */
 
@@ -2729,7 +2742,8 @@ PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_1start = {"start", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_1start, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+PyDoc_STRVAR(__pyx_doc_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_start, "\350\256\260\345\275\225\350\260\203\345\272\246\345\231\250\344\270\215\345\217\257\347\224\250\347\212\266\346\200\201\357\274\214\345\271\266\344\277\235\346\214\201\350\260\203\347\224\250\346\226\271\345\220\257\345\212\250\346\265\201\347\250\213\345\217\257\347\273\247\347\273\255\343\200\202");
+static PyMethodDef __pyx_mdef_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_1start = {"start", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_1start, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_start};
 static PyObject *__pyx_pw_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_1start(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
@@ -2819,17 +2833,17 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_17NoopTaskSche
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("start", 0);
 
-  /* "aiSelfTest/services/task_scheduler.py":32
+  /* "aiSelfTest/services/task_scheduler.py":34
+ *         """"""
  * 
- *     def start(self) -> None:
  *         logger.warning("APScheduler Task ")             # <<<<<<<<<<<<<<
  * 
  *     def shutdown(self) -> None:
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 32, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 34, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_warning); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 32, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_warning); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 34, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_5 = 1;
@@ -2849,7 +2863,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_17NoopTaskSche
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 32, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 34, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -2858,7 +2872,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_17NoopTaskSche
  *     available = False
  * 
  *     def start(self) -> None:             # <<<<<<<<<<<<<<
- *         logger.warning("APScheduler Task ")
+ *         """"""
  * 
 */
 
@@ -2878,11 +2892,11 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_17NoopTaskSche
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task_scheduler.py":34
+/* "aiSelfTest/services/task_scheduler.py":36
  *         logger.warning("APScheduler Task ")
  * 
  *     def shutdown(self) -> None:             # <<<<<<<<<<<<<<
- *         return None
+ *         """"""
  * 
 */
 
@@ -2894,7 +2908,8 @@ PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_3shutdown = {"shutdown", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_3shutdown, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+PyDoc_STRVAR(__pyx_doc_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_2shutdown, "\347\251\272\350\260\203\345\272\246\345\231\250\346\227\240\351\234\200\351\207\212\346\224\276\350\265\204\346\272\220\343\200\202");
+static PyMethodDef __pyx_mdef_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_3shutdown = {"shutdown", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_3shutdown, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_2shutdown};
 static PyObject *__pyx_pw_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_3shutdown(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
@@ -2925,32 +2940,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_self,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 34, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 36, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 34, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 36, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "shutdown", 0) < (0)) __PYX_ERR(0, 34, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "shutdown", 0) < (0)) __PYX_ERR(0, 36, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("shutdown", 1, 1, 1, i); __PYX_ERR(0, 34, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("shutdown", 1, 1, 1, i); __PYX_ERR(0, 36, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 34, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 36, __pyx_L3_error)
     }
     __pyx_v_self = values[0];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("shutdown", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 34, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("shutdown", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 36, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -2976,9 +2991,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_17NoopTaskSche
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("shutdown", 0);
 
-  /* "aiSelfTest/services/task_scheduler.py":35
+  /* "aiSelfTest/services/task_scheduler.py":39
+ *         """"""
  * 
- *     def shutdown(self) -> None:
  *         return None             # <<<<<<<<<<<<<<
  * 
  *     def sync_task(self, task_id: int) -> None:
@@ -2987,11 +3002,11 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_17NoopTaskSche
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
 
-  /* "aiSelfTest/services/task_scheduler.py":34
+  /* "aiSelfTest/services/task_scheduler.py":36
  *         logger.warning("APScheduler Task ")
  * 
  *     def shutdown(self) -> None:             # <<<<<<<<<<<<<<
- *         return None
+ *         """"""
  * 
 */
 
@@ -3002,11 +3017,11 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_17NoopTaskSche
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task_scheduler.py":37
+/* "aiSelfTest/services/task_scheduler.py":41
  *         return None
  * 
  *     def sync_task(self, task_id: int) -> None:             # <<<<<<<<<<<<<<
- *         logger.debug(" Task {} APScheduler ", task_id)
+ *         """"""
  * 
 */
 
@@ -3018,7 +3033,8 @@ PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_5sync_task = {"sync_task", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_5sync_task, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+PyDoc_STRVAR(__pyx_doc_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_4sync_task, "\350\256\260\345\275\225\350\242\253\350\267\263\350\277\207\347\232\204\345\215\225\344\273\273\345\212\241\345\220\214\346\255\245\350\257\267\346\261\202\343\200\202");
+static PyMethodDef __pyx_mdef_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_5sync_task = {"sync_task", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_5sync_task, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_4sync_task};
 static PyObject *__pyx_pw_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_5sync_task(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
@@ -3050,40 +3066,40 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_self,&__pyx_mstate_global->__pyx_n_u_task_id,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 37, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 41, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 37, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 41, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 37, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 41, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "sync_task", 0) < (0)) __PYX_ERR(0, 37, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "sync_task", 0) < (0)) __PYX_ERR(0, 41, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("sync_task", 1, 2, 2, i); __PYX_ERR(0, 37, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("sync_task", 1, 2, 2, i); __PYX_ERR(0, 41, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 37, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 41, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 37, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 41, __pyx_L3_error)
     }
     __pyx_v_self = values[0];
-    if (__Pyx_PyInt_FromNumber(&values[1], "task_id", 0) < (0)) __PYX_ERR(0, 37, __pyx_L3_error)
+    if (__Pyx_PyInt_FromNumber(&values[1], "task_id", 0) < (0)) __PYX_ERR(0, 41, __pyx_L3_error)
     __pyx_v_task_id = ((PyObject*)values[1]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("sync_task", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 37, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("sync_task", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 41, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -3094,7 +3110,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 37, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 41, __pyx_L1_error)
   __pyx_r = __pyx_pf_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_4sync_task(__pyx_self, __pyx_v_self, __pyx_v_task_id);
 
   /* function exit code */
@@ -3127,17 +3143,17 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_17NoopTaskSche
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("sync_task", 0);
 
-  /* "aiSelfTest/services/task_scheduler.py":38
+  /* "aiSelfTest/services/task_scheduler.py":44
+ *         """"""
  * 
- *     def sync_task(self, task_id: int) -> None:
  *         logger.debug(" Task {} APScheduler ", task_id)             # <<<<<<<<<<<<<<
  * 
  *     def restore_active_tasks(self, session: Session) -> None:
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 38, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 44, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_debug); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 38, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_debug); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 44, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_5 = 1;
@@ -3157,16 +3173,16 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_17NoopTaskSche
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_5, (3-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 38, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 44, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task_scheduler.py":37
+  /* "aiSelfTest/services/task_scheduler.py":41
  *         return None
  * 
  *     def sync_task(self, task_id: int) -> None:             # <<<<<<<<<<<<<<
- *         logger.debug(" Task {} APScheduler ", task_id)
+ *         """"""
  * 
 */
 
@@ -3186,11 +3202,11 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_17NoopTaskSche
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task_scheduler.py":40
+/* "aiSelfTest/services/task_scheduler.py":46
  *         logger.debug(" Task {} APScheduler ", task_id)
  * 
  *     def restore_active_tasks(self, session: Session) -> None:             # <<<<<<<<<<<<<<
- *         return None
+ *         """"""
  * 
 */
 
@@ -3202,7 +3218,8 @@ PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_7restore_active_tasks = {"restore_active_tasks", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_7restore_active_tasks, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+PyDoc_STRVAR(__pyx_doc_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_6restore_active_tasks, "\347\251\272\350\260\203\345\272\246\345\231\250\344\270\215\346\201\242\345\244\215\344\273\273\345\212\241\357\274\214\344\277\235\346\214\201\346\216\245\345\217\243\344\270\216\347\234\237\345\256\236\350\260\203\345\272\246\345\231\250\344\270\200\350\207\264\343\200\202");
+static PyMethodDef __pyx_mdef_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_7restore_active_tasks = {"restore_active_tasks", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_7restore_active_tasks, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_6restore_active_tasks};
 static PyObject *__pyx_pw_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_7restore_active_tasks(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
@@ -3234,39 +3251,39 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_self,&__pyx_mstate_global->__pyx_n_u_session,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 40, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 46, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 40, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 46, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 40, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 46, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "restore_active_tasks", 0) < (0)) __PYX_ERR(0, 40, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "restore_active_tasks", 0) < (0)) __PYX_ERR(0, 46, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("restore_active_tasks", 1, 2, 2, i); __PYX_ERR(0, 40, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("restore_active_tasks", 1, 2, 2, i); __PYX_ERR(0, 46, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 40, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 46, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 40, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 46, __pyx_L3_error)
     }
     __pyx_v_self = values[0];
     __pyx_v_session = values[1];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("restore_active_tasks", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 40, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("restore_active_tasks", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 46, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -3292,9 +3309,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_17NoopTaskSche
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("restore_active_tasks", 0);
 
-  /* "aiSelfTest/services/task_scheduler.py":41
+  /* "aiSelfTest/services/task_scheduler.py":49
+ *         """"""
  * 
- *     def restore_active_tasks(self, session: Session) -> None:
  *         return None             # <<<<<<<<<<<<<<
  * 
  *     def recover_zombie_tasks(
@@ -3303,11 +3320,11 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_17NoopTaskSche
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
 
-  /* "aiSelfTest/services/task_scheduler.py":40
+  /* "aiSelfTest/services/task_scheduler.py":46
  *         logger.debug(" Task {} APScheduler ", task_id)
  * 
  *     def restore_active_tasks(self, session: Session) -> None:             # <<<<<<<<<<<<<<
- *         return None
+ *         """"""
  * 
 */
 
@@ -3318,7 +3335,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_17NoopTaskSche
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task_scheduler.py":43
+/* "aiSelfTest/services/task_scheduler.py":51
  *         return None
  * 
  *     def recover_zombie_tasks(             # <<<<<<<<<<<<<<
@@ -3334,7 +3351,8 @@ PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_9recover_zombie_tasks = {"recover_zombie_tasks", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_9recover_zombie_tasks, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+PyDoc_STRVAR(__pyx_doc_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_8recover_zombie_tasks, "\345\244\215\347\224\250\345\205\254\345\205\261\345\203\265\345\260\270\344\273\273\345\212\241\346\201\242\345\244\215\351\200\273\350\276\221\357\274\214\344\277\235\350\257\201\347\274\272\344\276\235\350\265\226\346\227\266\344\273\215\350\203\275\344\277\256\346\255\243\347\212\266\346\200\201\343\200\202");
+static PyMethodDef __pyx_mdef_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_9recover_zombie_tasks = {"recover_zombie_tasks", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_9recover_zombie_tasks, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_8recover_zombie_tasks};
 static PyObject *__pyx_pw_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_9recover_zombie_tasks(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
@@ -3368,24 +3386,24 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_self,&__pyx_mstate_global->__pyx_n_u_session,&__pyx_mstate_global->__pyx_n_u_now,&__pyx_mstate_global->__pyx_n_u_stale_after_hours,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 43, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 51, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 43, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 51, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 43, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 51, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "recover_zombie_tasks", 0) < (0)) __PYX_ERR(0, 43, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "recover_zombie_tasks", 0) < (0)) __PYX_ERR(0, 51, __pyx_L3_error)
 
-      /* "aiSelfTest/services/task_scheduler.py":47
+      /* "aiSelfTest/services/task_scheduler.py":55
  *         session: Session,
  *         *,
  *         now: datetime | None = None,             # <<<<<<<<<<<<<<
@@ -3395,27 +3413,27 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       if (!values[2]) values[2] = __Pyx_NewRef(((PyObject *)Py_None));
       if (!values[3]) values[3] = __Pyx_NewRef(((PyObject*)((PyObject*)__pyx_mstate_global->__pyx_int_6)));
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("recover_zombie_tasks", 1, 2, 2, i); __PYX_ERR(0, 43, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("recover_zombie_tasks", 1, 2, 2, i); __PYX_ERR(0, 51, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 43, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 51, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 43, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 51, __pyx_L3_error)
       if (!values[2]) values[2] = __Pyx_NewRef(((PyObject *)Py_None));
       if (!values[3]) values[3] = __Pyx_NewRef(((PyObject*)((PyObject*)__pyx_mstate_global->__pyx_int_6)));
     }
     __pyx_v_self = values[0];
     __pyx_v_session = values[1];
     __pyx_v_now = values[2];
-    if (__Pyx_PyInt_FromNumber(&values[3], "stale_after_hours", 0) < (0)) __PYX_ERR(0, 48, __pyx_L3_error)
+    if (__Pyx_PyInt_FromNumber(&values[3], "stale_after_hours", 0) < (0)) __PYX_ERR(0, 56, __pyx_L3_error)
     __pyx_v_stale_after_hours = ((PyObject*)values[3]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("recover_zombie_tasks", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 43, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("recover_zombie_tasks", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 51, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -3426,10 +3444,10 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_stale_after_hours), (&PyLong_Type), 0, "stale_after_hours", 2))) __PYX_ERR(0, 48, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_stale_after_hours), (&PyLong_Type), 0, "stale_after_hours", 2))) __PYX_ERR(0, 56, __pyx_L1_error)
   __pyx_r = __pyx_pf_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_8recover_zombie_tasks(__pyx_self, __pyx_v_self, __pyx_v_session, __pyx_v_now, __pyx_v_stale_after_hours);
 
-  /* "aiSelfTest/services/task_scheduler.py":43
+  /* "aiSelfTest/services/task_scheduler.py":51
  *         return None
  * 
  *     def recover_zombie_tasks(             # <<<<<<<<<<<<<<
@@ -3467,16 +3485,16 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_17NoopTaskSche
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("recover_zombie_tasks", 0);
 
-  /* "aiSelfTest/services/task_scheduler.py":50
- *         stale_after_hours: int = 6,
- *     ) -> int:
+  /* "aiSelfTest/services/task_scheduler.py":60
+ *         """"""
+ * 
  *         return recover_zombie_tasks(session, now=now, stale_after_hours=stale_after_hours)             # <<<<<<<<<<<<<<
  * 
  * 
 */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_recover_zombie_tasks); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 50, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_recover_zombie_tasks); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -3492,23 +3510,23 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_17NoopTaskSche
   #endif
   {
     PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 2 : 0)] = {__pyx_t_2, __pyx_v_session};
-    __pyx_t_5 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 50, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_MakeVectorcallBuilderKwds(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 60, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_now, __pyx_v_now, __pyx_t_5, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 50, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_stale_after_hours, __pyx_v_stale_after_hours, __pyx_t_5, __pyx_callargs+2, 1) < (0)) __PYX_ERR(0, 50, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_now, __pyx_v_now, __pyx_t_5, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 60, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_stale_after_hours, __pyx_v_stale_after_hours, __pyx_t_5, __pyx_callargs+2, 1) < (0)) __PYX_ERR(0, 60, __pyx_L1_error)
     __pyx_t_1 = __Pyx_Object_Vectorcall_CallFromBuilder((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_5);
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 50, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  if (__Pyx_PyInt_FromNumber(&__pyx_t_1, NULL, 1) < (0)) __PYX_ERR(0, 50, __pyx_L1_error)
+  if (__Pyx_PyInt_FromNumber(&__pyx_t_1, NULL, 1) < (0)) __PYX_ERR(0, 60, __pyx_L1_error)
   __pyx_r = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "aiSelfTest/services/task_scheduler.py":43
+  /* "aiSelfTest/services/task_scheduler.py":51
  *         return None
  * 
  *     def recover_zombie_tasks(             # <<<<<<<<<<<<<<
@@ -3530,12 +3548,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_17NoopTaskSche
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task_scheduler.py":61
+/* "aiSelfTest/services/task_scheduler.py":71
  *     available = True
  * 
  *     def __init__(self, *, scheduler: Any | None = None) -> None:             # <<<<<<<<<<<<<<
- *         if scheduler is None and AsyncIOScheduler is None:
- *             raise RuntimeError("APScheduler ")
+ *         """ scheduler"""
+ * 
 */
 
 /* Python wrapper */
@@ -3546,7 +3564,8 @@ PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+PyDoc_STRVAR(__pyx_doc_10aiSelfTest_8services_14task_scheduler_13TaskScheduler___init__, "\345\210\235\345\247\213\345\214\226\350\260\203\345\272\246\345\231\250\357\274\214\345\205\201\350\256\270\346\265\213\350\257\225\344\274\240\345\205\245\344\274\252 scheduler\343\200\202");
+static PyMethodDef __pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10aiSelfTest_8services_14task_scheduler_13TaskScheduler___init__};
 static PyObject *__pyx_pw_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
@@ -3578,27 +3597,27 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_self,&__pyx_mstate_global->__pyx_n_u_scheduler,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 61, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 71, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 61, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 71, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 61, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 71, __pyx_L3_error)
       if (!values[1]) values[1] = __Pyx_NewRef(((PyObject *)Py_None));
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 1, 1, 1, i); __PYX_ERR(0, 61, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 1, 1, 1, i); __PYX_ERR(0, 71, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 61, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 71, __pyx_L3_error)
       if (!values[1]) values[1] = __Pyx_NewRef(((PyObject *)Py_None));
     }
     __pyx_v_self = values[0];
@@ -3606,7 +3625,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 61, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 71, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -3642,9 +3661,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "aiSelfTest/services/task_scheduler.py":62
+  /* "aiSelfTest/services/task_scheduler.py":74
+ *         """ scheduler"""
  * 
- *     def __init__(self, *, scheduler: Any | None = None) -> None:
  *         if scheduler is None and AsyncIOScheduler is None:             # <<<<<<<<<<<<<<
  *             raise RuntimeError("APScheduler ")
  *         self.scheduler = scheduler or AsyncIOScheduler()
@@ -3655,7 +3674,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
     __pyx_t_1 = __pyx_t_2;
     goto __pyx_L4_bool_binop_done;
   }
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_AsyncIOScheduler); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 62, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_AsyncIOScheduler); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 74, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_2 = (__pyx_t_3 == Py_None);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -3663,8 +3682,8 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
   __pyx_L4_bool_binop_done:;
   if (unlikely(__pyx_t_1)) {
 
-    /* "aiSelfTest/services/task_scheduler.py":63
- *     def __init__(self, *, scheduler: Any | None = None) -> None:
+    /* "aiSelfTest/services/task_scheduler.py":75
+ * 
  *         if scheduler is None and AsyncIOScheduler is None:
  *             raise RuntimeError("APScheduler ")             # <<<<<<<<<<<<<<
  *         self.scheduler = scheduler or AsyncIOScheduler()
@@ -3676,30 +3695,30 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
       PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_mstate_global->__pyx_kp_u_APScheduler};
       __pyx_t_3 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_RuntimeError)), __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 63, __pyx_L1_error)
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 75, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
     }
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 63, __pyx_L1_error)
+    __PYX_ERR(0, 75, __pyx_L1_error)
 
-    /* "aiSelfTest/services/task_scheduler.py":62
+    /* "aiSelfTest/services/task_scheduler.py":74
+ *         """ scheduler"""
  * 
- *     def __init__(self, *, scheduler: Any | None = None) -> None:
  *         if scheduler is None and AsyncIOScheduler is None:             # <<<<<<<<<<<<<<
  *             raise RuntimeError("APScheduler ")
  *         self.scheduler = scheduler or AsyncIOScheduler()
 */
   }
 
-  /* "aiSelfTest/services/task_scheduler.py":64
+  /* "aiSelfTest/services/task_scheduler.py":76
  *         if scheduler is None and AsyncIOScheduler is None:
  *             raise RuntimeError("APScheduler ")
  *         self.scheduler = scheduler or AsyncIOScheduler()             # <<<<<<<<<<<<<<
  * 
  *     def start(self) -> None:
 */
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_scheduler); if (unlikely((__pyx_t_1 < 0))) __PYX_ERR(0, 64, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_scheduler); if (unlikely((__pyx_t_1 < 0))) __PYX_ERR(0, 76, __pyx_L1_error)
   if (!__pyx_t_1) {
   } else {
     __Pyx_INCREF(__pyx_v_scheduler);
@@ -3707,7 +3726,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
     goto __pyx_L6_bool_binop_done;
   }
   __pyx_t_6 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_AsyncIOScheduler); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 64, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_AsyncIOScheduler); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __pyx_t_5 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -3726,22 +3745,22 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
     __pyx_t_4 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_7, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 64, __pyx_L1_error)
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 76, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
   }
   __Pyx_INCREF(__pyx_t_4);
   __pyx_t_3 = __pyx_t_4;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_L6_bool_binop_done:;
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_scheduler, __pyx_t_3) < (0)) __PYX_ERR(0, 64, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_scheduler, __pyx_t_3) < (0)) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "aiSelfTest/services/task_scheduler.py":61
+  /* "aiSelfTest/services/task_scheduler.py":71
  *     available = True
  * 
  *     def __init__(self, *, scheduler: Any | None = None) -> None:             # <<<<<<<<<<<<<<
- *         if scheduler is None and AsyncIOScheduler is None:
- *             raise RuntimeError("APScheduler ")
+ *         """ scheduler"""
+ * 
 */
 
   /* function exit code */
@@ -3760,12 +3779,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task_scheduler.py":66
+/* "aiSelfTest/services/task_scheduler.py":78
  *         self.scheduler = scheduler or AsyncIOScheduler()
  * 
  *     def start(self) -> None:             # <<<<<<<<<<<<<<
- *         with Session(engine) as session:
- *             recover_zombie_tasks(session)
+ *         """ APScheduler"""
+ * 
 */
 
 /* Python wrapper */
@@ -3776,7 +3795,8 @@ PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_3start = {"start", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_3start, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+PyDoc_STRVAR(__pyx_doc_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_2start, "\345\220\257\345\212\250 APScheduler\357\274\214\345\271\266\345\234\250\345\220\257\345\212\250\345\211\215\346\201\242\345\244\215\344\273\273\345\212\241\347\212\266\346\200\201\345\222\214\345\267\262\345\220\257\347\224\250\344\273\273\345\212\241\343\200\202");
+static PyMethodDef __pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_3start = {"start", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_3start, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_2start};
 static PyObject *__pyx_pw_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_3start(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
@@ -3807,32 +3827,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_self,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 66, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 78, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 66, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 78, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "start", 0) < (0)) __PYX_ERR(0, 66, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "start", 0) < (0)) __PYX_ERR(0, 78, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("start", 1, 1, 1, i); __PYX_ERR(0, 66, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("start", 1, 1, 1, i); __PYX_ERR(0, 78, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 66, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 78, __pyx_L3_error)
     }
     __pyx_v_self = values[0];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("start", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 66, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("start", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 78, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -3855,6 +3875,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 
 static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_2start(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_v_session = NULL;
+  PyObject *__pyx_v_recovered = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3866,56 +3887,65 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
   PyObject *__pyx_t_7 = NULL;
   PyObject *__pyx_t_8 = NULL;
   PyObject *__pyx_t_9 = NULL;
-  PyObject *__pyx_t_10 = NULL;
-  int __pyx_t_11;
+  int __pyx_t_10;
+  PyObject *__pyx_t_11 = NULL;
   int __pyx_t_12;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("start", 0);
 
-  /* "aiSelfTest/services/task_scheduler.py":67
+  /* "aiSelfTest/services/task_scheduler.py":81
+ *         """ APScheduler"""
  * 
- *     def start(self) -> None:
+ *         logger.info(" Task ")             # <<<<<<<<<<<<<<
+ *         with Session(engine) as session:
+ *             recovered = recover_zombie_tasks(session)
+*/
+  __pyx_t_2 = NULL;
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 81, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_info); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 81, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_5 = 1;
+  #if CYTHON_UNPACK_METHODS
+  if (unlikely(PyMethod_Check(__pyx_t_4))) {
+    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_4);
+    assert(__pyx_t_2);
+    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_4);
+    __Pyx_INCREF(__pyx_t_2);
+    __Pyx_INCREF(__pyx__function);
+    __Pyx_DECREF_SET(__pyx_t_4, __pyx__function);
+    __pyx_t_5 = 0;
+  }
+  #endif
+  {
+    PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_mstate_global->__pyx_kp_u_Task};
+    __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 81, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "aiSelfTest/services/task_scheduler.py":82
+ * 
+ *         logger.info(" Task ")
  *         with Session(engine) as session:             # <<<<<<<<<<<<<<
- *             recover_zombie_tasks(session)
- *             self.restore_active_tasks(session)
+ *             recovered = recover_zombie_tasks(session)
+ *             if recovered:
 */
   /*with:*/ {
-    __pyx_t_2 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_Session); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 67, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_engine); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 67, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = 1;
-    #if CYTHON_UNPACK_METHODS
-    if (unlikely(PyMethod_Check(__pyx_t_3))) {
-      __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
-      assert(__pyx_t_2);
-      PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_3);
-      __Pyx_INCREF(__pyx_t_2);
-      __Pyx_INCREF(__pyx__function);
-      __Pyx_DECREF_SET(__pyx_t_3, __pyx__function);
-      __pyx_t_5 = 0;
-    }
-    #endif
-    {
-      PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_t_4};
-      __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 67, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
-    }
-    __pyx_t_6 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_exit); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 67, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_4 = NULL;
-    __pyx_t_2 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_enter); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 67, __pyx_L3_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_Session); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 82, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_engine); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 82, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_5 = 1;
     #if CYTHON_UNPACK_METHODS
-    if (likely(PyMethod_Check(__pyx_t_2))) {
+    if (unlikely(PyMethod_Check(__pyx_t_2))) {
       __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_2);
       assert(__pyx_t_4);
       PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_2);
@@ -3926,15 +3956,41 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
     }
     #endif
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_4, NULL};
-      __pyx_t_3 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_2, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_t_3};
+      __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_2, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 67, __pyx_L3_error)
-      __Pyx_GOTREF(__pyx_t_3);
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
     }
-    __pyx_t_2 = __pyx_t_3;
-    __pyx_t_3 = 0;
+    __pyx_t_6 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_exit); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 82, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_3 = NULL;
+    __pyx_t_4 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_enter); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 82, __pyx_L3_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_5 = 1;
+    #if CYTHON_UNPACK_METHODS
+    if (likely(PyMethod_Check(__pyx_t_4))) {
+      __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_4);
+      assert(__pyx_t_3);
+      PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_4);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(__pyx__function);
+      __Pyx_DECREF_SET(__pyx_t_4, __pyx__function);
+      __pyx_t_5 = 0;
+    }
+    #endif
+    {
+      PyObject *__pyx_callargs[2] = {__pyx_t_3, NULL};
+      __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 82, __pyx_L3_error)
+      __Pyx_GOTREF(__pyx_t_2);
+    }
+    __pyx_t_4 = __pyx_t_2;
+    __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     /*try:*/ {
       {
@@ -3945,44 +4001,99 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
         __Pyx_XGOTREF(__pyx_t_8);
         __Pyx_XGOTREF(__pyx_t_9);
         /*try:*/ {
-          __pyx_v_session = __pyx_t_2;
-          __pyx_t_2 = 0;
+          __pyx_v_session = __pyx_t_4;
+          __pyx_t_4 = 0;
 
-          /* "aiSelfTest/services/task_scheduler.py":68
- *     def start(self) -> None:
+          /* "aiSelfTest/services/task_scheduler.py":83
+ *         logger.info(" Task ")
  *         with Session(engine) as session:
- *             recover_zombie_tasks(session)             # <<<<<<<<<<<<<<
- *             self.restore_active_tasks(session)
- * 
+ *             recovered = recover_zombie_tasks(session)             # <<<<<<<<<<<<<<
+ *             if recovered:
+ *                 logger.warning(": recovered_count={}", recovered)
 */
           __pyx_t_1 = NULL;
-          __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_recover_zombie_tasks); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 68, __pyx_L7_error)
-          __Pyx_GOTREF(__pyx_t_3);
+          __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_recover_zombie_tasks); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 83, __pyx_L7_error)
+          __Pyx_GOTREF(__pyx_t_2);
           __pyx_t_5 = 1;
           #if CYTHON_UNPACK_METHODS
-          if (unlikely(PyMethod_Check(__pyx_t_3))) {
-            __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_3);
+          if (unlikely(PyMethod_Check(__pyx_t_2))) {
+            __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_2);
             assert(__pyx_t_1);
-            PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_3);
+            PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_2);
             __Pyx_INCREF(__pyx_t_1);
             __Pyx_INCREF(__pyx__function);
-            __Pyx_DECREF_SET(__pyx_t_3, __pyx__function);
+            __Pyx_DECREF_SET(__pyx_t_2, __pyx__function);
             __pyx_t_5 = 0;
           }
           #endif
           {
             PyObject *__pyx_callargs[2] = {__pyx_t_1, __pyx_v_session};
-            __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+            __pyx_t_4 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_2, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
             __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-            __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-            if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 68, __pyx_L7_error)
-            __Pyx_GOTREF(__pyx_t_2);
+            __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+            if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 83, __pyx_L7_error)
+            __Pyx_GOTREF(__pyx_t_4);
           }
-          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+          __pyx_v_recovered = __pyx_t_4;
+          __pyx_t_4 = 0;
 
-          /* "aiSelfTest/services/task_scheduler.py":69
+          /* "aiSelfTest/services/task_scheduler.py":84
  *         with Session(engine) as session:
- *             recover_zombie_tasks(session)
+ *             recovered = recover_zombie_tasks(session)
+ *             if recovered:             # <<<<<<<<<<<<<<
+ *                 logger.warning(": recovered_count={}", recovered)
+ *             self.restore_active_tasks(session)
+*/
+          __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_v_recovered); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 84, __pyx_L7_error)
+          if (__pyx_t_10) {
+
+            /* "aiSelfTest/services/task_scheduler.py":85
+ *             recovered = recover_zombie_tasks(session)
+ *             if recovered:
+ *                 logger.warning(": recovered_count={}", recovered)             # <<<<<<<<<<<<<<
+ *             self.restore_active_tasks(session)
+ * 
+*/
+            __pyx_t_2 = NULL;
+            __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 85, __pyx_L7_error)
+            __Pyx_GOTREF(__pyx_t_1);
+            __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_warning); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 85, __pyx_L7_error)
+            __Pyx_GOTREF(__pyx_t_3);
+            __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+            __pyx_t_5 = 1;
+            #if CYTHON_UNPACK_METHODS
+            if (unlikely(PyMethod_Check(__pyx_t_3))) {
+              __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
+              assert(__pyx_t_2);
+              PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_3);
+              __Pyx_INCREF(__pyx_t_2);
+              __Pyx_INCREF(__pyx__function);
+              __Pyx_DECREF_SET(__pyx_t_3, __pyx__function);
+              __pyx_t_5 = 0;
+            }
+            #endif
+            {
+              PyObject *__pyx_callargs[3] = {__pyx_t_2, __pyx_mstate_global->__pyx_kp_u_recovered_count, __pyx_v_recovered};
+              __pyx_t_4 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_5, (3-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+              __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+              __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+              if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 85, __pyx_L7_error)
+              __Pyx_GOTREF(__pyx_t_4);
+            }
+            __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+            /* "aiSelfTest/services/task_scheduler.py":84
+ *         with Session(engine) as session:
+ *             recovered = recover_zombie_tasks(session)
+ *             if recovered:             # <<<<<<<<<<<<<<
+ *                 logger.warning(": recovered_count={}", recovered)
+ *             self.restore_active_tasks(session)
+*/
+          }
+
+          /* "aiSelfTest/services/task_scheduler.py":86
+ *             if recovered:
+ *                 logger.warning(": recovered_count={}", recovered)
  *             self.restore_active_tasks(session)             # <<<<<<<<<<<<<<
  * 
  *         if not getattr(self.scheduler, "running", False):
@@ -3992,19 +4103,19 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
           __pyx_t_5 = 0;
           {
             PyObject *__pyx_callargs[2] = {__pyx_t_3, __pyx_v_session};
-            __pyx_t_2 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_restore_active_tasks, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+            __pyx_t_4 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_restore_active_tasks, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
             __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-            if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 69, __pyx_L7_error)
-            __Pyx_GOTREF(__pyx_t_2);
+            if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 86, __pyx_L7_error)
+            __Pyx_GOTREF(__pyx_t_4);
           }
-          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+          __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-          /* "aiSelfTest/services/task_scheduler.py":67
+          /* "aiSelfTest/services/task_scheduler.py":82
  * 
- *     def start(self) -> None:
+ *         logger.info(" Task ")
  *         with Session(engine) as session:             # <<<<<<<<<<<<<<
- *             recover_zombie_tasks(session)
- *             self.restore_active_tasks(session)
+ *             recovered = recover_zombie_tasks(session)
+ *             if recovered:
 */
         }
         __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
@@ -4018,32 +4129,32 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
         /*except:*/ {
           __Pyx_AddTraceback("aiSelfTest.services.task_scheduler.TaskScheduler.start", __pyx_clineno, __pyx_lineno, __pyx_filename);
-          if (__Pyx_GetException(&__pyx_t_2, &__pyx_t_3, &__pyx_t_1) < 0) __PYX_ERR(0, 67, __pyx_L9_except_error)
-          __Pyx_XGOTREF(__pyx_t_2);
+          if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_3, &__pyx_t_2) < 0) __PYX_ERR(0, 82, __pyx_L9_except_error)
+          __Pyx_XGOTREF(__pyx_t_4);
           __Pyx_XGOTREF(__pyx_t_3);
-          __Pyx_XGOTREF(__pyx_t_1);
-          __pyx_t_4 = PyTuple_Pack(3, __pyx_t_2, __pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 67, __pyx_L9_except_error)
-          __Pyx_GOTREF(__pyx_t_4);
-          __pyx_t_10 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_4, NULL);
+          __Pyx_XGOTREF(__pyx_t_2);
+          __pyx_t_1 = PyTuple_Pack(3, __pyx_t_4, __pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L9_except_error)
+          __Pyx_GOTREF(__pyx_t_1);
+          __pyx_t_11 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_1, NULL);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-          __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 67, __pyx_L9_except_error)
-          __Pyx_GOTREF(__pyx_t_10);
-          __pyx_t_11 = __Pyx_PyObject_IsTrue(__pyx_t_10);
-          __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-          if (__pyx_t_11 < (0)) __PYX_ERR(0, 67, __pyx_L9_except_error)
-          __pyx_t_12 = (!__pyx_t_11);
+          __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+          if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 82, __pyx_L9_except_error)
+          __Pyx_GOTREF(__pyx_t_11);
+          __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_11);
+          __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+          if (__pyx_t_10 < (0)) __PYX_ERR(0, 82, __pyx_L9_except_error)
+          __pyx_t_12 = (!__pyx_t_10);
           if (unlikely(__pyx_t_12)) {
-            __Pyx_GIVEREF(__pyx_t_2);
+            __Pyx_GIVEREF(__pyx_t_4);
             __Pyx_GIVEREF(__pyx_t_3);
-            __Pyx_XGIVEREF(__pyx_t_1);
-            __Pyx_ErrRestoreWithState(__pyx_t_2, __pyx_t_3, __pyx_t_1);
-            __pyx_t_2 = 0;  __pyx_t_3 = 0;  __pyx_t_1 = 0; 
-            __PYX_ERR(0, 67, __pyx_L9_except_error)
+            __Pyx_XGIVEREF(__pyx_t_2);
+            __Pyx_ErrRestoreWithState(__pyx_t_4, __pyx_t_3, __pyx_t_2);
+            __pyx_t_4 = 0;  __pyx_t_3 = 0;  __pyx_t_2 = 0; 
+            __PYX_ERR(0, 82, __pyx_L9_except_error)
           }
-          __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+          __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-          __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
+          __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
           goto __pyx_L8_exception_handled;
         }
         __pyx_L9_except_error:;
@@ -4065,7 +4176,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
         if (__pyx_t_6) {
           __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_mstate_global->__pyx_tuple[0], NULL);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-          if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 67, __pyx_L1_error)
+          if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 82, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_9);
           __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
         }
@@ -4073,67 +4184,102 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
       }
       __pyx_L6:;
     }
-    goto __pyx_L16;
+    goto __pyx_L17;
     __pyx_L3_error:;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     goto __pyx_L1_error;
-    __pyx_L16:;
+    __pyx_L17:;
   }
 
-  /* "aiSelfTest/services/task_scheduler.py":71
+  /* "aiSelfTest/services/task_scheduler.py":88
  *             self.restore_active_tasks(session)
  * 
  *         if not getattr(self.scheduler, "running", False):             # <<<<<<<<<<<<<<
  *             self.scheduler.start()
- * 
+ *             logger.info("Task ")
 */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_scheduler); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 71, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_GetAttr3(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_running, Py_False); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_scheduler); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 88, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = __Pyx_GetAttr3(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_running, Py_False); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_12 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely((__pyx_t_12 < 0))) __PYX_ERR(0, 71, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_12 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely((__pyx_t_12 < 0))) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_11 = (!__pyx_t_12);
-  if (__pyx_t_11) {
+  __pyx_t_10 = (!__pyx_t_12);
+  if (__pyx_t_10) {
 
-    /* "aiSelfTest/services/task_scheduler.py":72
+    /* "aiSelfTest/services/task_scheduler.py":89
  * 
  *         if not getattr(self.scheduler, "running", False):
  *             self.scheduler.start()             # <<<<<<<<<<<<<<
+ *             logger.info("Task ")
  * 
- *     def shutdown(self) -> None:
 */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_scheduler); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 72, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_1 = __pyx_t_2;
-    __Pyx_INCREF(__pyx_t_1);
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_scheduler); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_2 = __pyx_t_4;
+    __Pyx_INCREF(__pyx_t_2);
     __pyx_t_5 = 0;
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_1, NULL};
+      PyObject *__pyx_callargs[2] = {__pyx_t_2, NULL};
       __pyx_t_3 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_start, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-      __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 72, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 89, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
     }
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "aiSelfTest/services/task_scheduler.py":71
+    /* "aiSelfTest/services/task_scheduler.py":90
+ *         if not getattr(self.scheduler, "running", False):
+ *             self.scheduler.start()
+ *             logger.info("Task ")             # <<<<<<<<<<<<<<
+ * 
+ *     def shutdown(self) -> None:
+*/
+    __pyx_t_4 = NULL;
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 90, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_info); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 90, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_5 = 1;
+    #if CYTHON_UNPACK_METHODS
+    if (unlikely(PyMethod_Check(__pyx_t_1))) {
+      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_1);
+      assert(__pyx_t_4);
+      PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_1);
+      __Pyx_INCREF(__pyx_t_4);
+      __Pyx_INCREF(__pyx__function);
+      __Pyx_DECREF_SET(__pyx_t_1, __pyx__function);
+      __pyx_t_5 = 0;
+    }
+    #endif
+    {
+      PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_mstate_global->__pyx_kp_u_Task_2};
+      __pyx_t_3 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_1, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 90, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+    }
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+
+    /* "aiSelfTest/services/task_scheduler.py":88
  *             self.restore_active_tasks(session)
  * 
  *         if not getattr(self.scheduler, "running", False):             # <<<<<<<<<<<<<<
  *             self.scheduler.start()
- * 
+ *             logger.info("Task ")
 */
   }
 
-  /* "aiSelfTest/services/task_scheduler.py":66
+  /* "aiSelfTest/services/task_scheduler.py":78
  *         self.scheduler = scheduler or AsyncIOScheduler()
  * 
  *     def start(self) -> None:             # <<<<<<<<<<<<<<
- *         with Session(engine) as session:
- *             recover_zombie_tasks(session)
+ *         """ APScheduler"""
+ * 
 */
 
   /* function exit code */
@@ -4148,17 +4294,18 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_session);
+  __Pyx_XDECREF(__pyx_v_recovered);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task_scheduler.py":74
- *             self.scheduler.start()
+/* "aiSelfTest/services/task_scheduler.py":92
+ *             logger.info("Task ")
  * 
  *     def shutdown(self) -> None:             # <<<<<<<<<<<<<<
- *         if getattr(self.scheduler, "running", False):
- *             self.scheduler.shutdown(wait=False)
+ *         """ APScheduler"""
+ * 
 */
 
 /* Python wrapper */
@@ -4169,7 +4316,8 @@ PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_5shutdown = {"shutdown", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_5shutdown, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+PyDoc_STRVAR(__pyx_doc_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_4shutdown, "\345\201\234\346\255\242 APScheduler\357\274\214\351\201\277\345\205\215\345\272\224\347\224\250\345\205\263\351\227\255\345\220\216\347\273\247\347\273\255\350\247\246\345\217\221\345\220\216\345\217\260\344\273\273\345\212\241\343\200\202");
+static PyMethodDef __pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_5shutdown = {"shutdown", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_5shutdown, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_4shutdown};
 static PyObject *__pyx_pw_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_5shutdown(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
@@ -4200,32 +4348,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_self,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 74, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 92, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 74, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 92, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "shutdown", 0) < (0)) __PYX_ERR(0, 74, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "shutdown", 0) < (0)) __PYX_ERR(0, 92, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("shutdown", 1, 1, 1, i); __PYX_ERR(0, 74, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("shutdown", 1, 1, 1, i); __PYX_ERR(0, 92, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 74, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 92, __pyx_L3_error)
     }
     __pyx_v_self = values[0];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("shutdown", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 74, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("shutdown", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 92, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4260,63 +4408,98 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("shutdown", 0);
 
-  /* "aiSelfTest/services/task_scheduler.py":75
+  /* "aiSelfTest/services/task_scheduler.py":95
+ *         """ APScheduler"""
  * 
- *     def shutdown(self) -> None:
  *         if getattr(self.scheduler, "running", False):             # <<<<<<<<<<<<<<
  *             self.scheduler.shutdown(wait=False)
- * 
+ *             logger.info("Task ")
 */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_scheduler); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_scheduler); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 95, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_GetAttr3(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_running, Py_False); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetAttr3(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_running, Py_False); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 95, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_3 < 0))) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_3 < 0))) __PYX_ERR(0, 95, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (__pyx_t_3) {
 
-    /* "aiSelfTest/services/task_scheduler.py":76
- *     def shutdown(self) -> None:
+    /* "aiSelfTest/services/task_scheduler.py":96
+ * 
  *         if getattr(self.scheduler, "running", False):
  *             self.scheduler.shutdown(wait=False)             # <<<<<<<<<<<<<<
+ *             logger.info("Task ")
  * 
- *     def restore_active_tasks(self, session: Session) -> None:
 */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_scheduler); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 76, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_scheduler); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 96, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_1 = __pyx_t_4;
     __Pyx_INCREF(__pyx_t_1);
     __pyx_t_5 = 0;
     {
       PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 1 : 0)] = {__pyx_t_1, NULL};
-      __pyx_t_6 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 76, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 96, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
-      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_wait, Py_False, __pyx_t_6, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 76, __pyx_L1_error)
+      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_wait, Py_False, __pyx_t_6, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 96, __pyx_L1_error)
       __pyx_t_2 = __Pyx_Object_VectorcallMethod_CallFromBuilder((PyObject*)__pyx_mstate_global->__pyx_n_u_shutdown, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_6);
       __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 76, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 96, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "aiSelfTest/services/task_scheduler.py":75
+    /* "aiSelfTest/services/task_scheduler.py":97
+ *         if getattr(self.scheduler, "running", False):
+ *             self.scheduler.shutdown(wait=False)
+ *             logger.info("Task ")             # <<<<<<<<<<<<<<
  * 
- *     def shutdown(self) -> None:
+ *     def restore_active_tasks(self, session: Session) -> None:
+*/
+    __pyx_t_4 = NULL;
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 97, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_info); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 97, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_t_5 = 1;
+    #if CYTHON_UNPACK_METHODS
+    if (unlikely(PyMethod_Check(__pyx_t_1))) {
+      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_1);
+      assert(__pyx_t_4);
+      PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_1);
+      __Pyx_INCREF(__pyx_t_4);
+      __Pyx_INCREF(__pyx__function);
+      __Pyx_DECREF_SET(__pyx_t_1, __pyx__function);
+      __pyx_t_5 = 0;
+    }
+    #endif
+    {
+      PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_mstate_global->__pyx_kp_u_Task_3};
+      __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_1, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 97, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+    }
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+    /* "aiSelfTest/services/task_scheduler.py":95
+ *         """ APScheduler"""
+ * 
  *         if getattr(self.scheduler, "running", False):             # <<<<<<<<<<<<<<
  *             self.scheduler.shutdown(wait=False)
- * 
+ *             logger.info("Task ")
 */
   }
 
-  /* "aiSelfTest/services/task_scheduler.py":74
- *             self.scheduler.start()
+  /* "aiSelfTest/services/task_scheduler.py":92
+ *             logger.info("Task ")
  * 
  *     def shutdown(self) -> None:             # <<<<<<<<<<<<<<
- *         if getattr(self.scheduler, "running", False):
- *             self.scheduler.shutdown(wait=False)
+ *         """ APScheduler"""
+ * 
 */
 
   /* function exit code */
@@ -4335,12 +4518,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task_scheduler.py":78
- *             self.scheduler.shutdown(wait=False)
+/* "aiSelfTest/services/task_scheduler.py":99
+ *             logger.info("Task ")
  * 
  *     def restore_active_tasks(self, session: Session) -> None:             # <<<<<<<<<<<<<<
- *         tasks = session.exec(select(Task).where(Task.active == True)).all()  # noqa: E712
- *         for task in tasks:
+ *         """ active=True  job"""
+ * 
 */
 
 /* Python wrapper */
@@ -4351,7 +4534,8 @@ PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_7restore_active_tasks = {"restore_active_tasks", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_7restore_active_tasks, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+PyDoc_STRVAR(__pyx_doc_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_6restore_active_tasks, "\344\273\216\346\225\260\346\215\256\345\272\223\346\201\242\345\244\215 active=True \347\232\204\344\273\273\345\212\241\345\271\266\351\207\215\346\226\260\346\263\250\345\206\214\345\221\250\346\234\237 job\343\200\202");
+static PyMethodDef __pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_7restore_active_tasks = {"restore_active_tasks", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_7restore_active_tasks, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_6restore_active_tasks};
 static PyObject *__pyx_pw_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_7restore_active_tasks(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
@@ -4383,39 +4567,39 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_self,&__pyx_mstate_global->__pyx_n_u_session,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 78, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 99, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 78, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 99, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 78, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 99, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "restore_active_tasks", 0) < (0)) __PYX_ERR(0, 78, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "restore_active_tasks", 0) < (0)) __PYX_ERR(0, 99, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("restore_active_tasks", 1, 2, 2, i); __PYX_ERR(0, 78, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("restore_active_tasks", 1, 2, 2, i); __PYX_ERR(0, 99, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 78, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 99, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 78, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 99, __pyx_L3_error)
     }
     __pyx_v_self = values[0];
     __pyx_v_session = values[1];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("restore_active_tasks", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 78, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("restore_active_tasks", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 99, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4459,19 +4643,19 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("restore_active_tasks", 0);
 
-  /* "aiSelfTest/services/task_scheduler.py":79
+  /* "aiSelfTest/services/task_scheduler.py":102
+ *         """ active=True  job"""
  * 
- *     def restore_active_tasks(self, session: Session) -> None:
  *         tasks = session.exec(select(Task).where(Task.active == True)).all()  # noqa: E712             # <<<<<<<<<<<<<<
+ *         logger.info(": count={}", len(tasks))
  *         for task in tasks:
- *             self._schedule_task(task)
 */
   __pyx_t_4 = __pyx_v_session;
   __Pyx_INCREF(__pyx_t_4);
   __pyx_t_8 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_select); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 79, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_select); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_Task); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 79, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_Task_4); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
   __pyx_t_11 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -4491,17 +4675,17 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
     __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 79, __pyx_L1_error)
+    if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
   }
   __pyx_t_6 = __pyx_t_7;
   __Pyx_INCREF(__pyx_t_6);
-  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_Task); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 79, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_Task_4); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_active); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 79, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_active); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-  __pyx_t_9 = PyObject_RichCompare(__pyx_t_10, Py_True, Py_EQ); __Pyx_XGOTREF(__pyx_t_9); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 79, __pyx_L1_error)
+  __pyx_t_9 = PyObject_RichCompare(__pyx_t_10, Py_True, Py_EQ); __Pyx_XGOTREF(__pyx_t_9); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
   __pyx_t_11 = 0;
   {
@@ -4510,7 +4694,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 79, __pyx_L1_error)
+    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
   }
   __pyx_t_11 = 0;
@@ -4519,7 +4703,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
     __pyx_t_3 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_exec, __pyx_callargs+__pyx_t_11, (2-__pyx_t_11) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 79, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
   }
   __pyx_t_2 = __pyx_t_3;
@@ -4530,15 +4714,54 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_all, __pyx_callargs+__pyx_t_11, (1-__pyx_t_11) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 79, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_tasks = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task_scheduler.py":80
- *     def restore_active_tasks(self, session: Session) -> None:
+  /* "aiSelfTest/services/task_scheduler.py":103
+ * 
  *         tasks = session.exec(select(Task).where(Task.active == True)).all()  # noqa: E712
+ *         logger.info(": count={}", len(tasks))             # <<<<<<<<<<<<<<
+ *         for task in tasks:
+ *             self._schedule_task(task)
+*/
+  __pyx_t_3 = NULL;
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 103, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_info); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 103, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_12 = PyObject_Length(__pyx_v_tasks); if (unlikely(__pyx_t_12 == ((Py_ssize_t)-1))) __PYX_ERR(0, 103, __pyx_L1_error)
+  __pyx_t_2 = PyLong_FromSsize_t(__pyx_t_12); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 103, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_11 = 1;
+  #if CYTHON_UNPACK_METHODS
+  if (unlikely(PyMethod_Check(__pyx_t_5))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_5);
+    assert(__pyx_t_3);
+    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_5);
+    __Pyx_INCREF(__pyx_t_3);
+    __Pyx_INCREF(__pyx__function);
+    __Pyx_DECREF_SET(__pyx_t_5, __pyx__function);
+    __pyx_t_11 = 0;
+  }
+  #endif
+  {
+    PyObject *__pyx_callargs[3] = {__pyx_t_3, __pyx_mstate_global->__pyx_kp_u_count, __pyx_t_2};
+    __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_5, __pyx_callargs+__pyx_t_11, (3-__pyx_t_11) | (__pyx_t_11*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "aiSelfTest/services/task_scheduler.py":104
+ *         tasks = session.exec(select(Task).where(Task.active == True)).all()  # noqa: E712
+ *         logger.info(": count={}", len(tasks))
  *         for task in tasks:             # <<<<<<<<<<<<<<
  *             self._schedule_task(task)
  * 
@@ -4548,9 +4771,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
     __pyx_t_12 = 0;
     __pyx_t_13 = NULL;
   } else {
-    __pyx_t_12 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_tasks); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 80, __pyx_L1_error)
+    __pyx_t_12 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_tasks); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 104, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_13 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_1); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 80, __pyx_L1_error)
+    __pyx_t_13 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_1); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 104, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_13)) {
@@ -4558,45 +4781,45 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
         {
           Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_1);
           #if !CYTHON_ASSUME_SAFE_SIZE
-          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 80, __pyx_L1_error)
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 104, __pyx_L1_error)
           #endif
           if (__pyx_t_12 >= __pyx_temp) break;
         }
-        __pyx_t_3 = __Pyx_PyList_GetItemRefFast(__pyx_t_1, __pyx_t_12, __Pyx_ReferenceSharing_OwnStrongReference);
+        __pyx_t_5 = __Pyx_PyList_GetItemRefFast(__pyx_t_1, __pyx_t_12, __Pyx_ReferenceSharing_OwnStrongReference);
         ++__pyx_t_12;
       } else {
         {
           Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_1);
           #if !CYTHON_ASSUME_SAFE_SIZE
-          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 80, __pyx_L1_error)
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 104, __pyx_L1_error)
           #endif
           if (__pyx_t_12 >= __pyx_temp) break;
         }
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_3 = __Pyx_NewRef(PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_12));
+        __pyx_t_5 = __Pyx_NewRef(PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_12));
         #else
-        __pyx_t_3 = __Pyx_PySequence_ITEM(__pyx_t_1, __pyx_t_12);
+        __pyx_t_5 = __Pyx_PySequence_ITEM(__pyx_t_1, __pyx_t_12);
         #endif
         ++__pyx_t_12;
       }
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 80, __pyx_L1_error)
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 104, __pyx_L1_error)
     } else {
-      __pyx_t_3 = __pyx_t_13(__pyx_t_1);
-      if (unlikely(!__pyx_t_3)) {
+      __pyx_t_5 = __pyx_t_13(__pyx_t_1);
+      if (unlikely(!__pyx_t_5)) {
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
-          if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 80, __pyx_L1_error)
+          if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 104, __pyx_L1_error)
           PyErr_Clear();
         }
         break;
       }
     }
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_XDECREF_SET(__pyx_v_task, __pyx_t_3);
-    __pyx_t_3 = 0;
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_XDECREF_SET(__pyx_v_task, __pyx_t_5);
+    __pyx_t_5 = 0;
 
-    /* "aiSelfTest/services/task_scheduler.py":81
- *         tasks = session.exec(select(Task).where(Task.active == True)).all()  # noqa: E712
+    /* "aiSelfTest/services/task_scheduler.py":105
+ *         logger.info(": count={}", len(tasks))
  *         for task in tasks:
  *             self._schedule_task(task)             # <<<<<<<<<<<<<<
  * 
@@ -4607,16 +4830,16 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
     __pyx_t_11 = 0;
     {
       PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_v_task};
-      __pyx_t_3 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_schedule_task, __pyx_callargs+__pyx_t_11, (2-__pyx_t_11) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __pyx_t_5 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_schedule_task, __pyx_callargs+__pyx_t_11, (2-__pyx_t_11) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 81, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 105, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
     }
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "aiSelfTest/services/task_scheduler.py":80
- *     def restore_active_tasks(self, session: Session) -> None:
+    /* "aiSelfTest/services/task_scheduler.py":104
  *         tasks = session.exec(select(Task).where(Task.active == True)).all()  # noqa: E712
+ *         logger.info(": count={}", len(tasks))
  *         for task in tasks:             # <<<<<<<<<<<<<<
  *             self._schedule_task(task)
  * 
@@ -4624,12 +4847,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task_scheduler.py":78
- *             self.scheduler.shutdown(wait=False)
+  /* "aiSelfTest/services/task_scheduler.py":99
+ *             logger.info("Task ")
  * 
  *     def restore_active_tasks(self, session: Session) -> None:             # <<<<<<<<<<<<<<
- *         tasks = session.exec(select(Task).where(Task.active == True)).all()  # noqa: E712
- *         for task in tasks:
+ *         """ active=True  job"""
+ * 
 */
 
   /* function exit code */
@@ -4656,12 +4879,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task_scheduler.py":83
+/* "aiSelfTest/services/task_scheduler.py":107
  *             self._schedule_task(task)
  * 
  *     def sync_task(self, task_id: int) -> None:             # <<<<<<<<<<<<<<
- *         with Session(engine) as session:
- *             task = session.get(Task, task_id)
+ *         """ job"""
+ * 
 */
 
 /* Python wrapper */
@@ -4672,7 +4895,8 @@ PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_9sync_task = {"sync_task", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_9sync_task, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+PyDoc_STRVAR(__pyx_doc_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_8sync_task, "\345\234\250\344\273\273\345\212\241\345\220\257\345\201\234\346\210\226\351\205\215\347\275\256\345\217\230\346\233\264\345\220\216\357\274\214\345\220\214\346\255\245\345\215\225\344\270\252\344\273\273\345\212\241\347\232\204\350\260\203\345\272\246 job\343\200\202");
+static PyMethodDef __pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_9sync_task = {"sync_task", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_9sync_task, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_8sync_task};
 static PyObject *__pyx_pw_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_9sync_task(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
@@ -4704,40 +4928,40 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_self,&__pyx_mstate_global->__pyx_n_u_task_id,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 83, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 107, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 83, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 107, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 83, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 107, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "sync_task", 0) < (0)) __PYX_ERR(0, 83, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "sync_task", 0) < (0)) __PYX_ERR(0, 107, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("sync_task", 1, 2, 2, i); __PYX_ERR(0, 83, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("sync_task", 1, 2, 2, i); __PYX_ERR(0, 107, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 83, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 107, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 83, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 107, __pyx_L3_error)
     }
     __pyx_v_self = values[0];
-    if (__Pyx_PyInt_FromNumber(&values[1], "task_id", 0) < (0)) __PYX_ERR(0, 83, __pyx_L3_error)
+    if (__Pyx_PyInt_FromNumber(&values[1], "task_id", 0) < (0)) __PYX_ERR(0, 107, __pyx_L3_error)
     __pyx_v_task_id = ((PyObject*)values[1]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("sync_task", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 83, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("sync_task", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 107, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4748,7 +4972,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 83, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 107, __pyx_L1_error)
   __pyx_r = __pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_8sync_task(__pyx_self, __pyx_v_self, __pyx_v_task_id);
 
   /* function exit code */
@@ -4791,18 +5015,18 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("sync_task", 0);
 
-  /* "aiSelfTest/services/task_scheduler.py":84
+  /* "aiSelfTest/services/task_scheduler.py":110
+ *         """ job"""
  * 
- *     def sync_task(self, task_id: int) -> None:
  *         with Session(engine) as session:             # <<<<<<<<<<<<<<
  *             task = session.get(Task, task_id)
  *             if task is None or not task.active:
 */
   /*with:*/ {
     __pyx_t_2 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_Session); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 84, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_Session); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 110, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_engine); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 84, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_engine); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 110, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = 1;
     #if CYTHON_UNPACK_METHODS
@@ -4822,13 +5046,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 84, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 110, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
     }
-    __pyx_t_6 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_exit); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 84, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_exit); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 110, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_4 = NULL;
-    __pyx_t_2 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_enter); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 84, __pyx_L3_error)
+    __pyx_t_2 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_enter); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 110, __pyx_L3_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_5 = 1;
     #if CYTHON_UNPACK_METHODS
@@ -4847,7 +5071,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
       __pyx_t_3 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_2, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 84, __pyx_L3_error)
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 110, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_3);
     }
     __pyx_t_2 = __pyx_t_3;
@@ -4865,8 +5089,8 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
           __pyx_v_session = __pyx_t_2;
           __pyx_t_2 = 0;
 
-          /* "aiSelfTest/services/task_scheduler.py":85
- *     def sync_task(self, task_id: int) -> None:
+          /* "aiSelfTest/services/task_scheduler.py":111
+ * 
  *         with Session(engine) as session:
  *             task = session.get(Task, task_id)             # <<<<<<<<<<<<<<
  *             if task is None or not task.active:
@@ -4874,7 +5098,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
 */
           __pyx_t_1 = __pyx_v_session;
           __Pyx_INCREF(__pyx_t_1);
-          __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_Task); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 85, __pyx_L7_error)
+          __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_Task_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 111, __pyx_L7_error)
           __Pyx_GOTREF(__pyx_t_3);
           __pyx_t_5 = 0;
           {
@@ -4882,18 +5106,18 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
             __pyx_t_2 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_get, __pyx_callargs+__pyx_t_5, (3-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
             __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
             __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-            if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 85, __pyx_L7_error)
+            if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 111, __pyx_L7_error)
             __Pyx_GOTREF(__pyx_t_2);
           }
           __pyx_v_task = __pyx_t_2;
           __pyx_t_2 = 0;
 
-          /* "aiSelfTest/services/task_scheduler.py":86
+          /* "aiSelfTest/services/task_scheduler.py":112
  *         with Session(engine) as session:
  *             task = session.get(Task, task_id)
  *             if task is None or not task.active:             # <<<<<<<<<<<<<<
  *                 self._remove_task(task_id)
- *                 return
+ *                 logger.debug(": task_id={}", task_id)
 */
           __pyx_t_11 = (__pyx_v_task == Py_None);
           if (!__pyx_t_11) {
@@ -4901,21 +5125,21 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
             __pyx_t_10 = __pyx_t_11;
             goto __pyx_L14_bool_binop_done;
           }
-          __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_active); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 86, __pyx_L7_error)
+          __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_active); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 112, __pyx_L7_error)
           __Pyx_GOTREF(__pyx_t_2);
-          __pyx_t_11 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_11 < 0))) __PYX_ERR(0, 86, __pyx_L7_error)
+          __pyx_t_11 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_11 < 0))) __PYX_ERR(0, 112, __pyx_L7_error)
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
           __pyx_t_12 = (!__pyx_t_11);
           __pyx_t_10 = __pyx_t_12;
           __pyx_L14_bool_binop_done:;
           if (__pyx_t_10) {
 
-            /* "aiSelfTest/services/task_scheduler.py":87
+            /* "aiSelfTest/services/task_scheduler.py":113
  *             task = session.get(Task, task_id)
  *             if task is None or not task.active:
  *                 self._remove_task(task_id)             # <<<<<<<<<<<<<<
+ *                 logger.debug(": task_id={}", task_id)
  *                 return
- *             self._schedule_task(task)
 */
             __pyx_t_3 = __pyx_v_self;
             __Pyx_INCREF(__pyx_t_3);
@@ -4924,14 +5148,49 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
               PyObject *__pyx_callargs[2] = {__pyx_t_3, __pyx_v_task_id};
               __pyx_t_2 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_remove_task, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
               __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-              if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 87, __pyx_L7_error)
+              if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 113, __pyx_L7_error)
               __Pyx_GOTREF(__pyx_t_2);
             }
             __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-            /* "aiSelfTest/services/task_scheduler.py":88
+            /* "aiSelfTest/services/task_scheduler.py":114
  *             if task is None or not task.active:
  *                 self._remove_task(task_id)
+ *                 logger.debug(": task_id={}", task_id)             # <<<<<<<<<<<<<<
+ *                 return
+ *             self._schedule_task(task)
+*/
+            __pyx_t_3 = NULL;
+            __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 114, __pyx_L7_error)
+            __Pyx_GOTREF(__pyx_t_1);
+            __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_debug); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 114, __pyx_L7_error)
+            __Pyx_GOTREF(__pyx_t_4);
+            __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+            __pyx_t_5 = 1;
+            #if CYTHON_UNPACK_METHODS
+            if (unlikely(PyMethod_Check(__pyx_t_4))) {
+              __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_4);
+              assert(__pyx_t_3);
+              PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_4);
+              __Pyx_INCREF(__pyx_t_3);
+              __Pyx_INCREF(__pyx__function);
+              __Pyx_DECREF_SET(__pyx_t_4, __pyx__function);
+              __pyx_t_5 = 0;
+            }
+            #endif
+            {
+              PyObject *__pyx_callargs[3] = {__pyx_t_3, __pyx_mstate_global->__pyx_kp_u_task_id_2, __pyx_v_task_id};
+              __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_5, (3-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+              __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+              __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+              if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 114, __pyx_L7_error)
+              __Pyx_GOTREF(__pyx_t_2);
+            }
+            __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+            /* "aiSelfTest/services/task_scheduler.py":115
+ *                 self._remove_task(task_id)
+ *                 logger.debug(": task_id={}", task_id)
  *                 return             # <<<<<<<<<<<<<<
  *             self._schedule_task(task)
  * 
@@ -4940,37 +5199,37 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
             __pyx_r = Py_None; __Pyx_INCREF(Py_None);
             goto __pyx_L11_try_return;
 
-            /* "aiSelfTest/services/task_scheduler.py":86
+            /* "aiSelfTest/services/task_scheduler.py":112
  *         with Session(engine) as session:
  *             task = session.get(Task, task_id)
  *             if task is None or not task.active:             # <<<<<<<<<<<<<<
  *                 self._remove_task(task_id)
- *                 return
+ *                 logger.debug(": task_id={}", task_id)
 */
           }
 
-          /* "aiSelfTest/services/task_scheduler.py":89
- *                 self._remove_task(task_id)
+          /* "aiSelfTest/services/task_scheduler.py":116
+ *                 logger.debug(": task_id={}", task_id)
  *                 return
  *             self._schedule_task(task)             # <<<<<<<<<<<<<<
  * 
  *     def run_task_job(self, task_id: int) -> None:
 */
-          __pyx_t_3 = __pyx_v_self;
-          __Pyx_INCREF(__pyx_t_3);
+          __pyx_t_4 = __pyx_v_self;
+          __Pyx_INCREF(__pyx_t_4);
           __pyx_t_5 = 0;
           {
-            PyObject *__pyx_callargs[2] = {__pyx_t_3, __pyx_v_task};
+            PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_v_task};
             __pyx_t_2 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_schedule_task, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-            __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-            if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 89, __pyx_L7_error)
+            __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+            if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 116, __pyx_L7_error)
             __Pyx_GOTREF(__pyx_t_2);
           }
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-          /* "aiSelfTest/services/task_scheduler.py":84
+          /* "aiSelfTest/services/task_scheduler.py":110
+ *         """ job"""
  * 
- *     def sync_task(self, task_id: int) -> None:
  *         with Session(engine) as session:             # <<<<<<<<<<<<<<
  *             task = session.get(Task, task_id)
  *             if task is None or not task.active:
@@ -4987,32 +5246,32 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
         /*except:*/ {
           __Pyx_AddTraceback("aiSelfTest.services.task_scheduler.TaskScheduler.sync_task", __pyx_clineno, __pyx_lineno, __pyx_filename);
-          if (__Pyx_GetException(&__pyx_t_2, &__pyx_t_3, &__pyx_t_1) < 0) __PYX_ERR(0, 84, __pyx_L9_except_error)
+          if (__Pyx_GetException(&__pyx_t_2, &__pyx_t_4, &__pyx_t_3) < 0) __PYX_ERR(0, 110, __pyx_L9_except_error)
           __Pyx_XGOTREF(__pyx_t_2);
+          __Pyx_XGOTREF(__pyx_t_4);
           __Pyx_XGOTREF(__pyx_t_3);
-          __Pyx_XGOTREF(__pyx_t_1);
-          __pyx_t_4 = PyTuple_Pack(3, __pyx_t_2, __pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 84, __pyx_L9_except_error)
-          __Pyx_GOTREF(__pyx_t_4);
-          __pyx_t_13 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_4, NULL);
+          __pyx_t_1 = PyTuple_Pack(3, __pyx_t_2, __pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 110, __pyx_L9_except_error)
+          __Pyx_GOTREF(__pyx_t_1);
+          __pyx_t_13 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_1, NULL);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-          __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 84, __pyx_L9_except_error)
+          __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+          if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 110, __pyx_L9_except_error)
           __Pyx_GOTREF(__pyx_t_13);
           __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_13);
           __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-          if (__pyx_t_10 < (0)) __PYX_ERR(0, 84, __pyx_L9_except_error)
+          if (__pyx_t_10 < (0)) __PYX_ERR(0, 110, __pyx_L9_except_error)
           __pyx_t_12 = (!__pyx_t_10);
           if (unlikely(__pyx_t_12)) {
             __Pyx_GIVEREF(__pyx_t_2);
-            __Pyx_GIVEREF(__pyx_t_3);
-            __Pyx_XGIVEREF(__pyx_t_1);
-            __Pyx_ErrRestoreWithState(__pyx_t_2, __pyx_t_3, __pyx_t_1);
-            __pyx_t_2 = 0;  __pyx_t_3 = 0;  __pyx_t_1 = 0; 
-            __PYX_ERR(0, 84, __pyx_L9_except_error)
+            __Pyx_GIVEREF(__pyx_t_4);
+            __Pyx_XGIVEREF(__pyx_t_3);
+            __Pyx_ErrRestoreWithState(__pyx_t_2, __pyx_t_4, __pyx_t_3);
+            __pyx_t_2 = 0;  __pyx_t_4 = 0;  __pyx_t_3 = 0; 
+            __PYX_ERR(0, 110, __pyx_L9_except_error)
           }
           __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+          __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-          __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
           goto __pyx_L8_exception_handled;
         }
         __pyx_L9_except_error:;
@@ -5040,7 +5299,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
         if (__pyx_t_6) {
           __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_mstate_global->__pyx_tuple[0], NULL);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-          if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 84, __pyx_L1_error)
+          if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 110, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_9);
           __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
         }
@@ -5052,7 +5311,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
         if (__pyx_t_6) {
           __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_mstate_global->__pyx_tuple[0], NULL);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-          if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 84, __pyx_L1_error)
+          if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 110, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_8);
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
         }
@@ -5069,12 +5328,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
     __pyx_L19:;
   }
 
-  /* "aiSelfTest/services/task_scheduler.py":83
+  /* "aiSelfTest/services/task_scheduler.py":107
  *             self._schedule_task(task)
  * 
  *     def sync_task(self, task_id: int) -> None:             # <<<<<<<<<<<<<<
- *         with Session(engine) as session:
- *             task = session.get(Task, task_id)
+ *         """ job"""
+ * 
 */
 
   /* function exit code */
@@ -5095,12 +5354,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task_scheduler.py":91
+/* "aiSelfTest/services/task_scheduler.py":118
  *             self._schedule_task(task)
  * 
  *     def run_task_job(self, task_id: int) -> None:             # <<<<<<<<<<<<<<
- *         with Session(engine) as session:
- *             task = session.get(Task, task_id)
+ *         """APScheduler """
+ * 
 */
 
 /* Python wrapper */
@@ -5111,7 +5370,8 @@ PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_11run_task_job = {"run_task_job", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_11run_task_job, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+PyDoc_STRVAR(__pyx_doc_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_10run_task_job, "APScheduler \350\247\246\345\217\221\347\232\204\344\273\273\345\212\241\346\211\247\350\241\214\345\205\245\345\217\243\343\200\202");
+static PyMethodDef __pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_11run_task_job = {"run_task_job", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_11run_task_job, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_10run_task_job};
 static PyObject *__pyx_pw_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_11run_task_job(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
@@ -5143,40 +5403,40 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_self,&__pyx_mstate_global->__pyx_n_u_task_id,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 91, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 118, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 91, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 118, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 91, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 118, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "run_task_job", 0) < (0)) __PYX_ERR(0, 91, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "run_task_job", 0) < (0)) __PYX_ERR(0, 118, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("run_task_job", 1, 2, 2, i); __PYX_ERR(0, 91, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("run_task_job", 1, 2, 2, i); __PYX_ERR(0, 118, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 91, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 118, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 91, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 118, __pyx_L3_error)
     }
     __pyx_v_self = values[0];
-    if (__Pyx_PyInt_FromNumber(&values[1], "task_id", 0) < (0)) __PYX_ERR(0, 91, __pyx_L3_error)
+    if (__Pyx_PyInt_FromNumber(&values[1], "task_id", 0) < (0)) __PYX_ERR(0, 118, __pyx_L3_error)
     __pyx_v_task_id = ((PyObject*)values[1]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("run_task_job", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 91, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("run_task_job", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 118, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -5187,7 +5447,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 91, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 118, __pyx_L1_error)
   __pyx_r = __pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_10run_task_job(__pyx_self, __pyx_v_self, __pyx_v_task_id);
 
   /* function exit code */
@@ -5229,48 +5489,57 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("run_task_job", 0);
 
-  /* "aiSelfTest/services/task_scheduler.py":92
+  /* "aiSelfTest/services/task_scheduler.py":121
+ *         """APScheduler """
  * 
- *     def run_task_job(self, task_id: int) -> None:
+ *         logger.info(": task_id={}", task_id)             # <<<<<<<<<<<<<<
+ *         with Session(engine) as session:
+ *             task = session.get(Task, task_id)
+*/
+  __pyx_t_2 = NULL;
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 121, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_info); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 121, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_5 = 1;
+  #if CYTHON_UNPACK_METHODS
+  if (unlikely(PyMethod_Check(__pyx_t_4))) {
+    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_4);
+    assert(__pyx_t_2);
+    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_4);
+    __Pyx_INCREF(__pyx_t_2);
+    __Pyx_INCREF(__pyx__function);
+    __Pyx_DECREF_SET(__pyx_t_4, __pyx__function);
+    __pyx_t_5 = 0;
+  }
+  #endif
+  {
+    PyObject *__pyx_callargs[3] = {__pyx_t_2, __pyx_mstate_global->__pyx_kp_u_task_id_3, __pyx_v_task_id};
+    __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_5, (3-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 121, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "aiSelfTest/services/task_scheduler.py":122
+ * 
+ *         logger.info(": task_id={}", task_id)
  *         with Session(engine) as session:             # <<<<<<<<<<<<<<
  *             task = session.get(Task, task_id)
  *             if task is None:
 */
   /*with:*/ {
-    __pyx_t_2 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_Session); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 92, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_engine); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 92, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = 1;
-    #if CYTHON_UNPACK_METHODS
-    if (unlikely(PyMethod_Check(__pyx_t_3))) {
-      __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
-      assert(__pyx_t_2);
-      PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_3);
-      __Pyx_INCREF(__pyx_t_2);
-      __Pyx_INCREF(__pyx__function);
-      __Pyx_DECREF_SET(__pyx_t_3, __pyx__function);
-      __pyx_t_5 = 0;
-    }
-    #endif
-    {
-      PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_t_4};
-      __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 92, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
-    }
-    __pyx_t_6 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_exit); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 92, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_4 = NULL;
-    __pyx_t_2 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_enter); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 92, __pyx_L3_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_Session); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 122, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_engine); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 122, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_5 = 1;
     #if CYTHON_UNPACK_METHODS
-    if (likely(PyMethod_Check(__pyx_t_2))) {
+    if (unlikely(PyMethod_Check(__pyx_t_2))) {
       __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_2);
       assert(__pyx_t_4);
       PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_2);
@@ -5281,15 +5550,41 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
     }
     #endif
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_4, NULL};
-      __pyx_t_3 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_2, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_t_3};
+      __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_2, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 92, __pyx_L3_error)
-      __Pyx_GOTREF(__pyx_t_3);
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 122, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
     }
-    __pyx_t_2 = __pyx_t_3;
-    __pyx_t_3 = 0;
+    __pyx_t_6 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_exit); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 122, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_3 = NULL;
+    __pyx_t_4 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_enter); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 122, __pyx_L3_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_5 = 1;
+    #if CYTHON_UNPACK_METHODS
+    if (likely(PyMethod_Check(__pyx_t_4))) {
+      __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_4);
+      assert(__pyx_t_3);
+      PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_4);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(__pyx__function);
+      __Pyx_DECREF_SET(__pyx_t_4, __pyx__function);
+      __pyx_t_5 = 0;
+    }
+    #endif
+    {
+      PyObject *__pyx_callargs[2] = {__pyx_t_3, NULL};
+      __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 122, __pyx_L3_error)
+      __Pyx_GOTREF(__pyx_t_2);
+    }
+    __pyx_t_4 = __pyx_t_2;
+    __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     /*try:*/ {
       {
@@ -5300,11 +5595,11 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
         __Pyx_XGOTREF(__pyx_t_8);
         __Pyx_XGOTREF(__pyx_t_9);
         /*try:*/ {
-          __pyx_v_session = __pyx_t_2;
-          __pyx_t_2 = 0;
+          __pyx_v_session = __pyx_t_4;
+          __pyx_t_4 = 0;
 
-          /* "aiSelfTest/services/task_scheduler.py":93
- *     def run_task_job(self, task_id: int) -> None:
+          /* "aiSelfTest/services/task_scheduler.py":123
+ *         logger.info(": task_id={}", task_id)
  *         with Session(engine) as session:
  *             task = session.get(Task, task_id)             # <<<<<<<<<<<<<<
  *             if task is None:
@@ -5312,52 +5607,87 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
 */
           __pyx_t_1 = __pyx_v_session;
           __Pyx_INCREF(__pyx_t_1);
-          __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_Task); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 93, __pyx_L7_error)
-          __Pyx_GOTREF(__pyx_t_3);
+          __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_Task_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 123, __pyx_L7_error)
+          __Pyx_GOTREF(__pyx_t_2);
           __pyx_t_5 = 0;
           {
-            PyObject *__pyx_callargs[3] = {__pyx_t_1, __pyx_t_3, __pyx_v_task_id};
-            __pyx_t_2 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_get, __pyx_callargs+__pyx_t_5, (3-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+            PyObject *__pyx_callargs[3] = {__pyx_t_1, __pyx_t_2, __pyx_v_task_id};
+            __pyx_t_4 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_get, __pyx_callargs+__pyx_t_5, (3-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
             __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-            __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-            if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 93, __pyx_L7_error)
-            __Pyx_GOTREF(__pyx_t_2);
+            __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+            if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 123, __pyx_L7_error)
+            __Pyx_GOTREF(__pyx_t_4);
           }
-          __pyx_v_task = __pyx_t_2;
-          __pyx_t_2 = 0;
+          __pyx_v_task = __pyx_t_4;
+          __pyx_t_4 = 0;
 
-          /* "aiSelfTest/services/task_scheduler.py":94
+          /* "aiSelfTest/services/task_scheduler.py":124
  *         with Session(engine) as session:
  *             task = session.get(Task, task_id)
  *             if task is None:             # <<<<<<<<<<<<<<
  *                 self._remove_task(task_id)
- *                 return
+ *                 logger.warning(" job: task_id={}", task_id)
 */
           __pyx_t_10 = (__pyx_v_task == Py_None);
           if (__pyx_t_10) {
 
-            /* "aiSelfTest/services/task_scheduler.py":95
+            /* "aiSelfTest/services/task_scheduler.py":125
  *             task = session.get(Task, task_id)
  *             if task is None:
  *                 self._remove_task(task_id)             # <<<<<<<<<<<<<<
+ *                 logger.warning(" job: task_id={}", task_id)
+ *                 return
+*/
+            __pyx_t_2 = __pyx_v_self;
+            __Pyx_INCREF(__pyx_t_2);
+            __pyx_t_5 = 0;
+            {
+              PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_v_task_id};
+              __pyx_t_4 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_remove_task, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+              __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+              if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 125, __pyx_L7_error)
+              __Pyx_GOTREF(__pyx_t_4);
+            }
+            __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+            /* "aiSelfTest/services/task_scheduler.py":126
+ *             if task is None:
+ *                 self._remove_task(task_id)
+ *                 logger.warning(" job: task_id={}", task_id)             # <<<<<<<<<<<<<<
  *                 return
  *             if is_task_running(task):
 */
-            __pyx_t_3 = __pyx_v_self;
-            __Pyx_INCREF(__pyx_t_3);
-            __pyx_t_5 = 0;
-            {
-              PyObject *__pyx_callargs[2] = {__pyx_t_3, __pyx_v_task_id};
-              __pyx_t_2 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_remove_task, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-              __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-              if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 95, __pyx_L7_error)
-              __Pyx_GOTREF(__pyx_t_2);
+            __pyx_t_2 = NULL;
+            __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 126, __pyx_L7_error)
+            __Pyx_GOTREF(__pyx_t_1);
+            __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_warning); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 126, __pyx_L7_error)
+            __Pyx_GOTREF(__pyx_t_3);
+            __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+            __pyx_t_5 = 1;
+            #if CYTHON_UNPACK_METHODS
+            if (unlikely(PyMethod_Check(__pyx_t_3))) {
+              __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
+              assert(__pyx_t_2);
+              PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_3);
+              __Pyx_INCREF(__pyx_t_2);
+              __Pyx_INCREF(__pyx__function);
+              __Pyx_DECREF_SET(__pyx_t_3, __pyx__function);
+              __pyx_t_5 = 0;
             }
-            __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+            #endif
+            {
+              PyObject *__pyx_callargs[3] = {__pyx_t_2, __pyx_mstate_global->__pyx_kp_u_job_task_id, __pyx_v_task_id};
+              __pyx_t_4 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_5, (3-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+              __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+              __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+              if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 126, __pyx_L7_error)
+              __Pyx_GOTREF(__pyx_t_4);
+            }
+            __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-            /* "aiSelfTest/services/task_scheduler.py":96
- *             if task is None:
+            /* "aiSelfTest/services/task_scheduler.py":127
  *                 self._remove_task(task_id)
+ *                 logger.warning(" job: task_id={}", task_id)
  *                 return             # <<<<<<<<<<<<<<
  *             if is_task_running(task):
  *                 task.skipped_count += 1
@@ -5366,24 +5696,202 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
             __pyx_r = Py_None; __Pyx_INCREF(Py_None);
             goto __pyx_L11_try_return;
 
-            /* "aiSelfTest/services/task_scheduler.py":94
+            /* "aiSelfTest/services/task_scheduler.py":124
  *         with Session(engine) as session:
  *             task = session.get(Task, task_id)
  *             if task is None:             # <<<<<<<<<<<<<<
  *                 self._remove_task(task_id)
- *                 return
+ *                 logger.warning(" job: task_id={}", task_id)
 */
           }
 
-          /* "aiSelfTest/services/task_scheduler.py":97
- *                 self._remove_task(task_id)
+          /* "aiSelfTest/services/task_scheduler.py":128
+ *                 logger.warning(" job: task_id={}", task_id)
  *                 return
  *             if is_task_running(task):             # <<<<<<<<<<<<<<
  *                 task.skipped_count += 1
  *                 task.updated_at = datetime.now()
 */
           __pyx_t_3 = NULL;
-          __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_is_task_running); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 97, __pyx_L7_error)
+          __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_is_task_running); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 128, __pyx_L7_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          __pyx_t_5 = 1;
+          #if CYTHON_UNPACK_METHODS
+          if (unlikely(PyMethod_Check(__pyx_t_2))) {
+            __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+            assert(__pyx_t_3);
+            PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_2);
+            __Pyx_INCREF(__pyx_t_3);
+            __Pyx_INCREF(__pyx__function);
+            __Pyx_DECREF_SET(__pyx_t_2, __pyx__function);
+            __pyx_t_5 = 0;
+          }
+          #endif
+          {
+            PyObject *__pyx_callargs[2] = {__pyx_t_3, __pyx_v_task};
+            __pyx_t_4 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_2, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+            __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+            __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+            if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 128, __pyx_L7_error)
+            __Pyx_GOTREF(__pyx_t_4);
+          }
+          __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 128, __pyx_L7_error)
+          __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+          if (__pyx_t_10) {
+
+            /* "aiSelfTest/services/task_scheduler.py":129
+ *                 return
+ *             if is_task_running(task):
+ *                 task.skipped_count += 1             # <<<<<<<<<<<<<<
+ *                 task.updated_at = datetime.now()
+ *                 session.add(task)
+*/
+            __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_skipped_count); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 129, __pyx_L7_error)
+            __Pyx_GOTREF(__pyx_t_4);
+            __pyx_t_2 = __Pyx_PyLong_AddObjC(__pyx_t_4, __pyx_mstate_global->__pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 129, __pyx_L7_error)
+            __Pyx_GOTREF(__pyx_t_2);
+            __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+            if (__Pyx_PyObject_SetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_skipped_count, __pyx_t_2) < (0)) __PYX_ERR(0, 129, __pyx_L7_error)
+            __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+            /* "aiSelfTest/services/task_scheduler.py":130
+ *             if is_task_running(task):
+ *                 task.skipped_count += 1
+ *                 task.updated_at = datetime.now()             # <<<<<<<<<<<<<<
+ *                 session.add(task)
+ *                 session.commit()
+*/
+            __pyx_t_4 = NULL;
+            __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_datetime); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 130, __pyx_L7_error)
+            __Pyx_GOTREF(__pyx_t_3);
+            __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_now); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 130, __pyx_L7_error)
+            __Pyx_GOTREF(__pyx_t_1);
+            __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+            __pyx_t_5 = 1;
+            #if CYTHON_UNPACK_METHODS
+            if (unlikely(PyMethod_Check(__pyx_t_1))) {
+              __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_1);
+              assert(__pyx_t_4);
+              PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_1);
+              __Pyx_INCREF(__pyx_t_4);
+              __Pyx_INCREF(__pyx__function);
+              __Pyx_DECREF_SET(__pyx_t_1, __pyx__function);
+              __pyx_t_5 = 0;
+            }
+            #endif
+            {
+              PyObject *__pyx_callargs[2] = {__pyx_t_4, NULL};
+              __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_1, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+              __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+              __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+              if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 130, __pyx_L7_error)
+              __Pyx_GOTREF(__pyx_t_2);
+            }
+            if (__Pyx_PyObject_SetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_updated_at, __pyx_t_2) < (0)) __PYX_ERR(0, 130, __pyx_L7_error)
+            __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+            /* "aiSelfTest/services/task_scheduler.py":131
+ *                 task.skipped_count += 1
+ *                 task.updated_at = datetime.now()
+ *                 session.add(task)             # <<<<<<<<<<<<<<
+ *                 session.commit()
+ *                 logger.warning(" {} ", task_id)
+*/
+            __pyx_t_1 = __pyx_v_session;
+            __Pyx_INCREF(__pyx_t_1);
+            __pyx_t_5 = 0;
+            {
+              PyObject *__pyx_callargs[2] = {__pyx_t_1, __pyx_v_task};
+              __pyx_t_2 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_add, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+              __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
+              if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 131, __pyx_L7_error)
+              __Pyx_GOTREF(__pyx_t_2);
+            }
+            __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+            /* "aiSelfTest/services/task_scheduler.py":132
+ *                 task.updated_at = datetime.now()
+ *                 session.add(task)
+ *                 session.commit()             # <<<<<<<<<<<<<<
+ *                 logger.warning(" {} ", task_id)
+ *                 return
+*/
+            __pyx_t_1 = __pyx_v_session;
+            __Pyx_INCREF(__pyx_t_1);
+            __pyx_t_5 = 0;
+            {
+              PyObject *__pyx_callargs[2] = {__pyx_t_1, NULL};
+              __pyx_t_2 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_commit, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+              __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
+              if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 132, __pyx_L7_error)
+              __Pyx_GOTREF(__pyx_t_2);
+            }
+            __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+            /* "aiSelfTest/services/task_scheduler.py":133
+ *                 session.add(task)
+ *                 session.commit()
+ *                 logger.warning(" {} ", task_id)             # <<<<<<<<<<<<<<
+ *                 return
+ *             run_task_execution(session, task_id)
+*/
+            __pyx_t_1 = NULL;
+            __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 133, __pyx_L7_error)
+            __Pyx_GOTREF(__pyx_t_4);
+            __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_warning); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 133, __pyx_L7_error)
+            __Pyx_GOTREF(__pyx_t_3);
+            __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+            __pyx_t_5 = 1;
+            #if CYTHON_UNPACK_METHODS
+            if (unlikely(PyMethod_Check(__pyx_t_3))) {
+              __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_3);
+              assert(__pyx_t_1);
+              PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_3);
+              __Pyx_INCREF(__pyx_t_1);
+              __Pyx_INCREF(__pyx__function);
+              __Pyx_DECREF_SET(__pyx_t_3, __pyx__function);
+              __pyx_t_5 = 0;
+            }
+            #endif
+            {
+              PyObject *__pyx_callargs[3] = {__pyx_t_1, __pyx_mstate_global->__pyx_kp_u_, __pyx_v_task_id};
+              __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_5, (3-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+              __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
+              __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+              if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 133, __pyx_L7_error)
+              __Pyx_GOTREF(__pyx_t_2);
+            }
+            __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+            /* "aiSelfTest/services/task_scheduler.py":134
+ *                 session.commit()
+ *                 logger.warning(" {} ", task_id)
+ *                 return             # <<<<<<<<<<<<<<
+ *             run_task_execution(session, task_id)
+ * 
+*/
+            __Pyx_XDECREF(__pyx_r);
+            __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+            goto __pyx_L11_try_return;
+
+            /* "aiSelfTest/services/task_scheduler.py":128
+ *                 logger.warning(" job: task_id={}", task_id)
+ *                 return
+ *             if is_task_running(task):             # <<<<<<<<<<<<<<
+ *                 task.skipped_count += 1
+ *                 task.updated_at = datetime.now()
+*/
+          }
+
+          /* "aiSelfTest/services/task_scheduler.py":135
+ *                 logger.warning(" {} ", task_id)
+ *                 return
+ *             run_task_execution(session, task_id)             # <<<<<<<<<<<<<<
+ * 
+ *     def _schedule_task(self, task: Task) -> None:
+*/
+          __pyx_t_3 = NULL;
+          __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_run_task_execution); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 135, __pyx_L7_error)
           __Pyx_GOTREF(__pyx_t_1);
           __pyx_t_5 = 1;
           #if CYTHON_UNPACK_METHODS
@@ -5398,196 +5906,18 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
           }
           #endif
           {
-            PyObject *__pyx_callargs[2] = {__pyx_t_3, __pyx_v_task};
-            __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_1, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-            __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-            __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-            if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 97, __pyx_L7_error)
-            __Pyx_GOTREF(__pyx_t_2);
-          }
-          __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 97, __pyx_L7_error)
-          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-          if (__pyx_t_10) {
-
-            /* "aiSelfTest/services/task_scheduler.py":98
- *                 return
- *             if is_task_running(task):
- *                 task.skipped_count += 1             # <<<<<<<<<<<<<<
- *                 task.updated_at = datetime.now()
- *                 session.add(task)
-*/
-            __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_skipped_count); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 98, __pyx_L7_error)
-            __Pyx_GOTREF(__pyx_t_2);
-            __pyx_t_1 = __Pyx_PyLong_AddObjC(__pyx_t_2, __pyx_mstate_global->__pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 98, __pyx_L7_error)
-            __Pyx_GOTREF(__pyx_t_1);
-            __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-            if (__Pyx_PyObject_SetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_skipped_count, __pyx_t_1) < (0)) __PYX_ERR(0, 98, __pyx_L7_error)
-            __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-            /* "aiSelfTest/services/task_scheduler.py":99
- *             if is_task_running(task):
- *                 task.skipped_count += 1
- *                 task.updated_at = datetime.now()             # <<<<<<<<<<<<<<
- *                 session.add(task)
- *                 session.commit()
-*/
-            __pyx_t_2 = NULL;
-            __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_datetime); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 99, __pyx_L7_error)
-            __Pyx_GOTREF(__pyx_t_3);
-            __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_now); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 99, __pyx_L7_error)
-            __Pyx_GOTREF(__pyx_t_4);
-            __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-            __pyx_t_5 = 1;
-            #if CYTHON_UNPACK_METHODS
-            if (unlikely(PyMethod_Check(__pyx_t_4))) {
-              __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_4);
-              assert(__pyx_t_2);
-              PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_4);
-              __Pyx_INCREF(__pyx_t_2);
-              __Pyx_INCREF(__pyx__function);
-              __Pyx_DECREF_SET(__pyx_t_4, __pyx__function);
-              __pyx_t_5 = 0;
-            }
-            #endif
-            {
-              PyObject *__pyx_callargs[2] = {__pyx_t_2, NULL};
-              __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-              __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-              __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-              if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 99, __pyx_L7_error)
-              __Pyx_GOTREF(__pyx_t_1);
-            }
-            if (__Pyx_PyObject_SetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_updated_at, __pyx_t_1) < (0)) __PYX_ERR(0, 99, __pyx_L7_error)
-            __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-            /* "aiSelfTest/services/task_scheduler.py":100
- *                 task.skipped_count += 1
- *                 task.updated_at = datetime.now()
- *                 session.add(task)             # <<<<<<<<<<<<<<
- *                 session.commit()
- *                 logger.warning(" {} ", task_id)
-*/
-            __pyx_t_4 = __pyx_v_session;
-            __Pyx_INCREF(__pyx_t_4);
-            __pyx_t_5 = 0;
-            {
-              PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_v_task};
-              __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_add, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-              __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-              if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 100, __pyx_L7_error)
-              __Pyx_GOTREF(__pyx_t_1);
-            }
-            __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-            /* "aiSelfTest/services/task_scheduler.py":101
- *                 task.updated_at = datetime.now()
- *                 session.add(task)
- *                 session.commit()             # <<<<<<<<<<<<<<
- *                 logger.warning(" {} ", task_id)
- *                 return
-*/
-            __pyx_t_4 = __pyx_v_session;
-            __Pyx_INCREF(__pyx_t_4);
-            __pyx_t_5 = 0;
-            {
-              PyObject *__pyx_callargs[2] = {__pyx_t_4, NULL};
-              __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_commit, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-              __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-              if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 101, __pyx_L7_error)
-              __Pyx_GOTREF(__pyx_t_1);
-            }
-            __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-            /* "aiSelfTest/services/task_scheduler.py":102
- *                 session.add(task)
- *                 session.commit()
- *                 logger.warning(" {} ", task_id)             # <<<<<<<<<<<<<<
- *                 return
- *             run_task_execution(session, task_id)
-*/
-            __pyx_t_4 = NULL;
-            __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 102, __pyx_L7_error)
-            __Pyx_GOTREF(__pyx_t_2);
-            __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_warning); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L7_error)
-            __Pyx_GOTREF(__pyx_t_3);
-            __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-            __pyx_t_5 = 1;
-            #if CYTHON_UNPACK_METHODS
-            if (unlikely(PyMethod_Check(__pyx_t_3))) {
-              __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
-              assert(__pyx_t_4);
-              PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_3);
-              __Pyx_INCREF(__pyx_t_4);
-              __Pyx_INCREF(__pyx__function);
-              __Pyx_DECREF_SET(__pyx_t_3, __pyx__function);
-              __pyx_t_5 = 0;
-            }
-            #endif
-            {
-              PyObject *__pyx_callargs[3] = {__pyx_t_4, __pyx_mstate_global->__pyx_kp_u_, __pyx_v_task_id};
-              __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_5, (3-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-              __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-              __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-              if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 102, __pyx_L7_error)
-              __Pyx_GOTREF(__pyx_t_1);
-            }
-            __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-            /* "aiSelfTest/services/task_scheduler.py":103
- *                 session.commit()
- *                 logger.warning(" {} ", task_id)
- *                 return             # <<<<<<<<<<<<<<
- *             run_task_execution(session, task_id)
- * 
-*/
-            __Pyx_XDECREF(__pyx_r);
-            __pyx_r = Py_None; __Pyx_INCREF(Py_None);
-            goto __pyx_L11_try_return;
-
-            /* "aiSelfTest/services/task_scheduler.py":97
- *                 self._remove_task(task_id)
- *                 return
- *             if is_task_running(task):             # <<<<<<<<<<<<<<
- *                 task.skipped_count += 1
- *                 task.updated_at = datetime.now()
-*/
-          }
-
-          /* "aiSelfTest/services/task_scheduler.py":104
- *                 logger.warning(" {} ", task_id)
- *                 return
- *             run_task_execution(session, task_id)             # <<<<<<<<<<<<<<
- * 
- *     def _schedule_task(self, task: Task) -> None:
-*/
-          __pyx_t_3 = NULL;
-          __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_run_task_execution); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 104, __pyx_L7_error)
-          __Pyx_GOTREF(__pyx_t_4);
-          __pyx_t_5 = 1;
-          #if CYTHON_UNPACK_METHODS
-          if (unlikely(PyMethod_Check(__pyx_t_4))) {
-            __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_4);
-            assert(__pyx_t_3);
-            PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_4);
-            __Pyx_INCREF(__pyx_t_3);
-            __Pyx_INCREF(__pyx__function);
-            __Pyx_DECREF_SET(__pyx_t_4, __pyx__function);
-            __pyx_t_5 = 0;
-          }
-          #endif
-          {
             PyObject *__pyx_callargs[3] = {__pyx_t_3, __pyx_v_session, __pyx_v_task_id};
-            __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_5, (3-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+            __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_1, __pyx_callargs+__pyx_t_5, (3-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
             __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-            __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-            if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 104, __pyx_L7_error)
-            __Pyx_GOTREF(__pyx_t_1);
+            __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+            if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 135, __pyx_L7_error)
+            __Pyx_GOTREF(__pyx_t_2);
           }
-          __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-          /* "aiSelfTest/services/task_scheduler.py":92
+          /* "aiSelfTest/services/task_scheduler.py":122
  * 
- *     def run_task_job(self, task_id: int) -> None:
+ *         logger.info(": task_id={}", task_id)
  *         with Session(engine) as session:             # <<<<<<<<<<<<<<
  *             task = session.get(Task, task_id)
  *             if task is None:
@@ -5604,31 +5934,31 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
         /*except:*/ {
           __Pyx_AddTraceback("aiSelfTest.services.task_scheduler.TaskScheduler.run_task_job", __pyx_clineno, __pyx_lineno, __pyx_filename);
-          if (__Pyx_GetException(&__pyx_t_1, &__pyx_t_4, &__pyx_t_3) < 0) __PYX_ERR(0, 92, __pyx_L9_except_error)
+          if (__Pyx_GetException(&__pyx_t_2, &__pyx_t_1, &__pyx_t_3) < 0) __PYX_ERR(0, 122, __pyx_L9_except_error)
+          __Pyx_XGOTREF(__pyx_t_2);
           __Pyx_XGOTREF(__pyx_t_1);
-          __Pyx_XGOTREF(__pyx_t_4);
           __Pyx_XGOTREF(__pyx_t_3);
-          __pyx_t_2 = PyTuple_Pack(3, __pyx_t_1, __pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 92, __pyx_L9_except_error)
-          __Pyx_GOTREF(__pyx_t_2);
-          __pyx_t_11 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_2, NULL);
+          __pyx_t_4 = PyTuple_Pack(3, __pyx_t_2, __pyx_t_1, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 122, __pyx_L9_except_error)
+          __Pyx_GOTREF(__pyx_t_4);
+          __pyx_t_11 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_4, NULL);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-          if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 92, __pyx_L9_except_error)
+          __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+          if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 122, __pyx_L9_except_error)
           __Pyx_GOTREF(__pyx_t_11);
           __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_11);
           __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-          if (__pyx_t_10 < (0)) __PYX_ERR(0, 92, __pyx_L9_except_error)
+          if (__pyx_t_10 < (0)) __PYX_ERR(0, 122, __pyx_L9_except_error)
           __pyx_t_12 = (!__pyx_t_10);
           if (unlikely(__pyx_t_12)) {
+            __Pyx_GIVEREF(__pyx_t_2);
             __Pyx_GIVEREF(__pyx_t_1);
-            __Pyx_GIVEREF(__pyx_t_4);
             __Pyx_XGIVEREF(__pyx_t_3);
-            __Pyx_ErrRestoreWithState(__pyx_t_1, __pyx_t_4, __pyx_t_3);
-            __pyx_t_1 = 0;  __pyx_t_4 = 0;  __pyx_t_3 = 0; 
-            __PYX_ERR(0, 92, __pyx_L9_except_error)
+            __Pyx_ErrRestoreWithState(__pyx_t_2, __pyx_t_1, __pyx_t_3);
+            __pyx_t_2 = 0;  __pyx_t_1 = 0;  __pyx_t_3 = 0; 
+            __PYX_ERR(0, 122, __pyx_L9_except_error)
           }
+          __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
           __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-          __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
           goto __pyx_L8_exception_handled;
         }
@@ -5657,7 +5987,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
         if (__pyx_t_6) {
           __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_mstate_global->__pyx_tuple[0], NULL);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-          if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 92, __pyx_L1_error)
+          if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 122, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_9);
           __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
         }
@@ -5669,7 +5999,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
         if (__pyx_t_6) {
           __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_mstate_global->__pyx_tuple[0], NULL);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-          if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 92, __pyx_L1_error)
+          if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 122, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_8);
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
         }
@@ -5686,12 +6016,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
     __pyx_L18:;
   }
 
-  /* "aiSelfTest/services/task_scheduler.py":91
+  /* "aiSelfTest/services/task_scheduler.py":118
  *             self._schedule_task(task)
  * 
  *     def run_task_job(self, task_id: int) -> None:             # <<<<<<<<<<<<<<
- *         with Session(engine) as session:
- *             task = session.get(Task, task_id)
+ *         """APScheduler """
+ * 
 */
 
   /* function exit code */
@@ -5712,12 +6042,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task_scheduler.py":106
+/* "aiSelfTest/services/task_scheduler.py":137
  *             run_task_execution(session, task_id)
  * 
  *     def _schedule_task(self, task: Task) -> None:             # <<<<<<<<<<<<<<
- *         if task.id is None:
- *             return
+ *         """ job"""
+ * 
 */
 
 /* Python wrapper */
@@ -5728,7 +6058,8 @@ PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_13_schedule_task = {"_schedule_task", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_13_schedule_task, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+PyDoc_STRVAR(__pyx_doc_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_12_schedule_task, "\346\263\250\345\206\214\346\210\226\346\233\277\346\215\242\345\215\225\344\270\252\344\273\273\345\212\241\347\232\204\345\221\250\346\234\237\346\211\247\350\241\214 job\343\200\202");
+static PyMethodDef __pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_13_schedule_task = {"_schedule_task", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_13_schedule_task, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_12_schedule_task};
 static PyObject *__pyx_pw_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_13_schedule_task(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
@@ -5760,39 +6091,39 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_self,&__pyx_mstate_global->__pyx_n_u_task,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 106, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 137, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 106, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 137, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 106, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 137, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "_schedule_task", 0) < (0)) __PYX_ERR(0, 106, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "_schedule_task", 0) < (0)) __PYX_ERR(0, 137, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("_schedule_task", 1, 2, 2, i); __PYX_ERR(0, 106, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("_schedule_task", 1, 2, 2, i); __PYX_ERR(0, 137, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 106, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 137, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 106, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 137, __pyx_L3_error)
     }
     __pyx_v_self = values[0];
     __pyx_v_task = values[1];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_schedule_task", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 106, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_schedule_task", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 137, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -5832,21 +6163,21 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_schedule_task", 0);
 
-  /* "aiSelfTest/services/task_scheduler.py":107
+  /* "aiSelfTest/services/task_scheduler.py":140
+ *         """ job"""
  * 
- *     def _schedule_task(self, task: Task) -> None:
  *         if task.id is None:             # <<<<<<<<<<<<<<
  *             return
  *         self.scheduler.add_job(
 */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = (__pyx_t_1 == Py_None);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "aiSelfTest/services/task_scheduler.py":108
- *     def _schedule_task(self, task: Task) -> None:
+    /* "aiSelfTest/services/task_scheduler.py":141
+ * 
  *         if task.id is None:
  *             return             # <<<<<<<<<<<<<<
  *         self.scheduler.add_job(
@@ -5856,48 +6187,48 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
     __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
 
-    /* "aiSelfTest/services/task_scheduler.py":107
+    /* "aiSelfTest/services/task_scheduler.py":140
+ *         """ job"""
  * 
- *     def _schedule_task(self, task: Task) -> None:
  *         if task.id is None:             # <<<<<<<<<<<<<<
  *             return
  *         self.scheduler.add_job(
 */
   }
 
-  /* "aiSelfTest/services/task_scheduler.py":109
+  /* "aiSelfTest/services/task_scheduler.py":142
  *         if task.id is None:
  *             return
  *         self.scheduler.add_job(             # <<<<<<<<<<<<<<
  *             self.run_task_job,
  *             "interval",
 */
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_scheduler); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_scheduler); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 142, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_3 = __pyx_t_4;
   __Pyx_INCREF(__pyx_t_3);
 
-  /* "aiSelfTest/services/task_scheduler.py":110
+  /* "aiSelfTest/services/task_scheduler.py":143
  *             return
  *         self.scheduler.add_job(
  *             self.run_task_job,             # <<<<<<<<<<<<<<
  *             "interval",
  *             hours=task.interval,
 */
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_run_task_job); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 110, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_run_task_job); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 143, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
 
-  /* "aiSelfTest/services/task_scheduler.py":112
+  /* "aiSelfTest/services/task_scheduler.py":145
  *             self.run_task_job,
  *             "interval",
  *             hours=task.interval,             # <<<<<<<<<<<<<<
  *             id=_job_id(task.id),
  *             args=[task.id],
 */
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_interval); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 112, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_interval); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 145, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
 
-  /* "aiSelfTest/services/task_scheduler.py":113
+  /* "aiSelfTest/services/task_scheduler.py":146
  *             "interval",
  *             hours=task.interval,
  *             id=_job_id(task.id),             # <<<<<<<<<<<<<<
@@ -5905,9 +6236,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
  *             replace_existing=True,
 */
   __pyx_t_8 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_job_id); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_job_id); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 146, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 146, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
   __pyx_t_11 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -5927,26 +6258,26 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
     __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 113, __pyx_L1_error)
+    if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 146, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
   }
 
-  /* "aiSelfTest/services/task_scheduler.py":114
+  /* "aiSelfTest/services/task_scheduler.py":147
  *             hours=task.interval,
  *             id=_job_id(task.id),
  *             args=[task.id],             # <<<<<<<<<<<<<<
  *             replace_existing=True,
  *             coalesce=True,
 */
-  __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 114, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 147, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  __pyx_t_10 = PyList_New(1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 114, __pyx_L1_error)
+  __pyx_t_10 = PyList_New(1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 147, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
   __Pyx_GIVEREF(__pyx_t_9);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_10, 0, __pyx_t_9) != (0)) __PYX_ERR(0, 114, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_10, 0, __pyx_t_9) != (0)) __PYX_ERR(0, 147, __pyx_L1_error);
   __pyx_t_9 = 0;
 
-  /* "aiSelfTest/services/task_scheduler.py":116
+  /* "aiSelfTest/services/task_scheduler.py":149
  *             args=[task.id],
  *             replace_existing=True,
  *             coalesce=True,             # <<<<<<<<<<<<<<
@@ -5956,14 +6287,14 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
   __pyx_t_11 = 0;
   {
     PyObject *__pyx_callargs[3 + ((CYTHON_VECTORCALL) ? 6 : 0)] = {__pyx_t_3, __pyx_t_5, __pyx_mstate_global->__pyx_n_u_interval};
-    __pyx_t_9 = __Pyx_MakeVectorcallBuilderKwds(6); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 109, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_MakeVectorcallBuilderKwds(6); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 142, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_hours, __pyx_t_6, __pyx_t_9, __pyx_callargs+3, 0) < (0)) __PYX_ERR(0, 109, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_id, __pyx_t_7, __pyx_t_9, __pyx_callargs+3, 1) < (0)) __PYX_ERR(0, 109, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_args, __pyx_t_10, __pyx_t_9, __pyx_callargs+3, 2) < (0)) __PYX_ERR(0, 109, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_replace_existing, Py_True, __pyx_t_9, __pyx_callargs+3, 3) < (0)) __PYX_ERR(0, 109, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_coalesce, Py_True, __pyx_t_9, __pyx_callargs+3, 4) < (0)) __PYX_ERR(0, 109, __pyx_L1_error)
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_max_instances, __pyx_mstate_global->__pyx_int_1, __pyx_t_9, __pyx_callargs+3, 5) < (0)) __PYX_ERR(0, 109, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_hours, __pyx_t_6, __pyx_t_9, __pyx_callargs+3, 0) < (0)) __PYX_ERR(0, 142, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_id, __pyx_t_7, __pyx_t_9, __pyx_callargs+3, 1) < (0)) __PYX_ERR(0, 142, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_args, __pyx_t_10, __pyx_t_9, __pyx_callargs+3, 2) < (0)) __PYX_ERR(0, 142, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_replace_existing, Py_True, __pyx_t_9, __pyx_callargs+3, 3) < (0)) __PYX_ERR(0, 142, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_coalesce, Py_True, __pyx_t_9, __pyx_callargs+3, 4) < (0)) __PYX_ERR(0, 142, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_max_instances, __pyx_mstate_global->__pyx_int_1, __pyx_t_9, __pyx_callargs+3, 5) < (0)) __PYX_ERR(0, 142, __pyx_L1_error)
     __pyx_t_1 = __Pyx_Object_VectorcallMethod_CallFromBuilder((PyObject*)__pyx_mstate_global->__pyx_n_u_add_job, __pyx_callargs+__pyx_t_11, (3-__pyx_t_11) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_9);
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -5972,17 +6303,58 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 109, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 142, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task_scheduler.py":106
+  /* "aiSelfTest/services/task_scheduler.py":152
+ *             max_instances=1,
+ *         )
+ *         logger.info(": task_id={}, interval_hours={}", task.id, task.interval)             # <<<<<<<<<<<<<<
+ * 
+ *     def _remove_task(self, task_id: int) -> None:
+*/
+  __pyx_t_4 = NULL;
+  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 152, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_9);
+  __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_info); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 152, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_10);
+  __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+  __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 152, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_9);
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_interval); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 152, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_11 = 1;
+  #if CYTHON_UNPACK_METHODS
+  if (unlikely(PyMethod_Check(__pyx_t_10))) {
+    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_10);
+    assert(__pyx_t_4);
+    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_10);
+    __Pyx_INCREF(__pyx_t_4);
+    __Pyx_INCREF(__pyx__function);
+    __Pyx_DECREF_SET(__pyx_t_10, __pyx__function);
+    __pyx_t_11 = 0;
+  }
+  #endif
+  {
+    PyObject *__pyx_callargs[4] = {__pyx_t_4, __pyx_mstate_global->__pyx_kp_u_task_id_interval_hours, __pyx_t_9, __pyx_t_7};
+    __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_10, __pyx_callargs+__pyx_t_11, (4-__pyx_t_11) | (__pyx_t_11*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+    __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 152, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "aiSelfTest/services/task_scheduler.py":137
  *             run_task_execution(session, task_id)
  * 
  *     def _schedule_task(self, task: Task) -> None:             # <<<<<<<<<<<<<<
- *         if task.id is None:
- *             return
+ *         """ job"""
+ * 
 */
 
   /* function exit code */
@@ -6006,12 +6378,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task_scheduler.py":120
- *         )
+/* "aiSelfTest/services/task_scheduler.py":154
+ *         logger.info(": task_id={}, interval_hours={}", task.id, task.interval)
  * 
  *     def _remove_task(self, task_id: int) -> None:             # <<<<<<<<<<<<<<
- *         job_id = _job_id(task_id)
- *         if self.scheduler.get_job(job_id) is not None:
+ *         """ job"""
+ * 
 */
 
 /* Python wrapper */
@@ -6022,7 +6394,8 @@ PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_15_remove_task = {"_remove_task", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_15_remove_task, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+PyDoc_STRVAR(__pyx_doc_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_14_remove_task, "\347\247\273\351\231\244\345\215\225\344\270\252\344\273\273\345\212\241\345\257\271\345\272\224\347\232\204\345\221\250\346\234\237\346\211\247\350\241\214 job\343\200\202");
+static PyMethodDef __pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_15_remove_task = {"_remove_task", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_15_remove_task, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_14_remove_task};
 static PyObject *__pyx_pw_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_15_remove_task(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
@@ -6054,40 +6427,40 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_self,&__pyx_mstate_global->__pyx_n_u_task_id,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 120, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 154, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 120, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 154, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 120, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 154, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "_remove_task", 0) < (0)) __PYX_ERR(0, 120, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "_remove_task", 0) < (0)) __PYX_ERR(0, 154, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("_remove_task", 1, 2, 2, i); __PYX_ERR(0, 120, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("_remove_task", 1, 2, 2, i); __PYX_ERR(0, 154, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 120, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 154, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 120, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 154, __pyx_L3_error)
     }
     __pyx_v_self = values[0];
-    if (__Pyx_PyInt_FromNumber(&values[1], "task_id", 0) < (0)) __PYX_ERR(0, 120, __pyx_L3_error)
+    if (__Pyx_PyInt_FromNumber(&values[1], "task_id", 0) < (0)) __PYX_ERR(0, 154, __pyx_L3_error)
     __pyx_v_task_id = ((PyObject*)values[1]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_remove_task", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 120, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_remove_task", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 154, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -6098,7 +6471,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 120, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 154, __pyx_L1_error)
   __pyx_r = __pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_14_remove_task(__pyx_self, __pyx_v_self, __pyx_v_task_id);
 
   /* function exit code */
@@ -6127,20 +6500,21 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
   PyObject *__pyx_t_3 = NULL;
   size_t __pyx_t_4;
   int __pyx_t_5;
+  PyObject *__pyx_t_6 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_remove_task", 0);
 
-  /* "aiSelfTest/services/task_scheduler.py":121
+  /* "aiSelfTest/services/task_scheduler.py":157
+ *         """ job"""
  * 
- *     def _remove_task(self, task_id: int) -> None:
  *         job_id = _job_id(task_id)             # <<<<<<<<<<<<<<
  *         if self.scheduler.get_job(job_id) is not None:
  *             self.scheduler.remove_job(job_id)
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_job_id); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 121, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_job_id); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 157, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -6159,20 +6533,20 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 121, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 157, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_job_id = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task_scheduler.py":122
- *     def _remove_task(self, task_id: int) -> None:
+  /* "aiSelfTest/services/task_scheduler.py":158
+ * 
  *         job_id = _job_id(task_id)
  *         if self.scheduler.get_job(job_id) is not None:             # <<<<<<<<<<<<<<
  *             self.scheduler.remove_job(job_id)
- * 
+ *             logger.info(": task_id={}", task_id)
 */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_scheduler); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 122, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_scheduler); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 158, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = __pyx_t_2;
   __Pyx_INCREF(__pyx_t_3);
@@ -6182,21 +6556,21 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_get_job, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 122, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 158, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_t_5 = (__pyx_t_1 != Py_None);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_5) {
 
-    /* "aiSelfTest/services/task_scheduler.py":123
+    /* "aiSelfTest/services/task_scheduler.py":159
  *         job_id = _job_id(task_id)
  *         if self.scheduler.get_job(job_id) is not None:
  *             self.scheduler.remove_job(job_id)             # <<<<<<<<<<<<<<
- * 
+ *             logger.info(": task_id={}", task_id)
  * 
 */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_scheduler); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 123, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_mstate_global->__pyx_n_u_scheduler); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 159, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_2 = __pyx_t_3;
     __Pyx_INCREF(__pyx_t_2);
@@ -6206,26 +6580,61 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
       __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_remove_job, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 123, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 159, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
     }
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "aiSelfTest/services/task_scheduler.py":122
- *     def _remove_task(self, task_id: int) -> None:
+    /* "aiSelfTest/services/task_scheduler.py":160
+ *         if self.scheduler.get_job(job_id) is not None:
+ *             self.scheduler.remove_job(job_id)
+ *             logger.info(": task_id={}", task_id)             # <<<<<<<<<<<<<<
+ * 
+ * 
+*/
+    __pyx_t_3 = NULL;
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 160, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_info); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 160, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_4 = 1;
+    #if CYTHON_UNPACK_METHODS
+    if (unlikely(PyMethod_Check(__pyx_t_6))) {
+      __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_6);
+      assert(__pyx_t_3);
+      PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_6);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(__pyx__function);
+      __Pyx_DECREF_SET(__pyx_t_6, __pyx__function);
+      __pyx_t_4 = 0;
+    }
+    #endif
+    {
+      PyObject *__pyx_callargs[3] = {__pyx_t_3, __pyx_mstate_global->__pyx_kp_u_task_id_4, __pyx_v_task_id};
+      __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_6, __pyx_callargs+__pyx_t_4, (3-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 160, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+    }
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+    /* "aiSelfTest/services/task_scheduler.py":158
+ * 
  *         job_id = _job_id(task_id)
  *         if self.scheduler.get_job(job_id) is not None:             # <<<<<<<<<<<<<<
  *             self.scheduler.remove_job(job_id)
- * 
+ *             logger.info(": task_id={}", task_id)
 */
   }
 
-  /* "aiSelfTest/services/task_scheduler.py":120
- *         )
+  /* "aiSelfTest/services/task_scheduler.py":154
+ *         logger.info(": task_id={}, interval_hours={}", task.id, task.interval)
  * 
  *     def _remove_task(self, task_id: int) -> None:             # <<<<<<<<<<<<<<
- *         job_id = _job_id(task_id)
- *         if self.scheduler.get_job(job_id) is not None:
+ *         """ job"""
+ * 
 */
 
   /* function exit code */
@@ -6235,6 +6644,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_6);
   __Pyx_AddTraceback("aiSelfTest.services.task_scheduler.TaskScheduler._remove_task", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -6244,7 +6654,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_13TaskSchedule
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task_scheduler.py":126
+/* "aiSelfTest/services/task_scheduler.py":163
  * 
  * 
  * def create_task_scheduler() -> TaskScheduler | NoopTaskScheduler:             # <<<<<<<<<<<<<<
@@ -6282,20 +6692,20 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_create_task_sc
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("create_task_scheduler", 0);
 
-  /* "aiSelfTest/services/task_scheduler.py":129
+  /* "aiSelfTest/services/task_scheduler.py":166
  *     """ APScheduler """
  * 
  *     if AsyncIOScheduler is None:             # <<<<<<<<<<<<<<
  *         return NoopTaskScheduler()
  *     return TaskScheduler()
 */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_AsyncIOScheduler); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 129, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_AsyncIOScheduler); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 166, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = (__pyx_t_1 == Py_None);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "aiSelfTest/services/task_scheduler.py":130
+    /* "aiSelfTest/services/task_scheduler.py":167
  * 
  *     if AsyncIOScheduler is None:
  *         return NoopTaskScheduler()             # <<<<<<<<<<<<<<
@@ -6304,7 +6714,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_create_task_sc
 */
     __Pyx_XDECREF(__pyx_r);
     __pyx_t_3 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_NoopTaskScheduler); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 130, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_NoopTaskScheduler); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 167, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = 1;
     #if CYTHON_UNPACK_METHODS
@@ -6323,14 +6733,14 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_create_task_sc
       __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 130, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 167, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
     }
     __pyx_r = __pyx_t_1;
     __pyx_t_1 = 0;
     goto __pyx_L0;
 
-    /* "aiSelfTest/services/task_scheduler.py":129
+    /* "aiSelfTest/services/task_scheduler.py":166
  *     """ APScheduler """
  * 
  *     if AsyncIOScheduler is None:             # <<<<<<<<<<<<<<
@@ -6339,7 +6749,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_create_task_sc
 */
   }
 
-  /* "aiSelfTest/services/task_scheduler.py":131
+  /* "aiSelfTest/services/task_scheduler.py":168
  *     if AsyncIOScheduler is None:
  *         return NoopTaskScheduler()
  *     return TaskScheduler()             # <<<<<<<<<<<<<<
@@ -6348,7 +6758,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_create_task_sc
 */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_4 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_TaskScheduler); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 131, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_TaskScheduler); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 168, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_5 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -6367,14 +6777,14 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_create_task_sc
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 131, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 168, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "aiSelfTest/services/task_scheduler.py":126
+  /* "aiSelfTest/services/task_scheduler.py":163
  * 
  * 
  * def create_task_scheduler() -> TaskScheduler | NoopTaskScheduler:             # <<<<<<<<<<<<<<
@@ -6395,7 +6805,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_create_task_sc
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task_scheduler.py":134
+/* "aiSelfTest/services/task_scheduler.py":171
  * 
  * 
  * def set_global_task_scheduler(scheduler: TaskScheduler | NoopTaskScheduler | None) -> None:             # <<<<<<<<<<<<<<
@@ -6443,32 +6853,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_scheduler,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 134, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 171, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 134, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 171, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_global_task_scheduler", 0) < (0)) __PYX_ERR(0, 134, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_global_task_scheduler", 0) < (0)) __PYX_ERR(0, 171, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_global_task_scheduler", 1, 1, 1, i); __PYX_ERR(0, 134, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_global_task_scheduler", 1, 1, 1, i); __PYX_ERR(0, 171, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 134, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 171, __pyx_L3_error)
     }
     __pyx_v_scheduler = values[0];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_global_task_scheduler", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 134, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_global_task_scheduler", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 171, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -6497,16 +6907,16 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_2set_global_ta
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("set_global_task_scheduler", 0);
 
-  /* "aiSelfTest/services/task_scheduler.py":138
+  /* "aiSelfTest/services/task_scheduler.py":175
  * 
  *     global _global_scheduler
  *     _global_scheduler = scheduler             # <<<<<<<<<<<<<<
  * 
  * 
 */
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_global_scheduler, __pyx_v_scheduler) < (0)) __PYX_ERR(0, 138, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_global_scheduler, __pyx_v_scheduler) < (0)) __PYX_ERR(0, 175, __pyx_L1_error)
 
-  /* "aiSelfTest/services/task_scheduler.py":134
+  /* "aiSelfTest/services/task_scheduler.py":171
  * 
  * 
  * def set_global_task_scheduler(scheduler: TaskScheduler | NoopTaskScheduler | None) -> None:             # <<<<<<<<<<<<<<
@@ -6526,7 +6936,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_2set_global_ta
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task_scheduler.py":141
+/* "aiSelfTest/services/task_scheduler.py":178
  * 
  * 
  * def sync_global_task_scheduler(task_id: int) -> None:             # <<<<<<<<<<<<<<
@@ -6574,33 +6984,33 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_task_id,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 141, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 178, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 141, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 178, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "sync_global_task_scheduler", 0) < (0)) __PYX_ERR(0, 141, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "sync_global_task_scheduler", 0) < (0)) __PYX_ERR(0, 178, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("sync_global_task_scheduler", 1, 1, 1, i); __PYX_ERR(0, 141, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("sync_global_task_scheduler", 1, 1, 1, i); __PYX_ERR(0, 178, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 141, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 178, __pyx_L3_error)
     }
-    if (__Pyx_PyInt_FromNumber(&values[0], "task_id", 0) < (0)) __PYX_ERR(0, 141, __pyx_L3_error)
+    if (__Pyx_PyInt_FromNumber(&values[0], "task_id", 0) < (0)) __PYX_ERR(0, 178, __pyx_L3_error)
     __pyx_v_task_id = ((PyObject*)values[0]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("sync_global_task_scheduler", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 141, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("sync_global_task_scheduler", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 178, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -6611,7 +7021,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 141, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 178, __pyx_L1_error)
   __pyx_r = __pyx_pf_10aiSelfTest_8services_14task_scheduler_4sync_global_task_scheduler(__pyx_self, __pyx_v_task_id);
 
   /* function exit code */
@@ -6645,20 +7055,20 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_4sync_global_t
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("sync_global_task_scheduler", 0);
 
-  /* "aiSelfTest/services/task_scheduler.py":144
+  /* "aiSelfTest/services/task_scheduler.py":181
  *     """ Task """
  * 
  *     if _global_scheduler is None:             # <<<<<<<<<<<<<<
  *         return
  *     _global_scheduler.sync_task(task_id)
 */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_global_scheduler); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 144, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_global_scheduler); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 181, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = (__pyx_t_1 == Py_None);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "aiSelfTest/services/task_scheduler.py":145
+    /* "aiSelfTest/services/task_scheduler.py":182
  * 
  *     if _global_scheduler is None:
  *         return             # <<<<<<<<<<<<<<
@@ -6669,7 +7079,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_4sync_global_t
     __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
 
-    /* "aiSelfTest/services/task_scheduler.py":144
+    /* "aiSelfTest/services/task_scheduler.py":181
  *     """ Task """
  * 
  *     if _global_scheduler is None:             # <<<<<<<<<<<<<<
@@ -6678,7 +7088,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_4sync_global_t
 */
   }
 
-  /* "aiSelfTest/services/task_scheduler.py":146
+  /* "aiSelfTest/services/task_scheduler.py":183
  *     if _global_scheduler is None:
  *         return
  *     _global_scheduler.sync_task(task_id)             # <<<<<<<<<<<<<<
@@ -6686,9 +7096,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_4sync_global_t
  * 
 */
   __pyx_t_3 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_global_scheduler); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 146, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_global_scheduler); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 183, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_sync_task); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 146, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_sync_task); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 183, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_6 = 1;
@@ -6708,12 +7118,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_4sync_global_t
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_5, __pyx_callargs+__pyx_t_6, (2-__pyx_t_6) | (__pyx_t_6*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 146, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 183, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task_scheduler.py":141
+  /* "aiSelfTest/services/task_scheduler.py":178
  * 
  * 
  * def sync_global_task_scheduler(task_id: int) -> None:             # <<<<<<<<<<<<<<
@@ -6737,7 +7147,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_4sync_global_t
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task_scheduler.py":149
+/* "aiSelfTest/services/task_scheduler.py":186
  * 
  * 
  * def recover_zombie_tasks(             # <<<<<<<<<<<<<<
@@ -6787,20 +7197,20 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_session,&__pyx_mstate_global->__pyx_n_u_now,&__pyx_mstate_global->__pyx_n_u_stale_after_hours,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 149, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 186, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 149, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 186, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "recover_zombie_tasks", 0) < (0)) __PYX_ERR(0, 149, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "recover_zombie_tasks", 0) < (0)) __PYX_ERR(0, 186, __pyx_L3_error)
 
-      /* "aiSelfTest/services/task_scheduler.py":152
+      /* "aiSelfTest/services/task_scheduler.py":189
  *     session: Session,
  *     *,
  *     now: datetime | None = None,             # <<<<<<<<<<<<<<
@@ -6810,24 +7220,24 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       if (!values[1]) values[1] = __Pyx_NewRef(((PyObject *)Py_None));
       if (!values[2]) values[2] = __Pyx_NewRef(((PyObject*)((PyObject*)__pyx_mstate_global->__pyx_int_6)));
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("recover_zombie_tasks", 1, 1, 1, i); __PYX_ERR(0, 149, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("recover_zombie_tasks", 1, 1, 1, i); __PYX_ERR(0, 186, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 149, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 186, __pyx_L3_error)
       if (!values[1]) values[1] = __Pyx_NewRef(((PyObject *)Py_None));
       if (!values[2]) values[2] = __Pyx_NewRef(((PyObject*)((PyObject*)__pyx_mstate_global->__pyx_int_6)));
     }
     __pyx_v_session = values[0];
     __pyx_v_now = values[1];
-    if (__Pyx_PyInt_FromNumber(&values[2], "stale_after_hours", 0) < (0)) __PYX_ERR(0, 153, __pyx_L3_error)
+    if (__Pyx_PyInt_FromNumber(&values[2], "stale_after_hours", 0) < (0)) __PYX_ERR(0, 190, __pyx_L3_error)
     __pyx_v_stale_after_hours = ((PyObject*)values[2]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("recover_zombie_tasks", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 149, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("recover_zombie_tasks", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 186, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -6838,10 +7248,10 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_stale_after_hours), (&PyLong_Type), 0, "stale_after_hours", 2))) __PYX_ERR(0, 153, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_stale_after_hours), (&PyLong_Type), 0, "stale_after_hours", 2))) __PYX_ERR(0, 190, __pyx_L1_error)
   __pyx_r = __pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombie_tasks(__pyx_self, __pyx_v_session, __pyx_v_now, __pyx_v_stale_after_hours);
 
-  /* "aiSelfTest/services/task_scheduler.py":149
+  /* "aiSelfTest/services/task_scheduler.py":186
  * 
  * 
  * def recover_zombie_tasks(             # <<<<<<<<<<<<<<
@@ -6873,6 +7283,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
   PyObject *__pyx_v_recovered = NULL;
   PyObject *__pyx_v_task = NULL;
   PyObject *__pyx_v_marker = NULL;
+  PyObject *__pyx_v_previous_status = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6893,14 +7304,14 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("recover_zombie_tasks", 0);
 
-  /* "aiSelfTest/services/task_scheduler.py":157
+  /* "aiSelfTest/services/task_scheduler.py":194
  *     """"""
  * 
  *     current = now or datetime.now()             # <<<<<<<<<<<<<<
  *     threshold = current - timedelta(hours=stale_after_hours)
  *     running_tasks = session.exec(select(Task)).all()
 */
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_now); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 157, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_now); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 194, __pyx_L1_error)
   if (!__pyx_t_2) {
   } else {
     __Pyx_INCREF(__pyx_v_now);
@@ -6908,9 +7319,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
     goto __pyx_L3_bool_binop_done;
   }
   __pyx_t_4 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_datetime); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 157, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_datetime); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 194, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_now); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 157, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_now); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 194, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_t_7 = 1;
@@ -6930,7 +7341,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
     __pyx_t_3 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_6, __pyx_callargs+__pyx_t_7, (1-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 157, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 194, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
   }
   __Pyx_INCREF(__pyx_t_3);
@@ -6940,7 +7351,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
   __pyx_v_current = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "aiSelfTest/services/task_scheduler.py":158
+  /* "aiSelfTest/services/task_scheduler.py":195
  * 
  *     current = now or datetime.now()
  *     threshold = current - timedelta(hours=stale_after_hours)             # <<<<<<<<<<<<<<
@@ -6948,7 +7359,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
  *     recovered = 0
 */
   __pyx_t_3 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_timedelta); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_timedelta); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 195, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_t_7 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -6964,23 +7375,23 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
   #endif
   {
     PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 1 : 0)] = {__pyx_t_3, NULL};
-    __pyx_t_4 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 158, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 195, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_hours, __pyx_v_stale_after_hours, __pyx_t_4, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 158, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_hours, __pyx_v_stale_after_hours, __pyx_t_4, __pyx_callargs+1, 0) < (0)) __PYX_ERR(0, 195, __pyx_L1_error)
     __pyx_t_1 = __Pyx_Object_Vectorcall_CallFromBuilder((PyObject*)__pyx_t_6, __pyx_callargs+__pyx_t_7, (1-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_4);
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 158, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 195, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  __pyx_t_6 = PyNumber_Subtract(__pyx_v_current, __pyx_t_1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_6 = PyNumber_Subtract(__pyx_v_current, __pyx_t_1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 195, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_threshold = __pyx_t_6;
   __pyx_t_6 = 0;
 
-  /* "aiSelfTest/services/task_scheduler.py":159
+  /* "aiSelfTest/services/task_scheduler.py":196
  *     current = now or datetime.now()
  *     threshold = current - timedelta(hours=stale_after_hours)
  *     running_tasks = session.exec(select(Task)).all()             # <<<<<<<<<<<<<<
@@ -6990,9 +7401,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
   __pyx_t_3 = __pyx_v_session;
   __Pyx_INCREF(__pyx_t_3);
   __pyx_t_8 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_select); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 159, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_select); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 196, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_Task); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 159, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_Task_4); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 196, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
   __pyx_t_7 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -7012,7 +7423,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
     __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 159, __pyx_L1_error)
+    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 196, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
   }
   __pyx_t_7 = 0;
@@ -7021,7 +7432,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
     __pyx_t_4 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_exec, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 159, __pyx_L1_error)
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 196, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
   }
   __pyx_t_1 = __pyx_t_4;
@@ -7032,13 +7443,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
     __pyx_t_6 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_all, __pyx_callargs+__pyx_t_7, (1-__pyx_t_7) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 159, __pyx_L1_error)
+    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 196, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
   }
   __pyx_v_running_tasks = __pyx_t_6;
   __pyx_t_6 = 0;
 
-  /* "aiSelfTest/services/task_scheduler.py":160
+  /* "aiSelfTest/services/task_scheduler.py":197
  *     threshold = current - timedelta(hours=stale_after_hours)
  *     running_tasks = session.exec(select(Task)).all()
  *     recovered = 0             # <<<<<<<<<<<<<<
@@ -7048,7 +7459,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
   __Pyx_INCREF(__pyx_mstate_global->__pyx_int_0);
   __pyx_v_recovered = __pyx_mstate_global->__pyx_int_0;
 
-  /* "aiSelfTest/services/task_scheduler.py":161
+  /* "aiSelfTest/services/task_scheduler.py":198
  *     running_tasks = session.exec(select(Task)).all()
  *     recovered = 0
  *     for task in running_tasks:             # <<<<<<<<<<<<<<
@@ -7060,9 +7471,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
     __pyx_t_11 = 0;
     __pyx_t_12 = NULL;
   } else {
-    __pyx_t_11 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_v_running_tasks); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 161, __pyx_L1_error)
+    __pyx_t_11 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_v_running_tasks); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 198, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_12 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_6); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 161, __pyx_L1_error)
+    __pyx_t_12 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_6); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 198, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_12)) {
@@ -7070,7 +7481,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
         {
           Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_6);
           #if !CYTHON_ASSUME_SAFE_SIZE
-          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 161, __pyx_L1_error)
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 198, __pyx_L1_error)
           #endif
           if (__pyx_t_11 >= __pyx_temp) break;
         }
@@ -7080,7 +7491,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
         {
           Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_6);
           #if !CYTHON_ASSUME_SAFE_SIZE
-          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 161, __pyx_L1_error)
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 198, __pyx_L1_error)
           #endif
           if (__pyx_t_11 >= __pyx_temp) break;
         }
@@ -7091,13 +7502,13 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
         #endif
         ++__pyx_t_11;
       }
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 161, __pyx_L1_error)
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 198, __pyx_L1_error)
     } else {
       __pyx_t_4 = __pyx_t_12(__pyx_t_6);
       if (unlikely(!__pyx_t_4)) {
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
-          if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 161, __pyx_L1_error)
+          if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 198, __pyx_L1_error)
           PyErr_Clear();
         }
         break;
@@ -7107,7 +7518,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
     __Pyx_XDECREF_SET(__pyx_v_task, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "aiSelfTest/services/task_scheduler.py":162
+    /* "aiSelfTest/services/task_scheduler.py":199
  *     recovered = 0
  *     for task in running_tasks:
  *         if not is_task_running(task):             # <<<<<<<<<<<<<<
@@ -7115,7 +7526,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
  *         marker = task.last_run_started_at or task.started_at or task.updated_at
 */
     __pyx_t_1 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_is_task_running); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 162, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_is_task_running); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 199, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_7 = 1;
     #if CYTHON_UNPACK_METHODS
@@ -7134,15 +7545,15 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
       __pyx_t_4 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_5, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 162, __pyx_L1_error)
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 199, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
     }
-    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 162, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 199, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_13 = (!__pyx_t_2);
     if (__pyx_t_13) {
 
-      /* "aiSelfTest/services/task_scheduler.py":163
+      /* "aiSelfTest/services/task_scheduler.py":200
  *     for task in running_tasks:
  *         if not is_task_running(task):
  *             continue             # <<<<<<<<<<<<<<
@@ -7151,7 +7562,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
 */
       goto __pyx_L5_continue;
 
-      /* "aiSelfTest/services/task_scheduler.py":162
+      /* "aiSelfTest/services/task_scheduler.py":199
  *     recovered = 0
  *     for task in running_tasks:
  *         if not is_task_running(task):             # <<<<<<<<<<<<<<
@@ -7160,16 +7571,16 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
 */
     }
 
-    /* "aiSelfTest/services/task_scheduler.py":164
+    /* "aiSelfTest/services/task_scheduler.py":201
  *         if not is_task_running(task):
  *             continue
  *         marker = task.last_run_started_at or task.started_at or task.updated_at             # <<<<<<<<<<<<<<
  *         if marker and marker > threshold:
  *             continue
 */
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_last_run_started_at); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 164, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_last_run_started_at); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 201, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_13 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely((__pyx_t_13 < 0))) __PYX_ERR(0, 164, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely((__pyx_t_13 < 0))) __PYX_ERR(0, 201, __pyx_L1_error)
     if (!__pyx_t_13) {
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     } else {
@@ -7178,9 +7589,9 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       goto __pyx_L8_bool_binop_done;
     }
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_started_at); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 164, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_started_at); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 201, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_13 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely((__pyx_t_13 < 0))) __PYX_ERR(0, 164, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely((__pyx_t_13 < 0))) __PYX_ERR(0, 201, __pyx_L1_error)
     if (!__pyx_t_13) {
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     } else {
@@ -7189,7 +7600,7 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       goto __pyx_L8_bool_binop_done;
     }
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_updated_at); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 164, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_updated_at); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 201, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_INCREF(__pyx_t_5);
     __pyx_t_4 = __pyx_t_5;
@@ -7198,89 +7609,101 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
     __Pyx_XDECREF_SET(__pyx_v_marker, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "aiSelfTest/services/task_scheduler.py":165
+    /* "aiSelfTest/services/task_scheduler.py":202
  *             continue
  *         marker = task.last_run_started_at or task.started_at or task.updated_at
  *         if marker and marker > threshold:             # <<<<<<<<<<<<<<
  *             continue
- *         task.execution_status = TaskExecutionStatus.FAIL.value
+ *         previous_status = task.execution_status
 */
-    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_marker); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 165, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_marker); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 202, __pyx_L1_error)
     if (__pyx_t_2) {
     } else {
       __pyx_t_13 = __pyx_t_2;
       goto __pyx_L12_bool_binop_done;
     }
-    __pyx_t_4 = PyObject_RichCompare(__pyx_v_marker, __pyx_v_threshold, Py_GT); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 165, __pyx_L1_error)
-    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 165, __pyx_L1_error)
+    __pyx_t_4 = PyObject_RichCompare(__pyx_v_marker, __pyx_v_threshold, Py_GT); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 202, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 202, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_13 = __pyx_t_2;
     __pyx_L12_bool_binop_done:;
     if (__pyx_t_13) {
 
-      /* "aiSelfTest/services/task_scheduler.py":166
+      /* "aiSelfTest/services/task_scheduler.py":203
  *         marker = task.last_run_started_at or task.started_at or task.updated_at
  *         if marker and marker > threshold:
  *             continue             # <<<<<<<<<<<<<<
+ *         previous_status = task.execution_status
  *         task.execution_status = TaskExecutionStatus.FAIL.value
- *         task.last_error = ZOMBIE_TASK_ERROR
 */
       goto __pyx_L5_continue;
 
-      /* "aiSelfTest/services/task_scheduler.py":165
+      /* "aiSelfTest/services/task_scheduler.py":202
  *             continue
  *         marker = task.last_run_started_at or task.started_at or task.updated_at
  *         if marker and marker > threshold:             # <<<<<<<<<<<<<<
  *             continue
- *         task.execution_status = TaskExecutionStatus.FAIL.value
+ *         previous_status = task.execution_status
 */
     }
 
-    /* "aiSelfTest/services/task_scheduler.py":167
+    /* "aiSelfTest/services/task_scheduler.py":204
  *         if marker and marker > threshold:
  *             continue
+ *         previous_status = task.execution_status             # <<<<<<<<<<<<<<
+ *         task.execution_status = TaskExecutionStatus.FAIL.value
+ *         task.last_error = ZOMBIE_TASK_ERROR
+*/
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_execution_status); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 204, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_XDECREF_SET(__pyx_v_previous_status, __pyx_t_4);
+    __pyx_t_4 = 0;
+
+    /* "aiSelfTest/services/task_scheduler.py":205
+ *             continue
+ *         previous_status = task.execution_status
  *         task.execution_status = TaskExecutionStatus.FAIL.value             # <<<<<<<<<<<<<<
  *         task.last_error = ZOMBIE_TASK_ERROR
  *         task.updated_at = current
 */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_TaskExecutionStatus); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 167, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_TaskExecutionStatus); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 205, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_FAIL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 167, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_FAIL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 205, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_value); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 167, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_value); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 205, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (__Pyx_PyObject_SetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_execution_status, __pyx_t_4) < (0)) __PYX_ERR(0, 167, __pyx_L1_error)
+    if (__Pyx_PyObject_SetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_execution_status, __pyx_t_4) < (0)) __PYX_ERR(0, 205, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "aiSelfTest/services/task_scheduler.py":168
- *             continue
+    /* "aiSelfTest/services/task_scheduler.py":206
+ *         previous_status = task.execution_status
  *         task.execution_status = TaskExecutionStatus.FAIL.value
  *         task.last_error = ZOMBIE_TASK_ERROR             # <<<<<<<<<<<<<<
  *         task.updated_at = current
  *         session.add(task)
 */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_ZOMBIE_TASK_ERROR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 168, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_ZOMBIE_TASK_ERROR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 206, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    if (__Pyx_PyObject_SetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_last_error, __pyx_t_4) < (0)) __PYX_ERR(0, 168, __pyx_L1_error)
+    if (__Pyx_PyObject_SetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_last_error, __pyx_t_4) < (0)) __PYX_ERR(0, 206, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "aiSelfTest/services/task_scheduler.py":169
+    /* "aiSelfTest/services/task_scheduler.py":207
  *         task.execution_status = TaskExecutionStatus.FAIL.value
  *         task.last_error = ZOMBIE_TASK_ERROR
  *         task.updated_at = current             # <<<<<<<<<<<<<<
  *         session.add(task)
  *         recovered += 1
 */
-    if (__Pyx_PyObject_SetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_updated_at, __pyx_v_current) < (0)) __PYX_ERR(0, 169, __pyx_L1_error)
+    if (__Pyx_PyObject_SetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_updated_at, __pyx_v_current) < (0)) __PYX_ERR(0, 207, __pyx_L1_error)
 
-    /* "aiSelfTest/services/task_scheduler.py":170
+    /* "aiSelfTest/services/task_scheduler.py":208
  *         task.last_error = ZOMBIE_TASK_ERROR
  *         task.updated_at = current
  *         session.add(task)             # <<<<<<<<<<<<<<
  *         recovered += 1
- *     if recovered:
+ *         logger.warning(
 */
     __pyx_t_5 = __pyx_v_session;
     __Pyx_INCREF(__pyx_t_5);
@@ -7289,24 +7712,78 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
       PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_v_task};
       __pyx_t_4 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_add, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 170, __pyx_L1_error)
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 208, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
     }
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "aiSelfTest/services/task_scheduler.py":171
+    /* "aiSelfTest/services/task_scheduler.py":209
  *         task.updated_at = current
  *         session.add(task)
  *         recovered += 1             # <<<<<<<<<<<<<<
- *     if recovered:
- *         session.commit()
+ *         logger.warning(
+ *             ": task_id={}, previous_status={}, marker={}",
 */
-    __pyx_t_4 = __Pyx_PyLong_AddObjC(__pyx_v_recovered, __pyx_mstate_global->__pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 171, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyLong_AddObjC(__pyx_v_recovered, __pyx_mstate_global->__pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 209, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF_SET(__pyx_v_recovered, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "aiSelfTest/services/task_scheduler.py":161
+    /* "aiSelfTest/services/task_scheduler.py":210
+ *         session.add(task)
+ *         recovered += 1
+ *         logger.warning(             # <<<<<<<<<<<<<<
+ *             ": task_id={}, previous_status={}, marker={}",
+ *             task.id,
+*/
+    __pyx_t_5 = NULL;
+    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 210, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_warning); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 210, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+    /* "aiSelfTest/services/task_scheduler.py":212
+ *         logger.warning(
+ *             ": task_id={}, previous_status={}, marker={}",
+ *             task.id,             # <<<<<<<<<<<<<<
+ *             previous_status,
+ *             marker,
+*/
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_mstate_global->__pyx_n_u_id); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 212, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+
+    /* "aiSelfTest/services/task_scheduler.py":214
+ *             task.id,
+ *             previous_status,
+ *             marker,             # <<<<<<<<<<<<<<
+ *         )
+ *     if recovered:
+*/
+    __pyx_t_7 = 1;
+    #if CYTHON_UNPACK_METHODS
+    if (unlikely(PyMethod_Check(__pyx_t_3))) {
+      __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_3);
+      assert(__pyx_t_5);
+      PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_5);
+      __Pyx_INCREF(__pyx__function);
+      __Pyx_DECREF_SET(__pyx_t_3, __pyx__function);
+      __pyx_t_7 = 0;
+    }
+    #endif
+    {
+      PyObject *__pyx_callargs[5] = {__pyx_t_5, __pyx_mstate_global->__pyx_kp_u_task_id_previous_status_marker, __pyx_t_1, __pyx_v_previous_status, __pyx_v_marker};
+      __pyx_t_4 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_3, __pyx_callargs+__pyx_t_7, (5-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 210, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+    }
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+    /* "aiSelfTest/services/task_scheduler.py":198
  *     running_tasks = session.exec(select(Task)).all()
  *     recovered = 0
  *     for task in running_tasks:             # <<<<<<<<<<<<<<
@@ -7317,18 +7794,18 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
   }
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-  /* "aiSelfTest/services/task_scheduler.py":172
- *         session.add(task)
- *         recovered += 1
+  /* "aiSelfTest/services/task_scheduler.py":216
+ *             marker,
+ *         )
  *     if recovered:             # <<<<<<<<<<<<<<
  *         session.commit()
  *     return recovered
 */
-  __pyx_t_13 = __Pyx_PyObject_IsTrue(__pyx_v_recovered); if (unlikely((__pyx_t_13 < 0))) __PYX_ERR(0, 172, __pyx_L1_error)
+  __pyx_t_13 = __Pyx_PyObject_IsTrue(__pyx_v_recovered); if (unlikely((__pyx_t_13 < 0))) __PYX_ERR(0, 216, __pyx_L1_error)
   if (__pyx_t_13) {
 
-    /* "aiSelfTest/services/task_scheduler.py":173
- *         recovered += 1
+    /* "aiSelfTest/services/task_scheduler.py":217
+ *         )
  *     if recovered:
  *         session.commit()             # <<<<<<<<<<<<<<
  *     return recovered
@@ -7341,21 +7818,21 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
       PyObject *__pyx_callargs[2] = {__pyx_t_4, NULL};
       __pyx_t_6 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_commit, __pyx_callargs+__pyx_t_7, (1-__pyx_t_7) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 173, __pyx_L1_error)
+      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 217, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
     }
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "aiSelfTest/services/task_scheduler.py":172
- *         session.add(task)
- *         recovered += 1
+    /* "aiSelfTest/services/task_scheduler.py":216
+ *             marker,
+ *         )
  *     if recovered:             # <<<<<<<<<<<<<<
  *         session.commit()
  *     return recovered
 */
   }
 
-  /* "aiSelfTest/services/task_scheduler.py":174
+  /* "aiSelfTest/services/task_scheduler.py":218
  *     if recovered:
  *         session.commit()
  *     return recovered             # <<<<<<<<<<<<<<
@@ -7365,12 +7842,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_6 = __pyx_v_recovered;
   __Pyx_INCREF(__pyx_t_6);
-  if (__Pyx_PyInt_FromNumber(&__pyx_t_6, NULL, 1) < (0)) __PYX_ERR(0, 174, __pyx_L1_error)
+  if (__Pyx_PyInt_FromNumber(&__pyx_t_6, NULL, 1) < (0)) __PYX_ERR(0, 218, __pyx_L1_error)
   __pyx_r = ((PyObject*)__pyx_t_6);
   __pyx_t_6 = 0;
   goto __pyx_L0;
 
-  /* "aiSelfTest/services/task_scheduler.py":149
+  /* "aiSelfTest/services/task_scheduler.py":186
  * 
  * 
  * def recover_zombie_tasks(             # <<<<<<<<<<<<<<
@@ -7397,16 +7874,18 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_6recover_zombi
   __Pyx_XDECREF(__pyx_v_recovered);
   __Pyx_XDECREF(__pyx_v_task);
   __Pyx_XDECREF(__pyx_v_marker);
+  __Pyx_XDECREF(__pyx_v_previous_status);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "aiSelfTest/services/task_scheduler.py":177
+/* "aiSelfTest/services/task_scheduler.py":221
  * 
  * 
  * def _job_id(task_id: int) -> str:             # <<<<<<<<<<<<<<
- *     return f"{TASK_JOB_PREFIX}{task_id}"
+ *     """ APScheduler job ID"""
+ * 
 */
 
 /* Python wrapper */
@@ -7417,7 +7896,8 @@ PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_10aiSelfTest_8services_14task_scheduler_9_job_id = {"_job_id", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_14task_scheduler_9_job_id, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+PyDoc_STRVAR(__pyx_doc_10aiSelfTest_8services_14task_scheduler_8_job_id, "\347\224\237\346\210\220 APScheduler job ID\357\274\214\347\241\256\344\277\235\344\273\273\345\212\241\344\270\216\350\260\203\345\272\246\350\256\260\345\275\225\344\270\200\344\270\200\345\257\271\345\272\224\343\200\202");
+static PyMethodDef __pyx_mdef_10aiSelfTest_8services_14task_scheduler_9_job_id = {"_job_id", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10aiSelfTest_8services_14task_scheduler_9_job_id, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10aiSelfTest_8services_14task_scheduler_8_job_id};
 static PyObject *__pyx_pw_10aiSelfTest_8services_14task_scheduler_9_job_id(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
@@ -7448,33 +7928,33 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_task_id,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 177, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 221, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 177, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 221, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "_job_id", 0) < (0)) __PYX_ERR(0, 177, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "_job_id", 0) < (0)) __PYX_ERR(0, 221, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("_job_id", 1, 1, 1, i); __PYX_ERR(0, 177, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("_job_id", 1, 1, 1, i); __PYX_ERR(0, 221, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 177, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 221, __pyx_L3_error)
     }
-    if (__Pyx_PyInt_FromNumber(&values[0], "task_id", 0) < (0)) __PYX_ERR(0, 177, __pyx_L3_error)
+    if (__Pyx_PyInt_FromNumber(&values[0], "task_id", 0) < (0)) __PYX_ERR(0, 221, __pyx_L3_error)
     __pyx_v_task_id = ((PyObject*)values[0]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_job_id", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 177, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_job_id", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 221, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -7485,7 +7965,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 177, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task_id), (&PyLong_Type), 0, "task_id", 2))) __PYX_ERR(0, 221, __pyx_L1_error)
   __pyx_r = __pyx_pf_10aiSelfTest_8services_14task_scheduler_8_job_id(__pyx_self, __pyx_v_task_id);
 
   /* function exit code */
@@ -7516,20 +7996,20 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_8_job_id(CYTHO
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_job_id", 0);
 
-  /* "aiSelfTest/services/task_scheduler.py":178
+  /* "aiSelfTest/services/task_scheduler.py":224
+ *     """ APScheduler job ID"""
  * 
- * def _job_id(task_id: int) -> str:
  *     return f"{TASK_JOB_PREFIX}{task_id}"             # <<<<<<<<<<<<<<
 */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_TASK_JOB_PREFIX); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 178, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_TASK_JOB_PREFIX); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 224, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_FormatSimple(__pyx_t_1, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 178, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_FormatSimple(__pyx_t_1, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 224, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_FormatSimple(__pyx_v_task_id, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 178, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_FormatSimple(__pyx_v_task_id, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 224, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyUnicode_Concat__Pyx_ReferenceSharing_OwnStrongReferenceInPlace(__pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 178, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyUnicode_Concat__Pyx_ReferenceSharing_OwnStrongReferenceInPlace(__pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 224, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -7537,11 +8017,12 @@ static PyObject *__pyx_pf_10aiSelfTest_8services_14task_scheduler_8_job_id(CYTHO
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "aiSelfTest/services/task_scheduler.py":177
+  /* "aiSelfTest/services/task_scheduler.py":221
  * 
  * 
  * def _job_id(task_id: int) -> str:             # <<<<<<<<<<<<<<
- *     return f"{TASK_JOB_PREFIX}{task_id}"
+ *     """ APScheduler job ID"""
+ * 
 */
 
   /* function exit code */
@@ -7664,7 +8145,7 @@ namespace {
   {
       PyModuleDef_HEAD_INIT,
       "task_scheduler",
-      __pyx_k_Task_2, /* m_doc */
+      __pyx_k_Task_5, /* m_doc */
     #if CYTHON_USE_MODULE_STATE
       sizeof(__pyx_mstatetype), /* m_size */
     #else
@@ -8041,13 +8522,13 @@ __Pyx_RefNannySetupContext("PyInit_task_scheduler", 0);
  * 
 */
   {
-    PyObject* const __pyx_imported_names[] = {__pyx_mstate_global->__pyx_n_u_Task,__pyx_mstate_global->__pyx_n_u_TaskExecutionStatus};
+    PyObject* const __pyx_imported_names[] = {__pyx_mstate_global->__pyx_n_u_Task_4,__pyx_mstate_global->__pyx_n_u_TaskExecutionStatus};
     __pyx_t_1 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_aiSelfTest_models_task, __pyx_imported_names, 2, NULL, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
   }
   __pyx_t_2 = __pyx_t_1;
   __Pyx_GOTREF(__pyx_t_2);
   {
-    PyObject* const __pyx_imported_names[] = {__pyx_mstate_global->__pyx_n_u_Task,__pyx_mstate_global->__pyx_n_u_TaskExecutionStatus};
+    PyObject* const __pyx_imported_names[] = {__pyx_mstate_global->__pyx_n_u_Task_4,__pyx_mstate_global->__pyx_n_u_TaskExecutionStatus};
     for (__pyx_t_3=0; __pyx_t_3 < 2; __pyx_t_3++) {
       __pyx_t_4 = __Pyx_ImportFrom(__pyx_t_2, __pyx_imported_names[__pyx_t_3]); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 12, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
@@ -8238,7 +8719,7 @@ __Pyx_RefNannySetupContext("PyInit_task_scheduler", 0);
  *     available = False
  * 
  *     def start(self) -> None:             # <<<<<<<<<<<<<<
- *         logger.warning("APScheduler Task ")
+ *         """"""
  * 
 */
   __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 31, __pyx_L1_error)
@@ -8254,102 +8735,102 @@ __Pyx_RefNannySetupContext("PyInit_task_scheduler", 0);
   if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_start, __pyx_t_2) < (0)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "aiSelfTest/services/task_scheduler.py":34
+  /* "aiSelfTest/services/task_scheduler.py":36
  *         logger.warning("APScheduler Task ")
  * 
  *     def shutdown(self) -> None:             # <<<<<<<<<<<<<<
- *         return None
+ *         """"""
  * 
 */
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 34, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 34, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_3shutdown, 0, __pyx_mstate_global->__pyx_n_u_NoopTaskScheduler_shutdown, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[1])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 34, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_3shutdown, 0, __pyx_mstate_global->__pyx_n_u_NoopTaskScheduler_shutdown, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[1])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_2);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_shutdown, __pyx_t_4) < (0)) __PYX_ERR(0, 34, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_shutdown, __pyx_t_4) < (0)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "aiSelfTest/services/task_scheduler.py":37
+  /* "aiSelfTest/services/task_scheduler.py":41
  *         return None
  * 
  *     def sync_task(self, task_id: int) -> None:             # <<<<<<<<<<<<<<
- *         logger.debug(" Task {} APScheduler ", task_id)
+ *         """"""
  * 
 */
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 37, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 37, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_5sync_task, 0, __pyx_mstate_global->__pyx_n_u_NoopTaskScheduler_sync_task, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[2])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 37, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 41, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 41, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_5sync_task, 0, __pyx_mstate_global->__pyx_n_u_NoopTaskScheduler_sync_task, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[2])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_2, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_sync_task, __pyx_t_2) < (0)) __PYX_ERR(0, 37, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_sync_task, __pyx_t_2) < (0)) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "aiSelfTest/services/task_scheduler.py":40
+  /* "aiSelfTest/services/task_scheduler.py":46
  *         logger.debug(" Task {} APScheduler ", task_id)
  * 
  *     def restore_active_tasks(self, session: Session) -> None:             # <<<<<<<<<<<<<<
- *         return None
+ *         """"""
  * 
 */
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 40, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 40, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_7restore_active_tasks, 0, __pyx_mstate_global->__pyx_n_u_NoopTaskScheduler_restore_active, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[3])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 40, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 46, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_7restore_active_tasks, 0, __pyx_mstate_global->__pyx_n_u_NoopTaskScheduler_restore_active, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[3])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_2);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_restore_active_tasks, __pyx_t_4) < (0)) __PYX_ERR(0, 40, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_restore_active_tasks, __pyx_t_4) < (0)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "aiSelfTest/services/task_scheduler.py":43
+  /* "aiSelfTest/services/task_scheduler.py":51
  *         return None
  * 
  *     def recover_zombie_tasks(             # <<<<<<<<<<<<<<
  *         self,
  *         session: Session,
 */
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 43, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 51, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
 
-  /* "aiSelfTest/services/task_scheduler.py":47
+  /* "aiSelfTest/services/task_scheduler.py":55
  *         session: Session,
  *         *,
  *         now: datetime | None = None,             # <<<<<<<<<<<<<<
  *         stale_after_hours: int = 6,
  *     ) -> int:
 */
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_now, Py_None) < (0)) __PYX_ERR(0, 43, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_stale_after_hours, ((PyObject*)__pyx_mstate_global->__pyx_int_6)) < (0)) __PYX_ERR(0, 43, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_now, Py_None) < (0)) __PYX_ERR(0, 51, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_stale_after_hours, ((PyObject*)__pyx_mstate_global->__pyx_int_6)) < (0)) __PYX_ERR(0, 51, __pyx_L1_error)
 
-  /* "aiSelfTest/services/task_scheduler.py":43
+  /* "aiSelfTest/services/task_scheduler.py":51
  *         return None
  * 
  *     def recover_zombie_tasks(             # <<<<<<<<<<<<<<
  *         self,
  *         session: Session,
 */
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 43, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 51, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 43, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_now, __pyx_mstate_global->__pyx_kp_u_datetime_None) < (0)) __PYX_ERR(0, 43, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_stale_after_hours, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 43, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 43, __pyx_L1_error)
-  __pyx_t_10 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_9recover_zombie_tasks, 0, __pyx_mstate_global->__pyx_n_u_NoopTaskScheduler_recover_zombie, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[4])); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 43, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 51, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_now, __pyx_mstate_global->__pyx_kp_u_datetime_None) < (0)) __PYX_ERR(0, 51, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_stale_after_hours, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 51, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 51, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_17NoopTaskScheduler_9recover_zombie_tasks, 0, __pyx_mstate_global->__pyx_n_u_NoopTaskScheduler_recover_zombie, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[4])); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 51, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_10);
@@ -8358,7 +8839,7 @@ __Pyx_RefNannySetupContext("PyInit_task_scheduler", 0);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_10, __pyx_t_2);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_recover_zombie_tasks, __pyx_t_10) < (0)) __PYX_ERR(0, 43, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_recover_zombie_tasks, __pyx_t_10) < (0)) __PYX_ERR(0, 51, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
 
   /* "aiSelfTest/services/task_scheduler.py":26
@@ -8377,40 +8858,40 @@ __Pyx_RefNannySetupContext("PyInit_task_scheduler", 0);
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-  /* "aiSelfTest/services/task_scheduler.py":53
+  /* "aiSelfTest/services/task_scheduler.py":63
  * 
  * 
  * class TaskScheduler:             # <<<<<<<<<<<<<<
  *     """ Task
  * 
 */
-  __pyx_t_9 = __Pyx_Py3MetaclassPrepare((PyObject *) NULL, __pyx_mstate_global->__pyx_empty_tuple, __pyx_mstate_global->__pyx_n_u_TaskScheduler, __pyx_mstate_global->__pyx_n_u_TaskScheduler, (PyObject *) NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_kp_u_Task_APScheduler_job); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_Py3MetaclassPrepare((PyObject *) NULL, __pyx_mstate_global->__pyx_empty_tuple, __pyx_mstate_global->__pyx_n_u_TaskScheduler, __pyx_mstate_global->__pyx_n_u_TaskScheduler, (PyObject *) NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_kp_u_Task_APScheduler_job); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
 
-  /* "aiSelfTest/services/task_scheduler.py":59
+  /* "aiSelfTest/services/task_scheduler.py":69
  *     """
  * 
  *     available = True             # <<<<<<<<<<<<<<
  * 
  *     def __init__(self, *, scheduler: Any | None = None) -> None:
 */
-  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_available, Py_True) < (0)) __PYX_ERR(0, 59, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_available, Py_True) < (0)) __PYX_ERR(0, 69, __pyx_L1_error)
 
-  /* "aiSelfTest/services/task_scheduler.py":61
+  /* "aiSelfTest/services/task_scheduler.py":71
  *     available = True
  * 
  *     def __init__(self, *, scheduler: Any | None = None) -> None:             # <<<<<<<<<<<<<<
- *         if scheduler is None and AsyncIOScheduler is None:
- *             raise RuntimeError("APScheduler ")
+ *         """ scheduler"""
+ * 
 */
-  __pyx_t_10 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 61, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 71, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
-  if (PyDict_SetItem(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_scheduler, Py_None) < (0)) __PYX_ERR(0, 61, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 61, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_scheduler, Py_None) < (0)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 71, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_scheduler, __pyx_mstate_global->__pyx_kp_u_Any_None) < (0)) __PYX_ERR(0, 61, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 61, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_1__init__, 0, __pyx_mstate_global->__pyx_n_u_TaskScheduler___init, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[5])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 61, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_scheduler, __pyx_mstate_global->__pyx_kp_u_Any_None) < (0)) __PYX_ERR(0, 71, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_1__init__, 0, __pyx_mstate_global->__pyx_n_u_TaskScheduler___init, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[5])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 71, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
@@ -8419,266 +8900,266 @@ __Pyx_RefNannySetupContext("PyInit_task_scheduler", 0);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_2);
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_init, __pyx_t_4) < (0)) __PYX_ERR(0, 61, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-
-  /* "aiSelfTest/services/task_scheduler.py":66
- *         self.scheduler = scheduler or AsyncIOScheduler()
- * 
- *     def start(self) -> None:             # <<<<<<<<<<<<<<
- *         with Session(engine) as session:
- *             recover_zombie_tasks(session)
-*/
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 66, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 66, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_3start, 0, __pyx_mstate_global->__pyx_n_u_TaskScheduler_start, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[6])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 66, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
-  PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
-  #endif
-  __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_2, __pyx_t_4);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_start, __pyx_t_2) < (0)) __PYX_ERR(0, 66, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-
-  /* "aiSelfTest/services/task_scheduler.py":74
- *             self.scheduler.start()
- * 
- *     def shutdown(self) -> None:             # <<<<<<<<<<<<<<
- *         if getattr(self.scheduler, "running", False):
- *             self.scheduler.shutdown(wait=False)
-*/
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 74, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 74, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_5shutdown, 0, __pyx_mstate_global->__pyx_n_u_TaskScheduler_shutdown, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[7])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 74, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
-  PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
-  #endif
-  __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_2);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_shutdown, __pyx_t_4) < (0)) __PYX_ERR(0, 74, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_init, __pyx_t_4) < (0)) __PYX_ERR(0, 71, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "aiSelfTest/services/task_scheduler.py":78
- *             self.scheduler.shutdown(wait=False)
+ *         self.scheduler = scheduler or AsyncIOScheduler()
  * 
- *     def restore_active_tasks(self, session: Session) -> None:             # <<<<<<<<<<<<<<
- *         tasks = session.exec(select(Task).where(Task.active == True)).all()  # noqa: E712
- *         for task in tasks:
+ *     def start(self) -> None:             # <<<<<<<<<<<<<<
+ *         """ APScheduler"""
+ * 
 */
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 78, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 78, __pyx_L1_error)
   if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 78, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_7restore_active_tasks, 0, __pyx_mstate_global->__pyx_n_u_TaskScheduler_restore_active_tas, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[8])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 78, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_3start, 0, __pyx_mstate_global->__pyx_n_u_TaskScheduler_start, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[6])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_2, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_restore_active_tasks, __pyx_t_2) < (0)) __PYX_ERR(0, 78, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_start, __pyx_t_2) < (0)) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "aiSelfTest/services/task_scheduler.py":83
+  /* "aiSelfTest/services/task_scheduler.py":92
+ *             logger.info("Task ")
+ * 
+ *     def shutdown(self) -> None:             # <<<<<<<<<<<<<<
+ *         """ APScheduler"""
+ * 
+*/
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_5shutdown, 0, __pyx_mstate_global->__pyx_n_u_TaskScheduler_shutdown, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[7])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
+  PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
+  #endif
+  __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_2);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_shutdown, __pyx_t_4) < (0)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "aiSelfTest/services/task_scheduler.py":99
+ *             logger.info("Task ")
+ * 
+ *     def restore_active_tasks(self, session: Session) -> None:             # <<<<<<<<<<<<<<
+ *         """ active=True  job"""
+ * 
+*/
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 99, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_7restore_active_tasks, 0, __pyx_mstate_global->__pyx_n_u_TaskScheduler_restore_active_tas, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[8])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
+  PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
+  #endif
+  __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_2, __pyx_t_4);
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_restore_active_tasks, __pyx_t_2) < (0)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "aiSelfTest/services/task_scheduler.py":107
  *             self._schedule_task(task)
  * 
  *     def sync_task(self, task_id: int) -> None:             # <<<<<<<<<<<<<<
- *         with Session(engine) as session:
- *             task = session.get(Task, task_id)
+ *         """ job"""
+ * 
 */
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 83, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 83, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 83, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_9sync_task, 0, __pyx_mstate_global->__pyx_n_u_TaskScheduler_sync_task, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[9])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 83, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 107, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 107, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_9sync_task, 0, __pyx_mstate_global->__pyx_n_u_TaskScheduler_sync_task, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[9])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_2);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_sync_task, __pyx_t_4) < (0)) __PYX_ERR(0, 83, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_sync_task, __pyx_t_4) < (0)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "aiSelfTest/services/task_scheduler.py":91
+  /* "aiSelfTest/services/task_scheduler.py":118
  *             self._schedule_task(task)
  * 
  *     def run_task_job(self, task_id: int) -> None:             # <<<<<<<<<<<<<<
- *         with Session(engine) as session:
- *             task = session.get(Task, task_id)
+ *         """APScheduler """
+ * 
 */
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 91, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 91, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_11run_task_job, 0, __pyx_mstate_global->__pyx_n_u_TaskScheduler_run_task_job, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[10])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 91, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 118, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 118, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_11run_task_job, 0, __pyx_mstate_global->__pyx_n_u_TaskScheduler_run_task_job, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[10])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_2, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_run_task_job, __pyx_t_2) < (0)) __PYX_ERR(0, 91, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_run_task_job, __pyx_t_2) < (0)) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "aiSelfTest/services/task_scheduler.py":106
+  /* "aiSelfTest/services/task_scheduler.py":137
  *             run_task_execution(session, task_id)
  * 
  *     def _schedule_task(self, task: Task) -> None:             # <<<<<<<<<<<<<<
- *         if task.id is None:
- *             return
+ *         """ job"""
+ * 
 */
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 137, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_task, __pyx_mstate_global->__pyx_n_u_Task) < (0)) __PYX_ERR(0, 106, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 106, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_13_schedule_task, 0, __pyx_mstate_global->__pyx_n_u_TaskScheduler__schedule_task, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[11])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 106, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_task, __pyx_mstate_global->__pyx_n_u_Task_4) < (0)) __PYX_ERR(0, 137, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_13_schedule_task, 0, __pyx_mstate_global->__pyx_n_u_TaskScheduler__schedule_task, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[11])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 137, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_2);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_schedule_task, __pyx_t_4) < (0)) __PYX_ERR(0, 106, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_schedule_task, __pyx_t_4) < (0)) __PYX_ERR(0, 137, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "aiSelfTest/services/task_scheduler.py":120
- *         )
+  /* "aiSelfTest/services/task_scheduler.py":154
+ *         logger.info(": task_id={}, interval_hours={}", task.id, task.interval)
  * 
  *     def _remove_task(self, task_id: int) -> None:             # <<<<<<<<<<<<<<
- *         job_id = _job_id(task_id)
- *         if self.scheduler.get_job(job_id) is not None:
+ *         """ job"""
+ * 
 */
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 120, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 154, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 120, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 120, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_15_remove_task, 0, __pyx_mstate_global->__pyx_n_u_TaskScheduler__remove_task, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[12])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 120, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 154, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 154, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_13TaskScheduler_15_remove_task, 0, __pyx_mstate_global->__pyx_n_u_TaskScheduler__remove_task, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[12])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 154, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_2, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_remove_task, __pyx_t_2) < (0)) __PYX_ERR(0, 120, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_remove_task, __pyx_t_2) < (0)) __PYX_ERR(0, 154, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "aiSelfTest/services/task_scheduler.py":53
+  /* "aiSelfTest/services/task_scheduler.py":63
  * 
  * 
  * class TaskScheduler:             # <<<<<<<<<<<<<<
  *     """ Task
  * 
 */
-  __pyx_t_2 = __Pyx_Py3ClassCreate(((PyObject*)&PyType_Type), __pyx_mstate_global->__pyx_n_u_TaskScheduler, __pyx_mstate_global->__pyx_empty_tuple, __pyx_t_9, NULL, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Py3ClassCreate(((PyObject*)&PyType_Type), __pyx_mstate_global->__pyx_n_u_TaskScheduler, __pyx_mstate_global->__pyx_empty_tuple, __pyx_t_9, NULL, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_TaskScheduler, __pyx_t_2) < (0)) __PYX_ERR(0, 53, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_TaskScheduler, __pyx_t_2) < (0)) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-  /* "aiSelfTest/services/task_scheduler.py":126
+  /* "aiSelfTest/services/task_scheduler.py":163
  * 
  * 
  * def create_task_scheduler() -> TaskScheduler | NoopTaskScheduler:             # <<<<<<<<<<<<<<
  *     """ APScheduler """
  * 
 */
-  __pyx_t_9 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 126, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 163, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  if (PyDict_SetItem(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_kp_u_TaskScheduler_NoopTaskScheduler) < (0)) __PYX_ERR(0, 126, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_1create_task_scheduler, 0, __pyx_mstate_global->__pyx_n_u_create_task_scheduler, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[13])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 126, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_kp_u_TaskScheduler_NoopTaskScheduler) < (0)) __PYX_ERR(0, 163, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_1create_task_scheduler, 0, __pyx_mstate_global->__pyx_n_u_create_task_scheduler, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[13])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 163, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_2, __pyx_t_9);
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_create_task_scheduler, __pyx_t_2) < (0)) __PYX_ERR(0, 126, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_create_task_scheduler, __pyx_t_2) < (0)) __PYX_ERR(0, 163, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "aiSelfTest/services/task_scheduler.py":134
+  /* "aiSelfTest/services/task_scheduler.py":171
  * 
  * 
  * def set_global_task_scheduler(scheduler: TaskScheduler | NoopTaskScheduler | None) -> None:             # <<<<<<<<<<<<<<
  *     """"""
  * 
 */
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 134, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 171, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_scheduler, __pyx_mstate_global->__pyx_kp_u_TaskScheduler_NoopTaskScheduler_2) < (0)) __PYX_ERR(0, 134, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 134, __pyx_L1_error)
-  __pyx_t_9 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_3set_global_task_scheduler, 0, __pyx_mstate_global->__pyx_n_u_set_global_task_scheduler, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[14])); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 134, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_scheduler, __pyx_mstate_global->__pyx_kp_u_TaskScheduler_NoopTaskScheduler_2) < (0)) __PYX_ERR(0, 171, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 171, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_3set_global_task_scheduler, 0, __pyx_mstate_global->__pyx_n_u_set_global_task_scheduler, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[14])); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 171, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_9);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_9, __pyx_t_2);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_set_global_task_scheduler, __pyx_t_9) < (0)) __PYX_ERR(0, 134, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_set_global_task_scheduler, __pyx_t_9) < (0)) __PYX_ERR(0, 171, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-  /* "aiSelfTest/services/task_scheduler.py":141
+  /* "aiSelfTest/services/task_scheduler.py":178
  * 
  * 
  * def sync_global_task_scheduler(task_id: int) -> None:             # <<<<<<<<<<<<<<
  *     """ Task """
  * 
 */
-  __pyx_t_9 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 178, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  if (PyDict_SetItem(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 141, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 141, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_5sync_global_task_scheduler, 0, __pyx_mstate_global->__pyx_n_u_sync_global_task_scheduler, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[15])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 141, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 178, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_None) < (0)) __PYX_ERR(0, 178, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_5sync_global_task_scheduler, 0, __pyx_mstate_global->__pyx_n_u_sync_global_task_scheduler, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[15])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 178, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_2, __pyx_t_9);
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_sync_global_task_scheduler, __pyx_t_2) < (0)) __PYX_ERR(0, 141, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_sync_global_task_scheduler, __pyx_t_2) < (0)) __PYX_ERR(0, 178, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "aiSelfTest/services/task_scheduler.py":149
+  /* "aiSelfTest/services/task_scheduler.py":186
  * 
  * 
  * def recover_zombie_tasks(             # <<<<<<<<<<<<<<
  *     session: Session,
  *     *,
 */
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 149, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 186, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
-  /* "aiSelfTest/services/task_scheduler.py":152
+  /* "aiSelfTest/services/task_scheduler.py":189
  *     session: Session,
  *     *,
  *     now: datetime | None = None,             # <<<<<<<<<<<<<<
  *     stale_after_hours: int = 6,
  * ) -> int:
 */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_now, Py_None) < (0)) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_stale_after_hours, ((PyObject*)__pyx_mstate_global->__pyx_int_6)) < (0)) __PYX_ERR(0, 149, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_now, Py_None) < (0)) __PYX_ERR(0, 186, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_stale_after_hours, ((PyObject*)__pyx_mstate_global->__pyx_int_6)) < (0)) __PYX_ERR(0, 186, __pyx_L1_error)
 
-  /* "aiSelfTest/services/task_scheduler.py":149
+  /* "aiSelfTest/services/task_scheduler.py":186
  * 
  * 
  * def recover_zombie_tasks(             # <<<<<<<<<<<<<<
  *     session: Session,
  *     *,
 */
-  __pyx_t_9 = __Pyx_PyDict_NewPresized(4); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 149, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyDict_NewPresized(4); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 186, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  if (PyDict_SetItem(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_now, __pyx_mstate_global->__pyx_kp_u_datetime_None) < (0)) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_stale_after_hours, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 149, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_7recover_zombie_tasks, 0, __pyx_mstate_global->__pyx_n_u_recover_zombie_tasks, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[16])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 149, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_session, __pyx_mstate_global->__pyx_n_u_Session) < (0)) __PYX_ERR(0, 186, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_now, __pyx_mstate_global->__pyx_kp_u_datetime_None) < (0)) __PYX_ERR(0, 186, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_stale_after_hours, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 186, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 186, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_7recover_zombie_tasks, 0, __pyx_mstate_global->__pyx_n_u_recover_zombie_tasks, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[16])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 186, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
@@ -8687,27 +9168,28 @@ __Pyx_RefNannySetupContext("PyInit_task_scheduler", 0);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_9);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_recover_zombie_tasks, __pyx_t_4) < (0)) __PYX_ERR(0, 149, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_recover_zombie_tasks, __pyx_t_4) < (0)) __PYX_ERR(0, 186, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "aiSelfTest/services/task_scheduler.py":177
+  /* "aiSelfTest/services/task_scheduler.py":221
  * 
  * 
  * def _job_id(task_id: int) -> str:             # <<<<<<<<<<<<<<
- *     return f"{TASK_JOB_PREFIX}{task_id}"
+ *     """ APScheduler job ID"""
+ * 
 */
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 177, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 221, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 177, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_str) < (0)) __PYX_ERR(0, 177, __pyx_L1_error)
-  __pyx_t_9 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_9_job_id, 0, __pyx_mstate_global->__pyx_n_u_job_id, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[17])); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 177, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_task_id, __pyx_mstate_global->__pyx_n_u_int) < (0)) __PYX_ERR(0, 221, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_str) < (0)) __PYX_ERR(0, 221, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_CyFunction_New(&__pyx_mdef_10aiSelfTest_8services_14task_scheduler_9_job_id, 0, __pyx_mstate_global->__pyx_n_u_job_id, NULL, __pyx_mstate_global->__pyx_n_u_aiSelfTest_services_task_schedul, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[17])); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 221, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_9);
   #endif
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_9, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_job_id, __pyx_t_9) < (0)) __PYX_ERR(0, 177, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_job_id, __pyx_t_9) < (0)) __PYX_ERR(0, 221, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
   /* "aiSelfTest/services/task_scheduler.py":1
@@ -8776,14 +9258,14 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
   CYTHON_UNUSED_VAR(__pyx_mstate);
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "aiSelfTest/services/task_scheduler.py":67
+  /* "aiSelfTest/services/task_scheduler.py":82
  * 
- *     def start(self) -> None:
+ *         logger.info(" Task ")
  *         with Session(engine) as session:             # <<<<<<<<<<<<<<
- *             recover_zombie_tasks(session)
- *             self.restore_active_tasks(session)
+ *             recovered = recover_zombie_tasks(session)
+ *             if recovered:
 */
-  __pyx_mstate_global->__pyx_tuple[0] = PyTuple_Pack(3, Py_None, Py_None, Py_None); if (unlikely(!__pyx_mstate_global->__pyx_tuple[0])) __PYX_ERR(0, 67, __pyx_L1_error)
+  __pyx_mstate_global->__pyx_tuple[0] = PyTuple_Pack(3, Py_None, Py_None, Py_None); if (unlikely(!__pyx_mstate_global->__pyx_tuple[0])) __PYX_ERR(0, 82, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[0]);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[0]);
   #if CYTHON_IMMORTAL_CONSTANTS
@@ -8816,34 +9298,34 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 static int __Pyx_InitConstants(__pyx_mstatetype *__pyx_mstate) {
   CYTHON_UNUSED_VAR(__pyx_mstate);
   {
-    const struct { const unsigned int length: 8; } index[] = {{49},{21},{45},{53},{10},{179},{33},{40},{51},{112},{1},{1},{8},{37},{15},{3},{16},{4},{4},{17},{38},{38},{26},{23},{27},{20},{7},{15},{4},{19},{13},{22},{26},{28},{34},{26},{22},{19},{23},{17},{30},{6},{3},{7},{19},{22},{34},{34},{3},{30},{4},{18},{9},{18},{8},{6},{21},{7},{8},{5},{7},{6},{9},{4},{16},{8},{8},{3},{7},{17},{5},{2},{8},{3},{8},{13},{15},{5},{7},{6},{10},{19},{6},{6},{8},{6},{13},{13},{10},{8},{3},{3},{11},{12},{20},{9},{10},{12},{16},{20},{6},{18},{12},{7},{13},{14},{9},{6},{4},{7},{25},{12},{10},{8},{13},{8},{17},{5},{10},{3},{26},{9},{4},{5},{7},{5},{8},{9},{9},{6},{10},{5},{6},{4},{7},{5},{51},{33},{80},{67},{37},{31},{44},{118},{12},{54},{19},{21},{19},{10},{32},{57},{187},{14}};
-    #if (CYTHON_COMPRESS_STRINGS) == 2 /* compression: bz2 (1830 bytes) */
-const char* const cstring = "BZh91AY&SY\361\014\311)\000\005\345\177\377\377\377\377\377\357\377\277\376\277\377\375\330\277\377\377\376\377\377\346\375k\363\333\335\300@@@O\340\300\000P\006\036\024\220\000\000\002\000\247\206\246\204)\3514\323\"6\201\240M\030\306\250\031\r\032d\315M\006\232=L\2314\320\321\247\244\r=&&\236\201\036\221\351\014M\242dhha\r\003M\031\014\311\250\203\t\210\014\2314\014M\003&\206M\r\006\230F\215\000\3042d\030L\203LF\203!\240\304\r\014\214\200\003&\232d\304\3044\000A\204\304\006L\232\006&\201\223C&\206\203L#F\200b\0312\014&A\246#A\220\320b\006\206F@\001\223M2bb\032\000 \302b\003&M\003\023@\311\241\223CA\246\021\243@1\014\231\006\023 \323\021\240\310h1\003C# \000\311\246\23111\r\000\004\221\001\000\211\204b\230\214AC\324\r\036\241\223\324\003@\000\000\000\000\000\006\23224\365=5\000\000\000\000\r4\000L<\000\350\036\254>\341\365\330o\001\337\367\277\344\372\316\320L\353\274\375S?\251\340\260\027\214\302#\340\345\026S\377\301~\242\246\254*\\\311\014\310P\372\221\245\tK\203\262n\242\335\"I4\320+\240'\006\341\0109\304\345\260QL\325\034\230\211RQw\026\r\002zV\r\216mq\350ji\264,9\030\246\031\2264\013\342aMS\276\227\337\025\002\307\343\276c\331\023%\222\351\235&l\346A\245\003\364\370/\252|\206\027\360\361\353/0\252\225\306\361\246>\365O*D&\315PuU\217\317\302R\313\026\377Y\234\3552\371t\203o\362s\316\177\0373\203\362\222\276s\224T\310\221\2473G\270\371\234\223\345\274\245\010u\334\272\343\341\355\236\275*\034\356q\0010\302\202v\255\227\207W\255\004\376rY\347\353\275<\300Q+7\223{Z\260XPJ.\222z\311\016\373N\275\362\314p\257D\333\212\026\306\220\"M9 \022*.\357&U\nM/\002}\345\323\271q\270\356\263C9\203\211\347\317\337\301\233]f\213\337\t\031Q(\226\201X\350\004f\316\307\007s4\243XY\361\273\275\271pW\035HcAm\274/\003d#\272\353r\226\233\215\312\210d(2\357Q\327\323w\036hg\373M^\306\317\014\324\214F\332\375v\263y\324{\314Q\243\210\351\277\214oq\363x\265\0310f\016\354\313\247\332\217\013\"\222pl\374\307\222\360\217\301\030l\356i\346v\316\273Z\306\204\334(\240\327(\265\344\234\335\033""\353\002s\231\223v#[glf\245\007X\331\031B\216\025i\230\026\027\217\026'93\006L\247Bf\005\264\036\350Iy\274;\253c7\302\327\357\373=\247\232\273\271\303Wm2\325\331\247G\320\350\331v8\321\030\366\340'\004\247Dpl\277^\206\320\305u\0143t\253\217\032\345K\304\370\247\202n\243\3061\213\351\026\014\035\235\307\207\264\204e\263l\031\0210\242\204\340x\344\206`f\020\311@\221\260\227\023h\337gZm\036\200\306\266\013\032,\032\325vy\013,S|\331\210=\205\362Q\206\331\300\020x\335{\251\307\257V\362\267C\305:\207,fB\217\203\020w+\032SOF\260\210w\360\210eE\253\002\230\202\014z\327\274p\332\206\210Y\024\324\323\006b\030$&f\314>\326y\277Ou`\251j2\320\030\312\374g\310\212\305p\304\275\267\231\344JW\334\301\330\215\373z\272\362C7\017\224\341\245\355\2168]\021\323\027\264\033\232K @\335,\357J\274\025\3240F<\013\276\262\226-\2453\\\017\034\326\304\340\314;;IA\263\017k\003l\335\320\236\276+\031\266\341\215\310\235j\254er\004_\235\301T9\371f\232\25587\252\306\214\034@A\322\243\366\2332\315d\342\306\025\201\014\211\\NI\210\347\2176[\254\n\311\353\272\003=\320d\356N\226\363M\202\306\032j\206\246\035\213Y\032\326.UR6\022\241}*1^\334\314CCs%\222mz\026h\234\277H\253\325\034\200\303\001\220\033oY\350h\233j\205\204\214\024\026*v\240\336\313{\013\224te\247V\376\356\016\242\352u9\240\334\316\336U\307$\356\330 \r\254\256\320\265\341\2169SN\271\034\032\271v\332s\356\267\026\311\362\200\373.\210\361LI\344\210_\266\326\266\034\224\014\355e\356^\307\033d\257\223B\024\341w\272%\313;\0063{r\277\t\235\326'WV\365\246\024+eKP\"\214\221\033\307\n\023a9|\352Y[\037*\253\244\303\362\335Q\256Q\261\020\350\267\005\252$\223M\335+\202\254\214\314\354d\356\034\014\020m\377\013M\353\267\256\337T\301\262\034\236T\322\327\310\263@rF\006l01\261\313\030\271\017i%c\021)L)k,,\262\034g\n\341\317gK\023\003\204\316\204\026\31442\257;v\210\020\201\304\240D22,\256\212\350\252`e\025\234\3563\317\t\205\312\355\373\357\355\230Z7\316\277?\004\266b\273\022\317\264\312g+\0305\307\t\035\221i\261\3767\307\360\350\r\212P\036\275\314YC\021""\rq\027\261q\336\006\026\306\036k~\275\270#Z\021\210\210\024~\241\210\010\265\032\321\n%\301\t\315\256\252W\2434H\370\211\002\345\271\000/\r\227Q\005\010>\354]a\013\303<\364f\362\002@\272\031\205\014\253\215Y`oNI\274\3278\206yXr\024\310C\247\006\243\372N\215*jsGy\375\333s\331UC\265\277\310\017\210\250\207\224C$\271\310\311?\274\250]\272>\006_P\371.}>\315\000\344!\200\307\030Bv \020\305`\346wV\350\230C\221\311\030\317\372Y\247\007\3205\010c\001\201R\036\006\n\024\"\3420\344\371NM<\013\335\221\004g\267'\2259\377>\250\232 \373\373_\374#&\004\356}\354\340,M\004\211\r\033\021J1\\|\\h\312\35755\303?\314\261\365P\256\316rC\215\361\204\300\355\2133X\270\313\244\026\3307v\2723\031\302@\006\232\220b\311\002\0044\365\245\310-\0344\252\376B~\203N\267d\0142d\004\010\210\027\261\2009\232\001\341\177/R\322s\227\266!VV\005\224\227\274\304\250I\242\020\270\375\021\203~:\313\331H\275c\235}b\315\252\347<\224\221y\017U\264\221\010UTJ'\276\234\347\010\306\021g\227\301\214\350[+\250N$,k\031\3125+:\014NP&\365\250\241\301\021\004\341\236\n0\353\350\242\312\217\253\343\306\203\025E\2422\327\3309n\241\014Z\251\025\031\203\344\\\235\033\013\006\322p\333<\003i\021\260X!F\250\312Z\231\272\201h\253\307/\\\334I#j\252\242n\2225\230PL\331\306dQ\227$S\374]\311\024\341BC\3043$\244";
-    PyObject *data = __Pyx_DecompressString(cstring, 1830, 2);
+    const struct { const unsigned int length: 8; } index[] = {{49},{21},{45},{53},{10},{179},{21},{33},{40},{23},{23},{51},{112},{1},{1},{8},{37},{34},{15},{49},{47},{57},{36},{33},{52},{73},{3},{16},{4},{4},{17},{38},{38},{26},{23},{27},{20},{7},{15},{19},{13},{22},{26},{28},{34},{26},{22},{19},{23},{4},{17},{30},{6},{3},{7},{19},{22},{34},{34},{3},{30},{4},{18},{9},{18},{8},{6},{21},{7},{8},{5},{7},{6},{9},{4},{16},{8},{8},{3},{7},{17},{5},{2},{4},{8},{3},{8},{13},{15},{5},{7},{6},{10},{19},{6},{6},{8},{6},{13},{13},{10},{8},{3},{3},{11},{15},{12},{20},{9},{10},{12},{16},{20},{6},{18},{12},{7},{13},{14},{9},{6},{4},{7},{25},{12},{10},{8},{13},{8},{17},{5},{10},{3},{26},{9},{4},{5},{7},{5},{8},{9},{9},{6},{10},{5},{6},{4},{7},{5},{53},{44},{100},{81},{39},{31},{58},{144},{14},{72},{19},{23},{21},{12},{32},{215},{97},{16}};
+    #if (CYTHON_COMPRESS_STRINGS) == 2 /* compression: bz2 (2133 bytes) */
+const char* const cstring = "BZh91AY&SY\225\262\301l\000\007\037\377\377\377\377\377\377\357\377\277\377\377\377\375\330\277\377\377\376\377\377\347\375\177\363\377\335\300@@@O\340\300\000`\007\035\207Nl\000\000\0007 \247v\220\321\t4S\322\031\036\2044\315LL&\2362A=!\243&&\236\246M\017Q\2404\003M\r\000\310\017A\r\030\324\304\3235\032\000\007\242dh\032\014\236Sj\t\"\002\002h\230\2324\0202I\265=A\352d24\365\000\000\000\000\000\000\000\r\006\203OS\323P\000\000\000\000\000\014\205@\031Q\247\224\017P\000\000\000\000\000h\003@\000\000\000\001\24024d\320\032\000\000\000\000\000\000\000\323RP\2145\030&\230\023\000\004\320hdi\221\211\200\230\000F\020\014M\030\322z\200\301\032d0&&\t\210\300L\214\2304\320O\324\202\000\r\014\215\031\006\232i\241\243F\232\001\211\220\323L\215\r\003\020\304\3104\320\000\000\006\215\014M4\0324`\201\246C \03211\032i\210\000424d\032i\246\206\215\032h\006&CM244\014C\023 \323@\000\000\032414\320h\321\202\006\231\014\200h\304\304i\2466\004\001\230\017\343\266\2308\304\226jW\354\2537\346\242\324C5\200\367i\265\216 h\320\224F\000\221\022\256h\260O\276\020_\250\251\253\032\334\310\031\231\200\207b4\241+AOg\3166\325m\224\201\250\200/\262JB\212n\024\255\234\027\023\224\240NL\231\254\036\250S\221d\306d;b\357:j\014\331\365\363u6\3431m\250\3471LC9\232\241\204Nnj\356S\n\206X\305@\266\322\034\314([\006\211sI\355\244\257gW\360\013Y\355\342\2414f0\300O\232\206d\245\344\322\224rBY\304J\263\017$)\203\220`\n\000\330\2500\224A\246\235\300\251hF\216\010F\207:\354\273\232A\203o/@\347m\350\017\312:\225\363\2318\251(\221\244WG\251\t\367\037\037\226\275\034\nP\205:\2602W\370\331b{\336\0135'\346q\020\023\014(-\350=\226\227\346\016\247R*%J\252\345I\257\302\3364\001e5\226\225\201\267\\.\035\351\233D\234\210\361\347\216y\243v\266\022P\036K\034\304\270A$\332\350\346\365\210\347\322{'\037U[\207N\250\234\223\205!\001\204\004\234\372\253\024]n\305\002\341\242\355\240\275\255\352\322\314\2076\322\004\242i \017V\tR\253k\021\247\t@\017c\003\021G\000\314\001\000\013\316@F\351\016X\342\000\223\252f=\220' 0\030\3344""]s<\r\2342m\267\335\224u^mTC!A\227\314G\220\325w\036xh\3521\243w\272\353m\213W\010\215\265\373F\273K\250\31324\332r\277\211oi\335qj,`\314\276A\217/b<,\024\223\246\313_\223\354\237v0\355|\225<\316\364\353\274\316\3263\315\303\266Pb\365\026\300\223\233c\207Z\312\nCR\206v\234kl\355\214\324\240\350\315de\n8U\246a\026k\013\310I\210\316L\301\223)\320\231\201m\007\272\022]\\;\233c7\302\327\357:\375\207&\256\325\206\256\244\313W^\234\236\203sz\354Lh\214{q\t\3232IN\210\331\275~\275\306\334b\272\206\006nZ\343\306\271\351x\026O\321wL\376\n\035)BR}Ib\301\327\340:w\020\214\267\366\301\221\023\032(N\007\205Hf\006a\014\224\t\033\344\270\333N\313\234\200j\270z\203\033\254\026\264D\310\335Vo\370\213,S{\262!d\030\276J0\3338\002\016\323^\367\005y\233\272\367\025\315\r,2\207B3!G\305\210;\225\215)\253\226\260\212;\310D2\242\226\274\007\304\020c\332\336\361\303j\032!dSST\031\210`\2227\330\035\2338\373Y\312?e:\301P\265\031\267\003\031_\214\371\350\254W\024K\333C<\211I\213\356`\353o\204p\333\323\335\311\r\027\342\361u\344\226\r\23367\304t\306\r\006\244\226`@\335\034\357Z\263\301\\P0F;\027we\202\253-\362\231\\\017\034\255\211\267{9\006v\232\347E\364\017{\003f6\331Jk\342\265\233\177\034\327\242u*\254ex\201a\240pUG3,\363U\246\315\312\261\247\007\020\020t\250\375\206\311ed\342\306\025\201\014\3314\357)4\304s\307\223-\266\205d\365\333\001\236\3702w'K|T\330,a\246\250`\303\262\265\221\255b\345U#a*\027\322\205GO\333\231\020\351i~@2M\273\245g\211\320\372\005^\250\347\203\014\006@m\301h\241\246m\256\n\305a3\005\020\305R\344\033\231\2671\275GM\372\250\332\366pC\232t\227K\263\344\203\274Hx\306%\007\213\273\030\010\r\346WhZ\260\277\034sT\206\251\033\272z\033\326\234\333\244[\213fs4\007\331tG\210\314\304\236H\205\373\3275\320\347\321\031\332\314\034\275\216&\272\031'\223E\241N\007\201\013\244\\\262`\306\217vk\360\231\334\342suh\264\302\205l\251h\201Q\222#x\341Bl'/\235K+c\254\325WI\207\347]Q\256Q\261\026\221\344m\227)\023MGt\257\013\032\3410d\320c3\270l`\203n\323\263cE\371_\255S\026\310rySK\027\310\2638s""c\003,01\261\313\030\271\017i%c\021)L)k#\013,\207\t\300\270{m\026\364s\030\234F\204 \272a\245\225W\017\006\230(@\034\343LD22,\251\246\272j\230\030\"\242h:y\351\205\002\345v\313\355\355\030[\233\016\342\364\267\260]h\345\316\332f\241\335\244r:3\375\024\ta\320\026qFic\345;\n#(\245\372\246 P y\2334\000\314\177G\373\243k\007\234\014\214\314\312\013\326V\001\221$\033\020\241ZP\222\013\253\003\262\212DN\031=\325\317\221r@\200\034\226mM\261\236PB\344)\301v\264\016o\004Z\220\204]cI\251e\224\007G\246\001\365|C\037A\226\304\373\031\260\240\026\027G\206v\005\266\336\226*!\214\0232\265\202^\007\365\350#\024\351K\016@\017\262D\331dTUgQ\200\375\275\347\000P\"\305\376%\225\307$C'\200\360\006!\241\344?\022=\246\351\206XM\355\327 \341\261\344\303\210\030\td\220t5\302\361\222\354\235\373\324\026`\240'\240W2t)'\205\270\016\375F8\336\034b\325\206n\231\253\033@\311\337_\035[.\321\212\350\246\301\372\352{b#\203\254\253\367\344\213\"2+\362r\221\370\023 \034\354kDo\200\314\006@.5E\225o=\022\342t\034\226\0260X'^1\354B\004\326\305i<%K\374u8\372\214\tF\321\201\215\247\000_\025\272\261\r\235\\\325\222\000@\206\212@\374\030\240\356\222)\337\362#\205u\307\256\263O\225\234\030 M\001e\331\364\356\310\234\003\022\313\244\276\345)\2472Vx\210\306ElA;\255u\364\372\215\326q\024\"9\002\005\004EH!p@TS\224pJ-\020\027yv\323\223O\366\256'\353\354\035\030\257;\023\271R\222\203\006\310\276\213\253T\005!\030x\364\202!\020\324\347\317AP\341\321\257\204zjQ\326\020\220\343\2110\203r\213(%\030\201%\260\032\021\313\205$U\332RP\254\036\255\002\263\254\3362\244\006fxBd\031\2523U\331\336\024\204\236\353E\241pX\312\225\027\271\2774Z*=\032\347\233\223Rb\024f\350\031\370\2626q\343$\351\210\014\022\030{\231!+\212\303\365}\230e\360\354\230S\357\235\352\340\201\377\246o\307\355-\0266\267cb\027\370\3403{\312q\360\272{\311\330l\206_z\376>9\252\356\256\366\373|\245\376\267\230i!\305\237\323Y\325\265\0215\364\373\356\207\300\317\355\213FQOp\346\026\022(\216\336\212\221\363/_4K\344)xf\262\337\361w$S\205\t\t[,\026\300";
+    PyObject *data = __Pyx_DecompressString(cstring, 2133, 2);
     if (unlikely(!data)) __PYX_ERR(0, 1, __pyx_L1_error)
     const char* const bytes = __Pyx_PyBytes_AsString(data);
     #if !CYTHON_ASSUME_SAFE_MACROS
     if (likely(bytes)); else { Py_DECREF(data); __PYX_ERR(0, 1, __pyx_L1_error) }
     #endif
-    #elif (CYTHON_COMPRESS_STRINGS) != 0 /* compression: zlib (1721 bytes) */
-const char* const cstring = "x\332\205U\333o\024U\030\247\272\300\202\205\356b\013x\3454\255 ^\326T\352]cV,R\225\322[\320\350\303\311\331\231\323\335\221\331\231\3359gZ\326K\254bu\205\242\307D\343\210\304\0141\352H\"l$\350\006\210\360\350\343<\356#\211\235v}\322?\301\357\314\354nK]t\3239s\372\335\277\337\367;g\352\225\243\301\305\357\353?|\037|\372\331\342\227\277,\\\272\024\034;\215\336z\007-\\:\021\234\362\352WD\375\364\374_\227\347\203_\177\256\377z\276~\345\243\364\350\204\222\243\252\255S\013-\236:\023\234\375\270\376\355\334J\341B\365D\360\351\271\245\317=\010\267t\362\0030\010\346\274\245\037/\006g\277Y\372\244\362\307\354\373m#@\212I\302\016\243\372Gg\202c^=\254\n\"-\\>\031\210s I\033%\3646\0321\r:br\212x\216p\264\267\304s\246\2014\206T\252k\031j\021N\365\022b\334\322\024\016\301\301\310@\243C\243\017\016>>\210\210\241\"\213\276A\025\316\020\2633\212N\030\243\014\231S(ck:\327\014\304K\005\312Rhx\n\225L\033\031\224\252\210\233\250\000v+\035x\216\032\210Q.7h\0271\014\223\023\256\231\006\006w\315\310\356B\252fA\022m\232J\357}Dg4%;[\356Y\266a\026\256\223\375\257A\243\367h\004(D\nf\024\301\024\210\371\305\237\276\373\353\362\311\266S\250_\371z\311;\036|8\027y5\\\276\362`\020\0337\"\370\255\364\202\031-\374v\034\034\027\317{\301\034\304\234_\370\355\312\302\305O\202\023_\004sG\027/\034\257\237\373\342\3173\363\365s\357\2417\314\014\222V\037\316\003A\026\252\027e<\031.\365,QU\014\250P\242MP}j\2222\376\020\243\326\264\246P\366\020\207\0320k\346K\025J*\314\214ky\332h\020\306\234f%C\031>\330*j_z\370\345h\356\2530\371\227 \005\300\233\323\324\302o\232\371\214F\261L\306\332Y1nZ\024\223pJ7\262b9\233\253\346\214\321F\303\211\305\333\210\241\3540\030\306\243\245#\360<\017,\304#\364\010\037\247S\023\2241 \311dz\342%\374\342\301\347\360\350\370\320\276\341We\000\371\014\035\241\212-I4\001\\\262\331\215\251\221\302X34\216\361*\251E\363f\243\225U\232&\326mt\355pXea\033QG0\354\366\350\264A\346\006\250\274v\360\300s\303C8D`h|\374\340xt\256\341\222X\374v\026\230\025\224+\301\321\013A\245\272t\354\227\305""\331\367\242\242\200J\222M\220~\231L)\240\014\311\020\266\202_\251\274\t7\000K\311<+\244M\326\205rL\233 \337\320\242\305K\242\353\244\260\314\322\326\216\245\210\354G3\211\225e\215mJ1-\023\342\032\224\221i\242\351$\243SE\207\177aR\230[D\241\031\242\034VL\242S\246\000?\363y\215+\026\005\332\343\353\223*\266eQ\2037\017\204J3v\026c\325T0\246FV\006\2047\\k8\354\244\325\rf!g\244T\022\003\343)\033\020\307Y\312\341O\"\207\263:\300\247/'\312\231\266\3054\265I%\315\200\342!\3564\330h\014\267\332\201}X \220\300\200\213M\3434\317\302x\232\032\255p!rL-\313\264\302\235$KH\000\252b\302u3\233\245\026\254\266ec\234'\000\006\254\326aj\345\311\021\310\t\226\006\000\017B\312Ix\267\312\332a\216\222\253\3603H\036\336\2069S0\013\030\027,Z V\250(\332D\217\224\355N{CF\325\306\211\220\225\2568\034\020F\207\211H\254\030\364\230mw\004,\312m\313hQ\277\005\364\312\303\320\300\244\361\212\374\256?j\313\234\241\272\374\346\000\343Xt\007\300\267\2439\222\353\t\200\261TE\275\301N\245S\304\326y\363\244\261\303Z\241\000\320*\246mpV\324#\312s\240\025&S\222\026\341X\303\001,O\001>\205\341\001l\233\257u4\233O\244\327\324\250\035\314\001\034Xs\000R\316\324\325\210\224:\260-\374\320\331\005\311T\231\004\210c\323pa3D\3433\304\222\240\314\344`\014~\354v\347~\377\236\247\252\003\265\370-\345'\305\204\263\326\231\364{\037\256\364U\306j\235[\304\003\016q\212\265xg\371\200s\273\273\307\337\371h\205H\227^i\375\230\350\025\203\342m\367)\217\324:\023b\243\263\333\035p\207\274\244\037\353s\237\360\322\322d\260\314\305\036\001\352M2\306\213\"\347\204\246\035R\000\321\373\245\252\253<#\210\340\316@\2553)\222\221\354.\007\262\367\010X \227\037\353u\267{\311\332\246n\221\026\257\273\340|\253x\314\351\207\312\246\3351\351o\213\275\302v\366:\334\035t\213\265D\2678\340&\335\336Z\")su9E\267c6}-\271\345Z|Sy\254\026\277\0032m\330X\213w\371]}P\360\2607Y\351\361\037\335\377{\207\277\346^/^\351\370{\335\232\265q\177\375m\316\255\016\364\260\241\026\353\021\257\311\030~\254\337\335/\333J\212mN\207\223\214\372{\323\331\016\311""\356\365vU\222\021\010\367\273c.i\332\376g\311\253J\355*\277\033\202\235\350\366\273w\272D*G p?\240\233\330&\361\201r`3\003\020&\266J$\375\0350\215\320\365np,yP\341\003\336\313\325\016h\255\\l\355\023b=\200\223v\016\205\303\331\352\025+\261\312\376\352\336\352\364\325\311\337\223r*\373E\272\205\223\277f\267\277\373\220\177\350\025\t\302\272Zl\273\003\242\036\361*\214#vK\371\341\362\230\277Y\346*6G\022\337\\\236\022i\277\347\361jG\203\0262\365\232\035N\261\201\342v\347f\200[b\215\000\005\210\361\014D\214m\203\336\227\241\001\215+\301\363\023\367H\354\256\205\270F\234x\332}\253\322\033\341\272\023\246\330Q\333\264\371ZlC9Y\013C\254]'\263t\225U\321\007%NB\220XB\304\235\233B\"\356\363zk\261n\361\202\363\010\204\337\352\026\275u\236\n\261b\222}\261x9\016\2570Q\004\272$hRt\373=\367y}@\210;\253\023WcW\323\021\313\373E\326\031o\330t\372\235\310G{*\217Hh;\313#\262\345\306\253\013\270>\000X\306%oc\353g\213R\004m\310\256\007\242\236\001\256\034\364U\374\007\r\372\360`";
-    PyObject *data = __Pyx_DecompressString(cstring, 1721, 1);
+    #elif (CYTHON_COMPRESS_STRINGS) != 0 /* compression: zlib (2009 bytes) */
+const char* const cstring = "x\332\205V]s\023\327\031F\255\000Al,\021\033\\\3324\3531\037\241\241b\034\234\220\222\217V\241&8\r\306_C3\351\305\231c\355\221\264a\265+\3559k\343\220LM\251\023\005Lr:\3234\033\222\351l\032\022\266\314\020\324\222\004\rf\202/\271\334K]z\246^[\\\245?\241\357\331\225\326\262\021\251\306^\255\336}?\237\367y\216T+\237\367n\177Y\273\372\245\367\301_\226?\372vi~\336\273\360\231t\366mii\376\222\367\251S\273\313k\237\315}\177g\316\273\365\357\332\255\233\265\273\357\246\206\307\3229\"\233*1\244\345O\257y_\275W\373|\266\331\270T\271\344}pc\345\257\016\244[\271\374gp\360f\235\225\177\336\366\276\372\373\312\373\345\377\314\374\251e\006(1\216\351i\251\366\3565\357\202S\363\273\202LKw.{\374\006XR\332\264\364\2264\244kdHgDb9\314\244\243\323,\247k\222B%\231\250\312\00410#\352\264D\231\241\244\031$\007'M\032\036\030\376e\377\263\375\022\326d\311 o\2204\243\0225'\322*\246\224PI\317H\023\246\2422E\223\330t\201\320\2444\230\221\246uS\322\010\221%\246K\005\360k\016`9\242I\2240q#\355\303\232\2463\314\024]C\020\256h\331}\222\254\030PD\231$\"\372\030V)I\006#H\301\200\376h\336\307\216\370\264\n\204\230M/\254\261\375_\207: k\323\302\242\202r\017\232go\336\377\350z\260\305\240\027Xs\335\201\317-_\377\342\373;\227[.\262v\367\223\025\347\242\367\316\354\272\t`\227[\267J\360j\216\2025/}w\021\002\227o:\336,\344\234[\372\356\356\322\355\367\275K\037z\263\347\227\277\271X\273\361\341\375ks\265\033\347\2447\364\tIx\2753\007\034[\252\334\026\371D\272\344\257\261,#\000\226`e\214\250\231qB\331AJ\214I%M\350A\006= \332\250\227,L/\237\373\207w\345\322\362\327\363\265[\347\003\376\006\035\036\221\322\272\251\261\027\316\276-\0031\230\222'u\300\352\354\362]\305\220\327-`z\300\361\225\253\363\367?\276\":;\"\371\205\024\031\342\003@\201\317A)\357\3747^\271\022\304\037\001R\245\365Ib\020\0315\312\005O\004\265\271\257\203\322\337ZVit\271Z\247\326$\306z\222\367\256\0026\315>\315\023\206\251~\300!Xm\263\303\001I\321@\036\223XE9\3354(\230\036\234\013\326\341]\371W\355\353/\226g\316\255\r.\030dR\321M\212(\020""\337\244\276-\217\215\323\304\200[\220i\212Nk\351\301\223!#\216\245\006_\rt\273\216\276\017\030\222u(\321\233z~B!HT\245\255\274(\323\r\202\260\257\262\207y\321\234\311d}Jk\361\204a\203\2650C\333~2\204\206\247\317\300\377o\341\024AC\344\014\033%\2311B)\210|<5\366;\364\312\311\227\320\360\350\300\261\301\327D\202\2013$m\212\003`\314\207\343\341\nN\"\244h\nCh\235\325 y\275>\306\272'\r\222\267x\326\n\203u\036\246\026L\003\\n\215L\013T\036\202\2100\277~\362\304K\203\003\310G``t\364\344\350\252(>\237\001Y{\245r\300\237\225\013\337\002g\202\306@\307B\312\320\302\252\222\223\240F<\201i\223\270\223y\035Np\232\024\265\232\254\r\311\373vD\032@?\324#<\024\260\252\342\302\352\021\021\336\321$\0263):6\262\264~\233L\353\206\016y5B\361$VT<\241\222\264\n\037a[\210\0318M&p\372tZ\307*\241i\340g>\257\260\264A\340DAk\213\246M\303 \032k\23452\2310\263\010\311z\032!\242eEBx\007\335!\177\222p\232\272\214\204U\220\003\241\214\t\250\243,a\360'\220CY\025\340SW\013\371\242UdE\313\350\rJ\201\240CM+\024\205#\301\275\337$\220A\203/'\205\221<\365s*rp\205/5\206\210a\350\206\177'H\343\023\001N3\314T=\233%\006\\M\303D(\217\001\020\024(=\217\317@M\360\324\000|0\022\206\375\357G\321?\354Rp\026^\032\316\303\273\246O\025\364\002Bpn\0240P\026\255;@\020*\232X\r|[\035\000\341\371Z\027\212h\274I3\220U\205%\t\370(\214\234m\245\014\2030\323\320BE\204\3307k\244\016Q\375-\210[\253\300U\032\021U\374\214\000\022\322\340X\200\237\003\215-\255\345\004B\342Q0\033\334\311$\203M\2255\004HO+\205B\343{\203\026\325@\005\014\230\206pF0\305\337\264\277\217\325\245\300\257\033_\227-\353\205\212m\374\243\372\311\035\214\203\030\200\003\327\034\200\224\323U9\340\251\nk\360\177\273\230\005A^Q\004xd\022\377B\247\260\302\246\260!@\231\312\301\032\334\350.\353Iw\317s\225\276\377n\332\260\245\255t\204\217Y\033\255q\267\347\251roy\244\332\266\235\037\260\260U\254\306\332J'\254]\366!w\3573e,\202z\002\377\303\274\207\367\363\267\354\347\034\\m\213\363\255\326~\273\317\036p\022\"r\017/Z\0217\332k\377\312I\005\336\375%\306\017q\360l""\027\t_\3419\313\217\212\010\003\004\354\026\217:JS\034sf\365U\333\022<\021\330\036\263\240\225.\016\027(\274\030\333V\"\274\317\355|\261\"/\354Y`\367\372\334h\217\335\355$\240\306\266.\236\342\177\260!\341\243\374\260\265\033Z\237\264GDN\223\037\345\246u\324bv\277]\254\306;\371\t;a\367T\343;x\306J\271\217=_IU\343\t\321K\207U\264#3\251\305\304\366\305X{i\244\032\373)t\262e\253\350?\356v\364\302t\203\316x\271\313}\346\370\275\210\273\341\t'V\216\300\263\2151w\363O\254G\255T5\266\245\032\355\342\257\213,nt\267}<\030};\337iE\254D5\366\010`\360\246\325\r\305\237p\366\225\023\001fO\332#6\256#\346v\037t\212M\221\035\301\254\007\234T\265\275\363\007\206[;\024\000\353>\376b\005\373Cu\224\376\350\3570\336\351v\356\205B\3408\004\345w\303\312\342;\005\322\3206\334L\3012\032\241\260d?\364\347\0208\355\300$\007\234W+\021\037\204R\261\351S\202o\006XS\326)\177\353;\234b9Z>^9Z\231\\\030\277\007\323\326\027\365\013\247\327\031\201j\260\363\343<\025\242\354n\330\357\356?\345\236\372\275\000pS5\332\rl\331\320\305_\263F\204\241\255\364Ti\304\335&:(\256.\030\360\310\360\224\333\365l%\022\262P\264\264\341q\253X\337C\267\365cXY\254\303\355\220\000\253\350#\245\027\254\310L\244\332\276m1\272\245\224\250Fw\002V\0337\t\347\216\222\314{\241\336\270\r\3468\217Y?\362\351{\314\351\251F;\371\313\326\323v\304\336a\027\235M\216\\\356\021\036\220.V\212\301\233\277\307\000U\301\345\004\357t\273\304\224\343\345\237U\306\026\242\013)\341q\030\310\233\265F\353>\273\304\306\000\002\267Mr\245C\345\247+\021\201\307\220\325\023\276u\200:\372\000\237\230`:`\227\013\224\022\n\244}1\272y\246(\374@!b0 >\014\023\262\2047S\244\333\355\006\3168>?\212\341^\177\263\000\217\342n|\217`\334\242?E\240\266\347\355\2630\242\317\306\275\"<ToX\000\272\341\305\377\001\324\333A\"";
+    PyObject *data = __Pyx_DecompressString(cstring, 2009, 1);
     if (unlikely(!data)) __PYX_ERR(0, 1, __pyx_L1_error)
     const char* const bytes = __Pyx_PyBytes_AsString(data);
     #if !CYTHON_ASSUME_SAFE_MACROS
     if (likely(bytes)); else { Py_DECREF(data); __PYX_ERR(0, 1, __pyx_L1_error) }
     #endif
-    #else /* compression: none (3028 bytes) */
-const char* const bytes = "\350\260\203\345\272\246\350\247\246\345\217\221\346\227\266\344\273\273\345\212\241 {} \344\273\215\345\234\250\350\277\220\350\241\214\357\274\214\345\267\262\350\267\263\350\277\207APScheduler \346\234\252\345\256\211\350\243\205APScheduler \344\270\215\345\217\257\347\224\250\346\227\266\347\232\204\345\256\211\345\205\250\347\251\272\345\256\236\347\216\260\343\200\202APScheduler \346\234\252\345\256\211\350\243\205\357\274\214Task \350\207\252\345\212\250\350\260\203\345\272\246\344\270\215\344\274\232\345\220\257\345\212\250Any | NoneNote that Cython is deliberately stricter than PEP-484 and rejects subclasses of builtin types. If you need to pass subclasses then set the 'annotation_typing' directive to False.TaskScheduler | NoopTaskSchedulerTaskScheduler | NoopTaskScheduler | None\350\267\263\350\277\207 Task {} \350\260\203\345\272\246\345\220\214\346\255\245\357\274\232APScheduler \344\270\215\345\217\257\347\224\250\350\277\233\347\250\213\345\206\205 Task \350\260\203\345\272\246\345\231\250\343\200\202\n\n    APScheduler \345\256\236\344\276\213\345\217\257\346\263\250\345\205\245\357\274\214\344\276\277\344\272\216\345\215\225\345\205\203\346\265\213\350\257\225\351\252\214\350\257\201 job \346\263\250\345\206\214\350\241\214\344\270\272\343\200\202\n    .?add_noteaiSelfTest/services/task_scheduler.pydatetime | NoneAnyAsyncIOSchedulerFAILNoneNoopTaskSchedulerNoopTaskScheduler.recover_zombie_tasksNoopTaskScheduler.restore_active_tasksNoopTaskScheduler.shutdownNoopTaskScheduler.startNoopTaskScheduler.sync_task__Pyx_PyDict_NextRefSessionTASK_JOB_PREFIXTaskTaskExecutionStatusTaskSchedulerTaskScheduler.__init__TaskScheduler._remove_taskTaskScheduler._schedule_taskTaskScheduler.restore_active_tasksTaskScheduler.run_task_jobTaskScheduler.shutdownTaskScheduler.startTaskScheduler.sync_taskZOMBIE_TASK_ERROR\345\220\257\345\212\250\346\227\266\346\243\200\346\265\213\345\210\260\345\203\265\345\260\270\347\212\266\346\200\201activeaddadd_jobaiSelfTest.databaseaiS""elfTest.models.taskaiSelfTest.services.task_executionaiSelfTest.services.task_schedulerallapscheduler.schedulers.asyncioargsasyncio.coroutinesavailablecline_in_tracebackcoalescecommitcreate_task_schedulercurrentdatetimedebug__doc__engine__enter__execexecution_status__exit____func__getget_job_global_schedulerhoursid__init__intinterval_is_coroutineis_task_runningitems_job_idjob_idlast_errorlast_run_started_atloggerloguru__main__markermax_instances__metaclass____module____name__nowpop__prepare____qualname__recover_zombie_tasksrecoveredremove_job_remove_taskreplace_existingrestore_active_tasksreturnrun_task_executionrun_task_jobrunningrunning_tasks_schedule_taskschedulerselectselfsessionset_global_task_scheduler__set_name__setdefaultshutdownskipped_countsqlmodelstale_after_hoursstartstarted_atstrsync_global_task_schedulersync_tasktasktask_task_idtasks__test__thresholdtimedeltatypingupdated_atvaluevalueswaitwarningwhere\320\004\032\230+\320%;\2701\330\010\013\210:\220S\230\005\230T\320!2\260#\260Q\330\014\022\220,\230a\230q\330\010\014\210M\230\032\2403\320&6\260a\320\004\032\230!\330\010\013\2107\220!\2204\220|\240;\250a\330\014\020\220\n\230)\2401\240E\250\021\320\004#\2409\250A\330\010\013\2104\210t\2203\220a\330\014\r\330\010\014\210J\220h\230a\330\014\020\220\001\330\014\r\330\014\022\220$\220a\330\014\017\210w\220a\220t\2301\330\014\021\220\021\220$\220a\330\014\035\230Q\330\014\025\220Q\330\014\032\230!\320\004!\240\030\250\021\330\r\024\220A\220[\240\001\330\014\023\2207\230$\230a\230v\240Q\330\014\017\210u\220C\220u\230C\230t\2404\240q\330\020\024\220M\240\021\240!\330\020\021\330\014\020\220\017\230q\240\001\200A\340\021\022\340\010\r\210Q\330\010\033\2301\330\t\n\330\010\017\320\017#\2401\240I\250T\260\025\3206H\310\001\320\000(\250\010\260\001\360\006\000\005\010\320\007\031\230\023\230A\330\010\t\330\004\025\220Z\230q\240\001\320\004$\240H\250A\330\010\021\220\027\230\001\230\021\330\010\013\2104\210z\230\030\240\021\240(\250'\260\021\330\014\020\220\n\230+""\240Q\240a\320\004$\240H\250A\330\r\024\220A\220[\240\001\330\014\023\2207\230$\230a\230v\240Q\330\014\017\210u\220C\220q\330\020\024\220M\240\021\240!\330\020\021\330\014\017\210\177\230a\230q\330\020\024\320\024&\240a\330\020\024\220N\240(\250$\250a\330\020\027\220t\2301\230A\330\020\027\220w\230a\330\020\026\220h\230a\320\0376\260a\330\020\021\330\014\036\230a\230y\250\001\320\004,\250L\270\001\330\010\017\210q\320\004,\250L\270\001\330\010\020\220\007\220u\230A\230V\2401\240E\250\026\250q\260\004\260H\270C\270v\300T\310\021\330\010\014\210H\220A\330\014\020\220\017\230q\240\001\320\000)\320)V\320VW\360\006\000\005\006\330\004\030\230\001\320\000\025\220X\230Q\330\004\013\2102\210Q\320\016\036\230a\230q\320\004!\240\030\250\021\330\010\016\210f\220A\320\0258\270\001\320\004\032\230!\330\010\017\210q\320\000\037\230q\360\006\000\005\010\320\007\030\230\003\2301\330\010\017\320\017 \240\001\330\004\013\210=\230\001\320\004\027\220q\330\r\024\220A\220[\240\001\330\014 \240\001\240\021\330\014\020\320\020%\240Q\240a\340\010\013\2104\210w\220a\220t\230<\240{\260!\330\014\020\220\n\230&\240\001\200\001\330\r\016\340\004\t\210\021\330\004\027\220q\330\005\006\360\006\000\005\017\210d\220#\220X\230T\240\021\330\004\020\220\010\230\002\230)\2401\240F\250!\330\004\024\220G\2305\240\001\240\026\240q\250\006\250d\260!\330\004\020\220\001\330\004\010\210\010\220\001\330\010\013\2104\210\177\230a\230q\330\014\r\330\010\021\220\024\320\025*\250#\250T\260\034\270S\300\004\300A\330\010\013\2107\220$\220g\230R\230q\330\014\r\330\010\014\320\014 \320 3\2605\270\001\330\010\014\210N\230!\330\010\014\210N\230!\330\010\017\210t\2201\220A\330\010\025\220Q\330\004\007\200q\330\010\017\210w\220a\330\004\013\2101\320\004\027\220q\330\010\016\210h\220a\220q";
+    #else /* compression: none (3680 bytes) */
+const char* const bytes = "\350\260\203\345\272\246\350\247\246\345\217\221\346\227\266\344\273\273\345\212\241 {} \344\273\215\345\234\250\350\277\220\350\241\214\357\274\214\345\267\262\350\267\263\350\277\207APScheduler \346\234\252\345\256\211\350\243\205APScheduler \344\270\215\345\217\257\347\224\250\346\227\266\347\232\204\345\256\211\345\205\250\347\251\272\345\256\236\347\216\260\343\200\202APScheduler \346\234\252\345\256\211\350\243\205\357\274\214Task \350\207\252\345\212\250\350\260\203\345\272\246\344\270\215\344\274\232\345\220\257\345\212\250Any | NoneNote that Cython is deliberately stricter than PEP-484 and rejects subclasses of builtin types. If you need to pass subclasses then set the 'annotation_typing' directive to False.\345\220\257\345\212\250 Task \350\260\203\345\272\246\345\231\250TaskScheduler | NoopTaskSchedulerTaskScheduler | NoopTaskScheduler | NoneTask \350\260\203\345\272\246\345\231\250\345\267\262\345\220\257\345\212\250Task \350\260\203\345\272\246\345\231\250\345\267\262\345\205\263\351\227\255\350\267\263\350\277\207 Task {} \350\260\203\345\272\246\345\220\214\346\255\245\357\274\232APScheduler \344\270\215\345\217\257\347\224\250\350\277\233\347\250\213\345\206\205 Task \350\260\203\345\272\246\345\231\250\343\200\202\n\n    APScheduler \345\256\236\344\276\213\345\217\257\346\263\250\345\205\245\357\274\214\344\276\277\344\272\216\345\215\225\345\205\203\346\265\213\350\257\225\351\252\214\350\257\201 job \346\263\250\345\206\214\350\241\214\344\270\272\343\200\202\n    .?add_noteaiSelfTest/services/task_scheduler.py\346\201\242\345\244\215\346\264\273\350\267\203\344\273\273\345\212\241\350\260\203\345\272\246: count={}datetime | None\350\260\203\345\272\246\344\273\273\345\212\241\344\270\215\345\255\230\345\234\250\357\274\214\345\267\262\347\247\273\351\231\244 job: task_id={}\345\220\257\345\212\250\346\227\266\346\201\242\345\244\215\345\203\265\345\260\270\344\273\273\345\212\241: recovered_count={}\344\273\273\345\212\241\346\234\252\345\220""\257\347\224\250\346\210\226\344\270\215\345\255\230\345\234\250\357\274\214\345\267\262\347\247\273\351\231\244\350\260\203\345\272\246: task_id={}\350\260\203\345\272\246\350\247\246\345\217\221\344\273\273\345\212\241\346\211\247\350\241\214: task_id={}\344\273\273\345\212\241\350\260\203\345\272\246\345\267\262\347\247\273\351\231\244: task_id={}\344\273\273\345\212\241\350\260\203\345\272\246\345\267\262\345\220\214\346\255\245: task_id={}, interval_hours={}\346\201\242\345\244\215\345\203\265\345\260\270\344\273\273\345\212\241\344\270\272\345\244\261\350\264\245\346\200\201: task_id={}, previous_status={}, marker={}AnyAsyncIOSchedulerFAILNoneNoopTaskSchedulerNoopTaskScheduler.recover_zombie_tasksNoopTaskScheduler.restore_active_tasksNoopTaskScheduler.shutdownNoopTaskScheduler.startNoopTaskScheduler.sync_task__Pyx_PyDict_NextRefSessionTASK_JOB_PREFIXTaskExecutionStatusTaskSchedulerTaskScheduler.__init__TaskScheduler._remove_taskTaskScheduler._schedule_taskTaskScheduler.restore_active_tasksTaskScheduler.run_task_jobTaskScheduler.shutdownTaskScheduler.startTaskScheduler.sync_taskTaskZOMBIE_TASK_ERROR\345\220\257\345\212\250\346\227\266\346\243\200\346\265\213\345\210\260\345\203\265\345\260\270\347\212\266\346\200\201activeaddadd_jobaiSelfTest.databaseaiSelfTest.models.taskaiSelfTest.services.task_executionaiSelfTest.services.task_schedulerallapscheduler.schedulers.asyncioargsasyncio.coroutinesavailablecline_in_tracebackcoalescecommitcreate_task_schedulercurrentdatetimedebug__doc__engine__enter__execexecution_status__exit____func__getget_job_global_schedulerhoursidinfo__init__intinterval_is_coroutineis_task_runningitems_job_idjob_idlast_errorlast_run_started_atloggerloguru__main__markermax_instances__metaclass____module____name__nowpop__prepare__previous_status__qualname__recover_zombie_tasksrecoveredremove_job_remove_taskreplace_existingrestore_active_tasksreturnrun_task_executionrun_task_jobrunningrunning_tasks_schedule_taskschedulerselectselfsessionset_global""_task_scheduler__set_name__setdefaultshutdownskipped_countsqlmodelstale_after_hoursstartstarted_atstrsync_global_task_schedulersync_tasktasktask_task_idtasks__test__thresholdtimedeltatypingupdated_atvaluevalueswaitwarningwhere\320\004\032\230+\320%;\2701\360\006\000\t\014\210:\220S\230\005\230T\320!2\260#\260Q\330\014\022\220,\230a\230q\330\010\014\210M\230\032\2403\320&6\260a\320\004\032\230!\360\006\000\t\014\2107\220!\2204\220|\240;\250a\330\014\020\220\n\230)\2401\240E\250\021\330\014\022\220%\220q\230\001\320\004#\2409\250A\360\006\000\t\014\2104\210t\2203\220a\330\014\r\330\010\014\210J\220h\230a\330\014\020\220\001\330\014\r\330\014\022\220$\220a\330\014\017\210w\220a\220t\2301\330\014\021\220\021\220$\220a\330\014\035\230Q\330\014\025\220Q\330\014\032\230!\340\010\016\210e\2201\320\024>\270d\300%\300t\3101\320\004!\240\030\250\021\360\006\000\016\025\220A\220[\240\001\330\014\023\2207\230$\230a\230v\240Q\330\014\017\210u\220C\220u\230C\230t\2404\240q\330\020\024\220M\240\021\240!\330\020\026\220f\230A\320\035<\270A\330\020\021\330\014\020\220\017\230q\240\001\200A\340\021\022\340\010\r\210Q\330\010\033\2301\330\t\n\360\006\000\t\020\320\017#\2401\240I\250T\260\025\3206H\310\001\320\000(\250\010\260\001\360\006\000\005\010\320\007\031\230\023\230A\330\010\t\330\004\025\220Z\230q\240\001\320\004$\240H\250A\360\006\000\t\022\220\027\230\001\230\021\330\010\013\2104\210z\230\030\240\021\240(\250'\260\021\330\014\020\220\n\230+\240Q\240a\330\014\022\220%\220q\320\030/\250q\320\004$\240H\250A\360\006\000\t\017\210e\2201\320\024,\250A\330\r\024\220A\220[\240\001\330\014\023\2207\230$\230a\230v\240Q\330\014\017\210u\220C\220q\330\020\024\220M\240\021\240!\330\020\026\220h\230a\320\037>\270a\330\020\021\330\014\017\210\177\230a\230q\330\020\024\320\024&\240a\330\020\024\220N\240(\250$\250a\330\020\027\220t\2301\230A\330\020\027\220w\230a\330\020\026\220h\230a\320\0376\260a\330\020\021\330\014\036\230a\230y\250\001\320\004,\250L\270\001\360\006\000\t\020\210q\320\004,""\250L\270\001\360\006\000\t\021\220\007\220u\230A\230V\2401\240E\250\026\250q\260\004\260H\270C\270v\300T\310\021\330\010\016\210e\2201\320\024*\250#\250Q\250a\330\010\014\210H\220A\330\014\020\220\017\230q\240\001\320\000)\320)V\320VW\360\006\000\005\006\330\004\030\230\001\320\000\025\220X\230Q\360\006\000\005\014\2102\210Q\320\016\036\230a\230q\320\004!\240\030\250\021\360\006\000\t\017\210f\220A\320\0258\270\001\320\004\032\230!\360\006\000\t\020\210q\320\000\037\230q\360\006\000\005\010\320\007\030\230\003\2301\330\010\017\320\017 \240\001\330\004\013\210=\230\001\200\001\330\r\016\340\004\t\210\021\330\004\027\220q\330\005\006\360\006\000\005\017\210d\220#\220X\230T\240\021\330\004\020\220\010\230\002\230)\2401\240F\250!\330\004\024\220G\2305\240\001\240\026\240q\250\006\250d\260!\330\004\020\220\001\330\004\010\210\010\220\001\330\010\013\2104\210\177\230a\230q\330\014\r\330\010\021\220\024\320\025*\250#\250T\260\034\270S\300\004\300A\330\010\013\2107\220$\220g\230R\230q\330\014\r\330\010\032\230$\230a\330\010\014\320\014 \320 3\2605\270\001\330\010\014\210N\230!\330\010\014\210N\230!\330\010\017\210t\2201\220A\330\010\025\220Q\330\010\016\210h\220a\330\014\r\330\014\020\220\001\330\014\r\330\014\r\340\004\007\200q\330\010\017\210w\220a\330\004\013\2101\320\004\027\220q\360\006\000\t\017\210e\2201\220A\330\r\024\220A\220[\240\001\330\014\030\320\030,\250A\250Q\330\014\017\210q\330\020\026\220h\230a\320\037@\300\001\330\014\020\320\020%\240Q\240a\340\010\013\2104\210w\220a\220t\230<\240{\260!\330\014\020\220\n\230&\240\001\330\014\022\220%\220q\230\001\320\004\027\220q\360\006\000\t\017\210h\220a\220q";
     PyObject *data = NULL;
     CYTHON_UNUSED_VAR(__Pyx_DecompressString);
     #endif
     PyObject **stringtab = __pyx_mstate->__pyx_string_tab;
     Py_ssize_t pos = 0;
-    for (int i = 0; i < 136; i++) {
+    for (int i = 0; i < 149; i++) {
       Py_ssize_t bytes_length = index[i].length;
       PyObject *string = PyUnicode_DecodeUTF8(bytes + pos, bytes_length, NULL);
-      if (likely(string) && i >= 15) PyUnicode_InternInPlace(&string);
+      if (likely(string) && i >= 26) PyUnicode_InternInPlace(&string);
       if (unlikely(!string)) {
         Py_XDECREF(data);
         __PYX_ERR(0, 1, __pyx_L1_error)
@@ -8851,7 +9333,7 @@ const char* const bytes = "\350\260\203\345\272\246\350\247\246\345\217\221\346\
       stringtab[i] = string;
       pos += bytes_length;
     }
-    for (int i = 136; i < 154; i++) {
+    for (int i = 149; i < 167; i++) {
       Py_ssize_t bytes_length = index[i].length;
       PyObject *string = PyBytes_FromStringAndSize(bytes + pos, bytes_length);
       stringtab[i] = string;
@@ -8862,14 +9344,14 @@ const char* const bytes = "\350\260\203\345\272\246\350\247\246\345\217\221\346\
       }
     }
     Py_XDECREF(data);
-    for (Py_ssize_t i = 0; i < 154; i++) {
+    for (Py_ssize_t i = 0; i < 167; i++) {
       if (unlikely(PyObject_Hash(stringtab[i]) == -1)) {
         __PYX_ERR(0, 1, __pyx_L1_error)
       }
     }
     #if CYTHON_IMMORTAL_CONSTANTS
     {
-      PyObject **table = stringtab + 136;
+      PyObject **table = stringtab + 149;
       for (Py_ssize_t i=0; i<18; ++i) {
         #if CYTHON_COMPILING_IN_CPYTHON_FREETHREADING
         #if PY_VERSION_HEX < 0x030E0000
@@ -8947,87 +9429,87 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
     __pyx_mstate_global->__pyx_codeobj_tab[0] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_schedul_2, __pyx_mstate->__pyx_n_u_start, __pyx_mstate->__pyx_kp_b_iso88591_q_haq, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[0])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 34};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 36};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self};
     __pyx_mstate_global->__pyx_codeobj_tab[1] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_schedul_2, __pyx_mstate->__pyx_n_u_shutdown, __pyx_mstate->__pyx_kp_b_iso88591_q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[1])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 37};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 41};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_task_id};
     __pyx_mstate_global->__pyx_codeobj_tab[2] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_schedul_2, __pyx_mstate->__pyx_n_u_sync_task, __pyx_mstate->__pyx_kp_b_iso88591_fA_8, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[2])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 40};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 46};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_session};
     __pyx_mstate_global->__pyx_codeobj_tab[3] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_schedul_2, __pyx_mstate->__pyx_n_u_restore_active_tasks, __pyx_mstate->__pyx_kp_b_iso88591_L_q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[3])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 2, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 43};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 2, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 51};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_now, __pyx_mstate->__pyx_n_u_stale_after_hours};
     __pyx_mstate_global->__pyx_codeobj_tab[4] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_schedul_2, __pyx_mstate->__pyx_n_u_recover_zombie_tasks, __pyx_mstate->__pyx_kp_b_iso88591_A_Q_1_1IT_6H, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[4])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 1, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 61};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 1, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 71};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_scheduler};
     __pyx_mstate_global->__pyx_codeobj_tab[5] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_schedul_2, __pyx_mstate->__pyx_n_u_init, __pyx_mstate->__pyx_kp_b_iso88591_1_S_T_2_Q_aq_M_3_6a, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[5])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 66};
-    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_session};
-    __pyx_mstate_global->__pyx_codeobj_tab[6] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_schedul_2, __pyx_mstate->__pyx_n_u_start, __pyx_mstate->__pyx_kp_b_iso88591_q_A_Qa_4wat, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[6])) goto bad;
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 78};
+    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_recovered};
+    __pyx_mstate_global->__pyx_codeobj_tab[6] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_schedul_2, __pyx_mstate->__pyx_n_u_start, __pyx_mstate->__pyx_kp_b_iso88591_q_e1A_A_AQ_q_ha_Qa_4wat_q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[6])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 74};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 92};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self};
-    __pyx_mstate_global->__pyx_codeobj_tab[7] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_schedul_2, __pyx_mstate->__pyx_n_u_shutdown, __pyx_mstate->__pyx_kp_b_iso88591_7_4_a_1E, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[7])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[7] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_schedul_2, __pyx_mstate->__pyx_n_u_shutdown, __pyx_mstate->__pyx_kp_b_iso88591_7_4_a_1E_q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[7])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 78};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 99};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_tasks, __pyx_mstate->__pyx_n_u_task};
-    __pyx_mstate_global->__pyx_codeobj_tab[8] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_schedul_2, __pyx_mstate->__pyx_n_u_restore_active_tasks, __pyx_mstate->__pyx_kp_b_iso88591_L_uAV1E_q_HCvT_HA_q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[8])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[8] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_schedul_2, __pyx_mstate->__pyx_n_u_restore_active_tasks, __pyx_mstate->__pyx_kp_b_iso88591_L_uAV1E_q_HCvT_e1_Qa_HA_q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[8])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 83};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 107};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_task_id, __pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_task};
-    __pyx_mstate_global->__pyx_codeobj_tab[9] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_schedul_2, __pyx_mstate->__pyx_n_u_sync_task, __pyx_mstate->__pyx_kp_b_iso88591_A_7_avQ_uCuCt4q_M_q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[9])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[9] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_schedul_2, __pyx_mstate->__pyx_n_u_sync_task, __pyx_mstate->__pyx_kp_b_iso88591_A_7_avQ_uCuCt4q_M_fA_A_q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[9])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 91};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 118};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_task_id, __pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_task};
-    __pyx_mstate_global->__pyx_codeobj_tab[10] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_schedul_2, __pyx_mstate->__pyx_n_u_run_task_job, __pyx_mstate->__pyx_kp_b_iso88591_HA_A_7_avQ_uCq_M_aq_a_N_a_t1A_w, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[10])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[10] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_schedul_2, __pyx_mstate->__pyx_n_u_run_task_job, __pyx_mstate->__pyx_kp_b_iso88591_HA_e1_A_A_7_avQ_uCq_M_ha_a_aq_a, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[10])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 106};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 137};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_task};
-    __pyx_mstate_global->__pyx_codeobj_tab[11] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_schedul_2, __pyx_mstate->__pyx_n_u_schedule_task, __pyx_mstate->__pyx_kp_b_iso88591_9A_4t3a_Jha_a_wat1_a_Q_Q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[11])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[11] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_schedul_2, __pyx_mstate->__pyx_n_u_schedule_task, __pyx_mstate->__pyx_kp_b_iso88591_9A_4t3a_Jha_a_wat1_a_Q_Q_e1_d_t, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[11])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 120};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 154};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_task_id, __pyx_mstate->__pyx_n_u_job_id_2};
-    __pyx_mstate_global->__pyx_codeobj_tab[12] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_schedul_2, __pyx_mstate->__pyx_n_u_remove_task, __pyx_mstate->__pyx_kp_b_iso88591_HA_4z_Qa, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[12])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[12] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_schedul_2, __pyx_mstate->__pyx_n_u_remove_task, __pyx_mstate->__pyx_kp_b_iso88591_HA_4z_Qa_q_q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[12])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {0, 0, 0, 0, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 126};
+    const __Pyx_PyCode_New_function_description descr = {0, 0, 0, 0, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 163};
     PyObject* const varnames[] = {0};
     __pyx_mstate_global->__pyx_codeobj_tab[13] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_schedul_2, __pyx_mstate->__pyx_n_u_create_task_scheduler, __pyx_mstate->__pyx_kp_b_iso88591_q_1, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[13])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 134};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 171};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_scheduler};
     __pyx_mstate_global->__pyx_codeobj_tab[14] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_schedul_2, __pyx_mstate->__pyx_n_u_set_global_task_scheduler, __pyx_mstate->__pyx_kp_b_iso88591_VVW, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[14])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 141};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 178};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_task_id};
     __pyx_mstate_global->__pyx_codeobj_tab[15] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_schedul_2, __pyx_mstate->__pyx_n_u_sync_global_task_scheduler, __pyx_mstate->__pyx_kp_b_iso88591_A_Zq, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[15])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 2, 9, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 149};
-    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_now, __pyx_mstate->__pyx_n_u_stale_after_hours, __pyx_mstate->__pyx_n_u_current, __pyx_mstate->__pyx_n_u_threshold, __pyx_mstate->__pyx_n_u_running_tasks, __pyx_mstate->__pyx_n_u_recovered, __pyx_mstate->__pyx_n_u_task, __pyx_mstate->__pyx_n_u_marker};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 2, 10, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 186};
+    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_session, __pyx_mstate->__pyx_n_u_now, __pyx_mstate->__pyx_n_u_stale_after_hours, __pyx_mstate->__pyx_n_u_current, __pyx_mstate->__pyx_n_u_threshold, __pyx_mstate->__pyx_n_u_running_tasks, __pyx_mstate->__pyx_n_u_recovered, __pyx_mstate->__pyx_n_u_task, __pyx_mstate->__pyx_n_u_marker, __pyx_mstate->__pyx_n_u_previous_status};
     __pyx_mstate_global->__pyx_codeobj_tab[16] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_schedul_2, __pyx_mstate->__pyx_n_u_recover_zombie_tasks, __pyx_mstate->__pyx_kp_b_iso88591_q_d_XT_1F_G5_q_d_4_aq_T_S_A_7_g, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[16])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 177};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 221};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_task_id};
     __pyx_mstate_global->__pyx_codeobj_tab[17] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_aiSelfTest_services_task_schedul_2, __pyx_mstate->__pyx_n_u_job_id, __pyx_mstate->__pyx_kp_b_iso88591_XQ_2Q_aq, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[17])) goto bad;
   }

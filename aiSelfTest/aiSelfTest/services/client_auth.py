@@ -43,6 +43,7 @@ def authenticate_client(
 ) -> ClientAuthenticationResult:
     """确保客户端持有可用的访问令牌。"""
 
+    logger.info("开始客户端认证: client_id={}", client_id)
     client = _get_client_or_raise(session, client_id)
     return _authenticate_client_model(session, client, request_func=request_func)
 
@@ -61,6 +62,13 @@ def perform_authenticated_request(
 
     request_impl = request_func or requests.request
     client = _get_client_or_raise(session, client_id)
+    logger.debug(
+        "准备发起认证上游请求: client_id={}, method={}, path={}, retry_on_auth_failure={}",
+        client_id,
+        method,
+        path,
+        retry_on_auth_failure,
+    )
     auth_result = _authenticate_client_model(session, client, request_func=request_impl)
     response = _request_with_cached_paths(
         session=session,
@@ -73,12 +81,26 @@ def perform_authenticated_request(
     )
 
     if response.status_code != 401 and not _response_contains_token_error(response):
+        logger.debug(
+            "认证上游请求完成: client_id={}, method={}, path={}, status={}",
+            client_id,
+            method,
+            path,
+            response.status_code,
+        )
         return response
 
     if not retry_on_auth_failure:
+        logger.warning(
+            "认证上游请求疑似 token 失效但未重试: client_id={}, method={}, path={}, status={}",
+            client_id,
+            method,
+            path,
+            response.status_code,
+        )
         return response
 
-    logger.warning("检测到上游 token 失效，准备重新认证后重试请求")
+    logger.warning("检测到上游 token 失效，准备重新认证后重试请求: client_id={}, path={}", client_id, path)
     reauth_result = _authenticate_client_model(
         session,
         client,
@@ -125,10 +147,12 @@ def _authenticate_client_model(
         )
 
     if not force_reauthenticate and _is_access_token_usable(client):
+        logger.debug("复用客户端 access token: client_id={}", client.id)
         return ClientAuthenticationResult(client=client, used_strategy="reuse")
 
     if client.refresh_token:
         try:
+            logger.info("尝试刷新客户端 token: client_id={}", client.id)
             refresh_result = _refresh_client_token(
                 session,
                 client,
@@ -138,8 +162,10 @@ def _authenticate_client_model(
             logger.warning("客户端刷新令牌发生异常，将回退完整登录: {}", exc.message)
             refresh_result = None
         if refresh_result is not None:
+            logger.info("客户端 token 刷新成功: client_id={}", client.id)
             return refresh_result
 
+    logger.info("执行客户端完整登录: client_id={}", client.id)
     return _login_client(session, client, request_func=request_impl)
 
 
@@ -162,6 +188,7 @@ def _refresh_client_token(
     )
     if response.status_code == 200:
         _update_client_tokens(session, client, response.json())
+        logger.info("客户端刷新令牌成功: client_id={}, status={}", client.id, response.status_code)
         return ClientAuthenticationResult(client=client, used_strategy="refresh")
 
     logger.warning(
@@ -194,6 +221,7 @@ def _login_client(
             timeout=get_settings().request_timeout_seconds,
         )
     except RequestException as exc:
+        logger.warning("客户端登录请求异常: client_id={}, error={}", client.id, exc)
         raise AppException(
             code=ErrorCode.INTERNAL_ERROR,
             message=f"客户端登录请求失败: {exc}",
@@ -201,6 +229,7 @@ def _login_client(
         ) from exc
 
     if response.status_code != 200:
+        logger.warning("客户端登录失败: client_id={}, status={}", client.id, response.status_code)
         raise AppException(
             code=ErrorCode.AUTH_FAILED,
             message=f"客户端登录失败: {response.text}",
@@ -208,6 +237,7 @@ def _login_client(
         )
 
     _update_client_tokens(session, client, response.json())
+    logger.info("客户端登录成功: client_id={}", client.id)
     return ClientAuthenticationResult(client=client, used_strategy="login")
 
 
@@ -241,6 +271,13 @@ def _request_with_authorization_variants(
         headers = dict(base_headers)
         headers["Authorization"] = authorization
         try:
+            logger.debug(
+                "发起上游认证请求: client_id={}, method={}, path={}, auth_style={}",
+                client.id,
+                method,
+                path,
+                style,
+            )
             response = request_impl(
                 method,
                 url,
@@ -249,14 +286,37 @@ def _request_with_authorization_variants(
                 **request_kwargs,
             )
         except RequestException as exc:
+            logger.warning(
+                "上游认证请求异常: client_id={}, method={}, path={}, auth_style={}, error={}",
+                client.id,
+                method,
+                path,
+                style,
+                exc,
+            )
             errors.append(str(exc))
             continue
 
         if response.status_code == 200:
             _cache_successful_request(session, client, style, path)
+            logger.debug(
+                "上游认证请求成功: client_id={}, method={}, path={}, auth_style={}, status={}",
+                client.id,
+                method,
+                path,
+                style,
+                response.status_code,
+            )
             return response
 
         if response.status_code != 401 and not _response_contains_token_error(response):
+            logger.debug(
+                "上游请求返回非认证错误状态: client_id={}, method={}, path={}, status={}",
+                client.id,
+                method,
+                path,
+                response.status_code,
+            )
             return response
 
     if response is not None:
@@ -293,6 +353,7 @@ def _update_client_tokens(
     session.add(client)
     session.commit()
     session.refresh(client)
+    logger.info("客户端 token 已更新: client_id={}, expires_at={}", client.id, client.expires_at)
 
 
 def _request_with_cached_paths(
@@ -309,6 +370,7 @@ def _request_with_cached_paths(
 
     response: Response | None = None
     for candidate_path in _request_path_candidates(client, path):
+        logger.debug("尝试上游请求路径: client_id={}, requested_path={}, candidate_path={}", client.id, path, candidate_path)
         response = _request_with_authorization_variants(
             session=session,
             client=client,
@@ -323,6 +385,12 @@ def _request_with_cached_paths(
             return response
 
     if response is not None:
+        logger.warning(
+            "上游请求所有候选路径均返回 404: client_id={}, requested_path={}, status={}",
+            client.id,
+            path,
+            response.status_code,
+        )
         return response
 
     raise AppException(
@@ -400,6 +468,12 @@ def _cache_successful_request(
     session.add(client)
     session.commit()
     session.refresh(client)
+    logger.debug(
+        "缓存客户端认证请求参数: client_id={}, auth_header_style={}, cache_path={}",
+        client.id,
+        auth_header_style,
+        path if cache_path else "",
+    )
 
 
 def _resolve_expires_at(expires_in: Any) -> int | None:
