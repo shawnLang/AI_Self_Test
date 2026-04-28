@@ -24,6 +24,8 @@ class TaskExecutionMode(str, Enum):
 
 
 class TaskItemDataStatus(str, Enum):
+    """任务项明细在复核流程中的状态。"""
+
     ADD = "新增"
     UPDATE = "修改"
     DELETE = "删除"

@@ -33,6 +33,8 @@ class ClientPayloadBase(BaseModel):
     @field_validator("api_url")
     @classmethod
     def validate_api_url(cls, value: str) -> str:
+        """校验客户端 API 地址必须使用 HTTP(S) 协议。"""
+
         if not value.startswith(("http://", "https://")):
             raise ValueError("API 地址必须以 http:// 或 https:// 开头")
         return value

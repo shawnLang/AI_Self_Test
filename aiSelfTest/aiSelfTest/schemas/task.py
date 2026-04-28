@@ -45,6 +45,8 @@ class TaskPayloadBase(BaseModel):
     @field_validator("interval_hours")
     @classmethod
     def validate_interval_hours(cls, value: int) -> int:
+        """校验任务执行间隔只能使用前端支持的固定档位。"""
+
         if value not in {1, 6, 12, 24, 168}:
             raise ValueError("执行间隔必须是 1/6/12/24/168 小时")
         return value
@@ -86,6 +88,8 @@ class TaskResponse(BaseModel):
         *,
         filters: TaskFiltersPayload,
     ) -> "TaskResponse":
+        """将任务数据库模型转换为 API 响应模型。"""
+
         execution_mode: ExecutionModeValue = (
             "auto" if task.execution_mode in {"自动", "auto"} else "manual"
         )
@@ -156,6 +160,8 @@ class TaskItemReviewRow(BaseModel):
 
     @classmethod
     def from_model(cls, row: TaskItemData) -> "TaskItemReviewRow":
+        """将任务项明细转换为复核行响应。"""
+
         return cls(
             task_item_data_id=row.id or 0,
             source_name=row.name,
@@ -205,6 +211,8 @@ class TaskItemListRow(BaseModel):
 
     @classmethod
     def from_model(cls, row: TaskItem) -> "TaskItemListRow":
+        """将任务项数据库模型转换为列表行响应。"""
+
         media_type: MediaTypeValue = "video" if row.file_bmp == 2 else "image"
         return cls(
             id=row.id or 0,
@@ -247,6 +255,8 @@ class TaskItemDetailData(BaseModel):
         *,
         review_rows: list[TaskItemReviewRow],
     ) -> "TaskItemDetailData":
+        """将任务项及其复核行转换为详情响应。"""
+
         media_type: MediaTypeValue = "video" if row.file_bmp == 2 else "image"
         submit_count = len([item for item in review_rows if item.status in {"新增", "修改", "删除"}])
         exclude_count = len([item for item in review_rows if item.status == "删除"])
