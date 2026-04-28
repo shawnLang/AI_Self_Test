@@ -29,24 +29,23 @@ class NoopTaskScheduler:
     available = False
 
     def start(self) -> None:
-        """提示调度器不可用，保持应用启动流程不中断。"""
+        """记录调度器不可用状态，并保持调用方启动流程可继续。"""
 
         logger.warning("APScheduler 未安装，Task 自动调度不会启动")
 
     def shutdown(self) -> None:
-        """APScheduler 缺失时无需释放任何资源。"""
+        """空调度器无需释放资源。"""
 
         return None
 
     def sync_task(self, task_id: int) -> None:
-        """APScheduler 缺失时跳过单任务同步。"""
+        """记录被跳过的单任务同步请求。"""
 
         logger.debug("跳过 Task {} 调度同步：APScheduler 不可用", task_id)
 
     def restore_active_tasks(self, session: Session) -> None:
-        """APScheduler 缺失时跳过启用任务恢复。"""
+        """空调度器不恢复任务，保持接口与真实调度器一致。"""
 
-        logger.debug("跳过启用任务恢复：APScheduler 不可用")
         return None
 
     def recover_zombie_tasks(
@@ -56,7 +55,7 @@ class NoopTaskScheduler:
         now: datetime | None = None,
         stale_after_hours: int = 6,
     ) -> int:
-        """复用通用僵尸任务恢复逻辑，便于测试空调度器行为。"""
+        """复用公共僵尸任务恢复逻辑，保证缺依赖时仍能修正状态。"""
 
         return recover_zombie_tasks(session, now=now, stale_after_hours=stale_after_hours)
 
@@ -70,18 +69,20 @@ class TaskScheduler:
     available = True
 
     def __init__(self, *, scheduler: Any | None = None) -> None:
-        """创建单进程 Task 调度器包装器。"""
+        """初始化调度器，允许测试传入伪 scheduler。"""
 
         if scheduler is None and AsyncIOScheduler is None:
             raise RuntimeError("APScheduler 未安装")
         self.scheduler = scheduler or AsyncIOScheduler()
 
     def start(self) -> None:
-        """启动调度器前恢复数据库中可继续调度的任务。"""
+        """启动 APScheduler，并在启动前恢复任务状态和已启用任务。"""
 
+        logger.info("启动 Task 调度器")
         with Session(engine) as session:
             recovered = recover_zombie_tasks(session)
-            logger.info("Task 调度器启动前恢复僵尸任务完成: recovered_count={}", recovered)
+            if recovered:
+                logger.warning("启动时恢复僵尸任务: recovered_count={}", recovered)
             self.restore_active_tasks(session)
 
         if not getattr(self.scheduler, "running", False):
@@ -89,40 +90,41 @@ class TaskScheduler:
             logger.info("Task 调度器已启动")
 
     def shutdown(self) -> None:
-        """关闭底层 APScheduler 实例。"""
+        """停止 APScheduler，避免应用关闭后继续触发后台任务。"""
 
         if getattr(self.scheduler, "running", False):
             self.scheduler.shutdown(wait=False)
             logger.info("Task 调度器已关闭")
 
     def restore_active_tasks(self, session: Session) -> None:
-        """把数据库中启用的任务恢复到调度器。"""
+        """从数据库恢复 active=True 的任务并重新注册周期 job。"""
 
         tasks = session.exec(select(Task).where(Task.active == True)).all()  # noqa: E712
-        logger.info("开始恢复启用任务调度: count={}", len(tasks))
+        logger.info("恢复活跃任务调度: count={}", len(tasks))
         for task in tasks:
             self._schedule_task(task)
 
     def sync_task(self, task_id: int) -> None:
-        """根据数据库状态同步单个任务的调度 job。"""
+        """在任务启停或配置变更后，同步单个任务的调度 job。"""
 
         with Session(engine) as session:
             task = session.get(Task, task_id)
             if task is None or not task.active:
                 self._remove_task(task_id)
-                logger.info("任务调度已移除: task_id={}, reason=missing_or_inactive", task_id)
+                logger.debug("任务未启用或不存在，已移除调度: task_id={}", task_id)
                 return
             self._schedule_task(task)
             logger.info("任务调度已同步: task_id={}, interval_hours={}", task_id, task.interval)
 
     def run_task_job(self, task_id: int) -> None:
-        """执行 APScheduler 触发的单个任务 job。"""
+        """APScheduler 触发的任务执行入口。"""
 
+        logger.info("调度触发任务执行: task_id={}", task_id)
         with Session(engine) as session:
             task = session.get(Task, task_id)
             if task is None:
                 self._remove_task(task_id)
-                logger.info("调度触发跳过任务: task_id={}, reason=missing", task_id)
+                logger.warning("调度任务不存在，已移除 job: task_id={}", task_id)
                 return
             if is_task_running(task):
                 task.skipped_count += 1
@@ -135,7 +137,7 @@ class TaskScheduler:
             run_task_execution(session, task_id)
 
     def _schedule_task(self, task: Task) -> None:
-        """注册或替换单个任务的 APScheduler job。"""
+        """注册或替换单个任务的周期执行 job。"""
 
         if task.id is None:
             return
@@ -149,19 +151,15 @@ class TaskScheduler:
             coalesce=True,
             max_instances=1,
         )
-        logger.info(
-            "任务调度注册完成: task_id={}, interval_hours={}",
-            task.id,
-            task.interval,
-        )
+        logger.info("任务调度已同步: task_id={}, interval_hours={}", task.id, task.interval)
 
     def _remove_task(self, task_id: int) -> None:
-        """从调度器中移除单个任务 job。"""
+        """移除单个任务对应的周期执行 job。"""
 
         job_id = _job_id(task_id)
         if self.scheduler.get_job(job_id) is not None:
             self.scheduler.remove_job(job_id)
-            logger.debug("任务调度 job 已移除: task_id={}, job_id={}", task_id, job_id)
+            logger.info("任务调度已移除: task_id={}", task_id)
 
 
 def create_task_scheduler() -> TaskScheduler | NoopTaskScheduler:
@@ -209,16 +207,17 @@ def recover_zombie_tasks(
         marker = task.last_run_started_at or task.started_at or task.updated_at
         if marker and marker > threshold:
             continue
+        previous_status = task.execution_status
         task.execution_status = TaskExecutionStatus.FAIL.value
         task.last_error = ZOMBIE_TASK_ERROR
         task.updated_at = current
         session.add(task)
         recovered += 1
         logger.warning(
-            "恢复僵尸任务状态: task_id={}, marker={}, stale_after_hours={}",
+            "恢复僵尸任务为失败态: task_id={}, previous_status={}, marker={}",
             task.id,
+            previous_status,
             marker,
-            stale_after_hours,
         )
     if recovered:
         session.commit()
@@ -227,6 +226,6 @@ def recover_zombie_tasks(
 
 
 def _job_id(task_id: int) -> str:
-    """生成 APScheduler job id。"""
+    """生成 APScheduler job ID，确保任务与调度记录一一对应。"""
 
     return f"{TASK_JOB_PREFIX}{task_id}"

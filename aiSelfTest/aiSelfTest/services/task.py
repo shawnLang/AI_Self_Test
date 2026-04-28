@@ -172,6 +172,7 @@ def stop_task(session: Session, task_id: int) -> TaskActionData:
     session.add(task)
     session.commit()
     session.refresh(task)
+    logger.info("任务已停止: task_id={}, execution_status={}", task.id, task.execution_status)
     _sync_scheduler(task.id)
     logger.info("任务停止完成: task_id={}, execution_status={}", task.id, task.execution_status)
     return TaskActionData(id=task.id or 0, active=task.active, execution_status=task.execution_status)
