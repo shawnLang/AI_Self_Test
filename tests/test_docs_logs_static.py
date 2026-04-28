@@ -115,7 +115,9 @@ def test_baseline_observability_hotspots_have_loguru_calls() -> None:
         if _logger_call_count(ast.parse(_read_source(path), filename=str(path))) == 0
     ]
 
-    assert missing_logger_calls == []
+    assert missing_logger_calls == [], (
+        "baseline loguru coverage missing in: " + ", ".join(missing_logger_calls)
+    )
 
 
 def test_logger_calls_do_not_pass_sensitive_values() -> None:
@@ -153,7 +155,9 @@ def test_strict_doc_log_acceptance_when_enabled() -> None:
         if _logger_call_count(ast.parse(_read_source(path), filename=str(path))) == 0
     ]
 
-    assert missing_logger_calls == []
+    assert missing_logger_calls == [], (
+        "strict loguru coverage missing in: " + ", ".join(missing_logger_calls)
+    )
 
 
 def _backend_python_files() -> list[Path]:
