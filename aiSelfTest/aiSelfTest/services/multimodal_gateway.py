@@ -2,16 +2,15 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 import json
+from dataclasses import dataclass
 from typing import Any, Callable, Iterator
-
-from loguru import logger
-from requests import Response
-from requests.exceptions import RequestException
 
 from aiSelfTest.config import get_settings
 from aiSelfTest.exceptions import AppException, ErrorCode
+from loguru import logger
+from requests import Response
+from requests.exceptions import RequestException
 
 RequestFunc = Callable[..., Response]
 DETECT_PATH_SUFFIXES = ("/v1/models", "/models")
@@ -32,7 +31,6 @@ class GatewayCallResult:
     used_url: str
 
 
-
 @dataclass(frozen=True)
 class StreamGatewayCallResult:
     """流式模型网关调用结果。"""
@@ -41,12 +39,7 @@ class StreamGatewayCallResult:
     chunks: Iterator[str]
 
 
-def _call_models_endpoint(
-    *,
-    endpoint_url: str,
-    api_key: str,
-    request_func: RequestFunc,
-) -> GatewayCallResult:
+def call_models_endpoint(*, endpoint_url: str, api_key: str, request_func: RequestFunc) -> GatewayCallResult:
     """轮询模型列表接口，直到成功为止。"""
 
     errors: list[str] = []
@@ -77,13 +70,8 @@ def _call_models_endpoint(
     )
 
 
-def _call_chat_endpoint(
-    *,
-    endpoint_url: str,
-    api_key: str,
-    payload: dict[str, Any],
-    request_func: RequestFunc,
-) -> GatewayCallResult:
+def call_chat_endpoint(*, endpoint_url: str, api_key: str, payload: dict[str, Any],
+                       request_func: RequestFunc) -> GatewayCallResult:
     """轮询非流式聊天接口，直到成功为止。"""
 
     errors: list[str] = []
@@ -117,13 +105,8 @@ def _call_chat_endpoint(
     )
 
 
-def _call_chat_endpoint_stream(
-    *,
-    endpoint_url: str,
-    api_key: str,
-    payload: dict[str, Any],
-    request_func: RequestFunc,
-) -> StreamGatewayCallResult:
+def _call_chat_endpoint_stream(*, endpoint_url: str, api_key: str, payload: dict[str, Any],
+                               request_func: RequestFunc) -> StreamGatewayCallResult:
     """轮询流式聊天接口，直到成功为止。"""
 
     errors: list[str] = []
@@ -168,7 +151,7 @@ def _iter_gateway_stream_chunks(response: Response) -> Iterator[str]:
     try:
         if "text/event-stream" not in content_type.lower():
             payload = _safe_json(response)
-            reply = _extract_chat_reply(payload)
+            reply = extract_chat_reply(payload)
             if reply:
                 yield reply
                 return
@@ -228,7 +211,7 @@ def _flush_sse_data_lines(data_lines: list[str]) -> Iterator[str]:
         yield delta_text
 
 
-def _extract_model_names(payload: dict[str, Any]) -> list[str]:
+def extract_model_names(payload: dict[str, Any]) -> list[str]:
     """从探测响应中提取模型名列表。"""
 
     candidates = payload.get("data")
@@ -265,7 +248,7 @@ def _extract_model_name(item: Any) -> str:
     return ""
 
 
-def _extract_chat_reply(payload: dict[str, Any]) -> str:
+def extract_chat_reply(payload: dict[str, Any]) -> str:
     """从模型响应中提取文本回复。"""
 
     direct_output_text = payload.get("output_text")
@@ -312,10 +295,10 @@ def _extract_stream_delta(payload: dict[str, Any]) -> str:
             if not isinstance(choice, dict):
                 continue
             for candidate in (
-                choice.get("delta"),
-                choice.get("message"),
-                choice.get("text"),
-                choice.get("content"),
+                    choice.get("delta"),
+                    choice.get("message"),
+                    choice.get("text"),
+                    choice.get("content"),
             ):
                 extracted_text = _extract_stream_text(candidate)
                 if extracted_text:

@@ -2,16 +2,12 @@
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from datetime import datetime
-import json
 from typing import Any, Callable, Iterator
 
 import requests
-from loguru import logger
-from requests import Response
-from sqlmodel import Session, select
-
 from aiSelfTest.exceptions import AppException, ErrorCode
 from aiSelfTest.models.multimodal_chat import (
     MultimodalChatMessage,
@@ -19,23 +15,19 @@ from aiSelfTest.models.multimodal_chat import (
 )
 from aiSelfTest.models.multimodal_model import MultimodalModel
 from aiSelfTest.schemas.multimodal_model import (
-    MultimodalChatData,
     MultimodalChatMessagePayload,
-    MultimodalChatMessageResponse,
     MultimodalChatRequest,
-    MultimodalChatSessionDetailData,
-    MultimodalChatSessionListData,
-    MultimodalChatSessionResponse,
     parse_attachments,
     serialize_attachments,
 )
-from aiSelfTest.services.multimodal_attachment import _build_gateway_chat_payload
+from aiSelfTest.services.multimodal_attachment import build_gateway_chat_payload
 from aiSelfTest.services.multimodal_gateway import (
-    _call_chat_endpoint,
     _call_chat_endpoint_stream,
-    _extract_chat_reply,
 )
-from aiSelfTest.services.multimodal_model_crud import _get_multimodal_model_or_raise
+from aiSelfTest.services.multimodal_model_crud import get_multimodal_model_or_raise
+from loguru import logger
+from requests import Response
+from sqlmodel import Session, select
 
 RequestFunc = Callable[..., Response]
 
@@ -50,145 +42,12 @@ class ChatPreparation:
     new_messages: list[MultimodalChatMessagePayload]
 
 
-def list_multimodal_chat_sessions(
-    session: Session,
-    model_id: int,
-) -> MultimodalChatSessionListData:
-    """查询指定模型下的聊天会话列表。"""
-
-    model = _get_multimodal_model_or_raise(session, model_id)
-    sessions = session.exec(
-        select(MultimodalChatSession)
-        .where(MultimodalChatSession.model_id == model_id)
-        .where(MultimodalChatSession.message_count > 0)
-        .order_by(MultimodalChatSession.updated_at.desc(), MultimodalChatSession.id.desc())
-    ).all()
-    result = MultimodalChatSessionListData(
-        items=[
-            MultimodalChatSessionResponse.from_model(item, model_name=model.model_name)
-            for item in sessions
-        ]
-    )
-    logger.debug("多模态聊天会话列表查询完成: model_id={}, count={}", model_id, len(sessions))
-    return result
-
-
-def delete_multimodal_chat_session(
-    session: Session,
-    session_id: int,
-) -> int:
-    """删除聊天会话及其下全部消息。"""
-
-    chat_session = _get_chat_session_or_raise(session, session_id)
-    message_rows = _list_chat_message_rows(session, chat_session.id or 0)
-    for message_row in message_rows:
-        session.delete(message_row)
-
-    session.delete(chat_session)
-    session.commit()
-    logger.info(
-        "多模态聊天会话删除完成: session_id={}, message_count={}",
-        session_id,
-        len(message_rows),
-    )
-    return session_id
-
-
-def get_multimodal_chat_session_detail(
-    session: Session,
-    session_id: int,
-) -> MultimodalChatSessionDetailData:
-    """查询聊天会话详情。"""
-
-    chat_session = _get_chat_session_or_raise(session, session_id)
-    model = _get_multimodal_model_or_raise(session, chat_session.model_id)
-    message_rows = _list_chat_message_rows(session, chat_session.id or 0)
-    logger.debug(
-        "多模态聊天会话详情查询完成: session_id={}, model_id={}, message_count={}",
-        session_id,
-        chat_session.model_id,
-        len(message_rows),
-    )
-    return MultimodalChatSessionDetailData(
-        session=MultimodalChatSessionResponse.from_model(
-            chat_session,
-            model_name=model.model_name,
-        ),
-        messages=[
-            MultimodalChatMessageResponse.from_model(item)
-            for item in message_rows
-        ],
-    )
-
-
-def chat_with_multimodal_model(
-    session: Session,
-    model_id: int,
-    payload: MultimodalChatRequest,
-    *,
-    request_func: RequestFunc | None = None,
-) -> MultimodalChatData:
-    """对指定模型配置发起非流式聊天测试。"""
-
-    request_impl = request_func or requests.request
-    prepared = _prepare_chat_request(session, model_id, payload)
-    logger.info(
-        "多模态非流式聊天开始: model_id={}, existing_session_id={}, new_message_count={}, context_message_count={}",
-        model_id,
-        prepared.existing_session.id if prepared.existing_session else None,
-        len(prepared.new_messages),
-        len(prepared.context_messages),
-    )
-    normalized_payload = _build_gateway_chat_payload(
-        model_name=prepared.model.model_name,
-        messages=prepared.context_messages,
-        stream=False,
-    )
-    result = _call_chat_endpoint(
-        endpoint_url=prepared.model.endpoint_url,
-        api_key=prepared.model.api_key,
-        payload=normalized_payload,
-        request_func=request_impl,
-    )
-    reply = _extract_chat_reply(result.payload)
-    if not reply:
-        raise AppException(
-            code=ErrorCode.INTERNAL_ERROR,
-            message="模型调用成功，但未解析到回复内容",
-            status_code=502,
-        )
-
-    persisted_session = _persist_chat_turn(
-        session=session,
-        prepared=prepared,
-        reply=reply,
-        used_url=result.used_url,
-    )
-    logger.info(
-        "多模态非流式聊天完成: model_id={}, session_id={}, used_url={}",
-        model_id,
-        persisted_session.id,
-        result.used_url,
-    )
-    return MultimodalChatData(
-        reply=reply,
-        model_name=prepared.model.model_name,
-        used_url=result.used_url,
-        session_id=persisted_session.id or 0,
-    )
-
-
-def stream_chat_with_multimodal_model(
-    session: Session,
-    model_id: int,
-    payload: MultimodalChatRequest,
-    *,
-    request_func: RequestFunc | None = None,
-) -> Iterator[str]:
+def stream_chat_with_multimodal_model(session: Session, model_id: int, payload: MultimodalChatRequest, *,
+                                      request_func: RequestFunc | None = None) -> Iterator[str]:
     """对指定模型配置发起流式聊天测试。"""
 
     request_impl = request_func or requests.request
-    prepared = _prepare_chat_request(session, model_id, payload)
+    prepared = prepare_chat_request(session, model_id, payload)
     logger.info(
         "多模态流式聊天准备完成: model_id={}, existing_session_id={}, new_message_count={}, context_message_count={}",
         model_id,
@@ -196,7 +55,7 @@ def stream_chat_with_multimodal_model(
         len(prepared.new_messages),
         len(prepared.context_messages),
     )
-    normalized_payload = _build_gateway_chat_payload(
+    normalized_payload = build_gateway_chat_payload(
         model_name=prepared.model.model_name,
         messages=prepared.context_messages,
         stream=True,
@@ -236,7 +95,7 @@ def stream_chat_with_multimodal_model(
                     status_code=502,
                 )
 
-            persisted_session = _persist_chat_turn(
+            persisted_session = persist_chat_turn(
                 session=session,
                 prepared=prepared,
                 reply=reply,
@@ -271,14 +130,10 @@ def stream_chat_with_multimodal_model(
     return event_stream()
 
 
-def _prepare_chat_request(
-    session: Session,
-    model_id: int,
-    payload: MultimodalChatRequest,
-) -> ChatPreparation:
+def prepare_chat_request(session: Session, model_id: int, payload: MultimodalChatRequest) -> ChatPreparation:
     """准备聊天上下文。"""
 
-    model = _get_multimodal_model_or_raise(session, model_id)
+    model = get_multimodal_model_or_raise(session, model_id)
     if model.status != "启用":
         raise AppException(
             code=ErrorCode.PARAM_INVALID,
@@ -289,14 +144,14 @@ def _prepare_chat_request(
     existing_session: MultimodalChatSession | None = None
     context_messages: list[MultimodalChatMessagePayload] = []
     if payload.session_id is not None:
-        existing_session = _get_chat_session_or_raise(session, payload.session_id)
+        existing_session = get_chat_session_or_raise(session, payload.session_id)
         if existing_session.model_id != model_id:
             raise AppException(
                 code=ErrorCode.PARAM_INVALID,
                 message="会话与当前模型不匹配，无法继续对话",
                 status_code=400,
             )
-        stored_rows = _list_chat_message_rows(session, existing_session.id or 0)
+        stored_rows = list_chat_message_rows(session, existing_session.id or 0)
         context_messages.extend(_message_row_to_payload(item) for item in stored_rows)
 
     context_messages.extend(payload.messages)
@@ -315,13 +170,8 @@ def _prepare_chat_request(
     )
 
 
-def _persist_chat_turn(
-    *,
-    session: Session,
-    prepared: ChatPreparation,
-    reply: str,
-    used_url: str,
-) -> MultimodalChatSession:
+def persist_chat_turn(*, session: Session, prepared: ChatPreparation, reply: str,
+                      used_url: str) -> MultimodalChatSession:
     """持久化一轮问答。"""
 
     chat_session = prepared.existing_session
@@ -402,9 +252,7 @@ def _build_session_title(messages: list[MultimodalChatMessagePayload]) -> str:
     return "新的模型测试会话"
 
 
-def _message_row_to_payload(
-    message_row: MultimodalChatMessage,
-) -> MultimodalChatMessagePayload:
+def _message_row_to_payload(message_row: MultimodalChatMessage) -> MultimodalChatMessagePayload:
     """将数据库消息恢复为请求消息对象。"""
 
     return MultimodalChatMessagePayload(
@@ -414,10 +262,7 @@ def _message_row_to_payload(
     )
 
 
-def _list_chat_message_rows(
-    session: Session,
-    session_id: int,
-) -> list[MultimodalChatMessage]:
+def list_chat_message_rows(session: Session, session_id: int) -> list[MultimodalChatMessage]:
     """按顺序查询会话消息。"""
 
     return session.exec(
@@ -436,10 +281,7 @@ def _format_sse_event(event: str, data: dict[str, Any]) -> str:
     return f"event: {event}\ndata: {json.dumps(data, ensure_ascii=False)}\n\n"
 
 
-def _get_chat_session_or_raise(
-    session: Session,
-    session_id: int,
-) -> MultimodalChatSession:
+def get_chat_session_or_raise(session: Session, session_id: int) -> MultimodalChatSession:
     """按 ID 查询聊天会话，不存在时抛出统一异常。"""
 
     chat_session = session.get(MultimodalChatSession, session_id)

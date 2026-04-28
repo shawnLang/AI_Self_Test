@@ -17,7 +17,7 @@ from aiSelfTest.config import get_settings
 from aiSelfTest.exceptions import AppException, ErrorCode
 from aiSelfTest.models.client import Client
 from aiSelfTest.schemas.client import ClientResponse
-from aiSelfTest.services.client import _get_client_or_raise
+from aiSelfTest.services.client import get_client_or_raise
 
 
 TOKEN_ERROR_KEYWORDS = ("token", "令牌", "授权")
@@ -43,8 +43,7 @@ def authenticate_client(
 ) -> ClientAuthenticationResult:
     """确保客户端持有可用的访问令牌。"""
 
-    logger.info("开始客户端认证: client_id={}", client_id)
-    client = _get_client_or_raise(session, client_id)
+    client = get_client_or_raise(session, client_id)
     return _authenticate_client_model(session, client, request_func=request_func)
 
 
@@ -61,7 +60,7 @@ def perform_authenticated_request(
     """使用客户端认证信息调用上游业务接口。"""
 
     request_impl = request_func or requests.request
-    client = _get_client_or_raise(session, client_id)
+    client = get_client_or_raise(session, client_id)
     logger.debug(
         "准备发起认证上游请求: client_id={}, method={}, path={}, retry_on_auth_failure={}",
         client_id,
