@@ -11,6 +11,7 @@ from distutils.extension import Extension
 from pathlib import Path
 from typing import List, Sequence, Tuple
 
+from loguru import logger
 from setuptools import Command
 from setuptools.command.build_py import build_py
 from setuptools.command.install_lib import install_lib
