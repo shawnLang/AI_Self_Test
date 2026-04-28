@@ -2,10 +2,6 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, Query, status
-from loguru import logger
-from sqlmodel import Session
-
 from aiSelfTest.database import get_session
 from aiSelfTest.schemas.common import ApiResponse
 from aiSelfTest.schemas.task import (
@@ -41,7 +37,9 @@ from aiSelfTest.services.task import (
     submit_task_item,
     update_task,
 )
-
+from fastapi import APIRouter, Depends, Query, status
+from loguru import logger
+from sqlmodel import Session
 
 task_router = APIRouter(prefix="/tasks")
 task_item_router = APIRouter(prefix="/task-items")
@@ -55,15 +53,8 @@ def list_tasks_route(session: Session = Depends(get_session)) -> ApiResponse[Tas
     return ApiResponse(code=0, message="success", data=list_tasks(session))
 
 
-@task_router.post(
-    "/create",
-    response_model=ApiResponse[TaskResponse],
-    status_code=status.HTTP_201_CREATED,
-)
-def create_task_route(
-    payload: TaskCreateRequest,
-    session: Session = Depends(get_session),
-) -> ApiResponse[TaskResponse]:
+@task_router.post("/create", response_model=ApiResponse[TaskResponse], status_code=status.HTTP_201_CREATED)
+def create_task_route(payload: TaskCreateRequest, session: Session = Depends(get_session)) -> ApiResponse[TaskResponse]:
     """创建任务。"""
 
     logger.info(
@@ -77,10 +68,7 @@ def create_task_route(
 
 
 @task_router.get("/detail/{task_id}", response_model=ApiResponse[TaskResponse])
-def get_task_detail_route(
-    task_id: int,
-    session: Session = Depends(get_session),
-) -> ApiResponse[TaskResponse]:
+def get_task_detail_route(task_id: int, session: Session = Depends(get_session)) -> ApiResponse[TaskResponse]:
     """查询任务详情。"""
 
     logger.info("API 请求任务详情: task_id={}", task_id)
@@ -88,11 +76,8 @@ def get_task_detail_route(
 
 
 @task_router.post("/update/{task_id}", response_model=ApiResponse[TaskResponse])
-def update_task_route(
-    task_id: int,
-    payload: TaskUpdateRequest,
-    session: Session = Depends(get_session),
-) -> ApiResponse[TaskResponse]:
+def update_task_route(task_id: int, payload: TaskUpdateRequest, session: Session = Depends(get_session)) -> ApiResponse[
+    TaskResponse]:
     """更新任务。"""
 
     logger.info(
@@ -105,10 +90,7 @@ def update_task_route(
 
 
 @task_router.delete("/delete/{task_id}", response_model=ApiResponse[TaskDeleteData])
-def delete_task_route(
-    task_id: int,
-    session: Session = Depends(get_session),
-) -> ApiResponse[TaskDeleteData]:
+def delete_task_route(task_id: int, session: Session = Depends(get_session)) -> ApiResponse[TaskDeleteData]:
     """删除任务及关联任务项。"""
 
     logger.info("API 请求删除任务: task_id={}", task_id)
@@ -116,10 +98,7 @@ def delete_task_route(
 
 
 @task_router.post("/action-start/{task_id}", response_model=ApiResponse[TaskActionData])
-def start_task_route(
-    task_id: int,
-    session: Session = Depends(get_session),
-) -> ApiResponse[TaskActionData]:
+def start_task_route(task_id: int, session: Session = Depends(get_session)) -> ApiResponse[TaskActionData]:
     """启动任务自动调度。"""
 
     logger.info("API 请求启动任务: task_id={}", task_id)
@@ -127,10 +106,7 @@ def start_task_route(
 
 
 @task_router.post("/action-stop/{task_id}", response_model=ApiResponse[TaskActionData])
-def stop_task_route(
-    task_id: int,
-    session: Session = Depends(get_session),
-) -> ApiResponse[TaskActionData]:
+def stop_task_route(task_id: int, session: Session = Depends(get_session)) -> ApiResponse[TaskActionData]:
     """停止任务自动调度。"""
 
     logger.info("API 请求停止任务: task_id={}", task_id)
@@ -138,10 +114,7 @@ def stop_task_route(
 
 
 @task_router.post("/action-run/{task_id}", response_model=ApiResponse[TaskActionData])
-def run_task_route(
-    task_id: int,
-    session: Session = Depends(get_session),
-) -> ApiResponse[TaskActionData]:
+def run_task_route(task_id: int, session: Session = Depends(get_session)) -> ApiResponse[TaskActionData]:
     """立即执行一次任务。"""
 
     logger.info("API 请求立即执行任务: task_id={}", task_id)
@@ -149,10 +122,7 @@ def run_task_route(
 
 
 @task_router.get("/{task_id}")
-def get_legacy_task_detail_route(
-    task_id: int,
-    session: Session = Depends(get_session),
-) -> dict[str, object]:
+def get_legacy_task_detail_route(task_id: int, session: Session = Depends(get_session)) -> dict[str, object]:
     """查询旧 DataQuery 页面兼容任务详情。"""
 
     logger.info("API 请求兼容任务详情: task_id={}", task_id)
@@ -160,10 +130,7 @@ def get_legacy_task_detail_route(
 
 
 @task_router.post("/{task_id}/query-data")
-def query_legacy_task_data_route(
-    task_id: int,
-    session: Session = Depends(get_session),
-) -> dict[str, object]:
+def query_legacy_task_data_route(task_id: int, session: Session = Depends(get_session)) -> dict[str, object]:
     """查询旧 DataQuery 页面兼容数据。"""
 
     logger.info("API 请求兼容任务数据查询: task_id={}", task_id)
@@ -171,10 +138,7 @@ def query_legacy_task_data_route(
 
 
 @task_router.post("/{task_id}/execute")
-def run_legacy_task_execute_route(
-    task_id: int,
-    session: Session = Depends(get_session),
-) -> dict[str, bool]:
+def run_legacy_task_execute_route(task_id: int, session: Session = Depends(get_session)) -> dict[str, bool]:
     """执行旧 DataQuery 页面兼容任务。"""
 
     logger.info("API 请求兼容任务执行: task_id={}", task_id)
@@ -183,13 +147,13 @@ def run_legacy_task_execute_route(
 
 @task_item_router.get("/list", response_model=ApiResponse[TaskItemListData])
 def list_task_items_route(
-    task_id: int = Query(gt=0),
-    media_type: str | None = Query(default=None),
-    status: str | None = Query(default=None),
-    confirm_state: str | None = Query(default=None),
-    page: int = Query(default=1, ge=1),
-    page_size: int = Query(default=20, ge=1, le=200),
-    session: Session = Depends(get_session),
+        task_id: int = Query(gt=0),
+        media_type: str | None = Query(default=None),
+        status: str | None = Query(default=None),
+        confirm_state: str | None = Query(default=None),
+        page: int = Query(default=1, ge=1),
+        page_size: int = Query(default=20, ge=1, le=200),
+        session: Session = Depends(get_session),
 ) -> ApiResponse[TaskItemListData]:
     """分页查询任务项列表。"""
 
@@ -215,10 +179,8 @@ def list_task_items_route(
 
 
 @task_item_router.get("/detail/{task_item_id}", response_model=ApiResponse[TaskItemDetailData])
-def get_task_item_detail_route(
-    task_item_id: int,
-    session: Session = Depends(get_session),
-) -> ApiResponse[TaskItemDetailData]:
+def get_task_item_detail_route(task_item_id: int, session: Session = Depends(get_session)) -> ApiResponse[
+    TaskItemDetailData]:
     """查询任务项详情。"""
 
     logger.info("API 请求任务项详情: task_item_id={}", task_item_id)
@@ -226,10 +188,8 @@ def get_task_item_detail_route(
 
 
 @task_item_router.post("/action-confirm", response_model=ApiResponse[TaskItemActionData])
-def confirm_task_item_route(
-    payload: TaskItemActionRequest,
-    session: Session = Depends(get_session),
-) -> ApiResponse[TaskItemActionData]:
+def confirm_task_item_route(payload: TaskItemActionRequest, session: Session = Depends(get_session)) -> ApiResponse[
+    TaskItemActionData]:
     """确认任务项。"""
 
     logger.info("API 请求确认任务项: task_item_id={}", payload.task_item_id)
@@ -237,10 +197,8 @@ def confirm_task_item_route(
 
 
 @task_item_router.post("/action-reject", response_model=ApiResponse[TaskItemActionData])
-def reject_task_item_route(
-    payload: TaskItemRejectRequest,
-    session: Session = Depends(get_session),
-) -> ApiResponse[TaskItemActionData]:
+def reject_task_item_route(payload: TaskItemRejectRequest, session: Session = Depends(get_session)) -> ApiResponse[
+    TaskItemActionData]:
     """拒绝任务项。"""
 
     logger.info("API 请求拒绝任务项: task_item_id={}", payload.task_item_id)
@@ -248,10 +206,8 @@ def reject_task_item_route(
 
 
 @task_item_router.post("/action-delete", response_model=ApiResponse[TaskItemActionData])
-def delete_task_item_route(
-    payload: TaskItemDeleteRequest,
-    session: Session = Depends(get_session),
-) -> ApiResponse[TaskItemActionData]:
+def delete_task_item_route(payload: TaskItemDeleteRequest, session: Session = Depends(get_session)) -> ApiResponse[
+    TaskItemActionData]:
     """删除任务项复核数据。"""
 
     logger.info(
@@ -263,10 +219,8 @@ def delete_task_item_route(
 
 
 @task_item_router.post("/action-submit", response_model=ApiResponse[TaskItemActionData])
-def submit_task_item_route(
-    payload: TaskItemActionRequest,
-    session: Session = Depends(get_session),
-) -> ApiResponse[TaskItemActionData]:
+def submit_task_item_route(payload: TaskItemActionRequest, session: Session = Depends(get_session)) -> ApiResponse[
+    TaskItemActionData]:
     """提交任务项到远端。"""
 
     logger.info("API 请求提交任务项: task_item_id={}", payload.task_item_id)
