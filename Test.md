@@ -201,3 +201,26 @@ V1 必须覆盖：
 - [ ] `confirm` 不触发 `submit`
 - [ ] `delete` 不删除源 `TaskItem`
 - [ ] Review 首版只保留基础确认 / 删除能力
+
+## 9. 2026-04-28 run_task_execution 真实执行回归
+
+### 9.1 缺陷描述
+
+当前 `run_task_execution(session, task_id)` 在未显式传入 `source` 时，默认使用
+`EmptyTaskExecutionSource`。因此从 API 的 `action-run` 或调度器入口触发时，
+执行流程只会切换任务状态，不会真实调用上游分页查询和详情接口，最终 TaskItem
+列表为空。
+
+### 9.2 回归测试目标
+
+- 默认执行源必须走真实上游客户端请求，而不是空数据源。
+- `POST /openApi/icFile/findFilePage` 必须收到由任务筛选条件构造的请求体。
+- `GET /openApi/icFile/getResultByFileId1` 必须按分页结果中的文件标识拉取详情。
+- API 入口 `POST /api/tasks/action-run/{task_id}` 执行后，必须落库 TaskItem 与
+  TaskItemData。
+- 兼容已有测试：单测仍可通过显式注入 fake source 隔离外部请求。
+
+### 9.3 最小验证命令
+
+- `.env/bin/python -m pytest tests/test_task_execution_service.py`
+- `.env/bin/python -m pytest tests/test_task_api.py`

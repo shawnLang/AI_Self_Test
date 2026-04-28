@@ -2,10 +2,30 @@
 
 from __future__ import annotations
 
+import importlib
 from typing import Any
 
 from fastapi.testclient import TestClient
 from sqlmodel import Session, select
+
+
+class FakeResponse:
+    """简化的 requests 响应对象。"""
+
+    def __init__(
+        self,
+        status_code: int,
+        json_data: dict[str, Any] | None = None,
+        text: str = "",
+    ) -> None:
+        self.status_code = status_code
+        self._json_data = json_data or {}
+        self.text = text or str(self._json_data)
+
+    def json(self) -> dict[str, Any]:
+        """返回预设 JSON 响应体。"""
+
+        return self._json_data
 
 
 def _unwrap_success(response_json: dict[str, Any]) -> Any:
@@ -234,13 +254,17 @@ def test_delete_task_cascades_task_items(
     assert db_session.exec(select(task_item_data_model)).all() == []
 
 
-def test_task_action_start_stop_and_run(app_client: TestClient) -> None:
+def test_task_action_start_stop_and_run(
+    app_client: TestClient,
+    monkeypatch,
+) -> None:
     client_id, config_id = _create_client_and_config(app_client)
     create_response = app_client.post(
         "/api/tasks/create",
         json=_create_task_payload(client_id, config_id),
     )
     task_id = _unwrap_success(create_response.json())["id"]
+    _install_empty_upstream_mock(monkeypatch)
 
     start_response = app_client.post(f"/api/tasks/action-start/{task_id}")
     stop_response = app_client.post(f"/api/tasks/action-stop/{task_id}")
@@ -252,6 +276,140 @@ def test_task_action_start_stop_and_run(app_client: TestClient) -> None:
     assert start_response.json()["code"] == 0
     assert stop_response.json()["code"] == 0
     assert run_response.json()["code"] == 0
+
+
+def test_task_action_run_fetches_real_upstream_and_persists_task_items(
+    app_client: TestClient,
+    db_session: Session,
+    monkeypatch,
+) -> None:
+    """立即执行应调用真实上游分页和详情接口，而不是默认空数据源。"""
+
+    client_id, config_id = _create_client_and_config(app_client)
+    create_response = app_client.post(
+        "/api/tasks/create",
+        json=_create_task_payload(client_id, config_id),
+    )
+    task_id = _unwrap_success(create_response.json())["id"]
+    calls: list[tuple[str, str, dict[str, Any]]] = []
+    client_auth_module = importlib.import_module("aiSelfTest.services.client_auth")
+
+    def fake_request(method: str, url: str, **kwargs: Any) -> FakeResponse:
+        calls.append((method, url, kwargs))
+        if url.endswith("/auth/login"):
+            return FakeResponse(
+                200,
+                {
+                    "accessToken": "task-access-token",
+                    "refreshToken": "task-refresh-token",
+                    "expiresIn": 3600,
+                },
+            )
+        if url.endswith("/openApi/icFile/findFilePage"):
+            assert kwargs["json"]["classifyList"] == [1, 2]
+            assert kwargs["json"]["keyword"] == "鸟类"
+            assert kwargs["json"]["spName"] == "白鹭"
+            assert kwargs["json"]["fileBmp"] == [1, 2]
+            assert kwargs["json"]["startTime"] == "2026-04-20 00:00:00"
+            assert kwargs["json"]["endTime"] == "2026-04-25 23:59:59"
+            return FakeResponse(
+                200,
+                {
+                    "results": [
+                        {
+                            "id": 101,
+                            "name": "real-image.jpg",
+                            "deName": "camera-real",
+                            "fileNum": "IMG-REAL-001",
+                            "fileExtension": "jpg",
+                            "fileUrl": "https://cdn.example.com/real-image.jpg",
+                            "fileFid": "fid-real-image-101",
+                            "spNameList": "白鹭",
+                            "classify": 1,
+                            "fileBmp": 1,
+                            "idType": 0,
+                        }
+                    ],
+                    "total": 1,
+                    "size": 100,
+                    "current": 1,
+                    "totalCurrent": 1,
+                },
+            )
+        if url.endswith("/openApi/icFile/getResultByFileId1"):
+            assert kwargs["params"] == {"fileId": "101"}
+            return FakeResponse(
+                200,
+                {
+                    "id": 101,
+                    "recordData": [
+                        {
+                            "name": "白鹭",
+                            "score": 0.93,
+                            "trackIds": "track-real-1",
+                            "spAmount": 1,
+                            "minx": 1,
+                            "miny": 2,
+                            "maxx": 30,
+                            "maxy": 40,
+                        }
+                    ],
+                },
+            )
+        raise AssertionError(f"未预期的请求: {method} {url}")
+
+    monkeypatch.setattr(client_auth_module.requests, "request", fake_request)
+
+    response = app_client.post(f"/api/tasks/action-run/{task_id}")
+
+    assert response.status_code == 200
+    assert response.json()["code"] == 0
+    assert any(url.endswith("/openApi/icFile/findFilePage") for _, url, _ in calls)
+    assert any(url.endswith("/openApi/icFile/getResultByFileId1") for _, url, _ in calls)
+
+    _, task_item_model, task_item_data_model = import_task_models()
+    items = db_session.exec(
+        select(task_item_model).where(task_item_model.task_id == task_id)
+    ).all()
+    rows = db_session.exec(select(task_item_data_model)).all()
+
+    assert len(items) == 1
+    assert items[0].file_fid == "fid-real-image-101"
+    assert items[0].down_state is True
+    assert len(rows) == 1
+    assert rows[0].name == "白鹭"
+    assert rows[0].llm_name is None
+
+
+def _install_empty_upstream_mock(monkeypatch) -> None:
+    """安装空分页结果上游桩，避免动作契约测试访问真实网络。"""
+
+    client_auth_module = importlib.import_module("aiSelfTest.services.client_auth")
+
+    def fake_request(method: str, url: str, **_: Any) -> FakeResponse:
+        if url.endswith("/auth/login"):
+            return FakeResponse(
+                200,
+                {
+                    "accessToken": "task-access-token",
+                    "refreshToken": "task-refresh-token",
+                    "expiresIn": 3600,
+                },
+            )
+        if url.endswith("/openApi/icFile/findFilePage"):
+            return FakeResponse(
+                200,
+                {
+                    "results": [],
+                    "total": 0,
+                    "size": 100,
+                    "current": 1,
+                    "totalCurrent": 1,
+                },
+            )
+        raise AssertionError(f"未预期的请求: {method} {url}")
+
+    monkeypatch.setattr(client_auth_module.requests, "request", fake_request)
 
 
 def import_task_models():

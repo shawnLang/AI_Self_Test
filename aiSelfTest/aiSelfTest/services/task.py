@@ -5,6 +5,8 @@ from __future__ import annotations
 import json
 from datetime import datetime
 
+from aiSelfTest.services.task_execution import run_task_execution
+from aiSelfTest.services.task_scheduler import sync_global_task_scheduler
 from loguru import logger
 from sqlmodel import Session, select
 
@@ -183,7 +185,6 @@ def stop_task(session: Session, task_id: int) -> TaskActionData:
 def run_task_once(session: Session, task_id: int) -> TaskActionData:
     """立即执行一次任务。"""
 
-    from aiSelfTest.services.task_execution import run_task_execution
 
     run_task_execution(session, task_id)
     task = _get_task_or_raise(session, task_id)
@@ -569,6 +570,5 @@ def _sync_scheduler(task_id: int | None) -> None:
 
     if task_id is None:
         return
-    from aiSelfTest.services.task_scheduler import sync_global_task_scheduler
 
     sync_global_task_scheduler(task_id)

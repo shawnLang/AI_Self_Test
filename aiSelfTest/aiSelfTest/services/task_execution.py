@@ -33,6 +33,7 @@ from aiSelfTest.models.task import (
     TaskItemDataStatus,
 )
 from aiSelfTest.schemas.task import TaskFiltersPayload
+from aiSelfTest.services.client_auth import perform_authenticated_request
 
 
 RUNNING_TASK_STATUSES = {
@@ -41,6 +42,10 @@ RUNNING_TASK_STATUSES = {
     TaskExecutionStatus.VERIFY.value,
     TaskExecutionStatus.SUBMIT.value,
 }
+UPSTREAM_FILE_PAGE_PATH = "/openApi/icFile/findFilePage"
+UPSTREAM_FILE_DETAIL_PATH = "/openApi/icFile/getResultByFileId1"
+UPSTREAM_PAGE_SIZE = 100
+MAX_UPSTREAM_PAGE_COUNT = 500
 
 
 @dataclass(frozen=True)
@@ -60,6 +65,7 @@ class SourceTaskItemRecord:
     file_fid: str
     file_url: str
     file_bmp: int
+    file_id: str = ""
     device_name: str = ""
     file_num: str = ""
     file_extension: str = ""
@@ -121,7 +127,7 @@ class TaskExecutionSource(Protocol):
 
 
 class EmptyTaskExecutionSource:
-    """默认空数据源，避免本地手动执行时误触发外部请求。"""
+    """测试或显式本地空跑使用的数据源。"""
 
     def fetch_task_items(
         self,
@@ -148,6 +154,93 @@ class EmptyTaskExecutionSource:
         return []
 
 
+class AuthenticatedTaskExecutionSource:
+    """通过已配置客户端认证信息调用真实上游接口。"""
+
+    def fetch_task_items(
+        self,
+        *,
+        session: Session,
+        task: Task,
+        filters: TaskFiltersPayload,
+        window: TaskExecutionWindow,
+    ) -> Sequence[Mapping[str, Any]]:
+        """分页拉取符合任务筛选条件的真实上游文件。"""
+
+        all_records: list[Mapping[str, Any]] = []
+        current = 1
+        for _ in range(MAX_UPSTREAM_PAGE_COUNT):
+            payload = _build_upstream_page_payload(
+                filters,
+                window,
+                current=current,
+                size=UPSTREAM_PAGE_SIZE,
+            )
+            response = perform_authenticated_request(
+                session,
+                task.client_id,
+                "POST",
+                UPSTREAM_FILE_PAGE_PATH,
+                json=payload,
+            )
+            page_payload = _extract_response_payload(
+                response,
+                path=UPSTREAM_FILE_PAGE_PATH,
+            )
+            page_records = _extract_page_records(page_payload)
+            all_records.extend(page_records)
+            logger.info(
+                "上游分页查询完成: task_id={}, current={}, page_count={}, total_loaded={}",
+                task.id,
+                current,
+                len(page_records),
+                len(all_records),
+            )
+            if not _has_next_page(page_payload, current, len(page_records), len(all_records)):
+                return all_records
+            current += 1
+
+        logger.warning(
+            "上游分页达到安全上限: task_id={}, max_page_count={}, loaded_count={}",
+            task.id,
+            MAX_UPSTREAM_PAGE_COUNT,
+            len(all_records),
+        )
+        return all_records
+
+    def fetch_task_item_detail(
+        self,
+        *,
+        session: Session,
+        task: Task,
+        task_item: TaskItem,
+        source_record: SourceTaskItemRecord,
+    ) -> Sequence[Mapping[str, Any]]:
+        """按文件 ID 拉取单个上游文件的识别结果详情。"""
+
+        file_id = source_record.file_id or source_record.file_fid
+        response = perform_authenticated_request(
+            session,
+            task.client_id,
+            "GET",
+            UPSTREAM_FILE_DETAIL_PATH,
+            params={"fileId": file_id},
+        )
+        detail_payload = _extract_response_payload(
+            response,
+            path=UPSTREAM_FILE_DETAIL_PATH,
+        )
+        detail_records = _extract_detail_records(detail_payload)
+        logger.info(
+            "上游详情查询完成: task_id={}, task_item_id={}, file_id={}, detail_count={}",
+            task.id,
+            task_item.id,
+            file_id,
+            len(detail_records),
+        )
+        return detail_records
+
+
 def run_task_execution(
     session: Session,
     task_id: int,
@@ -157,7 +250,7 @@ def run_task_execution(
 ) -> TaskExecutionResult:
     """执行一次 Task V1 共享主干。
 
-    source 缺省为空数据源，生产接入真实上游时只需要替换协议实现。
+    source 缺省为认证上游数据源；测试可显式注入 fake source 隔离外部请求。
     """
 
     execution_now = now or datetime.now()
@@ -184,7 +277,7 @@ def run_task_execution(
             execution_status=task.execution_status,
         )
 
-    execution_source = source or EmptyTaskExecutionSource()
+    execution_source = source or AuthenticatedTaskExecutionSource()
     filters = _deserialize_filters(task.filters_json)
     window = _build_execution_window(task, filters, execution_now)
     logger.info(
@@ -522,7 +615,17 @@ def _coerce_source_record(row: SourceTaskItemRecord | Mapping[str, Any]) -> Sour
     if isinstance(row, SourceTaskItemRecord):
         return row
 
-    file_fid = _first_text(row, "file_fid", "fileFid", "fileId", "file_id", "fid", "id")
+    file_id = _first_text(row, "file_id", "fileId", "id", default="")
+    file_fid = _first_text(
+        row,
+        "file_fid",
+        "fileFid",
+        "fileId",
+        "file_id",
+        "fid",
+        "id",
+        default=file_id,
+    )
     file_url = _first_text(row, "file_url", "fileUrl", "mediaUrl", "url")
     name = _first_text(row, "name", "fileName", "file_name", default=file_fid)
     if not file_fid or not file_url:
@@ -539,6 +642,7 @@ def _coerce_source_record(row: SourceTaskItemRecord | Mapping[str, Any]) -> Sour
         file_fid=file_fid,
         file_url=file_url,
         file_bmp=_coerce_file_bmp(media_type),
+        file_id=file_id,
         device_name=_first_text(row, "device_name", "deviceName", "deName", default=""),
         file_num=_first_text(row, "file_num", "fileNum", "fileNo", default=""),
         file_extension=_first_text(row, "file_extension", "fileExtension", "extension", default=""),
@@ -582,6 +686,172 @@ def _is_auto_task(task: Task) -> bool:
     """判断任务是否采用自动执行模式。"""
 
     return task.execution_mode in {TaskExecutionMode.AUTO.value, "auto"}
+
+
+def _build_upstream_page_payload(
+    filters: TaskFiltersPayload,
+    window: TaskExecutionWindow,
+    *,
+    current: int,
+    size: int,
+) -> dict[str, Any]:
+    """把本地任务筛选条件转换为上游分页查询请求体。"""
+
+    payload: dict[str, Any] = {
+        "size": size,
+        "current": current,
+        "keyword": filters.keyword,
+        "spName": filters.sp_name,
+        "startTime": _normalize_window_boundary(window.start_at, end_of_day=False),
+        "endTime": _normalize_window_boundary(window.end_at, end_of_day=True),
+        "sortColumn": "fe.file_time",
+        "sortOrder": "ASC",
+        "module": "camera",
+    }
+    if filters.classify_list:
+        payload["classifyList"] = filters.classify_list
+        if len(filters.classify_list) == 1:
+            payload["classify"] = filters.classify_list[0]
+    if filters.media_types:
+        payload["fileBmp"] = _media_types_to_file_bmp(filters.media_types)
+    if filters.upload_types:
+        payload["uploadType"] = filters.upload_types
+    if filters.identify_source:
+        payload["idWayList"] = filters.identify_source
+        if len(filters.identify_source) == 1:
+            payload["idType"] = filters.identify_source[0]
+    return payload
+
+
+def _extract_response_payload(response: Any, *, path: str) -> Any:
+    """校验上游响应状态并兼容提取业务数据。"""
+
+    if response.status_code != 200:
+        logger.warning(
+            "上游接口返回非成功状态: path={}, status={}, body={}",
+            path,
+            response.status_code,
+            getattr(response, "text", ""),
+        )
+        raise AppException(
+            code=ErrorCode.TASK_FAILED,
+            message=f"上游接口请求失败: {path}",
+            status_code=502,
+        )
+
+    try:
+        payload = response.json()
+    except ValueError as exc:
+        logger.warning("上游接口返回非 JSON 数据: path={}, body={}", path, getattr(response, "text", ""))
+        raise AppException(
+            code=ErrorCode.TASK_FAILED,
+            message=f"上游接口返回格式错误: {path}",
+            status_code=502,
+        ) from exc
+
+    if isinstance(payload, Mapping):
+        response_code = payload.get("code")
+        if response_code not in (None, 0, "0", 200, "200"):
+            message = _first_text(payload, "message", "msg", "error", default="上游接口业务失败")
+            logger.warning("上游接口返回业务错误: path={}, code={}, message={}", path, response_code, message)
+            raise AppException(
+                code=ErrorCode.TASK_FAILED,
+                message=message,
+                status_code=502,
+            )
+        data = payload.get("data")
+        if isinstance(data, (Mapping, list)):
+            return data
+    return payload
+
+
+def _extract_page_records(payload: Any) -> list[Mapping[str, Any]]:
+    """从上游分页响应中提取文件列表。"""
+
+    if isinstance(payload, list):
+        return [row for row in payload if isinstance(row, Mapping)]
+    if not isinstance(payload, Mapping):
+        logger.warning("上游分页响应不是对象或列表: payload_type={}", type(payload).__name__)
+        return []
+
+    for key in ("results", "records", "items", "list"):
+        value = payload.get(key)
+        if isinstance(value, list):
+            return [row for row in value if isinstance(row, Mapping)]
+    logger.warning("上游分页响应缺少结果列表字段: keys={}", list(payload.keys()))
+    return []
+
+
+def _extract_detail_records(payload: Any) -> list[Mapping[str, Any]]:
+    """从上游详情响应中提取识别结果记录。"""
+
+    if isinstance(payload, list):
+        return [row for row in payload if isinstance(row, Mapping)]
+    if not isinstance(payload, Mapping):
+        logger.warning("上游详情响应不是对象或列表: payload_type={}", type(payload).__name__)
+        return []
+
+    record_data = payload.get("recordData") or payload.get("record_data") or []
+    if isinstance(record_data, list):
+        return [row for row in record_data if isinstance(row, Mapping)]
+    logger.warning(
+        "上游详情 recordData 字段不是列表: payload_keys={}, record_data_type={}",
+        list(payload.keys()),
+        type(record_data).__name__,
+    )
+    return []
+
+
+def _has_next_page(
+    payload: Any,
+    current: int,
+    page_count: int,
+    loaded_count: int,
+) -> bool:
+    """根据上游分页元数据判断是否继续拉取下一页。"""
+
+    if not isinstance(payload, Mapping):
+        return False
+
+    total_pages = _first_int(payload, "totalCurrent", "totalPages", "pages", default=0)
+    if total_pages > 0:
+        return current < total_pages
+
+    total_count = _first_int(payload, "total", "totalCount", default=0)
+    if total_count > 0:
+        return page_count > 0 and loaded_count < total_count
+
+    page_size = _first_int(payload, "size", "pageSize", default=UPSTREAM_PAGE_SIZE)
+    return page_count >= page_size
+
+
+def _media_types_to_file_bmp(media_types: Sequence[str]) -> list[int]:
+    """把前端媒体类型转换为上游 fileBmp 枚举。"""
+
+    values: list[int] = []
+    mapping = {"image": 1, "video": 2}
+    for media_type in media_types:
+        value = mapping.get(media_type)
+        if value is not None and value not in values:
+            values.append(value)
+    return values
+
+
+def _normalize_window_boundary(value: str, *, end_of_day: bool) -> str:
+    """把日期或日期时间规整为上游需要的标准时间字符串。"""
+
+    text = (value or "").strip()
+    if not text:
+        return ""
+    if len(text) == 10:
+        suffix = "23:59:59" if end_of_day else "00:00:00"
+        return f"{text} {suffix}"
+
+    normalized = text.replace("Z", "+00:00")
+    try:
+        return _format_dt(datetime.fromisoformat(normalized))
+    except ValueError:
+        return text
 
 
 def _count_task_items(session: Session, task_id: int) -> int:

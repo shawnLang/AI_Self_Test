@@ -2,10 +2,30 @@
 
 from __future__ import annotations
 
+import importlib
 from typing import Any
 
 from fastapi.testclient import TestClient
 from sqlmodel import Session
+
+
+class FakeResponse:
+    """简化的 requests 响应对象。"""
+
+    def __init__(
+        self,
+        status_code: int,
+        json_data: dict[str, Any] | None = None,
+        text: str = "",
+    ) -> None:
+        self.status_code = status_code
+        self._json_data = json_data or {}
+        self.text = text or str(self._json_data)
+
+    def json(self) -> dict[str, Any]:
+        """返回预设 JSON 响应体。"""
+
+        return self._json_data
 
 
 def _unwrap_success(response_json: dict[str, Any]) -> Any:
@@ -106,9 +126,11 @@ def test_legacy_query_data_route_returns_results(
 def test_legacy_execute_route_triggers_task_run(
     app_client: TestClient,
     db_session: Session,
+    monkeypatch,
 ) -> None:
     task_id, _ = _seed_task_fixture(app_client, db_session)
     task_model, _, _ = import_task_models()
+    _install_empty_upstream_mock(monkeypatch)
 
     response = app_client.post(
         f"/api/tasks/{task_id}/execute",
@@ -120,6 +142,37 @@ def test_legacy_execute_route_triggers_task_run(
     task = db_session.get(task_model, task_id)
     assert task is not None
     assert task.started_at is not None
+
+
+def _install_empty_upstream_mock(monkeypatch) -> None:
+    """安装空分页结果上游桩，避免兼容接口测试访问真实网络。"""
+
+    client_auth_module = importlib.import_module("aiSelfTest.services.client_auth")
+
+    def fake_request(method: str, url: str, **_: Any) -> FakeResponse:
+        if url.endswith("/auth/login"):
+            return FakeResponse(
+                200,
+                {
+                    "accessToken": "task-access-token",
+                    "refreshToken": "task-refresh-token",
+                    "expiresIn": 3600,
+                },
+            )
+        if url.endswith("/openApi/icFile/findFilePage"):
+            return FakeResponse(
+                200,
+                {
+                    "results": [],
+                    "total": 0,
+                    "size": 100,
+                    "current": 1,
+                    "totalCurrent": 1,
+                },
+            )
+        raise AssertionError(f"未预期的请求: {method} {url}")
+
+    monkeypatch.setattr(client_auth_module.requests, "request", fake_request)
 
 
 def import_task_models():
