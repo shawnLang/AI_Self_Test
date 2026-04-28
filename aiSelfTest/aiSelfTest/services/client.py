@@ -20,7 +20,7 @@ def list_clients(session: Session) -> list[ClientResponse]:
     """查询全部客户端。"""
 
     clients = session.exec(select(Client).order_by(Client.id.desc())).all()
-    logger.debug("客户端列表查询完成: count={}", len(clients))
+    logger.debug("客户端列表查询完成 count={}", len(clients))
     return [ClientResponse.from_model(client) for client in clients]
 
 
@@ -45,12 +45,7 @@ def create_client(session: Session, payload: ClientCreateRequest) -> ClientRespo
     session.add(client)
     session.commit()
     session.refresh(client)
-    logger.info(
-        "客户端创建完成: client_id={}, name={}, status={}",
-        client.id,
-        client.name,
-        client.status,
-    )
+    logger.info("客户端创建完成 client_id={} name={} status={}", client.id, client.name, client.status)
     return ClientResponse.from_model(client)
 
 
@@ -74,7 +69,7 @@ def update_client(
     session.commit()
     session.refresh(client)
     logger.info(
-        "客户端更新完成: client_id={}, name={}, status={}, password_changed={}",
+        "客户端更新完成 client_id={} name={} status={} password_updated={}",
         client.id,
         client.name,
         client.status,
@@ -122,7 +117,7 @@ def delete_client(session: Session, client_id: int) -> int:
         session.delete(client)
 
     logger.info(
-        "客户端删除完成: client_id={}, task_count={}, task_item_count={}, task_item_data_count={}",
+        "客户端删除完成 client_id={} related_task_count={} task_item_count={} detail_count={}",
         client_id,
         len(tasks),
         len(task_items),
