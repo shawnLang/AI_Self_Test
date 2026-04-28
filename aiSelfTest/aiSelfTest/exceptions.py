@@ -31,6 +31,8 @@ class AppException(Exception):
     """统一业务异常。"""
 
     def __init__(self, *, code: ErrorCode | int, message: str, status_code: int) -> None:
+        """保存业务错误码、用户可读消息和 HTTP 状态码。"""
+
         self.code = int(code)
         self.message = message
         self.status_code = status_code

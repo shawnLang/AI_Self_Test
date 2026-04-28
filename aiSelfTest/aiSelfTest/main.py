@@ -78,9 +78,22 @@ def create_app() -> FastAPI:
 
     @app.middleware("http")
     async def request_id_middleware(request: Request, call_next):
+        """为每个 HTTP 请求注入请求 ID 并记录入口/出口日志。"""
+
         request_id = request.headers.get("X-Request-ID", str(uuid4()))
         with logger.contextualize(request_id=request_id):
+            logger.info(
+                "HTTP 请求开始: method={}, path={}",
+                request.method,
+                request.url.path,
+            )
             response = await call_next(request)
+            logger.info(
+                "HTTP 请求完成: method={}, path={}, status_code={}",
+                request.method,
+                request.url.path,
+                response.status_code,
+            )
         response.headers["X-Request-ID"] = request_id
         return response
 
@@ -94,6 +107,8 @@ def create_app() -> FastAPI:
 
     @app.get("/")
     async def root() -> dict[str, str]:
+        """返回 API 根路径的基础服务信息。"""
+
         return {
             "message": "AI 自检平台 API",
             "version": __version__,
@@ -102,6 +117,8 @@ def create_app() -> FastAPI:
 
     @app.get("/health")
     async def health_check() -> dict[str, str]:
+        """返回健康检查状态。"""
+
         return {"status": "ok"}
 
     return app
