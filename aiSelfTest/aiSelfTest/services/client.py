@@ -64,6 +64,9 @@ def update_client(
 
     if payload.password not in (None, "", MASK_PLACEHOLDER):
         client.password = payload.password
+        credential_changed = True
+    else:
+        credential_changed = False
 
     session.add(client)
     session.commit()
@@ -73,7 +76,7 @@ def update_client(
         client.id,
         client.name,
         client.status,
-        payload.password not in (None, "", MASK_PLACEHOLDER),
+        credential_changed,
     )
     return ClientResponse.from_model(client)
 

@@ -81,6 +81,9 @@ def update_multimodal_model(
 
     if payload.api_key not in (None, "", MASK_PLACEHOLDER):
         model.api_key = payload.api_key
+        credential_changed = True
+    else:
+        credential_changed = False
 
     model.detected_models_json = serialize_detected_models(payload.detected_models)
     model.last_detected_at = _resolve_detected_at(
@@ -97,7 +100,7 @@ def update_multimodal_model(
         "多模态模型配置更新完成 model_id={} model_name={} api_key_updated={} detected_count={}",
         model.id,
         model.model_name,
-        payload.api_key not in (None, "", MASK_PLACEHOLDER),
+        credential_changed,
         len(payload.detected_models),
     )
     return MultimodalModelResponse.from_model(model)
