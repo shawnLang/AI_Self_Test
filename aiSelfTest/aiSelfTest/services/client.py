@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from loguru import logger
 from sqlmodel import Session, select
 
 from aiSelfTest.exceptions import AppException, ErrorCode
@@ -19,6 +20,7 @@ def list_clients(session: Session) -> list[ClientResponse]:
     """查询全部客户端。"""
 
     clients = session.exec(select(Client).order_by(Client.id.desc())).all()
+    logger.debug("客户端列表查询完成: count={}", len(clients))
     return [ClientResponse.from_model(client) for client in clients]
 
 
@@ -26,6 +28,7 @@ def get_client_detail(session: Session, client_id: int) -> ClientResponse:
     """查询单个客户端。"""
 
     client = _get_client_or_raise(session, client_id)
+    logger.debug("客户端详情查询完成: client_id={}", client_id)
     return ClientResponse.from_model(client)
 
 
@@ -42,6 +45,12 @@ def create_client(session: Session, payload: ClientCreateRequest) -> ClientRespo
     session.add(client)
     session.commit()
     session.refresh(client)
+    logger.info(
+        "客户端创建完成: client_id={}, name={}, status={}",
+        client.id,
+        client.name,
+        client.status,
+    )
     return ClientResponse.from_model(client)
 
 
@@ -64,6 +73,13 @@ def update_client(
     session.add(client)
     session.commit()
     session.refresh(client)
+    logger.info(
+        "客户端更新完成: client_id={}, name={}, status={}, password_changed={}",
+        client.id,
+        client.name,
+        client.status,
+        payload.password not in (None, "", MASK_PLACEHOLDER),
+    )
     return ClientResponse.from_model(client)
 
 
@@ -105,6 +121,13 @@ def delete_client(session: Session, client_id: int) -> int:
 
         session.delete(client)
 
+    logger.info(
+        "客户端删除完成: client_id={}, task_count={}, task_item_count={}, task_item_data_count={}",
+        client_id,
+        len(tasks),
+        len(task_items),
+        len(task_item_data_rows),
+    )
     return client_id
 
 

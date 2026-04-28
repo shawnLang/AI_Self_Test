@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, status
+from loguru import logger
 from sqlmodel import Session
 
 from aiSelfTest.database import get_session
@@ -32,6 +33,7 @@ def list_configs_route(
 ) -> ApiResponse[ConfigListData]:
     """查询模型提示词配置列表。"""
 
+    logger.info("API 请求模型提示词配置列表")
     items = list_configs(session)
     return ApiResponse(
         code=0,
@@ -47,6 +49,7 @@ def get_config_detail_route(
 ) -> ApiResponse[ConfigResponse]:
     """查询模型提示词配置详情。"""
 
+    logger.info("API 请求模型提示词配置详情: config_id={}", config_id)
     return ApiResponse(
         code=0,
         message="success",
@@ -65,6 +68,11 @@ def create_config_route(
 ) -> ApiResponse[ConfigResponse]:
     """创建模型提示词配置。"""
 
+    logger.info(
+        "API 请求创建模型提示词配置: name={}, format={}",
+        payload.name,
+        payload.format,
+    )
     return ApiResponse(
         code=0,
         message="success",
@@ -80,6 +88,12 @@ def update_config_route(
 ) -> ApiResponse[ConfigResponse]:
     """更新模型提示词配置。"""
 
+    logger.info(
+        "API 请求更新模型提示词配置: config_id={}, name={}, format={}",
+        config_id,
+        payload.name,
+        payload.format,
+    )
     return ApiResponse(
         code=0,
         message="success",
@@ -94,6 +108,7 @@ def delete_config_route(
 ) -> ApiResponse[ConfigDeleteData]:
     """删除模型提示词配置。"""
 
+    logger.info("API 请求删除模型提示词配置: config_id={}", config_id)
     deleted_config_id = delete_config(session, config_id)
     return ApiResponse(
         code=0,
