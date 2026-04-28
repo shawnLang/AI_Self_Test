@@ -163,13 +163,13 @@ V1 必须覆盖：
 
 当前阶段至少运行：
 
-- `uv run pytest tests/test_task_api.py`
-- `uv run pytest tests/test_task_item_api.py`
-- `uv run pytest tests/test_review_compat_api.py`
+- `python -m pytest tests/test_task_api.py`
+- `python -m pytest tests/test_task_item_api.py`
+- `python -m pytest tests/test_review_compat_api.py`
 
 后续阶段逐步增加：
 
-- `uv run pytest`
+- `python -m pytest`
 - 前端测试 / 构建验证
 
 ## 6. 手工验证

@@ -4,22 +4,49 @@ This file provides guidance to codex when working with code in this repository.
 
 # python 环境
 
-本项目使用 `uv` 管理 Python 环境、依赖与命令执行。
+本项目使用 `python venv` 管理 Python 虚拟环境。当前根目录 `.env` 环境是在
+WSL 的 Ubuntu 环境中通过 `python3 -m venv .env` 创建的，仅用于 WSL/Linux。
 
-## uv 操作规范
+Windows 不能直接复用 WSL 创建的 `.env`。如需在 Windows 原生 Python 中运行
+项目，必须重新创建 Windows 专用虚拟环境，建议使用 `.env-win`，避免覆盖 WSL
+环境。
 
-- 初始化或同步环境：`uv sync --no-install-project`
-- 运行 Python 脚本：`uv run python <script.py>`
-- 运行项目命令：`uv run <command>`
-- 运行测试：`uv run pytest`
-- 运行指定测试：`uv run pytest <test_path>`
-- 添加运行依赖：`uv add <package>`
-- 添加开发依赖：`uv add --dev <package>`
-- 移除依赖：`uv remove <package>`
-- 更新锁文件：`uv lock`
+## python venv 操作规范
 
-除非有明确原因，不要直接使用 `pip install`、`python`、`pytest` 等绕过 `uv`
-环境的命令。需要执行 Python 相关命令时，优先使用 `uv run`。
+### WSL / Linux 环境
+
+- 创建虚拟环境：`python3 -m venv .env`
+- 激活虚拟环境（bash / zsh）：`source .env/bin/activate`
+- 安装项目依赖：`python -m pip install -e ./aiSelfTest`
+- 安装测试依赖（如需）：`python -m pip install pytest`
+- 运行 Python 脚本：`python <script.py>`
+- 运行项目服务：`aiSelfTest` 或 `cd aiSelfTest && python run.py`
+- 运行测试：`python -m pytest`
+- 运行指定测试：`python -m pytest <test_path>`
+- 安装单个依赖：`python -m pip install <package>`
+- 升级 pip：`python -m pip install --upgrade pip`
+- 退出虚拟环境：`deactivate`
+
+### Windows 环境
+
+- 创建虚拟环境：`python -m venv .env-win`
+- 激活虚拟环境（PowerShell）：`.env-win\Scripts\Activate.ps1`
+- 激活虚拟环境（CMD）：`.env-win\Scripts\activate.bat`
+- 安装项目依赖：`python -m pip install -e .\aiSelfTest`
+- 安装测试依赖（如需）：`python -m pip install pytest`
+- 运行项目服务：`aiSelfTest`
+- 运行测试：`python -m pytest`
+- 运行指定测试：`python -m pytest <test_path>`
+- 退出虚拟环境：`deactivate`
+
+除非有明确原因，不要在未激活 `.env` 虚拟环境的情况下直接使用系统级
+`pip`、`python`、`pytest` 等命令。需要执行 Python 相关命令时，优先在已
+激活的 `.env` 环境中执行；如需显式指定解释器，优先使用 `.env/bin/python`
+或 `.env/bin/pip`。
+
+在 Windows 中执行 Python 命令时，应激活 `.env-win`，或显式使用
+`.env-win\Scripts\python.exe` 与 `.env-win\Scripts\pip.exe`。不要混用 WSL
+的 `.env` 与 Windows 的 `.env-win`。
 
 # 开发规范
 

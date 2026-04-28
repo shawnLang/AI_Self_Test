@@ -47,12 +47,12 @@
 
 ## 自动验证
 
-- `uv run pytest tests/test_client_api.py`
-- `uv run pytest tests/test_app_config.py`
-- `uv run pytest tests/test_client_auth.py`
-- `uv run pytest tests/test_multimodal_model_api.py`
-- `uv run pytest tests/test_task_api.py`
-- `uv run pytest`
+- `python -m pytest tests/test_client_api.py`
+- `python -m pytest tests/test_app_config.py`
+- `python -m pytest tests/test_client_auth.py`
+- `python -m pytest tests/test_multimodal_model_api.py`
+- `python -m pytest tests/test_task_api.py`
+- `python -m pytest`
 - `npm run lint`
 - `npm run build`
 

@@ -114,3 +114,4 @@ aiSelfTestUi/dist/
 /.pytest_tmp/
 aiSelfTest/uv.lock
 .codex
+.env-win/
