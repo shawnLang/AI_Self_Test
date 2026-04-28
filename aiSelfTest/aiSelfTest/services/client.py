@@ -81,7 +81,7 @@ def update_client(
         client.id,
         client.name,
         client.status,
-        payload.password not in (None, "", MASK_PLACEHOLDER),
+        credential_changed,
     )
     return ClientResponse.from_model(client)
 

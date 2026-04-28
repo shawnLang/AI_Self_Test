@@ -102,7 +102,7 @@ def update_multimodal_model(
         model.id,
         model.model_name,
         model.status,
-        payload.api_key not in (None, "", MASK_PLACEHOLDER),
+        credential_changed,
         len(payload.detected_models),
     )
     return MultimodalModelResponse.from_model(model)
