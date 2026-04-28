@@ -16,6 +16,29 @@ from setuptools.command.build_py import build_py
 from setuptools.command.install_lib import install_lib
 
 try:
+    from loguru import logger
+except ImportError:  # pragma: no cover - build isolation may not install runtime deps
+    class _BuildLogger:
+        """构建隔离环境中的最小日志适配器。"""
+
+        def info(self, message: str, *args: object) -> None:
+            """输出 info 级别构建消息。"""
+
+            print(message.format(*args))
+
+        def warning(self, message: str, *args: object) -> None:
+            """输出 warning 级别构建消息。"""
+
+            print(message.format(*args))
+
+        def error(self, message: str, *args: object) -> None:
+            """输出 error 级别构建消息。"""
+
+            print(message.format(*args))
+
+    logger = _BuildLogger()
+
+try:
     from smbclient import makedirs, register_session
     from smbclient import shutil as smb_shutil
 except ImportError as exc:  # pragma: no cover - 可选依赖
@@ -148,6 +171,12 @@ def build(path: Path, build_ignore: Sequence[str]) -> Tuple[List[str], List[Exte
 
                 extensions.append(Extension(e_name, [e_key]))
 
+    logger.info(
+        "Cython 构建扫描完成: root={}, python_file_count={}, extension_count={}",
+        path,
+        len(python_files),
+        len(extensions),
+    )
     return python_files, extensions
 
 
@@ -155,10 +184,13 @@ def repair_windows_init() -> None:
     """修复 Windows 下 distutils 的导出符号问题。"""
     if "windows" in platform.platform().lower():
         def get_export_symbols_fixed(self, ext: Extension) -> list:
+            """阻止 Windows 构建错误导出模块符号。"""
+
             pass  # return [] also does the job!
 
         # replace wrong version with the fixed:
         build_ext.get_export_symbols = get_export_symbols_fixed
+        logger.info("已应用 Windows build_ext 导出符号修复")
 
 
 class MyBuildPy(build_py, Command):
@@ -171,7 +203,7 @@ class MyBuildPy(build_py, Command):
         for (pkg, mod, filepath) in modules:
             if os.path.exists(filepath.replace('.py', ext_suffix)):
                 continue
-            print(f'2 {"*" * 30} {pkg, mod, filepath}')
+            logger.info("保留未编译模块: package={}, module={}, filepath={}", pkg, mod, filepath)
             filtered_modules.append((pkg, mod, filepath,))
 
         return filtered_modules
@@ -188,10 +220,10 @@ class MyInstallLib(install_lib, Command):
                     file_path = os.path.join(dir_path, file)
                     ext_file_path = file_path.replace('.py', ext_suffix)
                     if file_path.endswith('.py') and os.path.exists(ext_file_path):
-                        print(f'3 {"*" * 30} delete file: {file_path}')
+                        logger.info("删除已编译模块源文件: file_path={}", file_path)
                         os.remove(file_path)
                     if file_path.endswith('.lib') or file_path.endswith('.exp'):
-                        print(f'3 {"*" * 30} delete file: {file_path}')
+                        logger.info("删除 Windows 构建中间文件: file_path={}", file_path)
                         os.remove(file_path)
 
         super().install()
@@ -236,7 +268,7 @@ def mv_to_packages(
     # 复制自己
     package_path.mkdir(parents=True, exist_ok=True)
     build_utils_py = Path(__file__)
-    print(f'复制文件: {build_utils_py} -> {package_path}')
+    logger.info("复制构建工具文件: source={}, target={}", build_utils_py, package_path)
     shutil.copyfile(build_utils_py, package_path / build_utils_py.name)
     for dir_path, dir_list, file_list in os.walk(root_path):
         dir_path = Path(dir_path)
@@ -250,7 +282,7 @@ def mv_to_packages(
             if glob_files(file, ignore_files):
                 continue
             move_file_path = move_folder_path / file
-            print(f'复制文件: {file_path} -> {move_file_path}')
+            logger.info("复制打包文件: source={}, target={}", file_path, move_file_path)
             shutil.copyfile(file_path, move_file_path)
 
 
@@ -264,6 +296,7 @@ def setup_build(package_path: Path) -> None:
     else:
         encoding = 'utf-8'
         command = f'python3 -m build --wheel'
+    logger.info("开始构建 wheel: package_path={}, command={}", package_path, command)
     process = subprocess.Popen(command, cwd=package_path, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     # 监听命令的输出和错误信息
     while True:
@@ -282,9 +315,9 @@ def setup_build(package_path: Path) -> None:
             error_msg = error.decode(encoding)
         except UnicodeDecodeError:
             error_msg = error.decode('utf-8', errors='ignore')
-        print('Error:', error_msg)
+        logger.error("构建错误输出: {}", error_msg.strip())
     if process.poll() == 0:
-        print('构建成功')
+        logger.info("wheel 构建成功: package_path={}", package_path)
         package_dist_path = package_path / 'dist'
         if package_dist_path.exists():
             # 注册SMB会话（需要替换为实际的服务器信息）
@@ -297,12 +330,13 @@ def setup_build(package_path: Path) -> None:
                     raise RuntimeError("缺少 smbclient 依赖，无法创建远程目录。") from _SMB_IMPORT_ERROR
                 makedirs(smb_path, exist_ok=True)
             except Exception as e:
-                print(f"创建远程目录失败（可能已存在）: {e}")
+                logger.warning("创建远程目录失败（可能已存在）: error={}", e)
             for file in package_dist_path.glob('**/*.whl'):
                 # 上传到SMB共享目录
                 smb_full_path = smb_path + '\\' + file.name
                 smb_shutil.copyfile(file, smb_full_path)
-                print(f'上传到共享目录: {file} -> {smb_full_path}')
+                logger.info("上传 wheel 到共享目录: source={}, target={}", file, smb_full_path)
     else:
-        print('构建失败')
+        logger.error("wheel 构建失败: package_path={}", package_path)
     shutil.rmtree(package_path)
+    logger.info("清理打包目录完成: package_path={}", package_path)
