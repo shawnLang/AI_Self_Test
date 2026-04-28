@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 import json
-from typing import Callable, Iterator
+from typing import Any, Callable, Iterator
 
 import requests
 from loguru import logger
@@ -63,12 +63,14 @@ def list_multimodal_chat_sessions(
         .where(MultimodalChatSession.message_count > 0)
         .order_by(MultimodalChatSession.updated_at.desc(), MultimodalChatSession.id.desc())
     ).all()
-    return MultimodalChatSessionListData(
+    result = MultimodalChatSessionListData(
         items=[
             MultimodalChatSessionResponse.from_model(item, model_name=model.model_name)
             for item in sessions
         ]
     )
+    logger.debug("多模态聊天会话列表查询完成: model_id={}, count={}", model_id, len(sessions))
+    return result
 
 
 def delete_multimodal_chat_session(
@@ -84,6 +86,11 @@ def delete_multimodal_chat_session(
 
     session.delete(chat_session)
     session.commit()
+    logger.info(
+        "多模态聊天会话删除完成: session_id={}, message_count={}",
+        session_id,
+        len(message_rows),
+    )
     return session_id
 
 
@@ -96,6 +103,12 @@ def get_multimodal_chat_session_detail(
     chat_session = _get_chat_session_or_raise(session, session_id)
     model = _get_multimodal_model_or_raise(session, chat_session.model_id)
     message_rows = _list_chat_message_rows(session, chat_session.id or 0)
+    logger.debug(
+        "多模态聊天会话详情查询完成: session_id={}, model_id={}, message_count={}",
+        session_id,
+        chat_session.model_id,
+        len(message_rows),
+    )
     return MultimodalChatSessionDetailData(
         session=MultimodalChatSessionResponse.from_model(
             chat_session,
@@ -119,6 +132,13 @@ def chat_with_multimodal_model(
 
     request_impl = request_func or requests.request
     prepared = _prepare_chat_request(session, model_id, payload)
+    logger.info(
+        "多模态非流式聊天开始: model_id={}, existing_session_id={}, new_message_count={}, context_message_count={}",
+        model_id,
+        prepared.existing_session.id if prepared.existing_session else None,
+        len(prepared.new_messages),
+        len(prepared.context_messages),
+    )
     normalized_payload = _build_gateway_chat_payload(
         model_name=prepared.model.model_name,
         messages=prepared.context_messages,
@@ -144,6 +164,12 @@ def chat_with_multimodal_model(
         reply=reply,
         used_url=result.used_url,
     )
+    logger.info(
+        "多模态非流式聊天完成: model_id={}, session_id={}, used_url={}",
+        model_id,
+        persisted_session.id,
+        result.used_url,
+    )
     return MultimodalChatData(
         reply=reply,
         model_name=prepared.model.model_name,
@@ -163,6 +189,13 @@ def stream_chat_with_multimodal_model(
 
     request_impl = request_func or requests.request
     prepared = _prepare_chat_request(session, model_id, payload)
+    logger.info(
+        "多模态流式聊天准备完成: model_id={}, existing_session_id={}, new_message_count={}, context_message_count={}",
+        model_id,
+        prepared.existing_session.id if prepared.existing_session else None,
+        len(prepared.new_messages),
+        len(prepared.context_messages),
+    )
     normalized_payload = _build_gateway_chat_payload(
         model_name=prepared.model.model_name,
         messages=prepared.context_messages,
@@ -170,6 +203,8 @@ def stream_chat_with_multimodal_model(
     )
 
     def event_stream() -> Iterator[str]:
+        """生成 SSE 事件并在成功结束后持久化本轮聊天。"""
+
         yield _format_sse_event(
             "session",
             {
@@ -216,6 +251,13 @@ def stream_chat_with_multimodal_model(
                     "sessionId": persisted_session.id or 0,
                 },
             )
+            logger.info(
+                "多模态流式聊天完成: model_id={}, session_id={}, used_url={}, chunk_count={}",
+                model_id,
+                persisted_session.id,
+                result.used_url,
+                len(reply_parts),
+            )
         except AppException as exc:
             logger.warning("流式模型调用失败: {}", exc.message)
             yield _format_sse_event("error", {"message": exc.message})
@@ -258,6 +300,13 @@ def _prepare_chat_request(
         context_messages.extend(_message_row_to_payload(item) for item in stored_rows)
 
     context_messages.extend(payload.messages)
+    logger.debug(
+        "多模态聊天上下文准备完成: model_id={}, session_id={}, stored_message_count={}, new_message_count={}",
+        model_id,
+        existing_session.id if existing_session else None,
+        len(context_messages) - len(payload.messages),
+        len(payload.messages),
+    )
     return ChatPreparation(
         model=model,
         existing_session=existing_session,
@@ -284,6 +333,12 @@ def _persist_chat_turn(
         session.add(chat_session)
         session.commit()
         session.refresh(chat_session)
+        logger.info(
+            "多模态聊天会话创建完成: session_id={}, model_id={}, title_length={}",
+            chat_session.id,
+            prepared.model.id,
+            len(chat_session.title),
+        )
 
     current_count = chat_session.message_count
     now = datetime.now()
@@ -317,6 +372,13 @@ def _persist_chat_turn(
     session.add(chat_session)
     session.commit()
     session.refresh(chat_session)
+    logger.info(
+        "多模态聊天轮次持久化完成: session_id={}, new_row_count={}, total_message_count={}, used_url={}",
+        chat_session.id,
+        len(new_rows),
+        chat_session.message_count,
+        used_url,
+    )
     return chat_session
 
 
