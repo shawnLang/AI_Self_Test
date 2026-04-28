@@ -13,6 +13,8 @@ depends_on = None
 
 
 def _columns(table_name: str) -> set[str]:
+    """读取指定表的现有列名，用于幂等迁移判断。"""
+
     inspector = sa.inspect(op.get_bind())
     return {column["name"] for column in inspector.get_columns(table_name)}
 

@@ -11,6 +11,7 @@ from distutils.extension import Extension
 from pathlib import Path
 from typing import List, Sequence, Tuple
 
+from loguru import logger
 from setuptools import Command
 from setuptools.command.build_py import build_py
 from setuptools.command.install_lib import install_lib
@@ -149,6 +150,8 @@ def get_system() -> str:
 
 def build(path: Path, build_ignore: Sequence[str]) -> Tuple[List[str], List[Extension]]:
     """扫描源码目录并生成 Cython 编译配置。"""
+
+    logger.info("开始扫描 Cython 构建文件: path={}", path)
     python_files = []
     extensions = []
     # 需要排除编译的目录（alembic 需要保持原始 Python 文件）
@@ -172,8 +175,7 @@ def build(path: Path, build_ignore: Sequence[str]) -> Tuple[List[str], List[Exte
                 extensions.append(Extension(e_name, [e_key]))
 
     logger.info(
-        "Cython 构建扫描完成: root={}, python_file_count={}, extension_count={}",
-        path,
+        "Cython 构建文件扫描完成: python_file_count={} extension_count={}",
         len(python_files),
         len(extensions),
     )
@@ -184,7 +186,7 @@ def repair_windows_init() -> None:
     """修复 Windows 下 distutils 的导出符号问题。"""
     if "windows" in platform.platform().lower():
         def get_export_symbols_fixed(self, ext: Extension) -> list:
-            """阻止 Windows 构建错误导出模块符号。"""
+            """避免 Windows 构建 __init__.py 扩展时导出符号异常。"""
 
             pass  # return [] also does the job!
 
@@ -197,6 +199,8 @@ class MyBuildPy(build_py, Command):
     """自定义 build_py，过滤已编译的模块。"""
 
     def find_package_modules(self, package: str, package_dir: str) -> List[Tuple[str, str, str]]:
+        """过滤已有扩展产物的源码模块，避免重复打包。"""
+
         ext_suffix = sysconfig.get_config_var('EXT_SUFFIX') or '.so'
         modules = super().find_package_modules(package, package_dir)
         filtered_modules = []
@@ -213,6 +217,8 @@ class MyInstallLib(install_lib, Command):
     """自定义 install_lib，移除已编译的源文件。"""
 
     def install(self) -> None:
+        """安装时清理已编译模块对应的源码和中间文件。"""
+
         if os.path.isdir(self.build_dir):
             ext_suffix = sysconfig.get_config_var('EXT_SUFFIX') or '.so'
             for dir_path, dir_list, file_list in os.walk(self.build_dir):
@@ -268,7 +274,8 @@ def mv_to_packages(
     # 复制自己
     package_path.mkdir(parents=True, exist_ok=True)
     build_utils_py = Path(__file__)
-    logger.info("复制构建工具文件: source={}, target={}", build_utils_py, package_path)
+    logger.info("开始复制打包源码: root_path={} package_path={}", root_path, package_path)
+    print(f'复制文件: {build_utils_py} -> {package_path}')
     shutil.copyfile(build_utils_py, package_path / build_utils_py.name)
     for dir_path, dir_list, file_list in os.walk(root_path):
         dir_path = Path(dir_path)
@@ -284,6 +291,7 @@ def mv_to_packages(
             move_file_path = move_folder_path / file
             logger.info("复制打包文件: source={}, target={}", file_path, move_file_path)
             shutil.copyfile(file_path, move_file_path)
+    logger.info("打包源码复制完成: package_path={}", package_path)
 
 
 def setup_build(package_path: Path) -> None:
@@ -296,7 +304,7 @@ def setup_build(package_path: Path) -> None:
     else:
         encoding = 'utf-8'
         command = f'python3 -m build --wheel'
-    logger.info("开始构建 wheel: package_path={}, command={}", package_path, command)
+    logger.info("开始构建 wheel: package_path={} command={}", package_path, command)
     process = subprocess.Popen(command, cwd=package_path, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     # 监听命令的输出和错误信息
     while True:
@@ -317,6 +325,7 @@ def setup_build(package_path: Path) -> None:
             error_msg = error.decode('utf-8', errors='ignore')
         logger.error("构建错误输出: {}", error_msg.strip())
     if process.poll() == 0:
+        print('构建成功')
         logger.info("wheel 构建成功: package_path={}", package_path)
         package_dist_path = package_path / 'dist'
         if package_dist_path.exists():
@@ -335,8 +344,10 @@ def setup_build(package_path: Path) -> None:
                 # 上传到SMB共享目录
                 smb_full_path = smb_path + '\\' + file.name
                 smb_shutil.copyfile(file, smb_full_path)
-                logger.info("上传 wheel 到共享目录: source={}, target={}", file, smb_full_path)
+                print(f'上传到共享目录: {file} -> {smb_full_path}')
+                logger.info("wheel 上传完成: file_name={} smb_path={}", file.name, smb_path)
     else:
-        logger.error("wheel 构建失败: package_path={}", package_path)
+        print('构建失败')
+        logger.error("wheel 构建失败: package_path={} return_code={}", package_path, process.poll())
     shutil.rmtree(package_path)
-    logger.info("清理打包目录完成: package_path={}", package_path)
+    logger.info("临时打包目录已清理: package_path={}", package_path)
