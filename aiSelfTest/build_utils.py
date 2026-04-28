@@ -11,31 +11,25 @@ from distutils.extension import Extension
 from pathlib import Path
 from typing import List, Sequence, Tuple
 
-from loguru import logger
 from setuptools import Command
 from setuptools.command.build_py import build_py
 from setuptools.command.install_lib import install_lib
 
 try:
     from loguru import logger
-except ImportError:  # pragma: no cover - build isolation may not install runtime deps
+except ImportError:  # pragma: no cover - 构建隔离环境可能尚未安装运行时依赖
     class _BuildLogger:
-        """构建隔离环境中的最小日志适配器。"""
+        """构建隔离环境下的空日志适配器。"""
 
         def info(self, message: str, *args: object) -> None:
-            """输出 info 级别构建消息。"""
+            """忽略 info 日志，避免构建阶段引入运行时依赖。"""
 
-            print(message.format(*args))
-
-        def warning(self, message: str, *args: object) -> None:
-            """输出 warning 级别构建消息。"""
-
-            print(message.format(*args))
+            return None
 
         def error(self, message: str, *args: object) -> None:
-            """输出 error 级别构建消息。"""
+            """将错误日志退化为 stderr 输出，保留构建失败线索。"""
 
-            print(message.format(*args))
+            print(message.format(*args), file=sys.stderr)
 
     logger = _BuildLogger()
 
@@ -300,10 +294,10 @@ def setup_build(package_path: Path) -> None:
         raise RuntimeError("缺少 smbclient 依赖，无法上传构建产物。") from _SMB_IMPORT_ERROR
     if platform.system() == 'Windows':
         encoding = 'gbk'
-        command = f'python -m build --wheel'
+        command = 'python -m build --wheel'
     else:
         encoding = 'utf-8'
-        command = f'python3 -m build --wheel'
+        command = 'python3 -m build --wheel'
     logger.info("开始构建 wheel: package_path={} command={}", package_path, command)
     process = subprocess.Popen(command, cwd=package_path, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     # 监听命令的输出和错误信息
