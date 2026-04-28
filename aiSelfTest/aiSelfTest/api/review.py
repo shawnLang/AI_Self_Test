@@ -23,9 +23,9 @@ router = APIRouter(prefix="/reviews")
 def list_completed_review_tasks_route(
     session: Session = Depends(get_session),
 ) -> list[dict[str, int | str]]:
-    """列出旧复核页可选择的已完成任务。"""
+    """查询旧复核页面可展示的已完成任务。"""
 
-    logger.info("API 请求：查询已完成复核任务")
+    logger.info("API 请求兼容复核任务列表")
     return list_completed_review_tasks(session)
 
 
@@ -34,9 +34,9 @@ def list_reviews_route(
     taskId: int,
     session: Session = Depends(get_session),
 ) -> list[dict[str, object]]:
-    """按旧参数名查询复核项列表。"""
+    """查询旧复核页面的任务复核项。"""
 
-    logger.info("API 请求：查询旧复核项列表 task_id={}", taskId)
+    logger.info("API 请求兼容复核项列表: task_id={}", taskId)
     return list_review_items(session, taskId)
 
 
@@ -45,10 +45,11 @@ def confirm_reviews_route(
     payload: dict[str, list[str]],
     session: Session = Depends(get_session),
 ) -> dict[str, object]:
-    """批量确认旧复核项。"""
+    """批量确认旧复核页面提交的复核项。"""
 
-    logger.info("API 请求：批量确认旧复核项 count={}", len(payload.get("ids", [])))
-    return confirm_review_items(session, payload.get("ids", []))
+    ids = payload.get("ids", [])
+    logger.info("API 请求批量确认兼容复核项: count={}", len(ids))
+    return confirm_review_items(session, ids)
 
 
 @router.delete("/{review_id}")
@@ -56,9 +57,9 @@ def delete_review_route(
     review_id: int,
     session: Session = Depends(get_session),
 ) -> dict[str, bool]:
-    """删除单个旧复核项。"""
+    """删除旧复核页面中的单个复核项。"""
 
-    logger.info("API 请求：删除旧复核项 review_id={}", review_id)
+    logger.info("API 请求删除兼容复核项: review_id={}", review_id)
     delete_review_item(session, review_id)
     return {"ok": True}
 
@@ -68,8 +69,9 @@ def delete_reviews_route(
     payload: dict[str, list[str]],
     session: Session = Depends(get_session),
 ) -> dict[str, bool]:
-    """批量删除旧复核项。"""
+    """批量删除旧复核页面中的复核项。"""
 
-    logger.info("API 请求：批量删除旧复核项 count={}", len(payload.get("ids", [])))
-    delete_review_items(session, payload.get("ids", []))
+    ids = payload.get("ids", [])
+    logger.info("API 请求批量删除兼容复核项: count={}", len(ids))
+    delete_review_items(session, ids)
     return {"ok": True}

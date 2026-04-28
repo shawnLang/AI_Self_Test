@@ -33,7 +33,7 @@ def list_multimodal_models(session: Session) -> list[MultimodalModelResponse]:
     """查询全部模型配置。"""
 
     models = session.exec(select(MultimodalModel).order_by(MultimodalModel.id.desc())).all()
-    logger.debug("多模态模型配置列表查询完成 count={}", len(models))
+    logger.debug("多模态模型配置列表查询完成: count={}", len(models))
     return [MultimodalModelResponse.from_model(model) for model in models]
 
 
@@ -58,9 +58,10 @@ def create_multimodal_model(
     session.commit()
     session.refresh(model)
     logger.info(
-        "多模态模型配置创建完成 model_id={} model_name={} detected_count={}",
+        "多模态模型配置创建完成: model_id={}, model_name={}, status={}, detected_model_count={}",
         model.id,
         model.model_name,
+        model.status,
         len(payload.detected_models),
     )
     return MultimodalModelResponse.from_model(model)
@@ -97,10 +98,11 @@ def update_multimodal_model(
     session.commit()
     session.refresh(model)
     logger.info(
-        "多模态模型配置更新完成 model_id={} model_name={} api_key_updated={} detected_count={}",
+        "多模态模型配置更新完成: model_id={}, model_name={}, status={}, api_key_changed={}, detected_model_count={}",
         model.id,
         model.model_name,
-        credential_changed,
+        model.status,
+        payload.api_key not in (None, "", MASK_PLACEHOLDER),
         len(payload.detected_models),
     )
     return MultimodalModelResponse.from_model(model)
@@ -112,7 +114,7 @@ def delete_multimodal_model(session: Session, model_id: int) -> int:
     model = _get_multimodal_model_or_raise(session, model_id)
     session.delete(model)
     session.commit()
-    logger.info("多模态模型配置删除完成 model_id={} model_name={}", model_id, model.model_name)
+    logger.info("多模态模型配置删除完成: model_id={}", model_id)
     return model_id
 
 
@@ -124,7 +126,7 @@ def detect_multimodal_models(
     """探测远端可用模型。"""
 
     request_impl = request_func or requests.request
-    logger.info("开始探测多模态模型 endpoint_url={}", payload.endpoint_url)
+    logger.info("开始探测多模态模型: endpoint_url={}", payload.endpoint_url)
     result = _call_models_endpoint(
         endpoint_url=payload.endpoint_url,
         api_key=payload.api_key,
@@ -133,10 +135,10 @@ def detect_multimodal_models(
     models = _extract_model_names(result.payload)
     recommended_model = models[0] if models else ""
     logger.info(
-        "多模态模型探测完成 detected_url={} model_count={} recommended_model={}",
+        "多模态模型探测完成: endpoint_url={}, detected_url={}, model_count={}",
+        payload.endpoint_url,
         result.used_url,
         len(models),
-        recommended_model,
     )
     return MultimodalModelDetectData(
         models=models,

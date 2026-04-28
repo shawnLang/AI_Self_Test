@@ -16,7 +16,7 @@ router = APIRouter(prefix="/dashboard")
 def get_dashboard_stats_route() -> ApiResponse[DashboardStatsData]:
     """返回最小可用仪表盘统计。"""
 
-    logger.info("API 请求：查询仪表盘统计")
+    logger.info("API 请求仪表盘统计")
     return ApiResponse(
         code=0,
         message="success",
