@@ -16,7 +16,7 @@ TEXT_ATTACHMENT_LIMIT = 4000
 DATA_URL_PATTERN = re.compile(r"^data:(?P<mime>[^;]+);base64,(?P<data>.+)$", re.IGNORECASE)
 
 
-def build_gateway_chat_payload(*, model_name: str, messages: list[MultimodalChatMessagePayload],
+def build_gateway_chat_payload(model_name: str, messages: list[MultimodalChatMessagePayload],
                                stream: bool) -> dict[str, Any]:
     """构造发送给模型网关的聊天载荷。"""
 

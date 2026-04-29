@@ -39,7 +39,7 @@ class StreamGatewayCallResult:
     chunks: Iterator[str]
 
 
-def call_models_endpoint(*, endpoint_url: str, api_key: str, request_func: RequestFunc) -> GatewayCallResult:
+def call_models_endpoint(endpoint_url: str, api_key: str, request_func: RequestFunc) -> GatewayCallResult:
     """轮询模型列表接口，直到成功为止。"""
 
     errors: list[str] = []
@@ -70,7 +70,7 @@ def call_models_endpoint(*, endpoint_url: str, api_key: str, request_func: Reque
     )
 
 
-def call_chat_endpoint(*, endpoint_url: str, api_key: str, payload: dict[str, Any],
+def call_chat_endpoint(endpoint_url: str, api_key: str, payload: dict[str, Any],
                        request_func: RequestFunc) -> GatewayCallResult:
     """轮询非流式聊天接口，直到成功为止。"""
 
@@ -105,7 +105,7 @@ def call_chat_endpoint(*, endpoint_url: str, api_key: str, payload: dict[str, An
     )
 
 
-def _call_chat_endpoint_stream(*, endpoint_url: str, api_key: str, payload: dict[str, Any],
+def _call_chat_endpoint_stream(endpoint_url: str, api_key: str, payload: dict[str, Any],
                                request_func: RequestFunc) -> StreamGatewayCallResult:
     """轮询流式聊天接口，直到成功为止。"""
 

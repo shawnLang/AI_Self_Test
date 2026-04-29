@@ -290,3 +290,4 @@ class TaskItemActionData(BaseModel):
     id: int
     confirm_state: str | None = None
     remote_state: str | None = None
+    train_state: str | None = None

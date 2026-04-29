@@ -224,3 +224,25 @@ V1 必须覆盖：
 
 - `.env/bin/python -m pytest tests/test_task_execution_service.py`
 - `.env/bin/python -m pytest tests/test_task_api.py`
+
+## 10. 2026-04-29 Task 执行链路顺序修复
+
+### 10.1 缺陷描述
+
+当前 `run_task_execution` 虽然已经能拉取上游分页和详情数据，但下载、大模型识别、
+远端提交与训练目录仍是状态占位。实际链路与 `docs/任务执行方案.md` 中的
+“拉取数据 -> 下载文件 -> 自动/手动识别 -> 提交远端 + 保存训练目录”存在明显出入。
+
+### 10.2 回归测试目标
+
+- 拉取到新 `TaskItem` 后必须真实下载原始文件到 `data_dir/task_files/...`。
+- 视频任务存在 `result_file_data` 时必须同步保存 `result.json`。
+- 手动模式执行后只完成拉取、下载和详情落库，不自动调用大模型。
+- 自动模式必须通过可注入识别器写入 `llm_name`，不能再简单复制原始名称。
+- `action-submit` 提交成功后必须同步推进训练目录保存状态。
+
+### 10.3 最小验证命令
+
+- `.env/bin/python -m pytest tests/test_task_execution_service.py`
+- `.env/bin/python -m pytest tests/test_task_api.py`
+- `.env/bin/python -m pytest tests/test_task_item_api.py`

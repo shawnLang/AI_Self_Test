@@ -109,13 +109,13 @@ class MultimodalModelResponse(BaseModel):
 
         return cls(
             id=model.id or 0,
-            model_name=model.model_name,
-            endpoint_url=model.endpoint_url,
-            api_key=_masked_value(model.api_key),
-            api_key_configured=bool(model.api_key),
+            modelName=model.model_name,
+            endpointUrl=model.endpoint_url,
+            apiKey=_masked_value(model.api_key),
+            apiKeyConfigured=bool(model.api_key),
             status=model.status,
-            detected_models=parse_detected_models(model.detected_models_json),
-            last_detected_at=(
+            detectedModels=parse_detected_models(model.detected_models_json),
+            lastDetectedAt=(
                 model.last_detected_at.isoformat() if model.last_detected_at else None
             ),
         )
@@ -236,13 +236,13 @@ class MultimodalChatSessionResponse(BaseModel):
 
         return cls(
             id=chat_session.id or 0,
-            model_id=chat_session.model_id,
-            model_name=model_name,
+            modelId=chat_session.model_id,
+            modelName=model_name,
             title=chat_session.title,
-            message_count=chat_session.message_count,
-            created_at=chat_session.created_at.isoformat(),
-            updated_at=chat_session.updated_at.isoformat(),
-            last_message_at=(
+            messageCount=chat_session.message_count,
+            createdAt=chat_session.created_at.isoformat(),
+            updatedAt=chat_session.updated_at.isoformat(),
+            lastMessageAt=(
                 chat_session.last_message_at.isoformat()
                 if chat_session.last_message_at
                 else None
@@ -274,8 +274,8 @@ class MultimodalChatMessageResponse(BaseModel):
             role=chat_message.role,
             content=chat_message.content,
             attachments=parse_attachments(chat_message.attachments_json),
-            used_url=chat_message.used_url,
-            created_at=chat_message.created_at.isoformat(),
+            usedUrl=chat_message.used_url,
+            createdAt=chat_message.created_at.isoformat(),
         )
 
 

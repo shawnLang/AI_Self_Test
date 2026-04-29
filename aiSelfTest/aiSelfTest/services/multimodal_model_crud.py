@@ -13,12 +13,8 @@ from sqlmodel import Session
 RequestFunc = Callable[..., Response]
 
 
-def resolve_detected_at(
-        *,
-        detected_models: list[str],
-        detected_models_updated: bool,
-        current_detected_at: datetime | None = None,
-) -> datetime | None:
+def resolve_detected_at(detected_models: list[str], detected_models_updated: bool,
+                        current_detected_at: datetime | None = None) -> datetime | None:
     """根据探测模型是否刷新决定更新时间。"""
 
     if detected_models_updated:

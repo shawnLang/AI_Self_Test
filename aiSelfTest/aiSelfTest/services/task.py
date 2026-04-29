@@ -5,11 +5,6 @@ from __future__ import annotations
 import json
 from datetime import datetime
 
-from aiSelfTest.services.task_execution import run_task_execution
-from aiSelfTest.services.task_scheduler import sync_global_task_scheduler
-from loguru import logger
-from sqlmodel import Session, select
-
 from aiSelfTest.exceptions import AppException, ErrorCode
 from aiSelfTest.models.task import Task, TaskItem, TaskItemData, TaskItemDataStatus
 from aiSelfTest.schemas.task import (
@@ -29,6 +24,11 @@ from aiSelfTest.schemas.task import (
     TaskResponse,
     TaskUpdateRequest,
 )
+from aiSelfTest.services.task_execution import run_task_execution
+from aiSelfTest.services.task_scheduler import sync_global_task_scheduler
+from aiSelfTest.services.task_submission import submit_task_item_outputs
+from loguru import logger
+from sqlmodel import Session, select
 
 
 def list_tasks(session: Session) -> TaskListData:
@@ -79,11 +79,7 @@ def get_task_detail(session: Session, task_id: int) -> TaskResponse:
     return TaskResponse.from_model(task, filters=_deserialize_filters(task.filters_json))
 
 
-def update_task(
-    session: Session,
-    task_id: int,
-    payload: TaskUpdateRequest,
-) -> TaskResponse:
+def update_task(session: Session, task_id: int, payload: TaskUpdateRequest) -> TaskResponse:
     """更新任务。"""
 
     task = _get_task_or_raise(session, task_id)
@@ -108,14 +104,6 @@ def update_task(
         task.auto_confirm,
     )
     _sync_scheduler(task.id)
-    logger.info(
-        "任务更新完成 task_id={} name={} active={} interval={} execution_mode={}",
-        task.id,
-        task.name,
-        task.active,
-        task.interval,
-        task.execution_mode,
-    )
     return TaskResponse.from_model(task, filters=payload.filters)
 
 
@@ -141,7 +129,6 @@ def delete_task(session: Session, task_id: int) -> TaskDeleteData:
 
         session.delete(task)
 
-    logger.info("删除任务成功: task_id={}, task_item_count={}", task_id, len(task_item_ids))
     _sync_scheduler(task_id)
     logger.info(
         "任务删除完成 task_id={} task_item_count={} detail_count={}",
@@ -161,7 +148,6 @@ def start_task(session: Session, task_id: int) -> TaskActionData:
     session.add(task)
     session.commit()
     session.refresh(task)
-    logger.info("任务已启动: task_id={}, execution_status={}", task.id, task.execution_status)
     _sync_scheduler(task.id)
     logger.info("任务已启动 task_id={} execution_status={}", task.id, task.execution_status)
     return TaskActionData(id=task.id or 0, active=task.active, execution_status=task.execution_status)
@@ -176,7 +162,6 @@ def stop_task(session: Session, task_id: int) -> TaskActionData:
     session.add(task)
     session.commit()
     session.refresh(task)
-    logger.info("任务已停止: task_id={}, execution_status={}", task.id, task.execution_status)
     _sync_scheduler(task.id)
     logger.info("任务已停止 task_id={} execution_status={}", task.id, task.execution_status)
     return TaskActionData(id=task.id or 0, active=task.active, execution_status=task.execution_status)
@@ -185,7 +170,6 @@ def stop_task(session: Session, task_id: int) -> TaskActionData:
 def run_task_once(session: Session, task_id: int) -> TaskActionData:
     """立即执行一次任务。"""
 
-
     run_task_execution(session, task_id)
     task = _get_task_or_raise(session, task_id)
     logger.info("任务手动执行完成 task_id={} execution_status={}", task.id, task.execution_status)
@@ -193,14 +177,13 @@ def run_task_once(session: Session, task_id: int) -> TaskActionData:
 
 
 def list_task_items(
-    session: Session,
-    *,
-    task_id: int,
-    media_type: str | None = None,
-    status: str | None = None,
-    confirm_state: str | None = None,
-    page: int = 1,
-    page_size: int = 20,
+        session: Session,
+        task_id: int,
+        media_type: str | None = None,
+        status: str | None = None,
+        confirm_state: str | None = None,
+        page: int = 1,
+        page_size: int = 20,
 ) -> TaskItemListData:
     """查询 TaskItem 列表。"""
 
@@ -248,10 +231,7 @@ def get_task_item_detail(session: Session, task_item_id: int) -> TaskItemDetailD
     return TaskItemDetailData.from_model(task_item, review_rows=review_rows)
 
 
-def confirm_task_item(
-    session: Session,
-    payload: TaskItemActionRequest,
-) -> TaskItemActionData:
+def confirm_task_item(session: Session, payload: TaskItemActionRequest) -> TaskItemActionData:
     """确认 TaskItem。"""
 
     task_item = _get_task_item_or_raise(session, payload.task_item_id)
@@ -265,10 +245,7 @@ def confirm_task_item(
     return TaskItemActionData(id=task_item.id or 0, confirm_state=task_item.confirm_state)
 
 
-def reject_task_item(
-    session: Session,
-    payload: TaskItemRejectRequest,
-) -> TaskItemActionData:
+def reject_task_item(session: Session, payload: TaskItemRejectRequest) -> TaskItemActionData:
     """拒绝 TaskItem。"""
 
     task_item = _get_task_item_or_raise(session, payload.task_item_id)
@@ -281,10 +258,7 @@ def reject_task_item(
     return TaskItemActionData(id=task_item.id or 0, confirm_state=task_item.confirm_state)
 
 
-def delete_task_item_rows(
-    session: Session,
-    payload: TaskItemDeleteRequest,
-) -> TaskItemActionData:
+def delete_task_item_rows(session: Session, payload: TaskItemDeleteRequest) -> TaskItemActionData:
     """删除复核层对象，但不删除源 TaskItem。"""
 
     task_item = _get_task_item_or_raise(session, payload.task_item_id)
@@ -307,10 +281,7 @@ def delete_task_item_rows(
     return TaskItemActionData(id=task_item.id or 0, confirm_state=task_item.confirm_state)
 
 
-def submit_task_item(
-    session: Session,
-    payload: TaskItemActionRequest,
-) -> TaskItemActionData:
+def submit_task_item(session: Session, payload: TaskItemActionRequest) -> TaskItemActionData:
     """提交 TaskItem。"""
 
     task_item = _get_task_item_or_raise(session, payload.task_item_id)
@@ -321,80 +292,18 @@ def submit_task_item(
             status_code=400,
         )
 
-    task_item.remote_state = "success"
-    task_item.remote_at = datetime.now()
-    task_item.updated_at = datetime.now()
-    session.add(task_item)
-    session.commit()
-    session.refresh(task_item)
-    logger.info("任务项提交完成 task_item_id={} remote_state={}", task_item.id, task_item.remote_state)
-    return TaskItemActionData(id=task_item.id or 0, remote_state=task_item.remote_state)
-
-
-def get_legacy_task_detail(session: Session, task_id: int) -> dict[str, object]:
-    """旧 DataQuery 页面兼容详情。"""
-
-    task = _get_task_or_raise(session, task_id)
-    filters = _deserialize_filters(task.filters_json)
-    logger.debug("构建旧任务详情 task_id={}", task_id)
-    media_types = filters.media_types
-    if media_types == ["image"]:
-        file_bmp = "image"
-    elif media_types == ["video"]:
-        file_bmp = "video"
-    else:
-        file_bmp = "all"
-    upload_type = str(filters.upload_types[0]) if filters.upload_types else "all"
-    id_type = str(filters.identify_source[0]) if filters.identify_source else "all"
-
-    return {
-        "id": task.id or 0,
-        "name": task.name,
-        "filters": {
-            "classifyList": filters.classify_list,
-            "keyword": filters.keyword,
-            "spName": filters.sp_name,
-            "startTime": filters.start_at,
-            "endTime": filters.end_at,
-            "fileBmp": file_bmp,
-            "uploadType": upload_type,
-            "idType": id_type,
-            "size": 50,
-            "current": 1,
-        },
-    }
-
-
-def query_legacy_task_data(session: Session, task_id: int) -> dict[str, object]:
-    """旧 DataQuery 查询结果兼容层。"""
-
-    _get_task_or_raise(session, task_id)
-    rows = session.exec(select(TaskItem).where(TaskItem.task_id == task_id).order_by(TaskItem.id.desc())).all()
-    logger.debug("旧任务数据查询完成 task_id={} count={}", task_id, len(rows))
-    results = [
-        {
-            "id": row.id or 0,
-            "name": row.name,
-            "spNameList": row.sp_name_list,
-            "classify": row.classify,
-            "fileTime": row.created_at.strftime("%Y-%m-%d %H:%M:%S") if row.created_at else "--",
-            "fileUrl": row.file_url,
-            "coverUrl": row.file_url,
-            "mediaType": "video" if row.file_bmp == 2 else "image",
-            "mediaUrl": row.file_url,
-            "deName": row.device_name,
-        }
-        for row in rows
-    ]
-    return {"results": results}
-
-
-def run_legacy_task_execute(session: Session, task_id: int) -> dict[str, bool]:
-    """旧 execute 兼容入口。"""
-
-    run_task_once(session, task_id)
-    logger.info("旧任务执行入口完成 task_id={}", task_id)
-    return {"ok": True}
+    result = submit_task_item_outputs(session, task_item)
+    logger.info(
+        "任务项提交完成 task_item_id={} remote_state={} train_state={}",
+        task_item.id,
+        result.remote_state,
+        result.train_state,
+    )
+    return TaskItemActionData(
+        id=task_item.id or 0,
+        remote_state=result.remote_state,
+        train_state=result.train_state,
+    )
 
 
 def list_completed_review_tasks(session: Session) -> list[dict[str, int | str]]:

@@ -8,17 +8,14 @@ from typing import Any, Callable
 from urllib.parse import urljoin
 
 import requests
+from aiSelfTest.config import get_settings
+from aiSelfTest.exceptions import AppException, ErrorCode
+from aiSelfTest.models.client import Client
+from aiSelfTest.services.client import get_client_or_raise
 from loguru import logger
 from requests import Response
 from requests.exceptions import RequestException
 from sqlmodel import Session
-
-from aiSelfTest.config import get_settings
-from aiSelfTest.exceptions import AppException, ErrorCode
-from aiSelfTest.models.client import Client
-from aiSelfTest.schemas.client import ClientResponse
-from aiSelfTest.services.client import get_client_or_raise
-
 
 TOKEN_ERROR_KEYWORDS = ("token", "令牌", "授权")
 TOKEN_REUSE_BUFFER_SECONDS = 60
@@ -35,28 +32,17 @@ class ClientAuthenticationResult:
     used_strategy: str
 
 
-def authenticate_client(
-    session: Session,
-    client_id: int,
-    *,
-    request_func: RequestFunc | None = None,
-) -> ClientAuthenticationResult:
+def authenticate_client(session: Session, client_id: int,
+                        request_func: RequestFunc | None = None) -> ClientAuthenticationResult:
     """确保客户端持有可用的访问令牌。"""
 
     client = get_client_or_raise(session, client_id)
     return _authenticate_client_model(session, client, request_func=request_func)
 
 
-def perform_authenticated_request(
-    session: Session,
-    client_id: int,
-    method: str,
-    path: str,
-    *,
-    request_func: RequestFunc | None = None,
-    retry_on_auth_failure: bool = True,
-    **kwargs: Any,
-) -> Response:
+def perform_authenticated_request(session: Session, client_id: int, method: str, path: str,
+                                  request_func: RequestFunc | None = None, retry_on_auth_failure: bool = True,
+                                  **kwargs: Any) -> Response:
     """使用客户端认证信息调用上游业务接口。"""
 
     request_impl = request_func or requests.request
@@ -127,13 +113,8 @@ def get_client_auth_status(client: Client) -> str:
     return "已认证"
 
 
-def _authenticate_client_model(
-    session: Session,
-    client: Client,
-    *,
-    request_func: RequestFunc | None = None,
-    force_reauthenticate: bool = False,
-) -> ClientAuthenticationResult:
+def _authenticate_client_model(session: Session, client: Client, request_func: RequestFunc | None = None,
+                               force_reauthenticate: bool = False) -> ClientAuthenticationResult:
     """对客户端模型执行认证。"""
 
     request_impl = request_func or requests.request
@@ -168,12 +149,8 @@ def _authenticate_client_model(
     return _login_client(session, client, request_func=request_impl)
 
 
-def _refresh_client_token(
-    session: Session,
-    client: Client,
-    *,
-    request_func: RequestFunc,
-) -> ClientAuthenticationResult | None:
+def _refresh_client_token(session: Session, client: Client,
+                          request_func: RequestFunc) -> ClientAuthenticationResult | None:
     """尝试使用刷新令牌续期。"""
 
     response = _request_with_authorization_variants(
@@ -199,12 +176,7 @@ def _refresh_client_token(
     return None
 
 
-def _login_client(
-    session: Session,
-    client: Client,
-    *,
-    request_func: RequestFunc,
-) -> ClientAuthenticationResult:
+def _login_client(session: Session, client: Client, request_func: RequestFunc) -> ClientAuthenticationResult:
     """执行完整登录。"""
 
     login_payload = {
@@ -240,17 +212,8 @@ def _login_client(
     return ClientAuthenticationResult(client=client, used_strategy="login")
 
 
-def _request_with_authorization_variants(
-    *,
-    session: Session,
-    client: Client,
-    request_impl: RequestFunc,
-    method: str,
-    url: str,
-    token: str | None,
-    path: str,
-    **kwargs: Any,
-) -> Response:
+def _request_with_authorization_variants(session: Session, client: Client, request_impl: RequestFunc, method: str,
+                                         url: str, token: str | None, path: str, **kwargs: Any) -> Response:
     """按两种 Authorization 形式依次请求。"""
 
     if not token:
@@ -296,7 +259,7 @@ def _request_with_authorization_variants(
             errors.append(str(exc))
             continue
 
-        if response.status_code == 200:
+        if response is not None and response.status_code == 200:
             _cache_successful_request(session, client, style, path)
             logger.debug(
                 "上游认证请求成功: client_id={}, method={}, path={}, auth_style={}, status={}",
@@ -308,7 +271,7 @@ def _request_with_authorization_variants(
             )
             return response
 
-        if response.status_code != 401 and not _response_contains_token_error(response):
+        if response is not None and response.status_code != 401 and not _response_contains_token_error(response):
             logger.debug(
                 "上游请求返回非认证错误状态: client_id={}, method={}, path={}, status={}",
                 client.id,
@@ -328,11 +291,7 @@ def _request_with_authorization_variants(
     )
 
 
-def _update_client_tokens(
-    session: Session,
-    client: Client,
-    payload: dict[str, Any],
-) -> None:
+def _update_client_tokens(session: Session, client: Client, payload: dict[str, Any]) -> None:
     """将上游 token 信息写回数据库。"""
 
     access_token = payload.get("accessToken")
@@ -355,21 +314,14 @@ def _update_client_tokens(
     logger.info("客户端 token 已更新: client_id={}, expires_at={}", client.id, client.expires_at)
 
 
-def _request_with_cached_paths(
-    *,
-    session: Session,
-    client: Client,
-    request_impl: RequestFunc,
-    method: str,
-    path: str,
-    token: str | None,
-    **kwargs: Any,
-) -> Response:
+def _request_with_cached_paths(session: Session, client: Client, request_impl: RequestFunc, method: str, path: str,
+                               token: str | None, **kwargs: Any) -> Response:
     """按缓存路径优先请求，失败时回退路径候选。"""
 
     response: Response | None = None
     for candidate_path in _request_path_candidates(client, path):
-        logger.debug("尝试上游请求路径: client_id={}, requested_path={}, candidate_path={}", client.id, path, candidate_path)
+        logger.debug("尝试上游请求路径: client_id={}, requested_path={}, candidate_path={}", client.id, path,
+                     candidate_path)
         response = _request_with_authorization_variants(
             session=session,
             client=client,
@@ -380,7 +332,7 @@ def _request_with_cached_paths(
             path=candidate_path,
             **kwargs,
         )
-        if response.status_code != 404:
+        if response is not None and response.status_code != 404:
             return response
 
     if response is not None:
@@ -399,14 +351,11 @@ def _request_with_cached_paths(
     )
 
 
-def _authorization_variants(
-    token: str,
-    preferred_style: str | None = None,
-) -> list[tuple[str, str]]:
+def _authorization_variants(token: str, preferred_style: str | None = None) -> list[tuple[str, str]]:
     """生成 Authorization 值候选列表。"""
 
     styles = ["plain", "bearer"]
-    if preferred_style in styles:
+    if preferred_style is not None and preferred_style in styles:
         styles.remove(preferred_style)
         styles.insert(0, preferred_style)
 
@@ -447,17 +396,12 @@ def _toggle_leading_slash(path: str) -> str:
     return path.lstrip("/") if path.startswith("/") else f"/{path}"
 
 
-def _cache_successful_request(
-    session: Session,
-    client: Client,
-    auth_header_style: str,
-    path: str,
-) -> None:
+def _cache_successful_request(session: Session, client: Client, auth_header_style: str, path: str) -> None:
     """缓存成功的认证头格式与请求路径。"""
 
     cache_path = path not in (LOGIN_PATH, REFRESH_PATH)
     if client.auth_header_style == auth_header_style and (
-        not cache_path or client.working_url_path == path
+            not cache_path or client.working_url_path == path
     ):
         return
 

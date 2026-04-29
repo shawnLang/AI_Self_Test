@@ -5,18 +5,16 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from typing import Any
 
-from loguru import logger
-from sqlmodel import Session, select
-
 from aiSelfTest.database import engine
 from aiSelfTest.models.task import Task, TaskExecutionStatus
 from aiSelfTest.services.task_execution import is_task_running, run_task_execution
+from loguru import logger
+from sqlmodel import Session, select
 
 try:  # pragma: no cover - 缺依赖时走 NoopTaskScheduler
     from apscheduler.schedulers.asyncio import AsyncIOScheduler
 except ImportError:  # pragma: no cover
     AsyncIOScheduler = None  # type: ignore[assignment]
-
 
 TASK_JOB_PREFIX = "task_"
 ZOMBIE_TASK_ERROR = "启动时检测到僵尸状态"
@@ -48,13 +46,7 @@ class NoopTaskScheduler:
 
         return None
 
-    def recover_zombie_tasks(
-        self,
-        session: Session,
-        *,
-        now: datetime | None = None,
-        stale_after_hours: int = 6,
-    ) -> int:
+    def recover_zombie_tasks(self, session: Session, now: datetime | None = None, stale_after_hours: int = 6) -> int:
         """复用公共僵尸任务恢复逻辑，保证缺依赖时仍能修正状态。"""
 
         return recover_zombie_tasks(session, now=now, stale_after_hours=stale_after_hours)
@@ -68,7 +60,7 @@ class TaskScheduler:
 
     available = True
 
-    def __init__(self, *, scheduler: Any | None = None) -> None:
+    def __init__(self, scheduler: Any | None = None) -> None:
         """初始化调度器，允许测试传入伪 scheduler。"""
 
         if scheduler is None and AsyncIOScheduler is None:
@@ -189,12 +181,7 @@ def sync_global_task_scheduler(task_id: int) -> None:
     _global_scheduler.sync_task(task_id)
 
 
-def recover_zombie_tasks(
-    session: Session,
-    *,
-    now: datetime | None = None,
-    stale_after_hours: int = 6,
-) -> int:
+def recover_zombie_tasks(session: Session, now: datetime | None = None, stale_after_hours: int = 6) -> int:
     """把启动时遗留的运行中僵尸任务转为失败态。"""
 
     current = now or datetime.now()

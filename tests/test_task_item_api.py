@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 from fastapi.testclient import TestClient
@@ -275,11 +276,16 @@ def test_task_item_submit_action_returns_success(
 ) -> None:
     _, _, task_id = _create_base_entities(app_client)
     task_item, _ = _seed_task_item(db_session, task_id)
+    task_item_model, _ = import_task_item_models()
 
     response = app_client.post("/api/task-items/action-submit", json={"task_item_id": task_item.id})
 
     assert response.status_code == 200
     assert response.json()["code"] == 0
+    stored = db_session.exec(select(task_item_model).where(task_item_model.id == task_item.id)).one()
+    assert stored.remote_state == "success"
+    assert stored.train_state == "saved"
+    assert _training_annotation_path(task_id, task_item.id).exists()
 
 
 def test_task_item_submit_rejected_item_is_blocked(
@@ -301,3 +307,9 @@ def import_task_item_models():
     from aiSelfTest.models.task import TaskItem, TaskItemData
 
     return TaskItem, TaskItemData
+
+
+def _training_annotation_path(task_id: int, task_item_id: int) -> Path:
+    from aiSelfTest.config import get_settings
+
+    return get_settings().data_dir / "training" / str(task_id) / str(task_item_id) / "annotation.json"

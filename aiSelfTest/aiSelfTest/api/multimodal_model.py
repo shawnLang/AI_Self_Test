@@ -132,7 +132,6 @@ def delete_multimodal_model_route(model_id: int, session: Session = Depends(get_
 @router.post("/detect", response_model=ApiResponse[MultimodalModelDetectData])
 def detect_multimodal_models_route(payload: MultimodalModelDetectRequest) -> ApiResponse[MultimodalModelDetectData]:
     """探测远端可用模型。"""
-    logger.info("API 请求开始探测多模态模型: endpoint_url={}", payload.endpoint_url)
     result = call_models_endpoint(
         endpoint_url=payload.endpoint_url,
         api_key=payload.api_key,
@@ -225,7 +224,6 @@ def list_multimodal_chat_sessions_route(model_id: int, session: Session = Depend
     MultimodalChatSessionListData]:
     """查询指定模型下的聊天会话列表。"""
 
-    logger.info("API 请求多模态聊天会话列表: model_id={}", model_id)
     model = get_multimodal_model_or_raise(session, model_id)
     sessions = session.exec(
         select(MultimodalChatSession)
@@ -274,7 +272,6 @@ def delete_multimodal_chat_session_route(session_id: int, session: Session = Dep
     MultimodalChatSessionDeleteData]:
     """删除聊天会话。"""
 
-    logger.info("API 请求删除多模态聊天会话: session_id={}", session_id)
     chat_session = get_chat_session_or_raise(session, session_id)
     message_rows = list_chat_message_rows(session, chat_session.id or 0)
     for message_row in message_rows:

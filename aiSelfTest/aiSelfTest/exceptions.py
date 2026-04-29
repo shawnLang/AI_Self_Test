@@ -3,13 +3,14 @@ from enum import IntEnum
 from functools import lru_cache
 import importlib
 import inspect
-from typing import Any
+from typing import Any, Union
 
 from fastapi import Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from loguru import logger
 from pydantic import BaseModel, ValidationError
+from pydantic_core import ErrorDetails
 
 
 class ErrorCode(IntEnum):
@@ -30,7 +31,7 @@ class ErrorCode(IntEnum):
 class AppException(Exception):
     """统一业务异常。"""
 
-    def __init__(self, *, code: ErrorCode | int, message: str, status_code: int) -> None:
+    def __init__(self, code: Union[ErrorCode, int], message: str, status_code: int) -> None:
         """保存业务错误码、用户可读消息和 HTTP 状态码。"""
 
         self.code = int(code)
@@ -107,7 +108,7 @@ def _get_schema_field_descriptions() -> dict[str, str]:
     return descriptions
 
 
-def parse_validation_error(error: dict[str, Any]) -> str:
+def parse_validation_error(error: ErrorDetails) -> str:
     """解析单个验证错误，返回人性化的错误消息。"""
     error_type = error.get("type", "")
     loc = error.get("loc", [])

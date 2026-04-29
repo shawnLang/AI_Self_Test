@@ -27,7 +27,7 @@ from aiSelfTest.services.multimodal_gateway import (
 from aiSelfTest.services.multimodal_model_crud import get_multimodal_model_or_raise
 from loguru import logger
 from requests import Response
-from sqlmodel import Session, select
+from sqlmodel import Session, select, asc
 
 RequestFunc = Callable[..., Response]
 
@@ -42,7 +42,7 @@ class ChatPreparation:
     new_messages: list[MultimodalChatMessagePayload]
 
 
-def stream_chat_with_multimodal_model(session: Session, model_id: int, payload: MultimodalChatRequest, *,
+def stream_chat_with_multimodal_model(session: Session, model_id: int, payload: MultimodalChatRequest,
                                       request_func: RequestFunc | None = None) -> Iterator[str]:
     """对指定模型配置发起流式聊天测试。"""
 
@@ -170,7 +170,7 @@ def prepare_chat_request(session: Session, model_id: int, payload: MultimodalCha
     )
 
 
-def persist_chat_turn(*, session: Session, prepared: ChatPreparation, reply: str,
+def persist_chat_turn(session: Session, prepared: ChatPreparation, reply: str,
                       used_url: str) -> MultimodalChatSession:
     """持久化一轮问答。"""
 
@@ -264,15 +264,16 @@ def _message_row_to_payload(message_row: MultimodalChatMessage) -> MultimodalCha
 
 def list_chat_message_rows(session: Session, session_id: int) -> list[MultimodalChatMessage]:
     """按顺序查询会话消息。"""
-
-    return session.exec(
+    statement = (
         select(MultimodalChatMessage)
         .where(MultimodalChatMessage.session_id == session_id)
         .order_by(
-            MultimodalChatMessage.sequence_no.asc(),
-            MultimodalChatMessage.id.asc(),
+            asc(MultimodalChatMessage.sequence_no),
+            asc(MultimodalChatMessage.id),
         )
-    ).all()
+    )
+
+    return session.exec(statement).all()
 
 
 def _format_sse_event(event: str, data: dict[str, Any]) -> str:

@@ -17,15 +17,27 @@ class FakeResponse:
         status_code: int,
         json_data: dict[str, Any] | None = None,
         text: str = "",
+        content: bytes = b"",
     ) -> None:
         self.status_code = status_code
         self._json_data = json_data or {}
         self.text = text or str(self._json_data)
+        self.content = content or self.text.encode()
 
     def json(self) -> dict[str, Any]:
         """返回预设 JSON 响应体。"""
 
         return self._json_data
+
+    def iter_content(self, chunk_size: int) -> list[bytes]:
+        """返回预设二进制响应体。"""
+
+        return [self.content]
+
+    def close(self) -> None:
+        """兼容 requests.Response.close。"""
+
+        return None
 
 
 def _unwrap_success(response_json: dict[str, Any]) -> Any:
@@ -356,6 +368,8 @@ def test_task_action_run_fetches_real_upstream_and_persists_task_items(
                     ],
                 },
             )
+        if url == "https://cdn.example.com/real-image.jpg":
+            return FakeResponse(200, text="fake image", content=b"fake image")
         raise AssertionError(f"未预期的请求: {method} {url}")
 
     monkeypatch.setattr(client_auth_module.requests, "request", fake_request)

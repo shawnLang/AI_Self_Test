@@ -20,7 +20,6 @@ from aiSelfTest.services.client import (
 from aiSelfTest.services.client_auth import authenticate_client
 from fastapi import APIRouter, Depends, status
 from loguru import logger
-from sqlalchemy.testing import in_
 from sqlmodel import Session, select, desc
 
 router = APIRouter(prefix="/clients")
@@ -100,14 +99,14 @@ def delete_client_route(client_id: int, session: Session = Depends(get_session),
         task_item_data_rows = []
         if task_ids:
             task_items = session.exec(
-                select(TaskItem).where(in_(TaskItem.task_id, task_ids))
+                select(TaskItem).where(TaskItem.task_id.in_(task_ids))
             ).all()
             task_item_ids = [
                 task_item.id for task_item in task_items if task_item.id is not None
             ]
             if task_item_ids:
                 task_item_data_rows = session.exec(
-                    select(TaskItemData).where(in_(TaskItemData.task_item_id, task_item_ids))
+                    select(TaskItemData).where(TaskItemData.task_item_id.in_(task_item_ids))
                 ).all()
 
         for task_item_data in task_item_data_rows:
