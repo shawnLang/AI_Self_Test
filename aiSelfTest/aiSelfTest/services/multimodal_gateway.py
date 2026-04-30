@@ -4,15 +4,15 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from typing import Any, Callable, Iterator
+from typing import Any, Iterator
 
+import requests
 from aiSelfTest.config import get_settings
 from aiSelfTest.exceptions import AppException, ErrorCode
 from loguru import logger
 from requests import Response
 from requests.exceptions import RequestException
 
-RequestFunc = Callable[..., Response]
 DETECT_PATH_SUFFIXES = ("/v1/models", "/models")
 CHAT_PATH_SUFFIXES = ("/v1/chat/completions", "/chat/completions")
 KNOWN_ENDPOINT_SUFFIXES = DETECT_PATH_SUFFIXES + CHAT_PATH_SUFFIXES
@@ -39,7 +39,7 @@ class StreamGatewayCallResult:
     chunks: Iterator[str]
 
 
-def call_models_endpoint(endpoint_url: str, api_key: str, request_func: RequestFunc) -> GatewayCallResult:
+def call_models_endpoint(endpoint_url: str, api_key: str) -> GatewayCallResult:
     """轮询模型列表接口，直到成功为止。"""
 
     errors: list[str] = []
@@ -47,8 +47,7 @@ def call_models_endpoint(endpoint_url: str, api_key: str, request_func: RequestF
         for headers in _auth_header_variants(api_key):
             try:
                 logger.info("开始探测模型列表: url={}", candidate_url)
-                response = request_func(
-                    "GET",
+                response = requests.get(
                     candidate_url,
                     headers=headers,
                     timeout=get_settings().request_timeout_seconds,
@@ -70,8 +69,7 @@ def call_models_endpoint(endpoint_url: str, api_key: str, request_func: RequestF
     )
 
 
-def call_chat_endpoint(endpoint_url: str, api_key: str, payload: dict[str, Any],
-                       request_func: RequestFunc) -> GatewayCallResult:
+def call_chat_endpoint(endpoint_url: str, api_key: str, payload: dict[str, Any]) -> GatewayCallResult:
     """轮询非流式聊天接口，直到成功为止。"""
 
     errors: list[str] = []
@@ -79,8 +77,7 @@ def call_chat_endpoint(endpoint_url: str, api_key: str, payload: dict[str, Any],
         for headers in _auth_header_variants(api_key):
             try:
                 logger.info("开始调用多模态模型: url={}", candidate_url)
-                response = request_func(
-                    "POST",
+                response = requests.post(
                     candidate_url,
                     headers=headers,
                     json=payload,
@@ -105,8 +102,7 @@ def call_chat_endpoint(endpoint_url: str, api_key: str, payload: dict[str, Any],
     )
 
 
-def _call_chat_endpoint_stream(endpoint_url: str, api_key: str, payload: dict[str, Any],
-                               request_func: RequestFunc) -> StreamGatewayCallResult:
+def _call_chat_endpoint_stream(endpoint_url: str, api_key: str, payload: dict[str, Any]) -> StreamGatewayCallResult:
     """轮询流式聊天接口，直到成功为止。"""
 
     errors: list[str] = []
@@ -114,8 +110,7 @@ def _call_chat_endpoint_stream(endpoint_url: str, api_key: str, payload: dict[st
         for headers in _auth_header_variants(api_key):
             try:
                 logger.info("开始流式调用多模态模型: url={}", candidate_url)
-                response = request_func(
-                    "POST",
+                response = requests.post(
                     candidate_url,
                     headers=headers,
                     json=payload,

@@ -9,4 +9,5 @@
 - 根目录 > sys登录授权 [刷新授权令牌](https://s.apifox.cn/a280cd73-6a74-456b-9287-c046c9c80d98/api-185862555.md):
 - 根目录 > openApi-监测设备影音文件 [分页查询影像数据2.0](https://s.apifox.cn/a280cd73-6a74-456b-9287-c046c9c80d98/api-442120553.md):
 - 根目录 > openApi-监测设备影音文件 [更新ai巡检结果](https://s.apifox.cn/a280cd73-6a74-456b-9287-c046c9c80d98/api-443744173.md):
-- 根目录 > openApi-监测设备影音文件 [根据fileId获取影音文件详情1.0](https://s.apifox.cn/a280cd73-6a74-456b-9287-c046c9c80d98/api-443974798.md): 
+- 根目录 > openApi-监测设备影音文件 [根据fileId获取影音文件详情1.0](https://s.apifox.cn/a280cd73-6a74-456b-9287-c046c9c80d98/api-443974798.md):
+- 根目录 > sys - sysTenantConfig控制器 [根据tenantCode获取信息](https://s.apifox.cn/a280cd73-6a74-456b-9287-c046c9c80d98/api-185862466.md): 

@@ -75,6 +75,7 @@ def _seed_task_fixture(app_client: TestClient, db_session: Session) -> tuple[int
         file_num="file-001",
         file_extension="jpg",
         file_url="https://example.com/image.jpg",
+        file_id="file-001",
         file_fid="fid-001",
         sp_name_list="白鹭",
         classify=1,
@@ -148,8 +149,9 @@ def _install_empty_upstream_mock(monkeypatch) -> None:
     """安装空分页结果上游桩，避免兼容接口测试访问真实网络。"""
 
     client_auth_module = importlib.import_module("aiSelfTest.services.client_auth")
+    task_execution_module = importlib.import_module("aiSelfTest.services.task_execution")
 
-    def fake_request(method: str, url: str, **_: Any) -> FakeResponse:
+    def fake_post(url: str, **_: Any) -> FakeResponse:
         if url.endswith("/auth/login"):
             return FakeResponse(
                 200,
@@ -170,9 +172,10 @@ def _install_empty_upstream_mock(monkeypatch) -> None:
                     "totalCurrent": 1,
                 },
             )
-        raise AssertionError(f"未预期的请求: {method} {url}")
+        raise AssertionError(f"未预期的 POST 请求: {url}")
 
-    monkeypatch.setattr(client_auth_module.requests, "request", fake_request)
+    monkeypatch.setattr(client_auth_module.requests, "post", fake_post)
+    monkeypatch.setattr(task_execution_module.requests, "post", fake_post)
 
 
 def import_task_models():

@@ -10,60 +10,18 @@ from fastapi.testclient import TestClient
 from sqlmodel import Session, select
 
 
-class FakeTaskExecutionSource:
-    """测试用上游数据源。"""
+class FakeResponse:
+    """简化 requests 响应对象。"""
 
-    def __init__(self) -> None:
-        self.records = [
-            {
-                "name": "image-1.jpg",
-                "deviceName": "camera-1",
-                "fileNum": "IMG-001",
-                "fileExtension": "jpg",
-                "fileUrl": "https://example.com/image-1.jpg",
-                "fileFid": "fid-image-1",
-                "spNameList": "白鹭",
-                "classify": 1,
-                "fileBmp": 1,
-                "idType": 0,
-                "recordData": [
-                    {
-                        "name": "白鹭",
-                        "score": 0.91,
-                        "trackIds": "1",
-                        "spAmount": 1,
-                        "bbox": [1, 2, 10, 12],
-                    }
-                ],
-            },
-            {
-                "name": "video-1.mp4",
-                "deviceName": "camera-2",
-                "fileNum": "VID-001",
-                "fileExtension": "mp4",
-                "fileUrl": "https://example.com/video-1.mp4",
-                "fileFid": "fid-video-1",
-                "spNameList": "苍鹭",
-                "classify": 2,
-                "fileBmp": 2,
-                "resultFileData": "https://example.com/result.json",
-                "idType": 0,
-                "recordData": [
-                    {
-                        "name": "苍鹭",
-                        "score": 0.88,
-                        "trackIds": "track-1",
-                        "spAmount": 1,
-                    }
-                ],
-            },
-        ]
+    def __init__(self, status_code: int, json_data: dict[str, Any]) -> None:
+        self.status_code = status_code
+        self._json_data = json_data
+        self.text = str(json_data)
 
-    def fetch_task_items(self, **_: Any) -> list[dict[str, Any]]:
-        return self.records
+    def json(self) -> dict[str, Any]:
+        """返回 JSON 响应体。"""
 
-    def fetch_task_item_detail(self, **_: Any) -> list[dict[str, Any]]:
-        return []
+        return self._json_data
 
 
 class FakeTaskFileDownloader:
@@ -78,16 +36,17 @@ class FakeTaskFileDownloader:
 
         task_item = kwargs["task_item"]
         source_record = kwargs["source_record"]
-        from aiSelfTest.services.task_execution import TaskDownloadResult
+        from aiSelfTest.services.client import get_client_or_raise
+        from aiSelfTest.services.task_execution import TaskDownloadResult, build_task_item_save_name
 
         item_dir = self.root / "task_files" / str(task_item.task_id) / str(task_item.id)
         item_dir.mkdir(parents=True, exist_ok=True)
-        extension = task_item.file_extension or "bin"
-        file_path = item_dir / f"original.{extension}"
+        client = get_client_or_raise(kwargs["session"], kwargs["task"].client_id)
+        file_path = item_dir / build_task_item_save_name(client, source_record, task_item.file_extension)
         file_path.write_bytes(f"downloaded:{source_record.file_fid}".encode())
         result_file_path = None
-        if source_record.result_file_data:
-            result_file_path = item_dir / "result.json"
+        if task_item.result_file_data:
+            result_file_path = item_dir / build_task_item_save_name(client, source_record, "datajson")
             result_file_path.write_text('{"tracks":[]}', encoding="utf-8")
         self.calls.append(source_record.file_fid)
         return TaskDownloadResult(
@@ -114,8 +73,10 @@ class FakeTaskItemRecognizer:
 def test_task_execution_ingests_records_and_advances_shared_trunk(
     app_client: TestClient,
     db_session: Session,
+    monkeypatch,
 ) -> None:
     task_id = _create_task(app_client, execution_mode="auto")
+    _install_task_upstream_mock(monkeypatch)
     run_task_execution = _import_run_task_execution()
     task_model, task_item_model, task_item_data_model = _import_task_models()
     downloader = FakeTaskFileDownloader(_get_data_dir())
@@ -124,7 +85,6 @@ def test_task_execution_ingests_records_and_advances_shared_trunk(
     result = run_task_execution(
         db_session,
         task_id,
-        source=FakeTaskExecutionSource(),
         downloader=downloader,
         recognizer=recognizer,
         now=datetime(2026, 4, 25, 10, 0, 0),
@@ -145,7 +105,9 @@ def test_task_execution_ingests_records_and_advances_shared_trunk(
     assert task.processed_count == 2
     assert task.last_run_started_at is not None
     assert task.last_pull_end_at is not None
+    assert {item.file_id for item in items} == {"101", "102"}
     assert {item.file_fid for item in items} == {"fid-image-1", "fid-video-1"}
+    assert {item.file_url for item in items} == {"image-1.jpg", "video-1.mp4"}
     assert {item.file_bmp for item in items} == {1, 2}
     assert all(item.down_state is True for item in items)
     assert all(item.llm_state == "success" for item in items)
@@ -155,15 +117,25 @@ def test_task_execution_ingests_records_and_advances_shared_trunk(
     assert set(downloader.calls) == {"fid-image-1", "fid-video-1"}
     assert len(recognizer.calls) == 2
     assert all(Path(item.file_path).exists() for item in items)
+    assert {Path(item.file_path).name for item in items} == {
+        "树蛙保护区_tenant-001_camera-1_camera_101_IMG-001_ai_确种.jpg",
+        "树蛙保护区_tenant-001_camera-2_camera_102_VID-001_ai_有效.mp4",
+    }
     video_item = next(item for item in items if item.file_bmp == 2)
-    assert (Path(video_item.file_path).parent / "result.json").exists()
+    assert video_item.result_file_data == "video-result.json"
+    assert (
+        Path(video_item.file_path).parent
+        / "树蛙保护区_tenant-001_camera-2_camera_102_VID-001_ai_有效.datajson"
+    ).exists()
 
 
 def test_manual_task_execution_downloads_without_llm_recognition(
     app_client: TestClient,
     db_session: Session,
+    monkeypatch,
 ) -> None:
     task_id = _create_task(app_client, execution_mode="manual")
+    _install_task_upstream_mock(monkeypatch)
     run_task_execution = _import_run_task_execution()
     _, task_item_model, task_item_data_model = _import_task_models()
     downloader = FakeTaskFileDownloader(_get_data_dir())
@@ -172,7 +144,6 @@ def test_manual_task_execution_downloads_without_llm_recognition(
     result = run_task_execution(
         db_session,
         task_id,
-        source=FakeTaskExecutionSource(),
         downloader=downloader,
         recognizer=recognizer,
         now=datetime(2026, 4, 25, 10, 0, 0),
@@ -195,15 +166,16 @@ def test_manual_task_execution_downloads_without_llm_recognition(
 def test_auto_confirm_submits_and_saves_training_payload(
     app_client: TestClient,
     db_session: Session,
+    monkeypatch,
 ) -> None:
     task_id = _create_task(app_client, execution_mode="auto", auto_confirm=True)
+    _install_task_upstream_mock(monkeypatch)
     run_task_execution = _import_run_task_execution()
     _, task_item_model, _ = _import_task_models()
 
     result = run_task_execution(
         db_session,
         task_id,
-        source=FakeTaskExecutionSource(),
         downloader=FakeTaskFileDownloader(_get_data_dir()),
         recognizer=FakeTaskItemRecognizer(),
         now=datetime(2026, 4, 25, 10, 0, 0),
@@ -226,18 +198,19 @@ def test_auto_confirm_submits_and_saves_training_payload(
 def test_task_execution_deduplicates_without_overwriting_existing_items(
     app_client: TestClient,
     db_session: Session,
+    monkeypatch,
 ) -> None:
     task_id = _create_task(app_client, execution_mode="auto")
+    records = _source_records()
+    _install_task_upstream_mock(monkeypatch, records)
     run_task_execution = _import_run_task_execution()
     task_model, task_item_model, _ = _import_task_models()
-    source = FakeTaskExecutionSource()
     downloader = FakeTaskFileDownloader(_get_data_dir())
     recognizer = FakeTaskItemRecognizer()
 
     first = run_task_execution(
         db_session,
         task_id,
-        source=source,
         downloader=downloader,
         recognizer=recognizer,
         now=datetime(2026, 4, 25, 10, 0, 0),
@@ -245,7 +218,6 @@ def test_task_execution_deduplicates_without_overwriting_existing_items(
     second = run_task_execution(
         db_session,
         task_id,
-        source=source,
         downloader=downloader,
         recognizer=recognizer,
         now=datetime(2026, 4, 25, 11, 0, 0),
@@ -265,6 +237,49 @@ def test_task_execution_deduplicates_without_overwriting_existing_items(
     assert task.skipped_count == 2
 
 
+def test_task_execution_uses_file_id_instead_of_file_fid_for_deduplication(
+    app_client: TestClient,
+    db_session: Session,
+    monkeypatch,
+) -> None:
+    task_id = _create_task(app_client, execution_mode="auto")
+    records = _source_records()
+    _install_task_upstream_mock(monkeypatch, records)
+    run_task_execution = _import_run_task_execution()
+    _, task_item_model, _ = _import_task_models()
+    downloader = FakeTaskFileDownloader(_get_data_dir())
+    recognizer = FakeTaskItemRecognizer()
+
+    first = run_task_execution(
+        db_session,
+        task_id,
+        downloader=downloader,
+        recognizer=recognizer,
+        now=datetime(2026, 4, 25, 10, 0, 0),
+    )
+    records[0]["fileFid"] = "fid-image-1-changed"
+    records[1]["id"] = 103
+    records[1]["fileFid"] = "fid-image-1"
+
+    second = run_task_execution(
+        db_session,
+        task_id,
+        downloader=downloader,
+        recognizer=recognizer,
+        now=datetime(2026, 4, 25, 11, 0, 0),
+    )
+
+    items = db_session.exec(
+        select(task_item_model).where(task_item_model.task_id == task_id)
+    ).all()
+
+    assert first.inserted_count == 2
+    assert second.inserted_count == 1
+    assert second.skipped_count == 1
+    assert {item.file_id for item in items} == {"101", "102", "103"}
+    assert len([item for item in items if item.file_fid == "fid-image-1"]) == 2
+
+
 def test_task_execution_skips_reentrant_running_task(
     app_client: TestClient,
     db_session: Session,
@@ -281,7 +296,6 @@ def test_task_execution_skips_reentrant_running_task(
     result = run_task_execution(
         db_session,
         task_id,
-        source=FakeTaskExecutionSource(),
         now=datetime(2026, 4, 25, 10, 0, 0),
     )
 
@@ -350,6 +364,123 @@ def _get_data_dir() -> Path:
     from aiSelfTest.config import get_settings
 
     return get_settings().data_dir
+
+
+def _source_records() -> list[dict[str, Any]]:
+    return [
+        {
+            "id": 101,
+            "name": "image-1.jpg",
+            "deName": "camera-1",
+            "fileNum": "IMG-001",
+            "fileExtension": "jpg",
+            "fileUrl": "image-1.jpg",
+            "fileFid": "fid-image-1",
+            "spNameList": "白鹭",
+            "classify": 1,
+            "fileBmp": 1,
+            "module": "camera",
+            "idType": 0,
+        },
+        {
+            "id": 102,
+            "name": "video-1.mp4",
+            "deName": "camera-2",
+            "fileNum": "VID-001",
+            "fileExtension": "mp4",
+            "fileUrl": "video-1.mp4",
+            "fileFid": "fid-video-1",
+            "spNameList": "苍鹭",
+            "classify": 2,
+            "fileBmp": 2,
+            "module": "camera",
+            "idType": 0,
+        },
+    ]
+
+
+def _detail_records(file_id: str) -> list[dict[str, Any]]:
+    rows_by_file_id = {
+        "101": [
+            {
+                "name": "白鹭",
+                "score": 0.91,
+                "trackIds": "1",
+                "spAmount": 1,
+                "minx": 1,
+                "miny": 2,
+                "maxx": 10,
+                "maxy": 12,
+            }
+        ],
+        "102": [
+            {
+                "name": "苍鹭",
+                "score": 0.88,
+                "trackIds": "track-1",
+                "spAmount": 1,
+            }
+        ],
+        "103": [
+            {
+                "name": "苍鹭",
+                "score": 0.77,
+                "trackIds": "track-2",
+                "spAmount": 1,
+            }
+        ],
+    }
+    return rows_by_file_id[file_id]
+
+
+def _install_task_upstream_mock(monkeypatch, records: list[dict[str, Any]] | None = None) -> list[str]:
+    from aiSelfTest.services import task_execution
+
+    page_records = records if records is not None else _source_records()
+    calls: list[str] = []
+
+    def fake_post(url: str, **kwargs: Any) -> FakeResponse:
+        calls.append(url)
+        if url.endswith("/auth/login"):
+            return FakeResponse(
+                200,
+                {
+                    "accessToken": "task-access-token",
+                    "refreshToken": "task-refresh-token",
+                    "expiresIn": 3600,
+                    "tenantCode": "tenant-001",
+                },
+            )
+        if url.endswith("/openApi/icFile/findFilePage"):
+            assert kwargs["headers"] == {"Authorization": "task-access-token"}
+            return FakeResponse(
+                200,
+                {
+                    "results": page_records,
+                    "total": len(page_records),
+                    "size": 100,
+                    "current": 1,
+                    "totalCurrent": 1,
+                },
+            )
+        raise AssertionError(f"未预期的 POST 请求: {url}")
+
+    def fake_get(url: str, **kwargs: Any) -> FakeResponse:
+        calls.append(url)
+        if url.endswith("/sys/sysTenantConfig/getByCode/tenant-001"):
+            assert kwargs["headers"] == {"Authorization": "task-access-token"}
+            return FakeResponse(200, {"tenantCode": "tenant-001", "name": "树蛙保护区"})
+        if url.endswith("/openApi/icFile/getResultByFileId1"):
+            file_id = str(kwargs["params"]["fileId"])
+            payload: dict[str, Any] = {"recordData": _detail_records(file_id)}
+            if file_id == "102":
+                payload["resultFileData"] = "video-result.json"
+            return FakeResponse(200, payload)
+        raise AssertionError(f"未预期的 GET 请求: {url}")
+
+    monkeypatch.setattr(task_execution.requests, "post", fake_post)
+    monkeypatch.setattr(task_execution.requests, "get", fake_get)
+    return calls
 
 
 def _unwrap_success(response_json: dict[str, Any]) -> Any:

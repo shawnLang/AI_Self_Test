@@ -5,9 +5,8 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Callable, Iterator
+from typing import Any, Iterator
 
-import requests
 from aiSelfTest.exceptions import AppException, ErrorCode
 from aiSelfTest.models.multimodal_chat import (
     MultimodalChatMessage,
@@ -26,10 +25,7 @@ from aiSelfTest.services.multimodal_gateway import (
 )
 from aiSelfTest.services.multimodal_model_crud import get_multimodal_model_or_raise
 from loguru import logger
-from requests import Response
 from sqlmodel import Session, select, asc
-
-RequestFunc = Callable[..., Response]
 
 
 @dataclass(frozen=True)
@@ -42,11 +38,9 @@ class ChatPreparation:
     new_messages: list[MultimodalChatMessagePayload]
 
 
-def stream_chat_with_multimodal_model(session: Session, model_id: int, payload: MultimodalChatRequest,
-                                      request_func: RequestFunc | None = None) -> Iterator[str]:
+def stream_chat_with_multimodal_model(session: Session, model_id: int, payload: MultimodalChatRequest) -> Iterator[str]:
     """对指定模型配置发起流式聊天测试。"""
 
-    request_impl = request_func or requests.request
     prepared = prepare_chat_request(session, model_id, payload)
     logger.info(
         "多模态流式聊天准备完成: model_id={}, existing_session_id={}, new_message_count={}, context_message_count={}",
@@ -78,7 +72,6 @@ def stream_chat_with_multimodal_model(session: Session, model_id: int, payload: 
                 endpoint_url=prepared.model.endpoint_url,
                 api_key=prepared.model.api_key,
                 payload=normalized_payload,
-                request_func=request_impl,
             )
             reply_parts: list[str] = []
             for delta_text in result.chunks:

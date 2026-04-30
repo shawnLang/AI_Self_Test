@@ -59,6 +59,8 @@ class ClientResponse(BaseModel):
 
     id: int
     name: str
+    tenant_code: str = Field(alias="tenantCode")
+    tenant_name: str = Field(alias="tenantName")
     api_url: str = Field(alias="apiUrl")
     account: str
     status: ClientStatusValue
@@ -75,6 +77,8 @@ class ClientResponse(BaseModel):
         return cls(
             id=client.id or 0,
             name=client.name,
+            tenant_code=client.tenant_code,
+            tenant_name=client.tenant_name,
             api_url=client.api_url,
             account=client.account,
             status=client.status,

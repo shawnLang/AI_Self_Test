@@ -165,11 +165,11 @@ def test_detect_multimodal_models_tries_candidate_urls_and_returns_models(
     app_client: TestClient,
     monkeypatch,
 ) -> None:
-    service_module = importlib.import_module("aiSelfTest.services.multimodal_model_crud")
+    service_module = importlib.import_module("aiSelfTest.services.multimodal_gateway")
     calls: list[tuple[str, str, dict[str, str] | None]] = []
 
-    def fake_request(method: str, url: str, **kwargs: Any) -> FakeResponse:
-        calls.append((method, url, kwargs.get("headers")))
+    def fake_get(url: str, **kwargs: Any) -> FakeResponse:
+        calls.append(("GET", url, kwargs.get("headers")))
         if url.endswith("/v1/models"):
             return FakeResponse(
                 200,
@@ -180,9 +180,9 @@ def test_detect_multimodal_models_tries_candidate_urls_and_returns_models(
                     ]
                 },
             )
-        raise AssertionError(f"未预期的请求: {method} {url}")
+        raise AssertionError(f"未预期的请求: GET {url}")
 
-    monkeypatch.setattr(service_module.requests, "request", fake_request)
+    monkeypatch.setattr(service_module.requests, "get", fake_get)
 
     response = app_client.post(
         "/api/multimodal-models/detect",
@@ -205,10 +205,10 @@ def test_detect_multimodal_models_supports_x_api_key_fallback(
     app_client: TestClient,
     monkeypatch,
 ) -> None:
-    service_module = importlib.import_module("aiSelfTest.services.multimodal_model_crud")
+    service_module = importlib.import_module("aiSelfTest.services.multimodal_gateway")
     headers_seen: list[dict[str, str] | None] = []
 
-    def fake_request(method: str, url: str, **kwargs: Any) -> FakeResponse:
+    def fake_get(url: str, **kwargs: Any) -> FakeResponse:
         headers = kwargs.get("headers")
         headers_seen.append(headers)
         if headers == {"Authorization": "Bearer model-secret-key"}:
@@ -217,7 +217,7 @@ def test_detect_multimodal_models_supports_x_api_key_fallback(
             return FakeResponse(200, {"models": ["gpt-4.1-mini"]})
         raise AssertionError(f"未预期的认证头: {headers}")
 
-    monkeypatch.setattr(service_module.requests, "request", fake_request)
+    monkeypatch.setattr(service_module.requests, "get", fake_get)
 
     response = app_client.post(
         "/api/multimodal-models/detect",
@@ -247,11 +247,10 @@ def test_chat_with_multimodal_model_normalizes_attachments_and_returns_reply(
     )
     model_id = _unwrap_success(create_response.json())["id"]
 
-    service_module = importlib.import_module("aiSelfTest.services.multimodal_chat")
+    service_module = importlib.import_module("aiSelfTest.services.multimodal_gateway")
     captured_payloads: list[dict[str, Any]] = []
 
-    def fake_request(method: str, url: str, **kwargs: Any) -> FakeResponse:
-        assert method == "POST"
+    def fake_post(url: str, **kwargs: Any) -> FakeResponse:
         assert url == "https://gateway.example.com/v1/chat/completions"
         captured_payloads.append(kwargs["json"])
         assert kwargs["headers"] == {"Authorization": "Bearer model-secret-key"}
@@ -260,7 +259,7 @@ def test_chat_with_multimodal_model_normalizes_attachments_and_returns_reply(
             {"choices": [{"message": {"content": "这是模型回复"}}]},
         )
 
-    monkeypatch.setattr(service_module.requests, "request", fake_request)
+    monkeypatch.setattr(service_module.requests, "post", fake_post)
 
     response = app_client.post(
         f"/api/multimodal-models/chat/{model_id}",
@@ -337,12 +336,12 @@ def test_chat_with_multimodal_model_supports_output_text_response_shape(
     )
     model_id = _unwrap_success(create_response.json())["id"]
 
-    service_module = importlib.import_module("aiSelfTest.services.multimodal_chat")
+    service_module = importlib.import_module("aiSelfTest.services.multimodal_gateway")
 
-    def fake_request(method: str, url: str, **kwargs: Any) -> FakeResponse:
+    def fake_post(url: str, **kwargs: Any) -> FakeResponse:
         return FakeResponse(200, {"output_text": "这是 output_text 回复"})
 
-    monkeypatch.setattr(service_module.requests, "request", fake_request)
+    monkeypatch.setattr(service_module.requests, "post", fake_post)
 
     response = app_client.post(
         f"/api/multimodal-models/chat/{model_id}",
@@ -364,9 +363,9 @@ def test_chat_with_multimodal_model_supports_output_content_response_shape(
     )
     model_id = _unwrap_success(create_response.json())["id"]
 
-    service_module = importlib.import_module("aiSelfTest.services.multimodal_chat")
+    service_module = importlib.import_module("aiSelfTest.services.multimodal_gateway")
 
-    def fake_request(method: str, url: str, **kwargs: Any) -> FakeResponse:
+    def fake_post(url: str, **kwargs: Any) -> FakeResponse:
         return FakeResponse(
             200,
             {
@@ -380,7 +379,7 @@ def test_chat_with_multimodal_model_supports_output_content_response_shape(
             },
         )
 
-    monkeypatch.setattr(service_module.requests, "request", fake_request)
+    monkeypatch.setattr(service_module.requests, "post", fake_post)
 
     response = app_client.post(
         f"/api/multimodal-models/chat/{model_id}",
@@ -403,16 +402,16 @@ def test_chat_with_multimodal_model_creates_session_and_persists_messages(
     )
     model_id = _unwrap_success(create_response.json())["id"]
 
-    service_module = importlib.import_module("aiSelfTest.services.multimodal_chat")
+    service_module = importlib.import_module("aiSelfTest.services.multimodal_gateway")
 
-    def fake_request(method: str, url: str, **kwargs: Any) -> FakeResponse:
+    def fake_post(url: str, **kwargs: Any) -> FakeResponse:
         assert kwargs["json"]["messages"][0]["content"] == "第一轮问题"
         return FakeResponse(
             200,
             {"choices": [{"message": {"content": "第一轮回答"}}]},
         )
 
-    monkeypatch.setattr(service_module.requests, "request", fake_request)
+    monkeypatch.setattr(service_module.requests, "post", fake_post)
 
     response = app_client.post(
         f"/api/multimodal-models/chat/{model_id}",
@@ -450,18 +449,18 @@ def test_chat_with_multimodal_model_uses_stored_session_context(
     )
     model_id = _unwrap_success(create_response.json())["id"]
 
-    service_module = importlib.import_module("aiSelfTest.services.multimodal_chat")
+    service_module = importlib.import_module("aiSelfTest.services.multimodal_gateway")
     captured_payloads: list[dict[str, Any]] = []
     replies = iter(["第一轮回答", "第二轮回答"])
 
-    def fake_request(method: str, url: str, **kwargs: Any) -> FakeResponse:
+    def fake_post(url: str, **kwargs: Any) -> FakeResponse:
         captured_payloads.append(kwargs["json"])
         return FakeResponse(
             200,
             {"choices": [{"message": {"content": next(replies)}}]},
         )
 
-    monkeypatch.setattr(service_module.requests, "request", fake_request)
+    monkeypatch.setattr(service_module.requests, "post", fake_post)
 
     first_response = app_client.post(
         f"/api/multimodal-models/chat/{model_id}",
@@ -495,15 +494,15 @@ def test_list_and_detail_multimodal_chat_sessions(
     )
     model_id = _unwrap_success(create_response.json())["id"]
 
-    service_module = importlib.import_module("aiSelfTest.services.multimodal_chat")
+    service_module = importlib.import_module("aiSelfTest.services.multimodal_gateway")
 
-    def fake_request(method: str, url: str, **kwargs: Any) -> FakeResponse:
+    def fake_post(url: str, **kwargs: Any) -> FakeResponse:
         return FakeResponse(
             200,
             {"choices": [{"message": {"content": "列表详情测试回复"}}]},
         )
 
-    monkeypatch.setattr(service_module.requests, "request", fake_request)
+    monkeypatch.setattr(service_module.requests, "post", fake_post)
 
     chat_response = app_client.post(
         f"/api/multimodal-models/chat/{model_id}",
@@ -538,15 +537,15 @@ def test_delete_multimodal_chat_session_removes_session_and_messages(
     )
     model_id = _unwrap_success(create_response.json())["id"]
 
-    service_module = importlib.import_module("aiSelfTest.services.multimodal_chat")
+    service_module = importlib.import_module("aiSelfTest.services.multimodal_gateway")
 
-    def fake_request(method: str, url: str, **kwargs: Any) -> FakeResponse:
+    def fake_post(url: str, **kwargs: Any) -> FakeResponse:
         return FakeResponse(
             200,
             {"choices": [{"message": {"content": "待删除的回复"}}]},
         )
 
-    monkeypatch.setattr(service_module.requests, "request", fake_request)
+    monkeypatch.setattr(service_module.requests, "post", fake_post)
 
     chat_response = app_client.post(
         f"/api/multimodal-models/chat/{model_id}",
@@ -582,9 +581,9 @@ def test_stream_chat_with_multimodal_model_returns_sse_and_persists_messages(
     )
     model_id = _unwrap_success(create_response.json())["id"]
 
-    service_module = importlib.import_module("aiSelfTest.services.multimodal_chat")
+    service_module = importlib.import_module("aiSelfTest.services.multimodal_gateway")
 
-    def fake_request(method: str, url: str, **kwargs: Any) -> FakeResponse:
+    def fake_post(url: str, **kwargs: Any) -> FakeResponse:
         assert kwargs["json"]["stream"] is True
         return FakeResponse(
             200,
@@ -599,7 +598,7 @@ def test_stream_chat_with_multimodal_model_returns_sse_and_persists_messages(
             ],
         )
 
-    monkeypatch.setattr(service_module.requests, "request", fake_request)
+    monkeypatch.setattr(service_module.requests, "post", fake_post)
 
     with app_client.stream(
         "POST",

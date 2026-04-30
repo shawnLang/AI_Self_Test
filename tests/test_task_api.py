@@ -235,6 +235,7 @@ def test_delete_task_cascades_task_items(
         file_num="file-001",
         file_extension="jpg",
         file_url="https://example.com/file.jpg",
+        file_id="file-001",
         file_fid="fid-001",
         sp_name_list="白鹭",
         classify=1,
@@ -305,9 +306,10 @@ def test_task_action_run_fetches_real_upstream_and_persists_task_items(
     task_id = _unwrap_success(create_response.json())["id"]
     calls: list[tuple[str, str, dict[str, Any]]] = []
     client_auth_module = importlib.import_module("aiSelfTest.services.client_auth")
+    task_execution_module = importlib.import_module("aiSelfTest.services.task_execution")
 
-    def fake_request(method: str, url: str, **kwargs: Any) -> FakeResponse:
-        calls.append((method, url, kwargs))
+    def fake_post(url: str, **kwargs: Any) -> FakeResponse:
+        calls.append(("POST", url, kwargs))
         if url.endswith("/auth/login"):
             return FakeResponse(
                 200,
@@ -348,6 +350,10 @@ def test_task_action_run_fetches_real_upstream_and_persists_task_items(
                     "totalCurrent": 1,
                 },
             )
+        raise AssertionError(f"未预期的 POST 请求: {url}")
+
+    def fake_upstream_get(url: str, **kwargs: Any) -> FakeResponse:
+        calls.append(("GET", url, kwargs))
         if url.endswith("/openApi/icFile/getResultByFileId1"):
             assert kwargs["params"] == {"fileId": "101"}
             return FakeResponse(
@@ -370,9 +376,11 @@ def test_task_action_run_fetches_real_upstream_and_persists_task_items(
             )
         if url == "https://cdn.example.com/real-image.jpg":
             return FakeResponse(200, text="fake image", content=b"fake image")
-        raise AssertionError(f"未预期的请求: {method} {url}")
+        raise AssertionError(f"未预期的 GET 请求: {url}")
 
-    monkeypatch.setattr(client_auth_module.requests, "request", fake_request)
+    monkeypatch.setattr(client_auth_module.requests, "post", fake_post)
+    monkeypatch.setattr(task_execution_module.requests, "post", fake_post)
+    monkeypatch.setattr(task_execution_module.requests, "get", fake_upstream_get)
 
     response = app_client.post(f"/api/tasks/action-run/{task_id}")
 
@@ -399,8 +407,9 @@ def _install_empty_upstream_mock(monkeypatch) -> None:
     """安装空分页结果上游桩，避免动作契约测试访问真实网络。"""
 
     client_auth_module = importlib.import_module("aiSelfTest.services.client_auth")
+    task_execution_module = importlib.import_module("aiSelfTest.services.task_execution")
 
-    def fake_request(method: str, url: str, **_: Any) -> FakeResponse:
+    def fake_post(url: str, **_: Any) -> FakeResponse:
         if url.endswith("/auth/login"):
             return FakeResponse(
                 200,
@@ -421,9 +430,10 @@ def _install_empty_upstream_mock(monkeypatch) -> None:
                     "totalCurrent": 1,
                 },
             )
-        raise AssertionError(f"未预期的请求: {method} {url}")
+        raise AssertionError(f"未预期的 POST 请求: {url}")
 
-    monkeypatch.setattr(client_auth_module.requests, "request", fake_request)
+    monkeypatch.setattr(client_auth_module.requests, "post", fake_post)
+    monkeypatch.setattr(task_execution_module.requests, "post", fake_post)
 
 
 def import_task_models():

@@ -3,8 +3,6 @@
 from __future__ import annotations
 
 from datetime import datetime
-
-import requests
 from aiSelfTest.database import get_session
 from aiSelfTest.exceptions import AppException, ErrorCode
 from aiSelfTest.models import MultimodalModel, MultimodalChatSession
@@ -135,7 +133,6 @@ def detect_multimodal_models_route(payload: MultimodalModelDetectRequest) -> Api
     result = call_models_endpoint(
         endpoint_url=payload.endpoint_url,
         api_key=payload.api_key,
-        request_func=requests,
     )
     models = extract_model_names(result.payload)
     recommended_model = models[0] if models else ""
@@ -174,7 +171,6 @@ def chat_with_multimodal_model_route(model_id: int, payload: MultimodalChatReque
         endpoint_url=prepared.model.endpoint_url,
         api_key=prepared.model.api_key,
         payload=normalized_payload,
-        request_func=requests.request,
     )
     reply = extract_chat_reply(result.payload)
     if not reply:

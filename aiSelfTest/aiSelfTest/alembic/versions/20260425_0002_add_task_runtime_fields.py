@@ -1,4 +1,4 @@
-"""补充任务运行游标字段与 task_item 唯一约束。"""
+"""补充任务运行游标字段。"""
 
 from __future__ import annotations
 
@@ -27,25 +27,12 @@ def upgrade() -> None:
         if "skipped_count" not in task_columns:
             batch_op.add_column(sa.Column("skipped_count", sa.Integer(), nullable=False, server_default="0"))
 
-    unique_constraints = {constraint["name"] for constraint in inspector.get_unique_constraints("task_item")}
-    if "uq_task_item_task_id_file_fid" not in unique_constraints:
-        with op.batch_alter_table("task_item") as batch_op:
-            batch_op.create_unique_constraint(
-                "uq_task_item_task_id_file_fid",
-                ["task_id", "file_fid"],
-            )
-
 
 def downgrade() -> None:
-    """回滚任务运行字段与唯一约束。"""
+    """回滚任务运行字段。"""
 
     bind = op.get_bind()
     inspector = sa.inspect(bind)
-
-    unique_constraints = {constraint["name"] for constraint in inspector.get_unique_constraints("task_item")}
-    if "uq_task_item_task_id_file_fid" in unique_constraints:
-        with op.batch_alter_table("task_item") as batch_op:
-            batch_op.drop_constraint("uq_task_item_task_id_file_fid", type_="unique")
 
     task_columns = {column["name"] for column in inspector.get_columns("task")}
     with op.batch_alter_table("task") as batch_op:

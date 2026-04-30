@@ -188,6 +188,7 @@ def test_delete_client_cascades_related_task_data(
         file_num="file-001",
         file_extension="jpg",
         file_url="https://example.com/file.jpg",
+        file_id="file-001",
         file_fid="fid-001",
         sp_name_list="树蛙",
         classify=1,

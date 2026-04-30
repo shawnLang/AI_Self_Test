@@ -63,7 +63,7 @@ def test_task_create_initializes_runtime_cursor_fields(
     assert task.skipped_count == 0
 
 
-def test_task_item_same_task_same_file_fid_must_be_unique(
+def test_task_item_same_task_same_file_id_must_be_unique(
     app_client: TestClient,
     db_session: Session,
 ) -> None:
@@ -77,6 +77,7 @@ def test_task_item_same_task_same_file_fid_must_be_unique(
         file_num="file-001",
         file_extension="jpg",
         file_url="https://example.com/file.jpg",
+        file_id="file-001",
         file_fid="fid-001",
         sp_name_list="白鹭",
         classify=1,
@@ -92,7 +93,8 @@ def test_task_item_same_task_same_file_fid_must_be_unique(
         file_num="file-002",
         file_extension="jpg",
         file_url="https://example.com/file-2.jpg",
-        file_fid="fid-001",
+        file_id="file-001",
+        file_fid="fid-002",
         sp_name_list="苍鹭",
         classify=1,
         file_bmp=1,

@@ -19,6 +19,8 @@ class Client(SQLModel, table=True):
 
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(max_length=200, description="项目名称")
+    tenant_code: str = Field(default="", max_length=100, description="租户编码")
+    tenant_name: str = Field(default="", max_length=200, description="租户名称")
     api_url: str = Field(max_length=1000, description="api地址")
     account: str = Field(max_length=50, description="账号")
     password: str = Field(max_length=200, description="密码")

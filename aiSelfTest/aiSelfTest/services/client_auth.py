@@ -24,6 +24,7 @@ UPSTREAM_REQUEST_RETRY_ATTEMPTS = 3
 UPSTREAM_RETRYABLE_STATUS_CODES = {429, 500, 502, 503, 504}
 LOGIN_PATH = "/auth/login"
 REFRESH_PATH = "/auth/refresh"
+TENANT_CONFIG_PATH_TEMPLATE = "/sys/sysTenantConfig/getByCode/{code}"
 UPSTREAM_FILE_PAGE_PATH = "/openApi/icFile/findFilePage"
 UPSTREAM_FILE_DETAIL_PATH = "/openApi/icFile/getResultByFileId1"
 
@@ -174,6 +175,10 @@ class ClientApi:
             raise AppException(code=ErrorCode.PERMISSION_DENIED, message="客户端已停用，无法进行认证", status_code=400)
 
         if not force_reauthenticate and ClientUtils.is_access_token_usable(self.client):
+            if self._fill_tenant_name_once():
+                self.session.add(self.client)
+                self.session.commit()
+                self.session.refresh(self.client)
             return ClientAuthenticationResult(client=self.client, used_strategy="reuse")
 
         if self.client.refresh_token:
@@ -195,6 +200,7 @@ class ClientApi:
         access_token = payload.get("accessToken")
         refresh_token = payload.get("refreshToken")
         expires_in = payload.get("expiresIn")
+        tenant_code = str(payload.get("tenantCode") or "").strip()
 
         if not access_token:
             raise AppException(code=ErrorCode.AUTH_FAILED, message="上游认证返回缺少 accessToken", status_code=502)
@@ -202,9 +208,57 @@ class ClientApi:
         self.client.access_token = str(access_token)
         self.client.refresh_token = str(refresh_token or self.client.refresh_token or "")
         self.client.expires_at = ClientUtils.resolve_expires_at(expires_in)
+        if tenant_code and not self.client.tenant_code:
+            self.client.tenant_code = tenant_code
+        self._fill_tenant_name_once()
         self.session.add(self.client)
         self.session.commit()
         self.session.refresh(self.client)
+
+    def _fill_tenant_name_once(self) -> bool:
+        """租户名称只在未写入时按 tenantCode 获取一次。"""
+
+        if (
+                self.client is None
+                or getattr(self.client, "tenant_name", "")
+                or not getattr(self.client, "tenant_code", "")
+        ):
+            return False
+
+        path = TENANT_CONFIG_PATH_TEMPLATE.format(code=self.client.tenant_code)
+        url = ClientUtils.build_url(self.client.api_url, path)
+        try:
+            response = requests.get(
+                url,
+                headers={"Authorization": self.client.access_token},
+                timeout=get_settings().request_timeout_seconds,
+            )
+        except RequestException as exc:
+            logger.warning("租户信息请求异常: client_id={}, tenant_code={}, error={}",
+                           self.client_id, self.client.tenant_code, exc)
+            return False
+
+        if response.status_code != 200:
+            logger.warning(
+                "租户信息请求失败: client_id={}, tenant_code={}, status={}, body={}",
+                self.client_id,
+                self.client.tenant_code,
+                response.status_code,
+                response.text,
+            )
+            return False
+
+        try:
+            payload = response.json()
+        except ValueError:
+            logger.warning("租户信息接口返回非 JSON: client_id={}, body={}", self.client_id, response.text)
+            return False
+
+        tenant_name = str(payload.get("name") or "").strip()
+        if tenant_name:
+            self.client.tenant_name = tenant_name
+            return True
+        return False
 
     def clear_client_tokens(self):
         """

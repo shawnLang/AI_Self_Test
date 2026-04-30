@@ -3,14 +3,10 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Callable
 
 from aiSelfTest.exceptions import AppException, ErrorCode
 from aiSelfTest.models.multimodal_model import MultimodalModel
-from requests import Response
 from sqlmodel import Session
-
-RequestFunc = Callable[..., Response]
 
 
 def resolve_detected_at(detected_models: list[str], detected_models_updated: bool,

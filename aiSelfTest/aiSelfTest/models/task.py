@@ -85,7 +85,7 @@ class TaskItem(SQLModel, table=True):
 
     __tablename__ = "task_item"
     __table_args__ = (
-        UniqueConstraint("task_id", "file_fid", name="uq_task_item_task_id_file_fid"),
+        UniqueConstraint("task_id", "file_id", name="uq_task_item_task_id_file_id"),
     )
 
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -99,6 +99,7 @@ class TaskItem(SQLModel, table=True):
     file_num: str = Field(max_length=50, description="文件编号")
     file_extension: str = Field(max_length=10, description="文件扩展后缀名")
     file_url: str = Field(max_length=200, description="文件url")
+    file_id: Optional[str] = Field(default=None, max_length=50, description="上游文件ID")
     file_fid: str = Field(max_length=50, description="文件fid")
     sp_name_list: str = Field(max_length=100, description="识别名称结果")
     classify: int = Field(default=1, description="识别类型")
