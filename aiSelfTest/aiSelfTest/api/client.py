@@ -32,7 +32,7 @@ def list_client_route(session: Session = Depends(get_session)) -> ApiResponse[Cl
     clients = session.exec(select(Client).order_by(desc(Client.id))).all()
     items = [ClientResponse.from_model(client) for client in clients]
     logger.info(f"api 客户端列表查询完成: count={len(clients)}")
-    return success_res(data=items)
+    return success_res(data=ClientListData(items=items))
 
 
 @router.get("/detail/{client_id}", response_model=ApiResponse[ClientResponse])
@@ -134,7 +134,6 @@ def authenticate_client_route(client_id: int, session: Session = Depends(get_ses
     ClientAuthenticateData]:
     """手动触发客户端认证。"""
 
-    logger.info(f"API 请求认证客户端: client_id={client_id}")
     auth_result = authenticate_client(session, client_id)
     auth_data = ClientAuthenticateData(
         client=ClientResponse.from_model(auth_result.client),

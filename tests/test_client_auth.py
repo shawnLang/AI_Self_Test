@@ -4,9 +4,12 @@ from __future__ import annotations
 
 import importlib
 import time
+from types import SimpleNamespace
 from typing import Any
 
+import pytest
 from fastapi.testclient import TestClient
+from requests.exceptions import ConnectTimeout
 from sqlmodel import Session, select
 
 
@@ -350,6 +353,98 @@ def test_perform_authenticated_request_reauthenticates_when_token_invalid(
     ).one()
     assert refreshed_client.access_token == "fresh-token"
     assert any(url.endswith("/auth/login") for _, url, _ in calls)
+
+
+def test_client_api_retries_find_file_page_on_retryable_status(
+    monkeypatch,
+) -> None:
+    client = SimpleNamespace(
+        id=1,
+        api_url="https://example.com",
+        status="启用",
+        access_token="cached-token",
+        refresh_token="refresh-token",
+        expires_at=_future_timestamp(),
+    )
+    client_auth_module = importlib.import_module("aiSelfTest.services.client_auth")
+    api = client_auth_module.ClientApi(object(), client.id)
+    api.client = client
+    calls: list[str] = []
+
+    def fake_post(url: str, **kwargs):
+        calls.append(url)
+        assert kwargs["headers"]["Authorization"] == "cached-token"
+        if len(calls) == 1:
+            return FakeResponse(503, {"message": "service unavailable"})
+        return FakeResponse(200, {"records": []})
+
+    monkeypatch.setattr(client_auth_module.requests, "post", fake_post)
+
+    response = api.find_file_page({"size": 10, "current": 1})
+
+    assert response.status_code == 200
+    assert len(calls) == 2
+    assert calls[0].endswith("/openApi/icFile/findFilePage")
+
+
+def test_client_api_retries_get_result_by_fileId_on_request_exception(
+    monkeypatch,
+) -> None:
+    client = SimpleNamespace(
+        id=1,
+        api_url="https://example.com",
+        status="启用",
+        access_token="cached-token",
+        refresh_token="refresh-token",
+        expires_at=_future_timestamp(),
+    )
+    client_auth_module = importlib.import_module("aiSelfTest.services.client_auth")
+    api = client_auth_module.ClientApi(object(), client.id)
+    api.client = client
+    calls: list[str] = []
+
+    def fake_post(url: str, **kwargs):
+        calls.append(url)
+        assert kwargs["json"] == {"fileId": "file-001"}
+        if len(calls) == 1:
+            raise ConnectTimeout("临时连接超时")
+        return FakeResponse(200, {"fileId": "file-001"})
+
+    monkeypatch.setattr(client_auth_module.requests, "post", fake_post)
+
+    response = api.get_result_by_fileId({"fileId": "file-001"})
+
+    assert response.status_code == 200
+    assert len(calls) == 2
+    assert calls[0].endswith("/openApi/icFile/getResultByFileId1")
+
+
+def test_client_api_retries_raise_app_exception_after_request_failures(
+    monkeypatch,
+) -> None:
+    client = SimpleNamespace(
+        id=1,
+        api_url="https://example.com",
+        status="启用",
+        access_token="cached-token",
+        refresh_token="refresh-token",
+        expires_at=_future_timestamp(),
+    )
+    client_auth_module = importlib.import_module("aiSelfTest.services.client_auth")
+    api = client_auth_module.ClientApi(object(), client.id)
+    api.client = client
+    calls: list[str] = []
+
+    def fake_post(url: str, **kwargs):
+        calls.append(url)
+        raise ConnectTimeout("持续连接超时")
+
+    monkeypatch.setattr(client_auth_module.requests, "post", fake_post)
+
+    with pytest.raises(client_auth_module.AppException):
+        api.get_result_by_fileId({"fileId": "file-001"})
+
+    assert len(calls) == client_auth_module.UPSTREAM_REQUEST_RETRY_ATTEMPTS
 
 
 def import_client_model():

@@ -27,6 +27,7 @@ class TaskFiltersPayload(BaseModel):
     media_types: list[MediaTypeValue] = Field(default_factory=list, description="媒体类型")
     upload_types: list[int] = Field(default_factory=list, description="上传类型")
     identify_source: list[int] = Field(default_factory=list, description="识别来源")
+    module: str = Field(default="camera", max_length=200, description="设备所属模块(camera,lure,tracker,video,voice)")
 
 
 class TaskPayloadBase(BaseModel):

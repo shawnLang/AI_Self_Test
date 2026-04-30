@@ -83,12 +83,13 @@ def create_app() -> FastAPI:
         request_id = request.headers.get("X-Request-ID", str(uuid4()))
         with logger.contextualize(request_id=request_id):
             response = await call_next(request)
-            logger.debug(
-                "HTTP 请求完成: method={}, path={}, status_code={}",
-                request.method,
-                request.url.path,
-                response.status_code,
-            )
+            if response.status_code != 200:
+                logger.info(
+                    "HTTP 请求完成: method={}, path={}, status_code={}",
+                    request.method,
+                    request.url.path,
+                    response.status_code,
+                )
         response.headers["X-Request-ID"] = request_id
         return response
 

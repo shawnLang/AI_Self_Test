@@ -316,8 +316,6 @@ def list_completed_review_tasks(session: Session) -> list[dict[str, int | str]]:
         for task in tasks
         if session.exec(select(TaskItem).where(TaskItem.task_id == task.id)).first() is not None
     ]
-    logger.debug("兼容复核任务列表查询完成: count={}", len(results))
-    return results
 
 
 def list_review_items(session: Session, task_id: int) -> list[dict[str, object]]:
