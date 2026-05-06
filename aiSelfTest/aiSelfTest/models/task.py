@@ -35,6 +35,7 @@ class TaskItemDataStatus(str, Enum):
 class TaskExecutionStatus(str, Enum):
     """任务执行状态"""
     CREATE = "创建"
+    DATA_LOAD = "数据加载"
     DOWN = "下载"
     LLM = "模型识别"
     VERIFY = "核查"

@@ -3,15 +3,39 @@
 from __future__ import annotations
 
 from datetime import datetime
+from pathlib import Path
 from typing import Literal
+from urllib.parse import quote
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from aiSelfTest.config import get_settings
 from aiSelfTest.models.task import Task, TaskItem, TaskItemData
 
 
 ExecutionModeValue = Literal["auto", "manual"]
 MediaTypeValue = Literal["image", "video"]
+TASK_FILE_STATIC_PREFIX = "/api/task-files"
+
+
+def resolve_task_item_media_url(row: TaskItem) -> str:
+    """返回已下载文件的本地静态访问地址，未下载或文件缺失时返回空字符串。"""
+
+    if row.down_state and row.file_path:
+        file_path = Path(row.file_path).expanduser().resolve()
+        if not file_path.is_file():
+            return ""
+
+        task_files_dir = (get_settings().data_dir / "task_files").resolve()
+        try:
+            relative_path = file_path.relative_to(task_files_dir)
+        except ValueError:
+            return ""
+
+        quoted_path = quote(relative_path.as_posix(), safe="/")
+        return f"{TASK_FILE_STATIC_PREFIX}/{quoted_path}"
+
+    return ""
 
 
 class TaskFiltersPayload(BaseModel):
@@ -220,7 +244,7 @@ class TaskItemListRow(BaseModel):
             task_id=row.task_id,
             media_type=media_type,
             name=row.name,
-            file_url=row.file_url,
+            file_url=resolve_task_item_media_url(row),
             status=row.status,
             down_state=row.down_state,
             llm_state=row.llm_state,
@@ -266,8 +290,8 @@ class TaskItemDetailData(BaseModel):
             task_id=row.task_id,
             media_type=media_type,
             media=TaskItemMedia(
-                url=row.file_url,
-                result_file_url=row.result_file_data or None,
+                url=resolve_task_item_media_url(row),
+                result_file_url=None,
             ),
             step_state=TaskItemStepState(
                 download="success" if row.down_state else "pending",

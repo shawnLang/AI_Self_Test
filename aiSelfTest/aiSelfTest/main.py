@@ -8,6 +8,7 @@ from uuid import uuid4
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from loguru import logger
 from pydantic import ValidationError
 
@@ -57,6 +58,10 @@ async def lifespan(app: FastAPI):
 def create_app() -> FastAPI:
     """创建并配置 FastAPI 应用。"""
 
+    settings = get_settings()
+    task_files_dir = settings.data_dir / "task_files"
+    task_files_dir.mkdir(parents=True, exist_ok=True)
+
     app = FastAPI(
         title="AI 自检平台",
         description="AI 自检平台后端 API",
@@ -70,7 +75,7 @@ def create_app() -> FastAPI:
 
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=get_settings().cors_origins,
+        allow_origins=settings.cors_origins,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -100,6 +105,7 @@ def create_app() -> FastAPI:
     app.include_router(task_router, prefix="/api", tags=["任务"])
     app.include_router(task_item_router, prefix="/api", tags=["任务项"])
     app.include_router(review_router, prefix="/api", tags=["结果复核"])
+    app.mount("/api/task-files", StaticFiles(directory=task_files_dir), name="task-files")
 
     @app.get("/")
     async def root() -> dict[str, str]:
