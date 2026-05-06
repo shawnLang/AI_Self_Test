@@ -173,12 +173,14 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
 
   const BBOX_COLORS: Record<string, string> = {
     keep: 'border-green-400',
+    add: 'border-blue-400',
     rename: 'border-amber-400',
     exclude: 'border-gray-400',
     error: 'border-red-400',
   };
   const BBOX_LABEL_COLORS: Record<string, string> = {
     keep: 'bg-green-500',
+    add: 'bg-blue-500',
     rename: 'bg-amber-500',
     exclude: 'bg-gray-500',
     error: 'bg-red-500',
@@ -256,14 +258,21 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
   };
 
   const getDecisionLabel = (row: any) => {
+    if (row.sourceStatus) return row.sourceStatus;
     if (row.decision === 'keep') return '保留';
+    if (row.decision === 'add') return '新增';
     if (row.decision === 'rename') return '改名';
     if (row.decision === 'exclude') return '排除';
     return '错误';
   };
 
   const getDecisionClass = (row: any) => {
+    if (row.sourceStatus === '新增') return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300';
+    if (row.sourceStatus === '修改') return 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300';
+    if (row.sourceStatus === '删除') return 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300';
+    if (row.sourceStatus === '默认') return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300';
     if (row.decision === 'keep') return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300';
+    if (row.decision === 'add') return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300';
     if (row.decision === 'rename') return 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300';
     if (row.decision === 'exclude') return 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300';
     return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300';
@@ -320,9 +329,9 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
                 <span className="text-green-700 dark:text-green-300">{row.aiName || (row.decision === 'exclude' ? '无' : '--')}</span>
               </div>
             </div>
-            {(row.groundingStatus || row.errorMessage) && (
+            {row.errorMessage && (
               <div className="mt-2 text-[11px] text-gray-500 dark:text-gray-400">
-                定位：{row.groundingStatus || '--'}{row.errorMessage ? `；${row.errorMessage}` : ''}
+                {row.errorMessage}
               </div>
             )}
           </div>

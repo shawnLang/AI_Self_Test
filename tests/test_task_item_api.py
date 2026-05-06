@@ -8,6 +8,13 @@ from typing import Any
 from fastapi.testclient import TestClient
 from sqlmodel import Session, select
 
+from aiSelfTest.models.task import (
+    TaskItemConfirmState,
+    TaskItemLlmState,
+    TaskItemRemoteState,
+    TaskItemTrainState,
+)
+
 
 def _unwrap_success(response_json: dict[str, Any]) -> Any:
     assert response_json["code"] == 0
@@ -41,7 +48,7 @@ def _create_task_payload(client_id: int, config_id: int) -> dict[str, Any]:
         "config_id": config_id,
         "interval_hours": 1,
         "execution_mode": "manual",
-        "auto_confirm": False,
+        "auto_execute": False,
         "filters": {
             "classify_list": [1, 2],
             "keyword": "",
@@ -91,11 +98,11 @@ def _seed_task_item(
         "file_bmp": 2,
         "result_file_data": "https://example.com/result.json",
         "id_type": 0,
-        "status": "核查",
+        "status": "待复核",
         "down_state": True,
-        "llm_state": "success",
-        "confirm_state": "pending",
-        "remote_state": "pending",
+        "llm_state": TaskItemLlmState.SUCCESS.value,
+        "confirm_state": TaskItemConfirmState.PENDING.value,
+        "remote_state": TaskItemRemoteState.PENDING.value,
     }
     task_item_payload.update(overrides)
     task_item = task_item_model(**task_item_payload)
@@ -149,8 +156,8 @@ def test_task_item_list_filters_by_media_status_and_confirm_state(
         file_fid="fid-image-confirmed",
         file_bmp=1,
         result_file_data="",
-        status="核查",
-        confirm_state="manual_confirmed",
+        status="待复核",
+        confirm_state=TaskItemConfirmState.CONFIRMED.value,
     )
     _seed_task_item(
         db_session,
@@ -158,8 +165,8 @@ def test_task_item_list_filters_by_media_status_and_confirm_state(
         name="video-pending.mp4",
         file_id="file-video-pending",
         file_fid="fid-video-pending",
-        status="核查",
-        confirm_state="pending",
+        status="待复核",
+        confirm_state=TaskItemConfirmState.PENDING.value,
     )
 
     response = app_client.get(
@@ -167,8 +174,8 @@ def test_task_item_list_filters_by_media_status_and_confirm_state(
         params={
             "task_id": task_id,
             "media_type": "image",
-            "status": "核查",
-            "confirm_state": "manual_confirmed",
+            "status": "待复核",
+            "confirm_state": TaskItemConfirmState.CONFIRMED.value,
         },
     )
 
@@ -195,6 +202,102 @@ def test_task_item_detail_returns_review_rows(
     assert data["review_rows"][0]["status"] == "修改"
 
 
+def test_task_item_detail_returns_bbox_and_status_based_review_summary(
+    app_client: TestClient,
+    db_session: Session,
+) -> None:
+    """复核详情应按 TaskItemDataStatus 返回绘框数据和统计摘要。"""
+
+    _, _, task_id = _create_base_entities(app_client)
+    task_item, default_data = _seed_task_item(
+        db_session,
+        task_id,
+        name="image-1.jpg",
+        file_extension="jpg",
+        file_url="https://example.com/image.jpg",
+        file_id="file-image-1",
+        file_fid="fid-image-1",
+        file_bmp=1,
+        result_file_data="",
+    )
+    _, task_item_data_model = import_task_item_models()
+    default_data.status = "默认"
+    default_data.minx = 1
+    default_data.miny = 2
+    default_data.maxx = 30
+    default_data.maxy = 40
+    db_session.add(default_data)
+
+    review_rows = [
+        task_item_data_model(
+            task_item_id=task_item.id,
+            name="苍鹭",
+            score=0.88,
+            track_ids="1002",
+            sp_amount=1,
+            minx=10,
+            miny=20,
+            maxx=110,
+            maxy=120,
+            llm_name="夜鹭",
+            status="修改",
+        ),
+        task_item_data_model(
+            task_item_id=task_item.id,
+            name="",
+            score=0,
+            track_ids="",
+            sp_amount=1,
+            minx=50,
+            miny=60,
+            maxx=90,
+            maxy=100,
+            llm_name="人",
+            status="新增",
+        ),
+        task_item_data_model(
+            task_item_id=task_item.id,
+            name="车",
+            score=0.77,
+            track_ids="1003",
+            sp_amount=1,
+            minx=130,
+            miny=140,
+            maxx=170,
+            maxy=180,
+            llm_name=None,
+            status="删除",
+        ),
+    ]
+    for row in review_rows:
+        db_session.add(row)
+    db_session.commit()
+
+    response = app_client.get(f"/api/task-items/detail/{task_item.id}")
+
+    assert response.status_code == 200
+    data = _unwrap_success(response.json())
+    assert data["review_summary"] == {
+        "submit_count": 3,
+        "exclude_count": 1,
+        "submit_empty": False,
+    }
+    rows_by_status = {row["status"]: row for row in data["review_rows"]}
+    assert rows_by_status["新增"]["bbox"] == {
+        "minx": 50.0,
+        "miny": 60.0,
+        "maxx": 90.0,
+        "maxy": 100.0,
+    }
+    assert rows_by_status["新增"]["source_size"] is not None
+    assert rows_by_status["默认"]["bbox"] == {
+        "minx": 1.0,
+        "miny": 2.0,
+        "maxx": 30.0,
+        "maxy": 40.0,
+    }
+
+
 def test_task_item_confirm_action_updates_confirm_state(
     app_client: TestClient,
     db_session: Session,
@@ -208,11 +311,12 @@ def test_task_item_confirm_action_updates_confirm_state(
     assert response.status_code == 200
     db_session.refresh(task_item)
     stored = db_session.exec(select(task_item_model).where(task_item_model.id == task_item.id)).one()
-    assert stored.confirm_state in {"manual_confirmed", "confirmed", "auto_confirmed"}
-    assert stored.remote_state == "pending"
+    assert stored.confirm_state == TaskItemConfirmState.CONFIRMED.value
+    assert stored.remote_state == TaskItemRemoteState.PENDING.value
+    assert stored.status == "已确认"
 
 
-def test_task_item_reject_action_does_not_delete_source_item(
+def test_task_item_reject_action_marks_item_skipped_without_deleting_source(
     app_client: TestClient,
     db_session: Session,
 ) -> None:
@@ -228,6 +332,9 @@ def test_task_item_reject_action_does_not_delete_source_item(
     assert response.status_code == 200
     stored = db_session.exec(select(task_item_model).where(task_item_model.id == task_item.id)).one_or_none()
     assert stored is not None
+    assert stored.confirm_state == TaskItemConfirmState.SKIPPED.value
+    assert stored.status == "已跳过"
+    assert stored.remote_state == TaskItemRemoteState.PENDING.value
 
 
 def test_task_item_delete_action_does_not_delete_source_task_item(
@@ -278,7 +385,12 @@ def test_task_item_submit_action_returns_success(
     db_session: Session,
 ) -> None:
     _, _, task_id = _create_base_entities(app_client)
-    task_item, _ = _seed_task_item(db_session, task_id)
+    task_item, _ = _seed_task_item(
+        db_session,
+        task_id,
+        confirm_state=TaskItemConfirmState.CONFIRMED.value,
+        status="已确认",
+    )
     task_item_model, _ = import_task_item_models()
 
     response = app_client.post("/api/task-items/action-submit", json={"task_item_id": task_item.id})
@@ -286,30 +398,80 @@ def test_task_item_submit_action_returns_success(
     assert response.status_code == 200
     assert response.json()["code"] == 0
     stored = db_session.exec(select(task_item_model).where(task_item_model.id == task_item.id)).one()
-    assert stored.remote_state == "success"
-    assert stored.train_state == "saved"
+    assert stored.remote_state == TaskItemRemoteState.SUCCESS.value
+    assert stored.train_state == TaskItemTrainState.SAVED.value
+    assert stored.status == "已完成"
     assert _training_annotation_path(task_id, task_item.id).exists()
 
 
-def test_task_item_submit_rejected_item_is_blocked(
+def test_task_item_submit_unconfirmed_item_is_blocked(
     app_client: TestClient,
     db_session: Session,
 ) -> None:
     _, _, task_id = _create_base_entities(app_client)
-    task_item, _ = _seed_task_item(db_session, task_id, confirm_state="rejected")
+    task_item, _ = _seed_task_item(db_session, task_id, confirm_state=TaskItemConfirmState.PENDING.value)
 
     response = app_client.post("/api/task-items/action-submit", json={"task_item_id": task_item.id})
 
     assert response.status_code == 400
     assert response.json()["code"] == 1001
     db_session.refresh(task_item)
-    assert task_item.remote_state == "pending"
+    assert task_item.remote_state == TaskItemRemoteState.PENDING.value
+
+
+def test_task_finishes_after_confirmed_submit_and_skipped_items(
+    app_client: TestClient,
+    db_session: Session,
+) -> None:
+    _, _, task_id = _create_base_entities(app_client)
+    task_model, task_item_model = import_task_and_item_models()
+    first, _ = _seed_task_item(
+        db_session,
+        task_id,
+        file_id="file-submit",
+        file_fid="fid-submit",
+        confirm_state=TaskItemConfirmState.CONFIRMED.value,
+        status="已确认",
+    )
+    second, _ = _seed_task_item(
+        db_session,
+        task_id,
+        file_id="file-skip",
+        file_fid="fid-skip",
+        confirm_state=TaskItemConfirmState.PENDING.value,
+        status="待复核",
+    )
+    task = db_session.get(task_model, task_id)
+    task.execution_status = "核查"
+    task.total_count = 2
+    task.processed_count = 2
+    db_session.add(task)
+    db_session.commit()
+
+    skip_response = app_client.post(
+        "/api/task-items/action-reject",
+        json={"task_item_id": second.id, "reason": "无需提交"},
+    )
+    submit_response = app_client.post("/api/task-items/action-submit", json={"task_item_id": first.id})
+
+    assert skip_response.status_code == 200
+    assert submit_response.status_code == 200
+    stored_task = db_session.get(task_model, task_id)
+    stored_items = db_session.exec(select(task_item_model).where(task_item_model.task_id == task_id)).all()
+    assert stored_task.execution_status == "结束"
+    assert {item.status for item in stored_items} == {"已完成", "已跳过"}
 
 
 def import_task_item_models():
     from aiSelfTest.models.task import TaskItem, TaskItemData
 
     return TaskItem, TaskItemData
+
+
+def import_task_and_item_models():
+    from aiSelfTest.models.task import Task, TaskItem
+
+    return Task, TaskItem
 
 
 def _training_annotation_path(task_id: int, task_item_id: int) -> Path:

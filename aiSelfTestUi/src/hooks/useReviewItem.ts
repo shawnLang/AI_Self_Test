@@ -40,7 +40,7 @@ export function getReviewRows(item: ReviewItem) {
 export function isResultMatched(item: ReviewItem) {
   const rows = getReviewRows(item);
   if (Array.isArray(item.reviewRows)) {
-    return rows.length > 0 && rows.every((row: any) => row.decision === 'keep' && row.willSubmit);
+    return rows.length > 0 && rows.every((row: any) => row.decision === 'keep');
   }
 
   const aiValue = normalizeCompareValue(item.aiResult || '');

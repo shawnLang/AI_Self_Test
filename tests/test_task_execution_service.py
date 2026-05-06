@@ -110,6 +110,32 @@ class FakeTaskItemRecognizer:
         )
 
 
+class FlakyTaskItemRecognizer(FakeTaskItemRecognizer):
+    """首次识别失败、后续成功的测试识别器。"""
+
+    def __init__(self) -> None:
+        """初始化失败记录。"""
+
+        super().__init__()
+        self.failed_item_ids: set[int] = set()
+
+    def recognize(self, **kwargs: Any) -> Any:
+        """模拟模型网关临时失败后恢复。"""
+
+        task_item = kwargs["task_item"]
+        task_item_id = task_item.id or 0
+        if task_item_id not in self.failed_item_ids:
+            self.failed_item_ids.add(task_item_id)
+            from aiSelfTest.exceptions import AppException, ErrorCode
+
+            raise AppException(
+                code=ErrorCode.INTERNAL_ERROR,
+                message="模型网关返回了非 JSON 响应",
+                status_code=502,
+            )
+        return super().recognize(**kwargs)
+
+
 def test_build_upstream_page_payload_skips_empty_filter_values() -> None:
     """空筛选参数不应写入上游分页请求体。"""
 
@@ -190,6 +216,7 @@ def test_task_execution_ingests_records_and_advances_shared_trunk(
     _install_task_upstream_mock(monkeypatch)
     run_task_execution = _import_run_task_execution()
     task_model, task_item_model, task_item_data_model = _import_task_models()
+    task_status, item_status, llm_state, confirm_state, remote_state, train_state = _import_task_status_enums()
     downloader = FakeTaskFileDownloader(_get_data_dir())
     recognizer = FakeTaskItemRecognizer()
 
@@ -210,8 +237,8 @@ def test_task_execution_ingests_records_and_advances_shared_trunk(
     assert result.inserted_count == 2
     assert result.skipped_count == 0
     assert result.detail_row_count == 2
-    assert result.execution_status == "结束"
-    assert task.execution_status == "结束"
+    assert result.execution_status == task_status.VERIFY.value
+    assert task.execution_status == task_status.VERIFY.value
     assert task.total_count == 2
     assert task.processed_count == 2
     assert task.last_run_started_at is not None
@@ -221,8 +248,11 @@ def test_task_execution_ingests_records_and_advances_shared_trunk(
     assert {item.file_url for item in items} == {"image-1.jpg", "video-1.mp4"}
     assert {item.file_bmp for item in items} == {1, 2}
     assert all(item.down_state is True for item in items)
-    assert all(item.llm_state == "success" for item in items)
-    assert all(item.confirm_state == "pending" for item in items)
+    assert all(item.llm_state == llm_state.SUCCESS.value for item in items)
+    assert all(item.confirm_state == confirm_state.PENDING.value for item in items)
+    assert all(item.remote_state == remote_state.PENDING.value for item in items)
+    assert all(item.train_state == train_state.PENDING.value for item in items)
+    assert all(item.status == item_status.VERIFY_PENDING.value for item in items)
     assert {row.llm_name for row in rows} == {"AI-白鹭", "AI-苍鹭"}
     assert {row.status for row in rows} == {"修改"}
     assert set(downloader.calls) == {"fid-image-1", "fid-video-1"}
@@ -240,7 +270,7 @@ def test_task_execution_ingests_records_and_advances_shared_trunk(
     ).exists()
 
 
-def test_manual_task_execution_downloads_without_llm_recognition(
+def test_manual_task_execution_runs_full_pre_review_flow_after_click(
     app_client: TestClient,
     db_session: Session,
     monkeypatch,
@@ -248,7 +278,8 @@ def test_manual_task_execution_downloads_without_llm_recognition(
     task_id = _create_task(app_client, execution_mode="manual")
     _install_task_upstream_mock(monkeypatch)
     run_task_execution = _import_run_task_execution()
-    _, task_item_model, task_item_data_model = _import_task_models()
+    task_model, task_item_model, task_item_data_model = _import_task_models()
+    task_status, item_status, llm_state, confirm_state, remote_state, _ = _import_task_status_enums()
     downloader = FakeTaskFileDownloader(_get_data_dir())
     recognizer = FakeTaskItemRecognizer()
 
@@ -264,46 +295,87 @@ def test_manual_task_execution_downloads_without_llm_recognition(
         select(task_item_model).where(task_item_model.task_id == task_id)
     ).all()
     rows = db_session.exec(select(task_item_data_model)).all()
+    task = db_session.get(task_model, task_id)
 
     assert result.inserted_count == 2
+    assert result.execution_status == task_status.VERIFY.value
+    assert task.execution_status == task_status.VERIFY.value
     assert all(item.down_state is True for item in items)
-    assert all(item.llm_state == "pending" for item in items)
-    assert all(item.status == "downloaded" for item in items)
-    assert {row.llm_name for row in rows} == {None}
+    assert all(item.llm_state == llm_state.SUCCESS.value for item in items)
+    assert all(item.confirm_state == confirm_state.PENDING.value for item in items)
+    assert all(item.remote_state == remote_state.PENDING.value for item in items)
+    assert all(item.status == item_status.VERIFY_PENDING.value for item in items)
+    assert {row.llm_name for row in rows} == {"AI-白鹭", "AI-苍鹭"}
     assert set(downloader.calls) == {"fid-image-1", "fid-video-1"}
-    assert recognizer.calls == []
+    assert len(recognizer.calls) == 2
 
 
-def test_auto_confirm_submits_and_saves_training_payload(
+def test_task_execution_retries_transient_llm_recognition_error(
     app_client: TestClient,
     db_session: Session,
     monkeypatch,
 ) -> None:
-    task_id = _create_task(app_client, execution_mode="auto", auto_confirm=True)
-    _install_task_upstream_mock(monkeypatch)
+    task_id = _create_task(app_client, execution_mode="auto")
+    _install_task_upstream_mock(monkeypatch, records=_source_records()[:1])
     run_task_execution = _import_run_task_execution()
-    _, task_item_model, _ = _import_task_models()
+    task_model, task_item_model, _ = _import_task_models()
+    task_status, item_status, llm_state, *_ = _import_task_status_enums()
+    downloader = FakeTaskFileDownloader(_get_data_dir())
+    recognizer = FlakyTaskItemRecognizer()
+
+    from aiSelfTest.services import task_execution
+
+    monkeypatch.setattr(task_execution, "TASK_ITEM_RECOGNITION_RETRY_DELAY_SECONDS", 0)
 
     result = run_task_execution(
         db_session,
         task_id,
-        downloader=FakeTaskFileDownloader(_get_data_dir()),
-        recognizer=FakeTaskItemRecognizer(),
+        downloader=downloader,
+        recognizer=recognizer,
         now=datetime(2026, 4, 25, 10, 0, 0),
     )
+
+    task = db_session.get(task_model, task_id)
+    item = db_session.exec(
+        select(task_item_model).where(task_item_model.task_id == task_id)
+    ).one()
+
+    assert result.execution_status == task_status.VERIFY.value
+    assert task.execution_status == task_status.VERIFY.value
+    assert task.processed_count == 1
+    assert item.llm_state == llm_state.SUCCESS.value
+    assert item.llm_error is None
+    assert item.status == item_status.VERIFY_PENDING.value
+    assert recognizer.failed_item_ids == {item.id}
+    assert recognizer.calls == [item.id]
+
+
+def test_auto_execute_stops_at_verify_without_submitting(
+    app_client: TestClient,
+    db_session: Session,
+    monkeypatch,
+) -> None:
+    _install_task_upstream_mock(monkeypatch)
+    downloader = FakeTaskFileDownloader(_get_data_dir())
+    recognizer = FakeTaskItemRecognizer()
+    _install_default_task_workers(monkeypatch, downloader=downloader, recognizer=recognizer)
+    task_id = _create_task(app_client, execution_mode="auto", auto_execute=True)
+    task_model, task_item_model, _ = _import_task_models()
+    task_status, item_status, _, confirm_state, remote_state, train_state = _import_task_status_enums()
 
     items = db_session.exec(
         select(task_item_model).where(task_item_model.task_id == task_id)
     ).all()
+    task = db_session.get(task_model, task_id)
 
-    assert result.inserted_count == 2
-    assert all(item.remote_state == "success" for item in items)
-    assert all(item.train_state == "saved" for item in items)
-    assert all(item.status == "done" for item in items)
-    assert all(
-        (_get_data_dir() / "training" / str(task_id) / str(item.id) / "annotation.json").exists()
-        for item in items
-    )
+    assert task.execution_status == task_status.VERIFY.value
+    assert task.total_count == 2
+    assert task.processed_count == 2
+    assert all(item.confirm_state == confirm_state.PENDING.value for item in items)
+    assert all(item.remote_state == remote_state.PENDING.value for item in items)
+    assert all(item.train_state == train_state.PENDING.value for item in items)
+    assert all(item.status == item_status.VERIFY_PENDING.value for item in items)
+    assert not (_get_data_dir() / "training" / str(task_id)).exists()
 
 
 def test_task_execution_deduplicates_without_overwriting_existing_items(
@@ -343,6 +415,7 @@ def test_task_execution_deduplicates_without_overwriting_existing_items(
     assert second.inserted_count == 0
     assert second.skipped_count == 2
     assert len(items) == 2
+    assert task.execution_status == "核查"
     assert task.total_count == 2
     assert task.processed_count == 2
     assert task.skipped_count == 2
@@ -400,7 +473,7 @@ def test_task_execution_skips_reentrant_running_task(
     task_model, task_item_model, _ = _import_task_models()
 
     task = db_session.get(task_model, task_id)
-    task.execution_status = "下载"
+    task.execution_status = "数据加载"
     db_session.add(task)
     db_session.commit()
 
@@ -416,12 +489,12 @@ def test_task_execution_skips_reentrant_running_task(
     ).all()
     assert result.inserted_count == 0
     assert result.skipped_count == 1
-    assert stored_task.execution_status == "下载"
+    assert stored_task.execution_status == "数据加载"
     assert stored_task.skipped_count == 1
     assert items == []
 
 
-def _create_task(app_client: TestClient, *, execution_mode: str, auto_confirm: bool = False) -> int:
+def _create_task(app_client: TestClient, *, execution_mode: str, auto_execute: bool = False) -> int:
     client_id = _unwrap_success(
         app_client.post(
             "/api/clients/create",
@@ -454,7 +527,7 @@ def _create_task(app_client: TestClient, *, execution_mode: str, auto_confirm: b
                 "config_id": config_id,
                 "interval_hours": 1,
                 "execution_mode": execution_mode,
-                "auto_confirm": auto_confirm,
+                "auto_execute": auto_execute,
                 "filters": {
                     "classify_list": [1, 2],
                     "keyword": "",
@@ -594,6 +667,18 @@ def _install_task_upstream_mock(monkeypatch, records: list[dict[str, Any]] | Non
     return calls
 
 
+def _install_default_task_workers(
+    monkeypatch,
+    *,
+    downloader: FakeTaskFileDownloader,
+    recognizer: FakeTaskItemRecognizer,
+) -> None:
+    from aiSelfTest.services import task_execution
+
+    monkeypatch.setattr(task_execution, "RequestsTaskFileDownloader", lambda: downloader)
+    monkeypatch.setattr(task_execution, "MultimodalTaskItemRecognizer", lambda: recognizer)
+
+
 def _unwrap_success(response_json: dict[str, Any]) -> Any:
     assert response_json["code"] == 0
     assert response_json["message"] == "success"
@@ -610,3 +695,23 @@ def _import_task_models():
     from aiSelfTest.models.task import Task, TaskItem, TaskItemData
 
     return Task, TaskItem, TaskItemData
+
+
+def _import_task_status_enums():
+    from aiSelfTest.models.task import (
+        TaskExecutionStatus,
+        TaskItemConfirmState,
+        TaskItemLlmState,
+        TaskItemRemoteState,
+        TaskItemStatus,
+        TaskItemTrainState,
+    )
+
+    return (
+        TaskExecutionStatus,
+        TaskItemStatus,
+        TaskItemLlmState,
+        TaskItemConfirmState,
+        TaskItemRemoteState,
+        TaskItemTrainState,
+    )

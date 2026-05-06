@@ -9,7 +9,7 @@ type TaskItem = {
   config_id: number;
   interval_hours: number;
   execution_mode: 'auto' | 'manual';
-  auto_confirm: boolean;
+  auto_execute: boolean;
   active: boolean;
   execution_status: string;
   total_count: number;
@@ -34,7 +34,6 @@ const statusTextMap: Record<string, string> = {
   下载: '下载中',
   模型识别: '识别中',
   核查: '待核查',
-  提交: '提交中',
   结束: '已完成',
   失败: '执行失败',
 };
@@ -173,7 +172,7 @@ const TaskMonitorCard: React.FC<TaskMonitorCardProps> = ({
   const processed = Number(task.processed_count || 0);
   const total = Number(task.total_count || 0);
   const progress = total > 0 ? Math.min(100, Math.round((processed / total) * 100)) : 0;
-  const isCompleted = task.execution_status === '结束';
+  const canReview = task.execution_status === '核查' || task.execution_status === '结束';
   const statusText = statusTextMap[task.execution_status] || task.execution_status || '未开始';
   
   return (
@@ -236,7 +235,7 @@ const TaskMonitorCard: React.FC<TaskMonitorCardProps> = ({
             </>
           )}
 
-          {isCompleted && (
+          {canReview && (
             <button
               onClick={onReview}
               className="px-4 py-2 text-sm font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 dark:text-emerald-300 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40 border border-emerald-200 dark:border-emerald-800 rounded-lg flex items-center gap-2 transition-colors"

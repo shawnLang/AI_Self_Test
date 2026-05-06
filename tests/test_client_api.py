@@ -195,7 +195,7 @@ def test_delete_client_cascades_related_task_data(
         file_bmp=1,
         result_file_data="{}",
         id_type=0,
-        status="创建",
+        status="已创建",
     )
     db_session.add(task_item)
     db_session.commit()

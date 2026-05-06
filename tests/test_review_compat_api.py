@@ -7,6 +7,8 @@ from typing import Any
 from fastapi.testclient import TestClient
 from sqlmodel import Session, select
 
+from aiSelfTest.models.task import TaskItemConfirmState, TaskItemLlmState, TaskItemRemoteState
+
 
 def _create_client_payload() -> dict[str, Any]:
     return {
@@ -49,7 +51,7 @@ def _seed_review_fixture(app_client: TestClient, db_session: Session) -> tuple[i
                 "config_id": config_id,
                 "interval_hours": 1,
                 "execution_mode": "manual",
-                "auto_confirm": False,
+                "auto_execute": False,
                 "filters": {
                     "classify_list": [1],
                     "keyword": "",
@@ -84,11 +86,11 @@ def _seed_review_fixture(app_client: TestClient, db_session: Session) -> tuple[i
         file_bmp=1,
         result_file_data="",
         id_type=0,
-        status="核查",
+        status="待复核",
         down_state=True,
-        llm_state="success",
-        confirm_state="pending",
-        remote_state="pending",
+        llm_state=TaskItemLlmState.SUCCESS.value,
+        confirm_state=TaskItemConfirmState.PENDING.value,
+        remote_state=TaskItemRemoteState.PENDING.value,
     )
     db_session.add(task_item)
     db_session.commit()
@@ -156,8 +158,8 @@ def test_confirm_reviews_updates_task_item_confirm_state_without_submitting(
     assert data["successCount"] == 1
     assert data["failureCount"] == 0
     task_item = db_session.exec(select(task_item_model).where(task_item_model.id == task_item_id)).one()
-    assert task_item.confirm_state == "manual_confirmed"
-    assert task_item.remote_state == "pending"
+    assert task_item.confirm_state == TaskItemConfirmState.CONFIRMED.value
+    assert task_item.remote_state == TaskItemRemoteState.PENDING.value
     assert task_item.remote_at is None
 
 

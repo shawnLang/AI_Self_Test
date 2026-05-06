@@ -34,7 +34,7 @@ def _create_task_fixture(app_client: TestClient) -> int:
         "config_id": config_id,
         "interval_hours": 1,
         "execution_mode": "manual",
-        "auto_confirm": False,
+        "auto_execute": False,
         "filters": {
           "classify_list": [1],
           "keyword": "",
@@ -84,7 +84,7 @@ def test_task_item_same_task_same_file_id_must_be_unique(
         file_bmp=1,
         result_file_data="",
         id_type=0,
-        status="创建",
+        status="已创建",
     )
     second = task_item_model(
         task_id=task_id,
@@ -100,7 +100,7 @@ def test_task_item_same_task_same_file_id_must_be_unique(
         file_bmp=1,
         result_file_data="",
         id_type=0,
-        status="创建",
+        status="已创建",
     )
 
     db_session.add(first)
@@ -110,6 +110,37 @@ def test_task_item_same_task_same_file_id_must_be_unique(
     with pytest.raises(IntegrityError):
         db_session.commit()
     db_session.rollback()
+
+
+def test_task_status_enums_expose_state_machine_contract(app_client: TestClient) -> None:
+    """任务与任务项状态应通过枚举统一管理。"""
+
+    from aiSelfTest.models.task import (
+        TaskExecutionStatus,
+        TaskItemConfirmState,
+        TaskItemLlmState,
+        TaskItemRemoteState,
+        TaskItemStatus,
+        TaskItemTrainState,
+    )
+
+    assert not hasattr(TaskExecutionStatus, "SUBMIT")
+    assert TaskItemStatus.CREATED.value == "已创建"
+    assert TaskItemStatus.SKIPPED.value == "已跳过"
+    assert TaskItemStatus.FINISHED.value == "已完成"
+    assert TaskItemLlmState.PENDING.value == "待识别"
+    assert TaskItemLlmState.RUNNING.value == "识别中"
+    assert TaskItemLlmState.SUCCESS.value == "识别完成"
+    assert TaskItemLlmState.FAIL.value == "识别失败"
+    assert TaskItemConfirmState.PENDING.value == "待确认"
+    assert TaskItemConfirmState.CONFIRMED.value == "已确认"
+    assert TaskItemConfirmState.SKIPPED.value == "已跳过"
+    assert TaskItemRemoteState.PENDING.value == "待提交"
+    assert TaskItemRemoteState.SUCCESS.value == "已提交"
+    assert TaskItemRemoteState.FAIL.value == "提交失败"
+    assert TaskItemTrainState.PENDING.value == "待保存"
+    assert TaskItemTrainState.SAVED.value == "已保存"
+    assert TaskItemTrainState.FAIL.value == "保存失败"
 
 
 def import_task_models():

@@ -9,7 +9,13 @@ from datetime import datetime
 from pathlib import Path
 
 from aiSelfTest.config import get_settings
-from aiSelfTest.models.task import TaskItem, TaskItemData
+from aiSelfTest.models.task import (
+    TaskItem,
+    TaskItemData,
+    TaskItemRemoteState,
+    TaskItemStatus,
+    TaskItemTrainState,
+)
 from loguru import logger
 from sqlmodel import Session, select
 
@@ -36,12 +42,12 @@ def submit_task_item_outputs(
     ).all()
     annotation_path = _save_training_artifacts(task_item, data_rows)
 
-    task_item.remote_state = "success"
+    task_item.remote_state = TaskItemRemoteState.SUCCESS.value
     task_item.remote_error = None
     task_item.remote_at = submitted_at
-    task_item.train_state = "saved"
+    task_item.train_state = TaskItemTrainState.SAVED.value
     task_item.train_at = submitted_at
-    task_item.status = "done"
+    task_item.status = TaskItemStatus.FINISHED.value
     task_item.updated_at = submitted_at
     session.add(task_item)
     session.commit()
@@ -52,8 +58,8 @@ def submit_task_item_outputs(
         annotation_path,
     )
     return TaskSubmissionResult(
-        remote_state=task_item.remote_state or "success",
-        train_state=task_item.train_state or "saved",
+        remote_state=task_item.remote_state or TaskItemRemoteState.SUCCESS.value,
+        train_state=task_item.train_state or TaskItemTrainState.SAVED.value,
         annotation_path=annotation_path.as_posix(),
     )
 

@@ -76,7 +76,7 @@ def _create_task_payload(client_id: int, config_id: int, **overrides: Any) -> di
         "config_id": config_id,
         "interval_hours": 1,
         "execution_mode": "manual",
-        "auto_confirm": False,
+        "auto_execute": False,
         "filters": {
             "classify_list": [1, 2],
             "keyword": "鸟类",
@@ -127,7 +127,7 @@ def test_create_task_and_get_detail(app_client: TestClient) -> None:
     assert created["config_id"] == config_id
     assert created["interval_hours"] == 1
     assert created["execution_mode"] == "manual"
-    assert created["auto_confirm"] is False
+    assert created["auto_execute"] is False
 
     detail_response = app_client.get(f"/api/tasks/detail/{created['id']}")
 
@@ -192,7 +192,7 @@ def test_update_task_persists_schedule_and_filters(app_client: TestClient) -> No
             name="鸟类任务-002",
             interval_hours=6,
             execution_mode="auto",
-            auto_confirm=True,
+            auto_execute=True,
             filters={
                 "classify_list": [2],
                 "keyword": "夜拍",
@@ -211,7 +211,7 @@ def test_update_task_persists_schedule_and_filters(app_client: TestClient) -> No
     assert updated["name"] == "鸟类任务-002"
     assert updated["interval_hours"] == 6
     assert updated["execution_mode"] == "auto"
-    assert updated["auto_confirm"] is True
+    assert updated["auto_execute"] is True
     assert updated["filters"]["media_types"] == ["video"]
 
 
@@ -242,7 +242,7 @@ def test_delete_task_cascades_task_items(
         file_bmp=1,
         result_file_data="",
         id_type=0,
-        status="创建",
+        status="已创建",
     )
     db_session.add(task_item)
     db_session.commit()

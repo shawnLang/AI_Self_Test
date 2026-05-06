@@ -7,10 +7,20 @@ from pathlib import Path
 from typing import Literal
 from urllib.parse import quote
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field, field_validator
+from PIL import Image
 
 from aiSelfTest.config import get_settings
-from aiSelfTest.models.task import Task, TaskItem, TaskItemData
+from aiSelfTest.models.task import (
+    Task,
+    TaskItem,
+    TaskItemConfirmState,
+    TaskItemData,
+    TaskItemDataStatus,
+    TaskItemLlmState,
+    TaskItemRemoteState,
+    TaskItemTrainState,
+)
 
 
 ExecutionModeValue = Literal["auto", "manual"]
@@ -57,14 +67,18 @@ class TaskFiltersPayload(BaseModel):
 class TaskPayloadBase(BaseModel):
     """任务写入请求基础模型。"""
 
-    model_config = ConfigDict(str_strip_whitespace=True)
+    model_config = ConfigDict(str_strip_whitespace=True, validate_by_name=True)
 
     name: str = Field(min_length=1, max_length=200, description="任务名称")
     client_id: int = Field(gt=0, description="项目ID")
     config_id: int = Field(gt=0, description="提示词配置ID")
     interval_hours: int = Field(description="执行间隔小时数")
     execution_mode: ExecutionModeValue = Field(description="执行方式")
-    auto_confirm: bool = Field(default=False, description="自动确认")
+    auto_execute: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("auto_execute", "auto_confirm"),
+        description="自动执行前置流程",
+    )
     filters: TaskFiltersPayload = Field(description="筛选条件")
 
     @field_validator("interval_hours")
@@ -96,7 +110,7 @@ class TaskResponse(BaseModel):
     config_id: int
     interval_hours: int
     execution_mode: ExecutionModeValue
-    auto_confirm: bool
+    auto_execute: bool
     active: bool
     execution_status: str
     total_count: int
@@ -125,7 +139,7 @@ class TaskResponse(BaseModel):
             config_id=task.config_id,
             interval_hours=task.interval,
             execution_mode=execution_mode,
-            auto_confirm=task.auto_confirm,
+            auto_execute=task.auto_execute,
             active=task.active,
             execution_status=task.execution_status,
             total_count=task.total_count,
@@ -175,6 +189,32 @@ class TaskItemDeleteRequest(TaskItemActionRequest):
     task_item_data_ids: list[int] = Field(default_factory=list, description="待删除明细ID")
 
 
+class TaskItemBBox(BaseModel):
+    """TaskItemData 识别框。"""
+
+    minx: float
+    miny: float
+    maxx: float
+    maxy: float
+
+    @classmethod
+    def from_model(cls, row: TaskItemData) -> "TaskItemBBox | None":
+        """从任务项明细提取有效识别框。"""
+
+        if row.minx is None or row.miny is None or row.maxx is None or row.maxy is None:
+            return None
+        if row.maxx <= row.minx or row.maxy <= row.miny:
+            return None
+        return cls(minx=row.minx, miny=row.miny, maxx=row.maxx, maxy=row.maxy)
+
+
+class TaskItemSourceSize(BaseModel):
+    """TaskItem 原始图片尺寸。"""
+
+    width: float
+    height: float
+
+
 class TaskItemReviewRow(BaseModel):
     """TaskItem 复核行。"""
 
@@ -182,9 +222,16 @@ class TaskItemReviewRow(BaseModel):
     source_name: str | None
     llm_name: str | None
     status: str
+    bbox: TaskItemBBox | None = None
+    source_size: TaskItemSourceSize | None = None
 
     @classmethod
-    def from_model(cls, row: TaskItemData) -> "TaskItemReviewRow":
+    def from_model(
+        cls,
+        row: TaskItemData,
+        *,
+        source_size: TaskItemSourceSize | None = None,
+    ) -> "TaskItemReviewRow":
         """将任务项明细转换为复核行响应。"""
 
         return cls(
@@ -192,6 +239,8 @@ class TaskItemReviewRow(BaseModel):
             source_name=row.name,
             llm_name=row.llm_name,
             status=row.status,
+            bbox=TaskItemBBox.from_model(row),
+            source_size=source_size,
         )
 
 
@@ -283,8 +332,15 @@ class TaskItemDetailData(BaseModel):
         """将任务项及其复核行转换为详情响应。"""
 
         media_type: MediaTypeValue = "video" if row.file_bmp == 2 else "image"
-        submit_count = len([item for item in review_rows if item.status in {"新增", "修改", "删除"}])
-        exclude_count = len([item for item in review_rows if item.status == "删除"])
+        submit_statuses = {
+            TaskItemDataStatus.DEFAULT.value,
+            TaskItemDataStatus.ADD.value,
+            TaskItemDataStatus.UPDATE.value,
+        }
+        submit_count = len([item for item in review_rows if item.status in submit_statuses])
+        exclude_count = len(
+            [item for item in review_rows if item.status == TaskItemDataStatus.DELETE.value]
+        )
         return cls(
             id=row.id or 0,
             task_id=row.task_id,
@@ -295,10 +351,10 @@ class TaskItemDetailData(BaseModel):
             ),
             step_state=TaskItemStepState(
                 download="success" if row.down_state else "pending",
-                llm=row.llm_state or "pending",
-                confirm=row.confirm_state or "pending",
-                remote=row.remote_state or "pending",
-                train=row.train_state or "pending",
+                llm=row.llm_state or TaskItemLlmState.PENDING.value,
+                confirm=row.confirm_state or TaskItemConfirmState.PENDING.value,
+                remote=row.remote_state or TaskItemRemoteState.PENDING.value,
+                train=row.train_state or TaskItemTrainState.PENDING.value,
             ),
             review_summary=TaskItemReviewSummary(
                 submit_count=submit_count,
@@ -307,6 +363,32 @@ class TaskItemDetailData(BaseModel):
             ),
             review_rows=review_rows,
         )
+
+
+def resolve_task_item_source_size(row: TaskItem, data_rows: list[TaskItemData]) -> TaskItemSourceSize | None:
+    """返回图片复核绘框需要的源尺寸，无法读取原图时用 bbox 推导兜底尺寸。"""
+
+    if row.file_bmp != 1:
+        return None
+
+    file_path = Path(row.file_path).expanduser() if row.file_path else None
+    if file_path and file_path.is_file():
+        try:
+            with Image.open(file_path) as image:
+                return TaskItemSourceSize(width=float(image.width), height=float(image.height))
+        except OSError:
+            pass
+
+    maxx_values = [data_row.maxx for data_row in data_rows if data_row.maxx is not None]
+    maxy_values = [data_row.maxy for data_row in data_rows if data_row.maxy is not None]
+    if not maxx_values or not maxy_values:
+        return None
+
+    width = max(maxx_values)
+    height = max(maxy_values)
+    if width <= 0 or height <= 0:
+        return None
+    return TaskItemSourceSize(width=width, height=height)
 
 
 class TaskItemActionData(BaseModel):

@@ -54,7 +54,7 @@ def _seed_task_fixture(app_client: TestClient, db_session: Session) -> tuple[int
         "config_id": config_id,
         "interval_hours": 1,
         "execution_mode": "manual",
-        "auto_confirm": False,
+        "auto_execute": False,
         "filters": {
             "classify_list": [1, 2],
             "keyword": "白鹭",
@@ -82,7 +82,7 @@ def _seed_task_fixture(app_client: TestClient, db_session: Session) -> tuple[int
         file_bmp=1,
         result_file_data="",
         id_type=0,
-        status="创建",
+        status="已创建",
         down_state=True,
     )
     db_session.add(task_item)

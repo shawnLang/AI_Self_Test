@@ -148,7 +148,7 @@ export default function CreateTask({ onBack }: { onBack: () => void }) {
           config_id: parseInt(formData.configId, 10),
           interval_hours: formData.intervalHours,
           execution_mode: formData.executionMode,
-          auto_confirm: false,
+          auto_execute: formData.executionMode === 'auto',
           filters: {
             classify_list: formData.filters.classifyList,
             keyword: formData.filters.keyword,

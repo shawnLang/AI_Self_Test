@@ -21,7 +21,7 @@ export type TaskSummary = {
   config_id: number;
   interval_hours: number;
   execution_mode: ExecutionMode;
-  auto_confirm: boolean;
+  auto_execute: boolean;
   active: boolean;
   execution_status: string;
   total_count: number;
@@ -62,11 +62,27 @@ export type TaskItemListData = {
   page_size: number;
 };
 
+export type TaskItemDataStatus = '默认' | '新增' | '修改' | '删除';
+
+export type TaskItemBBox = {
+  minx: number;
+  miny: number;
+  maxx: number;
+  maxy: number;
+};
+
+export type TaskItemSourceSize = {
+  width: number;
+  height: number;
+};
+
 export type TaskItemReviewRow = {
   task_item_data_id: number;
   source_name: string | null;
   llm_name: string | null;
-  status: string;
+  status: TaskItemDataStatus | string;
+  bbox: TaskItemBBox | null;
+  source_size: TaskItemSourceSize | null;
 };
 
 export type TaskItemReviewSummary = {
@@ -100,6 +116,7 @@ export type TaskItemActionData = {
   id: number;
   confirm_state?: string | null;
   remote_state?: string | null;
+  train_state?: string | null;
 };
 
 export type ReviewTaskOption = {
@@ -111,10 +128,15 @@ export type ReviewRow = {
   recordId: number;
   originalName: string | null;
   aiName: string | null;
-  decision: 'keep' | 'rename' | 'exclude' | 'error';
+  decision: 'keep' | 'add' | 'rename' | 'exclude' | 'error';
   willSubmit: boolean;
   groundingStatus: string;
   sourceStatus: string;
+  bbox: TaskItemBBox | null;
+  sourceSize: TaskItemSourceSize | null;
+  groundingMeta?: {
+    sourceSize: TaskItemSourceSize;
+  };
 };
 
 export type ReviewItem = {
@@ -132,6 +154,7 @@ export type ReviewItem = {
   willSubmitEmptyArray: boolean;
   confirmState: string | null;
   remoteState: string | null;
+  remoteError?: string | null;
   stepState: TaskItemStepState;
 };
 
@@ -140,6 +163,8 @@ export type TaskItemBatchActionResult = {
   failureCount: number;
   results: Array<{ id: number; status: 'success' | 'failed'; message: string }>;
 };
+
+const REVIEWABLE_TASK_STATUSES = new Set(['核查', '结束']);
 
 export async function listTasks(): Promise<TaskSummary[]> {
   const data = await fetchApi<TaskListData>('/api/tasks/list');
@@ -208,7 +233,7 @@ export function submitTaskItem(taskItemId: number): Promise<TaskItemActionData> 
 export async function listReviewTaskOptions(): Promise<ReviewTaskOption[]> {
   const tasks = await listTasks();
   return tasks
-    .filter((task) => task.execution_status === '结束')
+    .filter((task) => REVIEWABLE_TASK_STATUSES.has(task.execution_status))
     .map((task) => ({ id: task.id, name: task.name }));
 }
 
@@ -287,9 +312,9 @@ function toReviewItem(task: TaskSummary, listRow: TaskItemListRow, detail: TaskI
     originalResult: originalValues.join('、'),
     aiResult: aiValues.join('、'),
     reviewRows,
-    submitCount: detail.review_summary.submit_count,
-    excludedCount: detail.review_summary.exclude_count,
-    willSubmitEmptyArray: detail.review_summary.submit_empty,
+    submitCount: reviewRows.filter((row) => row.willSubmit).length,
+    excludedCount: reviewRows.filter((row) => row.decision === 'exclude').length,
+    willSubmitEmptyArray: reviewRows.filter((row) => row.willSubmit).length === 0,
     confirmState: listRow.confirm_state,
     remoteState: listRow.remote_state,
     stepState: detail.step_state,
@@ -306,14 +331,20 @@ function toReviewRow(row: TaskItemReviewRow): ReviewRow {
     originalName: row.source_name,
     aiName: row.llm_name,
     decision,
-    willSubmit: decision !== 'exclude' && Boolean(llmName),
-    groundingStatus: 'task-item',
+    willSubmit: ['默认', '新增', '修改'].includes(row.status),
+    groundingStatus: '',
     sourceStatus: row.status,
+    bbox: row.bbox,
+    sourceSize: row.source_size,
+    groundingMeta: row.source_size ? { sourceSize: row.source_size } : undefined,
   };
 }
 
 function resolveDecision(sourceName: string, llmName: string, status: string): ReviewRow['decision'] {
+  if (status === '新增') return 'add';
+  if (status === '修改') return 'rename';
   if (status === '删除') return 'exclude';
+  if (status === '默认') return 'keep';
   if (!llmName) return 'exclude';
   if (sourceName && sourceName === llmName) return 'keep';
   return 'rename';

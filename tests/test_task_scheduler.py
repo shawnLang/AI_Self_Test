@@ -118,7 +118,7 @@ def _create_task(app_client: TestClient) -> int:
                 "config_id": config_id,
                 "interval_hours": 1,
                 "execution_mode": "auto",
-                "auto_confirm": False,
+                "auto_execute": False,
                 "filters": {
                     "classify_list": [1],
                     "keyword": "",

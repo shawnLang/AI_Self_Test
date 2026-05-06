@@ -6,7 +6,15 @@ import json
 from datetime import datetime
 
 from aiSelfTest.exceptions import AppException, ErrorCode
-from aiSelfTest.models.task import Task, TaskItem, TaskItemData, TaskItemDataStatus
+from aiSelfTest.models.task import (
+    Task,
+    TaskExecutionStatus,
+    TaskItem,
+    TaskItemConfirmState,
+    TaskItemData,
+    TaskItemDataStatus,
+    TaskItemStatus,
+)
 from aiSelfTest.schemas.task import (
     TaskActionData,
     TaskCreateRequest,
@@ -23,6 +31,7 @@ from aiSelfTest.schemas.task import (
     TaskListData,
     TaskResponse,
     TaskUpdateRequest,
+    resolve_task_item_source_size,
 )
 from aiSelfTest.services.task_execution import run_task_execution
 from aiSelfTest.services.task_scheduler import sync_global_task_scheduler
@@ -52,12 +61,15 @@ def create_task(session: Session, payload: TaskCreateRequest) -> TaskResponse:
         interval=payload.interval_hours,
         filters_json=_serialize_filters(payload.filters),
         execution_mode=payload.execution_mode,
-        auto_confirm=payload.auto_confirm,
+        auto_execute=payload.auto_execute,
         active=False,
     )
     session.add(task)
     session.commit()
     session.refresh(task)
+    if task.auto_execute:
+        run_task_execution(session, task.id or 0)
+        session.refresh(task)
     logger.info(
         "任务创建完成 task_id={} name={} client_id={} config_id={} interval={} execution_mode={}",
         task.id,
@@ -86,7 +98,7 @@ def update_task(session: Session, task_id: int, payload: TaskUpdateRequest) -> T
     task.config_id = payload.config_id
     task.interval = payload.interval_hours
     task.execution_mode = payload.execution_mode
-    task.auto_confirm = payload.auto_confirm
+    task.auto_execute = payload.auto_execute
     task.filters_json = _serialize_filters(payload.filters)
     task.updated_at = datetime.now()
 
@@ -94,12 +106,12 @@ def update_task(session: Session, task_id: int, payload: TaskUpdateRequest) -> T
     session.commit()
     session.refresh(task)
     logger.info(
-        "更新任务成功: task_id={}, client_id={}, config_id={}, execution_mode={}, auto_confirm={}",
+        "更新任务成功: task_id={}, client_id={}, config_id={}, execution_mode={}, auto_execute={}",
         task.id,
         task.client_id,
         task.config_id,
         task.execution_mode,
-        task.auto_confirm,
+        task.auto_execute,
     )
     _sync_scheduler(task.id)
     return TaskResponse.from_model(task, filters=payload.filters)
@@ -213,7 +225,8 @@ def get_task_item_detail(session: Session, task_item_id: int) -> TaskItemDetailD
     data_rows = session.exec(
         select(TaskItemData).where(TaskItemData.task_item_id == task_item_id).order_by(TaskItemData.id.desc())
     ).all()
-    review_rows = [TaskItemReviewRow.from_model(row) for row in data_rows]
+    source_size = resolve_task_item_source_size(task_item, data_rows)
+    review_rows = [TaskItemReviewRow.from_model(row, source_size=source_size) for row in data_rows]
     return TaskItemDetailData.from_model(task_item, review_rows=review_rows)
 
 
@@ -221,26 +234,32 @@ def confirm_task_item(session: Session, payload: TaskItemActionRequest) -> TaskI
     """确认 TaskItem。"""
 
     task_item = _get_task_item_or_raise(session, payload.task_item_id)
-    task_item.confirm_state = "manual_confirmed"
-    task_item.confirmed_at = datetime.now()
-    task_item.updated_at = datetime.now()
+    now = datetime.now()
+    task_item.confirm_state = TaskItemConfirmState.CONFIRMED.value
+    task_item.confirmed_at = now
+    task_item.status = TaskItemStatus.CONFIRMED.value
+    task_item.updated_at = now
     session.add(task_item)
     session.commit()
     session.refresh(task_item)
+    _refresh_task_finish_state(session, task_item.task_id, now=now)
     logger.info("任务项确认完成 task_item_id={} confirm_state={}", task_item.id, task_item.confirm_state)
     return TaskItemActionData(id=task_item.id or 0, confirm_state=task_item.confirm_state)
 
 
 def reject_task_item(session: Session, payload: TaskItemRejectRequest) -> TaskItemActionData:
-    """拒绝 TaskItem。"""
+    """跳过 TaskItem，不提交客户端但计为已处理。"""
 
     task_item = _get_task_item_or_raise(session, payload.task_item_id)
-    task_item.confirm_state = "rejected"
-    task_item.updated_at = datetime.now()
+    now = datetime.now()
+    task_item.confirm_state = TaskItemConfirmState.SKIPPED.value
+    task_item.status = TaskItemStatus.SKIPPED.value
+    task_item.updated_at = now
     session.add(task_item)
     session.commit()
     session.refresh(task_item)
-    logger.info("任务项拒绝完成 task_item_id={} reason_length={}", task_item.id, len(payload.reason))
+    _refresh_task_finish_state(session, task_item.task_id, now=now)
+    logger.info("任务项跳过完成 task_item_id={} reason_length={}", task_item.id, len(payload.reason))
     return TaskItemActionData(id=task_item.id or 0, confirm_state=task_item.confirm_state)
 
 
@@ -271,14 +290,15 @@ def submit_task_item(session: Session, payload: TaskItemActionRequest) -> TaskIt
     """提交 TaskItem。"""
 
     task_item = _get_task_item_or_raise(session, payload.task_item_id)
-    if task_item.confirm_state == "rejected":
+    if task_item.confirm_state != TaskItemConfirmState.CONFIRMED.value:
         raise AppException(
             code=ErrorCode.PARAM_INVALID,
-            message="已拒绝的任务项不能提交",
+            message="任务项必须人工确认后才能提交",
             status_code=400,
         )
 
     result = submit_task_item_outputs(session, task_item)
+    _refresh_task_finish_state(session, task_item.task_id)
     logger.info(
         "任务项提交完成 task_item_id={} remote_state={} train_state={}",
         task_item.id,
@@ -290,6 +310,34 @@ def submit_task_item(session: Session, payload: TaskItemActionRequest) -> TaskIt
         remote_state=result.remote_state,
         train_state=result.train_state,
     )
+
+
+def _refresh_task_finish_state(session: Session, task_id: int, now: datetime | None = None) -> None:
+    """所有 TaskItem 都完成或跳过后，把任务推进到结束态。"""
+
+    task = session.get(Task, task_id)
+    if task is None or task.execution_status != TaskExecutionStatus.VERIFY.value:
+        return
+
+    rows = session.exec(select(TaskItem).where(TaskItem.task_id == task_id)).all()
+    if not rows:
+        return
+
+    finished_statuses = {
+        TaskItemStatus.FINISHED.value,
+        TaskItemStatus.SKIPPED.value,
+    }
+    if not all(row.status in finished_statuses for row in rows):
+        return
+
+    finished_at = now or datetime.now()
+    task.execution_status = TaskExecutionStatus.FINISH.value
+    task.finished_at = finished_at
+    task.updated_at = finished_at
+    task.processed_count = len(rows)
+    task.total_count = len(rows)
+    session.add(task)
+    session.commit()
 
 
 def list_completed_review_tasks(session: Session) -> list[dict[str, int | str]]:

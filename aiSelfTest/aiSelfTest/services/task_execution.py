@@ -12,10 +12,11 @@ from __future__ import annotations
 import base64
 import json
 import mimetypes
+import time
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Mapping, Protocol, Sequence
+from typing import Any, Mapping, Sequence
 from urllib.parse import urljoin, urlparse, urlunparse
 
 import requests
@@ -33,7 +34,13 @@ from aiSelfTest.models.task import (
     TaskExecutionMode,
     TaskExecutionStatus,
     TaskItem,
-    TaskItemData, TaskItemDataStatus,
+    TaskItemConfirmState,
+    TaskItemData,
+    TaskItemDataStatus,
+    TaskItemLlmState,
+    TaskItemRemoteState,
+    TaskItemStatus,
+    TaskItemTrainState,
 )
 from aiSelfTest.schemas.multimodal_model import (
     MultimodalAttachmentPayload,
@@ -47,19 +54,20 @@ from aiSelfTest.services.multimodal_gateway import call_chat_endpoint, extract_c
 from aiSelfTest.services.task_steps.llm_result import LlmDetectionParser, LlmDetectionResult
 from aiSelfTest.services.task_steps.matcher import TaskItemDataMatcher, VideoRecognitionChoice
 from aiSelfTest.services.task_steps.video_recognition import VideoFrameExtractor
-from aiSelfTest.services.task_submission import submit_task_item_outputs
 from aiSelfTest.services.utils import optional_float, format_dt, clip_end_at, parse_window_end, truncate
 
 RUNNING_TASK_STATUSES = {
+    TaskExecutionStatus.CREATE.value,
+    TaskExecutionStatus.DATA_LOAD.value,
     TaskExecutionStatus.DOWN.value,
     TaskExecutionStatus.LLM.value,
-    TaskExecutionStatus.VERIFY.value,
-    TaskExecutionStatus.SUBMIT.value,
 }
 
 UPSTREAM_PAGE_SIZE = 100
 MAX_UPSTREAM_PAGE_COUNT = 500
 FILE_DOWNLOAD_PATH_PREFIX = "/weed/"
+TASK_ITEM_RECOGNITION_MAX_ATTEMPTS = 3
+TASK_ITEM_RECOGNITION_RETRY_DELAY_SECONDS = 1.0
 CLASSIFY_NAME_MAP = {
     1: "确种",
     2: "有效",
@@ -134,32 +142,6 @@ class TaskItemRecognitionResult:
 
     image_result: LlmDetectionResult | None = None
     video_results: Mapping[int, Sequence[VideoRecognitionChoice]] | None = None
-
-
-class TaskFileDownloader(Protocol):
-    """任务文件下载协议。"""
-
-    def download(
-            self,
-            session: Session,
-            task: Task,
-            task_item: TaskItem,
-            source_record: SourceTaskItemRecord,
-    ) -> TaskDownloadResult:
-        """下载单个任务项需要的文件。"""
-
-
-class TaskItemRecognizer(Protocol):
-    """任务项大模型识别协议。"""
-
-    def recognize(
-            self,
-            session: Session,
-            task: Task,
-            task_item: TaskItem,
-            data_rows: Sequence[TaskItemData],
-    ) -> TaskItemRecognitionResult:
-        """识别任务项并返回结构化结果。"""
 
 
 class AuthenticatedTaskExecutionSource:
@@ -615,7 +597,8 @@ class TaskExecutionRunner:
     """编排单次 Task 执行流程。"""
 
     def __init__(self, session: Session, task_id: int,
-                 downloader: TaskFileDownloader | None = None, recognizer: TaskItemRecognizer | None = None,
+                 downloader: RequestsTaskFileDownloader | None = None,
+                 recognizer: MultimodalTaskItemRecognizer | None = None,
                  now: datetime | None = None) -> None:
         """初始化任务执行上下文。"""
 
@@ -637,7 +620,7 @@ class TaskExecutionRunner:
         self.detail_row_count = 0
 
     @property
-    def downloader(self) -> TaskFileDownloader:
+    def downloader(self) -> RequestsTaskFileDownloader:
         """返回本次执行使用的下载器。"""
 
         if self._downloader is None:
@@ -645,7 +628,7 @@ class TaskExecutionRunner:
         return self._downloader
 
     @property
-    def recognizer(self) -> TaskItemRecognizer:
+    def recognizer(self) -> MultimodalTaskItemRecognizer:
         """返回本次执行使用的识别器。"""
 
         if self._recognizer is None:
@@ -655,8 +638,13 @@ class TaskExecutionRunner:
     def run(self) -> TaskExecutionResult:
         """执行一次 Task 共享主干。"""
 
-        logger.info(f"任务执行 开始1: task_id={self.task_id}, 执行模型={self.task.execution_mode}, "
-                    f"自动确认={self.task.auto_confirm}, 活跃={self.task.active}")
+        logger.info(
+            "任务执行 开始1: task_id={}, 执行模式={}, 自动执行={}, 活跃={}",
+            self.task_id,
+            self.task.execution_mode,
+            self.task.auto_execute,
+            self.task.active,
+        )
         if is_task_running(self.task):
             self.task.skipped_count += 1
             self.task.updated_at = self.execution_now
@@ -703,85 +691,13 @@ class TaskExecutionRunner:
         logger.info("任务执行 已初始化执行上下文 task_id={}", self.task_id)
 
         try:
-            if self.window.should_fetch:
-                source_records = [
-                    SourceTaskItemRecord(
-                        name=str(row.get("name", "")),
-                        file_fid=str(row.get("fileFid", "")),
-                        file_url=str(row.get("fileUrl", "")),
-                        file_bmp=int(row.get("fileBmp") or 1),
-                        file_id=str(row.get("id", "")),
-                        device_name=str(row.get("deName", "")),
-                        file_num=str(row.get("fileNum", "")),
-                        file_extension=str(row.get("fileExtension", "")),
-                        sp_name_list=str(row.get("spNameList", "")),
-                        classify=int(row.get("classify") or 1),
-                        module=str(row.get("module", "")),
-                        id_type=int(row.get("idType") or 0),
-                    )
-                    for row in self.source.fetch_task_items(
-                        session=self.session,
-                        task=self.task,
-                        filters=self.filters,
-                        window=self.window,
-                    )
-                ]
-                logger.info("任务执行 拉取taskItem完成 task_id={} 数量={}", self.task_id, len(source_records))
-                self.inserted_items, self.skipped_count = self._insert_new_task_items(source_records)
-                logger.info(
-                    "任务执行 任务taskItem入库完成: task_id={}, 新增数量={}, 跳过数量={}",
-                    self.task_id,
-                    len(self.inserted_items),
-                    self.skipped_count,
-                )
-                if self._is_auto_task(self.task):
-                    self.task.last_pull_end_at = parse_window_end(self.window.end_at) or self.execution_now
-            else:
-                logger.info("任务执行 跳过拉取taskItem: task_id={}, 原因=empty_window", self.task_id)
-            self.task.skipped_count += self.skipped_count
-
-            for task_item, source_record in self.inserted_items:
-                self.detail_row_count += self._insert_task_item_data_rows(task_item, source_record)
+            self._run_create_stage()
+            self._run_data_load_stage()
+            self._run_download_stage()
+            self._run_llm_stage()
+            self._enter_verify_stage()
             logger.info(
-                "任务执行 taskItemData入库完成 task_id={} 新增数量={} 详情数量={}",
-                self.task_id,
-                len(self.inserted_items),
-                self.detail_row_count,
-            )
-
-            self.task.execution_status = TaskExecutionStatus.DOWN.value
-            self.task.updated_at = self.execution_now
-            self.session.add(self.task)
-            self.session.commit()
-            logger.info("任务执行 task进入下载阶段 task_id={} 新增数量={}", self.task_id, len(self.inserted_items))
-            for task_item, source_record in self.inserted_items:
-                self._download_task_item_file(task_item, source_record)
-
-            self.task.execution_status = TaskExecutionStatus.LLM.value
-            self.task.updated_at = self.execution_now
-            self.session.add(self.task)
-            self.session.commit()
-            logger.info(
-                "任务执行 task进入识别阶段 task_id={} 新增数量={} 跳过数量={}",
-                self.task_id,
-                len(self.inserted_items),
-                self.skipped_count,
-            )
-            for task_item, _ in self.inserted_items:
-                if task_item.down_state:
-                    self._advance_task_item_recognition(task_item)
-            self.task.execution_status = TaskExecutionStatus.FINISH.value
-            self.task.finished_at = datetime.now()
-            self.task.updated_at = self.task.finished_at
-            self.task.total_count = len(
-                self.session.exec(select(TaskItem.id).where(TaskItem.task_id == self.task_id)).all()
-            )
-            self.task.processed_count += len(self.inserted_items)
-            self.session.add(self.task)
-            self.session.commit()
-            self.session.refresh(self.task)
-            logger.info(
-                "任务执行 task完成 task_id={} 新增Item数量={} 跳过数量={} 详情数量={} 处理数量={}",
+                "任务执行 task进入复核阶段 task_id={} 新增Item数量={} 跳过数量={} 详情数量={} 处理数量={}",
                 self.task_id,
                 len(self.inserted_items),
                 self.skipped_count,
@@ -807,6 +723,195 @@ class TaskExecutionRunner:
             self.session.commit()
             logger.exception(f"任务执行 task_id={self.task_id} 执行失败")
             raise
+
+    def _run_create_stage(self) -> None:
+        """分页拉取上游文件并写入 TaskItem。"""
+
+        self._set_task_stage(TaskExecutionStatus.CREATE, reset_processed=False)
+        if self.window.should_fetch:
+            source_records = self._fetch_source_records()
+            logger.info("任务执行 拉取taskItem完成 task_id={} 数量={}", self.task_id, len(source_records))
+            self.inserted_items, self.skipped_count = self._insert_new_task_items(source_records)
+            logger.info(
+                "任务执行 任务taskItem入库完成: task_id={}, 新增数量={}, 跳过数量={}",
+                self.task_id,
+                len(self.inserted_items),
+                self.skipped_count,
+            )
+            if self._is_auto_task(self.task):
+                self.task.last_pull_end_at = parse_window_end(self.window.end_at) or self.execution_now
+        else:
+            logger.info("任务执行 跳过拉取taskItem: task_id={}, 原因=empty_window", self.task_id)
+
+        self.task.skipped_count += self.skipped_count
+        self.task.total_count = self._count_task_items()
+        self.task.updated_at = self.execution_now
+        self.session.add(self.task)
+        self.session.commit()
+
+    def _run_data_load_stage(self) -> None:
+        """加载 TaskItem 详情并更新进度。"""
+
+        self._set_task_stage(TaskExecutionStatus.DATA_LOAD, reset_processed=True)
+        task_items = self._list_task_items()
+        for task_item in task_items:
+            if task_item.status == TaskItemStatus.FAILED.value:
+                task_item.status = TaskItemStatus.CREATED.value
+            if self._has_task_item_data(task_item):
+                task_item.status = TaskItemStatus.DATA_LOADED.value
+                task_item.updated_at = self.execution_now
+                self.session.add(task_item)
+                self.session.commit()
+                self._increment_processed_count()
+                continue
+            if task_item.status != TaskItemStatus.CREATED.value:
+                self._increment_processed_count()
+                continue
+            source_record = self._source_record_from_task_item(task_item)
+            self.detail_row_count += self._insert_task_item_data_rows(task_item, source_record)
+            task_item.status = TaskItemStatus.DATA_LOADED.value
+            task_item.updated_at = self.execution_now
+            self.session.add(task_item)
+            self.session.commit()
+            self._increment_processed_count()
+        logger.info("任务执行 taskItemData入库完成 task_id={} 详情数量={}", self.task_id, self.detail_row_count)
+
+    def _run_download_stage(self) -> None:
+        """下载待处理文件并更新进度。"""
+
+        self._set_task_stage(TaskExecutionStatus.DOWN, reset_processed=True)
+        for task_item in self._list_task_items():
+            if task_item.down_state:
+                self._increment_processed_count()
+                continue
+            if task_item.status == TaskItemStatus.FAILED.value:
+                task_item.status = TaskItemStatus.DATA_LOADED.value
+            source_record = self._source_record_from_task_item(task_item)
+            if not self._download_task_item_file(task_item, source_record):
+                raise AppException(
+                    code=ErrorCode.TASK_FAILED,
+                    message=f"任务项下载失败: task_item_id={task_item.id}",
+                    status_code=502,
+                )
+            self._increment_processed_count()
+
+    def _run_llm_stage(self) -> None:
+        """执行大模型识别并更新进度。"""
+
+        self._set_task_stage(TaskExecutionStatus.LLM, reset_processed=True)
+        for task_item in self._list_task_items():
+            if task_item.llm_state == TaskItemLlmState.SUCCESS.value:
+                self._increment_processed_count()
+                continue
+            if not task_item.down_state:
+                raise AppException(
+                    code=ErrorCode.TASK_FAILED,
+                    message=f"任务项未下载，无法识别: task_item_id={task_item.id}",
+                    status_code=502,
+                )
+            if not self._advance_task_item_recognition(task_item):
+                raise AppException(
+                    code=ErrorCode.TASK_FAILED,
+                    message=f"任务项模型识别失败: task_item_id={task_item.id}",
+                    status_code=502,
+                )
+            self._increment_processed_count()
+
+    def _enter_verify_stage(self) -> None:
+        """进入人工复核阶段，不重置进度。"""
+
+        self.task.execution_status = TaskExecutionStatus.VERIFY.value
+        self.task.finished_at = None
+        self.task.updated_at = self.execution_now
+        self.session.add(self.task)
+        self.session.commit()
+        self.session.refresh(self.task)
+
+    def _fetch_source_records(self) -> list[SourceTaskItemRecord]:
+        """从上游分页接口拉取并规范化文件记录。"""
+
+        return [
+            SourceTaskItemRecord(
+                name=str(row.get("name", "")),
+                file_fid=str(row.get("fileFid", "")),
+                file_url=str(row.get("fileUrl", "")),
+                file_bmp=int(row.get("fileBmp") or 1),
+                file_id=str(row.get("id", "")),
+                device_name=str(row.get("deName", "")),
+                file_num=str(row.get("fileNum", "")),
+                file_extension=str(row.get("fileExtension", "")),
+                sp_name_list=str(row.get("spNameList", "")),
+                classify=int(row.get("classify") or 1),
+                module=str(row.get("module", "")),
+                id_type=int(row.get("idType") or 0),
+            )
+            for row in self.source.fetch_task_items(
+                session=self.session,
+                task=self.task,
+                filters=self.filters,
+                window=self.window,
+            )
+        ]
+
+    def _set_task_stage(self, status: TaskExecutionStatus, *, reset_processed: bool) -> None:
+        """设置任务阶段，并按阶段需要重置进度。"""
+
+        self.task.execution_status = status.value
+        if reset_processed:
+            self.task.processed_count = 0
+        self.task.updated_at = self.execution_now
+        self.session.add(self.task)
+        self.session.commit()
+        self.session.refresh(self.task)
+
+    def _increment_processed_count(self) -> None:
+        """单个 TaskItem 完成或跳过当前阶段后递增进度。"""
+
+        self.task.processed_count += 1
+        self.task.updated_at = self.execution_now
+        self.session.add(self.task)
+        self.session.commit()
+
+    def _count_task_items(self) -> int:
+        """统计任务下全部 TaskItem 数量。"""
+
+        return len(self.session.exec(select(TaskItem.id).where(TaskItem.task_id == self.task_id)).all())
+
+    def _list_task_items(self) -> list[TaskItem]:
+        """按 ID 顺序列出任务项。"""
+
+        return list(
+            self.session.exec(
+                select(TaskItem).where(TaskItem.task_id == self.task_id).order_by(TaskItem.id)
+            ).all()
+        )
+
+    def _has_task_item_data(self, task_item: TaskItem) -> bool:
+        """判断任务项是否已有详情行或详情文件数据。"""
+
+        if task_item.result_file_data:
+            return True
+        return self.session.exec(
+            select(TaskItemData.id).where(TaskItemData.task_item_id == task_item.id)
+        ).first() is not None
+
+    @staticmethod
+    def _source_record_from_task_item(task_item: TaskItem) -> SourceTaskItemRecord:
+        """从已落库 TaskItem 重建下游阶段需要的源记录。"""
+
+        return SourceTaskItemRecord(
+            name=task_item.name,
+            file_fid=task_item.file_fid,
+            file_url=task_item.file_url,
+            file_bmp=task_item.file_bmp,
+            file_id=task_item.file_id or "",
+            device_name=task_item.device_name,
+            file_num=task_item.file_num,
+            file_extension=task_item.file_extension,
+            sp_name_list=task_item.sp_name_list,
+            classify=task_item.classify,
+            id_type=task_item.id_type,
+        )
 
     def _insert_new_task_items(self, source_records: Sequence[SourceTaskItemRecord]) -> tuple[
         list[tuple[TaskItem, SourceTaskItemRecord]], int
@@ -854,14 +959,14 @@ class TaskExecutionRunner:
                 file_bmp=record.file_bmp,
                 result_file_data="",
                 id_type=record.id_type,
-                status="created",
+                status=TaskItemStatus.CREATED.value,
                 created_at=self.execution_now,
                 updated_at=self.execution_now,
                 down_state=False,
-                llm_state="pending",
-                confirm_state="pending",
-                remote_state="pending",
-                train_state="pending",
+                llm_state=TaskItemLlmState.PENDING.value,
+                confirm_state=TaskItemConfirmState.PENDING.value,
+                remote_state=TaskItemRemoteState.PENDING.value,
+                train_state=TaskItemTrainState.PENDING.value,
             )
             self.session.add(task_item)
             self.session.commit()
@@ -921,7 +1026,7 @@ class TaskExecutionRunner:
     def _download_task_item_file(self, task_item: TaskItem, source_record: SourceTaskItemRecord) -> bool:
         """下载任务文件并更新 TaskItem 下载状态。"""
 
-        task_item.status = "downloading"
+        task_item.status = TaskItemStatus.DOWNLOADING.value
         task_item.updated_at = self.execution_now
         self.session.add(task_item)
         self.session.commit()
@@ -936,7 +1041,7 @@ class TaskExecutionRunner:
         except Exception as exc:  # noqa: BLE001
             task_item.down_state = False
             task_item.down_error = str(exc)
-            task_item.status = "failed"
+            task_item.status = TaskItemStatus.FAILED.value
             task_item.updated_at = self.execution_now
             self.session.add(task_item)
             self.session.commit()
@@ -951,72 +1056,125 @@ class TaskExecutionRunner:
         task_item.down_state = True
         task_item.down_error = None
         task_item.file_path = result.file_path
-        task_item.status = "downloaded"
+        task_item.status = TaskItemStatus.DOWNLOADED.value
         task_item.updated_at = self.execution_now
         self.session.add(task_item)
         self.session.commit()
         return True
 
-    def _advance_task_item_recognition(self, task_item: TaskItem) -> None:
+    def _advance_task_item_recognition(self, task_item: TaskItem) -> bool:
         """根据任务模式推进识别、确认、远端提交和训练状态。"""
 
         data_rows = self.session.exec(
             select(TaskItemData).where(TaskItemData.task_item_id == task_item.id)
         ).all()
-        if self._is_auto_task(self.task):
-            task_item.status = "llm"
-            task_item.llm_state = "running"
+        task_item.status = TaskItemStatus.LLM_RUNNING.value
+        task_item.llm_state = TaskItemLlmState.RUNNING.value
+        task_item.updated_at = self.execution_now
+        self.session.add(task_item)
+        self.session.commit()
+
+        try:
+            recognition_results = self._recognize_task_item_with_retry(task_item, data_rows)
+            if data_rows and not recognition_results:
+                raise AppException(
+                    code=ErrorCode.TASK_FAILED,
+                    message="大模型未返回可匹配的识别结果",
+                    status_code=502,
+                )
+            self._apply_recognition_results(task_item, data_rows, recognition_results)
+            task_item.llm_state = TaskItemLlmState.SUCCESS.value
+            task_item.llm_error = None
+            task_item.llm_at = self.execution_now
+            task_item.status = TaskItemStatus.VERIFY_PENDING.value
+            task_item.confirm_state = TaskItemConfirmState.PENDING.value
             task_item.updated_at = self.execution_now
             self.session.add(task_item)
             self.session.commit()
+            return True
+        except Exception as exc:  # noqa: BLE001
+            task_item.llm_state = TaskItemLlmState.FAIL.value
+            task_item.llm_error = str(exc)
+            task_item.llm_at = self.execution_now
+            task_item.status = TaskItemStatus.FAILED.value
+            task_item.updated_at = self.execution_now
+            self.session.add(task_item)
+            self.session.commit()
+            logger.warning(
+                "任务项大模型识别失败 task_id={} task_item_id={} error={}",
+                self.task.id,
+                task_item.id,
+                exc,
+            )
+            return False
+
+    def _recognize_task_item_with_retry(
+        self,
+        task_item: TaskItem,
+        data_rows: Sequence[TaskItemData],
+    ) -> TaskItemRecognitionResult:
+        """对单个 TaskItem 的大模型识别执行有限重试。"""
+
+        last_exception: Exception | None = None
+        for attempt in range(1, TASK_ITEM_RECOGNITION_MAX_ATTEMPTS + 1):
             try:
-                recognition_results = self.recognizer.recognize(
+                return self.recognizer.recognize(
                     session=self.session,
                     task=self.task,
                     task_item=task_item,
                     data_rows=data_rows,
                 )
-                if data_rows and not recognition_results:
-                    raise AppException(
-                        code=ErrorCode.TASK_FAILED,
-                        message="大模型未返回可匹配的识别结果",
-                        status_code=502,
-                    )
-                self._apply_recognition_results(task_item, data_rows, recognition_results)
-                task_item.llm_state = "success"
-                task_item.llm_error = None
-                task_item.llm_at = self.execution_now
-                task_item.status = "verified"
-            except Exception as exc:  # noqa: BLE001
-                task_item.llm_state = "fail"
-                task_item.llm_error = str(exc)
-                task_item.llm_at = self.execution_now
-                task_item.status = "failed"
-                task_item.updated_at = self.execution_now
-                self.session.add(task_item)
-                self.session.commit()
+            except AppException as exc:
+                last_exception = exc
+                if not self._is_retryable_recognition_error(exc):
+                    raise
+                if attempt == TASK_ITEM_RECOGNITION_MAX_ATTEMPTS:
+                    break
                 logger.warning(
-                    "任务项大模型识别失败 task_id={} task_item_id={} error={}",
+                    "任务项大模型识别临时失败，准备重试 task_id={} task_item_id={} attempt={}/{} error={}",
                     self.task.id,
                     task_item.id,
+                    attempt,
+                    TASK_ITEM_RECOGNITION_MAX_ATTEMPTS,
                     exc,
                 )
-                return
-        else:
-            task_item.llm_state = "pending"
-            task_item.status = "downloaded"
+                time.sleep(TASK_ITEM_RECOGNITION_RETRY_DELAY_SECONDS)
+            except RequestException as exc:
+                last_exception = exc
+                if attempt == TASK_ITEM_RECOGNITION_MAX_ATTEMPTS:
+                    break
+                logger.warning(
+                    "任务项大模型识别请求异常，准备重试 task_id={} task_item_id={} attempt={}/{} error={}",
+                    self.task.id,
+                    task_item.id,
+                    attempt,
+                    TASK_ITEM_RECOGNITION_MAX_ATTEMPTS,
+                    exc,
+                )
+                time.sleep(TASK_ITEM_RECOGNITION_RETRY_DELAY_SECONDS)
 
-        if self.task.auto_confirm and task_item.llm_state == "success":
-            task_item.confirm_state = "auto_confirmed"
-            task_item.confirmed_at = self.execution_now
-            task_item.updated_at = self.execution_now
-            self.session.add(task_item)
-            self.session.commit()
-            submit_task_item_outputs(self.session, task_item, now=self.execution_now)
-        else:
-            task_item.updated_at = self.execution_now
-            self.session.add(task_item)
-            self.session.commit()
+        if last_exception is not None:
+            raise last_exception
+        raise AppException(code=ErrorCode.TASK_FAILED, message="大模型识别未执行", status_code=502)
+
+    @staticmethod
+    def _is_retryable_recognition_error(exc: AppException) -> bool:
+        """判断大模型识别异常是否适合重试。"""
+
+        non_retryable_markers = ("HTTP 400", "HTTP 401", "HTTP 403", "HTTP 404")
+        if any(marker in exc.message for marker in non_retryable_markers):
+            return False
+        if exc.code == int(ErrorCode.INTERNAL_ERROR) and exc.status_code in {408, 429, 500, 502, 503, 504}:
+            return True
+        message = exc.message
+        retryable_keywords = (
+            "模型网关",
+            "大模型未返回",
+            "大模型识别结果",
+        )
+        return exc.code == int(ErrorCode.TASK_FAILED) and any(
+            keyword in message for keyword in retryable_keywords
+        )
 
     def _apply_recognition_results(self, task_item: TaskItem, data_rows: Sequence[TaskItemData],
                                    recognition_results: TaskItemRecognitionResult) -> None:
@@ -1045,7 +1203,8 @@ class TaskExecutionRunner:
 
 
 def run_task_execution(session: Session, task_id: int,
-                       downloader: TaskFileDownloader | None = None, recognizer: TaskItemRecognizer | None = None,
+                       downloader: RequestsTaskFileDownloader | None = None,
+                       recognizer: MultimodalTaskItemRecognizer | None = None,
                        now: datetime | None = None) -> TaskExecutionResult:
     """执行一次 Task 共享主干。"""
 
@@ -1062,4 +1221,6 @@ def run_task_execution(session: Session, task_id: int,
 def is_task_running(task: Task) -> bool:
     """判断任务是否处于运行中状态。"""
 
+    if task.execution_status == TaskExecutionStatus.CREATE.value:
+        return task.last_run_started_at is not None
     return task.execution_status in RUNNING_TASK_STATUSES

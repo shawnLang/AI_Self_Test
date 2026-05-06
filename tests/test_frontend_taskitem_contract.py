@@ -46,3 +46,34 @@ def test_review_uses_task_item_actions_for_basic_confirmation() -> None:
     assert "/api/task-items/detail/" in api_text
     assert "确认只更新 TaskItem 确认状态" in review_text
     assert "移除差异不删除源 TaskItem" in review_text
+
+
+def test_review_task_options_include_verify_stage_tasks() -> None:
+    """进入核查阶段的任务应立即出现在结果复核任务下拉。"""
+
+    api_text = read_frontend_file("api/taskItems.ts")
+
+    assert "REVIEWABLE_TASK_STATUSES" in api_text
+    assert "'核查'" in api_text
+    assert "'结束'" in api_text
+    assert "task.execution_status === '结束'" not in api_text
+
+
+def test_review_frontend_uses_task_item_data_status_bbox_and_summary_contract() -> None:
+    """复核页应按 TaskItemDataStatus 显示，并使用详情接口 bbox 绘框。"""
+
+    api_text = read_frontend_file("api/taskItems.ts")
+    review_text = read_frontend_file("components/Review.tsx")
+
+    assert "type TaskItemBBox" in api_text
+    assert "type TaskItemSourceSize" in api_text
+    assert "bbox: TaskItemBBox | null" in api_text
+    assert "source_size: TaskItemSourceSize | null" in api_text
+    assert "sourceStatus: row.status" in api_text
+    assert "submitCount: reviewRows.filter((row) => row.willSubmit).length" in api_text
+    assert "excludedCount: reviewRows.filter((row) => row.decision === 'exclude').length" in api_text
+    assert "willSubmit: ['默认', '新增', '修改'].includes(row.status)" in api_text
+    assert "return 'add'" in api_text
+    assert "if (row.sourceStatus) return row.sourceStatus" in review_text
+    assert "groundingMeta: row.source_size ? { sourceSize: row.source_size } : undefined" in api_text
+    assert "定位：" not in review_text

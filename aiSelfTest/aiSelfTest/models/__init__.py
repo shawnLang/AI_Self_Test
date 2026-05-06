@@ -13,8 +13,13 @@ from aiSelfTest.models.task import (
     TaskExecutionStatus,
     TaskIntervalType,
     TaskItem,
+    TaskItemConfirmState,
     TaskItemData,
     TaskItemDataStatus,
+    TaskItemLlmState,
+    TaskItemRemoteState,
+    TaskItemStatus,
+    TaskItemTrainState,
 )
 
 __all__ = [
@@ -30,6 +35,11 @@ __all__ = [
     "TaskExecutionStatus",
     "TaskIntervalType",
     "TaskItem",
+    "TaskItemConfirmState",
     "TaskItemData",
     "TaskItemDataStatus",
+    "TaskItemLlmState",
+    "TaskItemRemoteState",
+    "TaskItemStatus",
+    "TaskItemTrainState",
 ]

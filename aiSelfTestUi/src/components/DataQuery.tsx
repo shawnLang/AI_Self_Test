@@ -134,7 +134,7 @@ export default function DataQuery({ taskId, onBack }: { taskId: number, onBack: 
                 <span>提示词配置 #{task?.config_id ?? '--'}</span>
                 <span>{task ? intervalLabelMap[task.interval_hours] || `${task.interval_hours} 小时` : '--'}</span>
                 <span>{task?.execution_mode === 'auto' ? '自动执行' : '手动执行'}</span>
-                <span>{task?.auto_confirm ? '自动确认' : '人工确认'}</span>
+                <span>{task?.auto_execute ? '创建后自动执行' : '手动触发执行'}</span>
               </div>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -259,7 +259,7 @@ export default function DataQuery({ taskId, onBack }: { taskId: number, onBack: 
 function TaskItemCard({ item, onPreview }: { key?: React.Key; item: TaskItemListRow; onPreview: () => void }) {
   const failed = isFailedItem(item);
   const confirmed = isConfirmedItem(item);
-  const submitted = item.remote_state === 'success';
+  const submitted = item.remote_state === '已提交';
 
   return (
     <article className="relative p-3 border rounded-xl overflow-hidden transition-all duration-200 bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600">
@@ -298,9 +298,9 @@ function TaskItemCard({ item, onPreview }: { key?: React.Key; item: TaskItemList
         <div className="mt-2 flex flex-wrap gap-2">
           <StatusBadge label={item.status || '未开始'} tone={failed ? 'red' : 'gray'} />
           <StatusBadge label={item.down_state ? '已下载' : '待下载'} tone={item.down_state ? 'green' : 'gray'} />
-          <StatusBadge label={`识别：${item.llm_state || 'pending'}`} tone={item.llm_state === 'success' ? 'green' : 'blue'} />
+          <StatusBadge label={`识别：${item.llm_state || '待识别'}`} tone={item.llm_state === '识别完成' ? 'green' : 'blue'} />
           <StatusBadge label={confirmed ? '已确认' : '待确认'} tone={confirmed ? 'green' : 'gray'} />
-          <StatusBadge label={submitted ? '已提交' : `提交：${item.remote_state || 'pending'}`} tone={submitted ? 'green' : 'blue'} />
+          <StatusBadge label={submitted ? '已提交' : `提交：${item.remote_state || '待提交'}`} tone={submitted ? 'green' : 'blue'} />
         </div>
       </div>
     </article>
@@ -345,15 +345,15 @@ function formatList(values: Array<string | number> | undefined) {
 function matchStatusFilter(item: TaskItemListRow, filter: StatusFilter) {
   if (filter === 'all') return true;
   if (filter === 'confirmed') return isConfirmedItem(item);
-  if (filter === 'submitted') return item.remote_state === 'success';
+  if (filter === 'submitted') return item.remote_state === '已提交';
   if (filter === 'failed') return isFailedItem(item);
-  return !isConfirmedItem(item) && item.remote_state !== 'success';
+  return !isConfirmedItem(item) && item.remote_state !== '已提交';
 }
 
 function isConfirmedItem(item: TaskItemListRow) {
-  return item.confirm_state === 'manual_confirmed' || item.confirm_state === 'auto_confirmed';
+  return item.confirm_state === '已确认';
 }
 
 function isFailedItem(item: TaskItemListRow) {
-  return [item.status, item.llm_state, item.confirm_state, item.remote_state].some((value) => String(value || '').includes('失败') || String(value || '').toLowerCase() === 'failed');
+  return [item.status, item.llm_state, item.confirm_state, item.remote_state].some((value) => String(value || '').includes('失败'));
 }
