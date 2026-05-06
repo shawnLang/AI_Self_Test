@@ -6,7 +6,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+import cv2
+import numpy as np
 from fastapi.testclient import TestClient
+from PIL import Image
 from sqlmodel import Session, select
 
 
@@ -43,16 +46,38 @@ class FakeTaskFileDownloader:
         item_dir.mkdir(parents=True, exist_ok=True)
         client = get_client_or_raise(kwargs["session"], kwargs["task"].client_id)
         file_path = item_dir / build_task_item_save_name(client, source_record, task_item.file_extension)
-        file_path.write_bytes(f"downloaded:{source_record.file_fid}".encode())
+        if task_item.file_bmp == 2:
+            self._write_test_video(file_path)
+        else:
+            Image.new("RGB", (100, 100), color=(255, 255, 255)).save(file_path)
         result_file_path = None
         if task_item.result_file_data:
             result_file_path = item_dir / build_task_item_save_name(client, source_record, "datajson")
-            result_file_path.write_text('{"tracks":[]}', encoding="utf-8")
+            result_file_path.write_text(
+                """
+                [
+                  [{"index": 0, "score": 0.5, "bbox": [10, 10, 30, 30], "trackId": "track-1"}],
+                  [{"index": 1, "score": 0.9, "bbox": [12, 12, 35, 35], "trackId": "track-1"}],
+                  [{"index": 2, "score": 0.7, "bbox": [11, 11, 32, 32], "trackId": "track-1"}]
+                ]
+                """,
+                encoding="utf-8",
+            )
         self.calls.append(source_record.file_fid)
         return TaskDownloadResult(
             file_path=file_path.as_posix(),
             result_file_path=result_file_path.as_posix() if result_file_path else None,
         )
+
+    @staticmethod
+    def _write_test_video(file_path: Path) -> None:
+        """写入可供 OpenCV 读取的测试视频。"""
+
+        writer = cv2.VideoWriter(file_path.as_posix(), cv2.VideoWriter_fourcc(*"mp4v"), 1, (80, 80))
+        for value in (0, 80, 160):
+            frame = np.full((80, 80, 3), value, dtype=np.uint8)
+            writer.write(frame)
+        writer.release()
 
 
 class FakeTaskItemRecognizer:
@@ -61,13 +86,99 @@ class FakeTaskItemRecognizer:
     def __init__(self) -> None:
         self.calls: list[int] = []
 
-    def recognize(self, **kwargs: Any) -> dict[int, str]:
+    def recognize(self, **kwargs: Any) -> Any:
         """返回与原始名称不同的识别结果，避免复制原始名称的占位逻辑。"""
 
         task_item = kwargs["task_item"]
         data_rows = kwargs["data_rows"]
+        from aiSelfTest.services.task_execution import TaskItemRecognitionResult
+        from aiSelfTest.services.task_steps.llm_result import BoundingBox, LlmDetectedObject, LlmDetectionResult
+        from aiSelfTest.services.task_steps.matcher import VideoRecognitionChoice
+
         self.calls.append(task_item.id)
-        return {row.id: f"AI-{row.name}" for row in data_rows}
+        if task_item.file_bmp == 2:
+            return TaskItemRecognitionResult(
+                video_results={row.id: [VideoRecognitionChoice(name=f"AI-{row.name}", score=0.9)] for row in data_rows}
+            )
+        return TaskItemRecognitionResult(
+            image_result=LlmDetectionResult(
+                width=100,
+                height=100,
+                data=[LlmDetectedObject(name=f"AI-{row.name}", bbox=BoundingBox(row.minx, row.miny, row.maxx, row.maxy))
+                      for row in data_rows],
+            )
+        )
+
+
+def test_build_upstream_page_payload_skips_empty_filter_values() -> None:
+    """空筛选参数不应写入上游分页请求体。"""
+
+    from aiSelfTest.schemas.task import TaskFiltersPayload
+    from aiSelfTest.services.task_execution import AuthenticatedTaskExecutionSource, TaskExecutionWindow
+
+    source = AuthenticatedTaskExecutionSource()
+    payload = source.build_upstream_page_payload(
+        filters=TaskFiltersPayload(
+            keyword="",
+            sp_name="",
+            start_at="",
+            end_at="",
+            classify_list=[],
+            media_types=[],
+            upload_types=[],
+            identify_source=[],
+            module="",
+        ),
+        window=TaskExecutionWindow(start_at="", end_at=""),
+        current=1,
+        size=100,
+    )
+
+    assert payload == {
+        "size": 100,
+        "current": 1,
+        "sortColumn": "fe.created_time",
+        "sortOrder": "ASC",
+    }
+
+
+def test_build_upstream_page_payload_keeps_non_empty_filter_values() -> None:
+    """非空筛选参数应继续按上游字段名写入请求体。"""
+
+    from aiSelfTest.schemas.task import TaskFiltersPayload
+    from aiSelfTest.services.task_execution import AuthenticatedTaskExecutionSource, TaskExecutionWindow
+
+    source = AuthenticatedTaskExecutionSource()
+    payload = source.build_upstream_page_payload(
+        filters=TaskFiltersPayload(
+            keyword="鸟类",
+            sp_name="白鹭",
+            classify_list=[1, 2],
+            media_types=["image", "video"],
+            upload_types=[3],
+            identify_source=[0],
+            module="camera",
+        ),
+        window=TaskExecutionWindow(start_at="2026-04-20", end_at="2026-04-25"),
+        current=2,
+        size=50,
+    )
+
+    assert payload == {
+        "size": 50,
+        "current": 2,
+        "keyword": "鸟类",
+        "spName": "白鹭",
+        "startTime": "2026-04-20 00:00:00",
+        "endTime": "2026-04-25 23:59:59",
+        "sortColumn": "fe.created_time",
+        "sortOrder": "ASC",
+        "classifyList": [1, 2],
+        "fileBmp": [1, 2],
+        "uploadType": [3],
+        "idWayList": [0],
+        "module": "camera",
+    }
 
 
 def test_task_execution_ingests_records_and_advances_shared_trunk(

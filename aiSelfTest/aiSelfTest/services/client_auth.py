@@ -273,18 +273,32 @@ class ClientApi:
         self.session.commit()
         self.session.refresh(self.client)
 
-    def post_with_retry(self, path: str, headers: dict[str, str], params: dict[str, Any]) -> Response:
-        """调用上游 POST 接口，并对临时失败执行有限重试。"""
+    def post_with_retry(self, path: str, headers: dict[str, str], params: dict[str, Any],
+                        method: str = "POST") -> Response:
+        """调用上游接口，并对临时失败执行有限重试。"""
 
         timeout = get_settings().request_timeout_seconds
         last_exception: RequestException | None = None
 
         for attempt in range(1, UPSTREAM_REQUEST_RETRY_ATTEMPTS + 1):
             try:
-                response = requests.post(path, headers=headers, timeout=timeout, json=params)
-                if response.status_code == 401 or not ClientUtils.response_contains_token_error(response):
+                if method.upper() == "GET":
+                    response = requests.get(path, headers=headers, timeout=timeout, params=params)
+                else:
+                    response = requests.post(path, headers=headers, timeout=timeout, json=params)
+                if response.status_code == 401 or ClientUtils.response_contains_token_error(response):
+                    last_exception = RequestException("登录失效")
+                    logger.warning(
+                        "客户端 token 已失效，准备重新登录后重试: client_id={}, path={}, attempt={}/{}",
+                        self.client_id,
+                        path,
+                        attempt,
+                        UPSTREAM_REQUEST_RETRY_ATTEMPTS,
+                    )
                     self.clear_client_tokens()
-                    raise RequestException("登录失效")
+                    auth_result = self.authenticate_client_model(force_reauthenticate=True)
+                    headers["Authorization"] = auth_result.client.access_token
+                    continue
             except RequestException as exc:
                 last_exception = exc
                 logger.warning(
@@ -337,7 +351,7 @@ class ClientApi:
             "Authorization": auth_result.client.access_token
         }
         path = ClientUtils.build_url(auth_result.client.api_url, UPSTREAM_FILE_DETAIL_PATH)
-        response = self.post_with_retry(path, headers, params)
+        response = self.post_with_retry(path, headers, params, method="GET")
         return response
 
 

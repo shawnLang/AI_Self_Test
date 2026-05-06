@@ -19,6 +19,7 @@ from typing import Any, Mapping, Protocol, Sequence
 from urllib.parse import urljoin, urlparse, urlunparse
 
 import requests
+from PIL import Image
 from loguru import logger
 from requests.exceptions import RequestException
 from sqlmodel import Session, select
@@ -32,8 +33,7 @@ from aiSelfTest.models.task import (
     TaskExecutionMode,
     TaskExecutionStatus,
     TaskItem,
-    TaskItemData,
-    TaskItemDataStatus,
+    TaskItemData, TaskItemDataStatus,
 )
 from aiSelfTest.schemas.multimodal_model import (
     MultimodalAttachmentPayload,
@@ -41,9 +41,12 @@ from aiSelfTest.schemas.multimodal_model import (
 )
 from aiSelfTest.schemas.task import TaskFiltersPayload
 from aiSelfTest.services.client import get_client_or_raise
-from aiSelfTest.services.client_auth import ClientApi, ClientUtils, UPSTREAM_FILE_DETAIL_PATH, UPSTREAM_FILE_PAGE_PATH
+from aiSelfTest.services.client_auth import ClientApi, UPSTREAM_FILE_DETAIL_PATH, UPSTREAM_FILE_PAGE_PATH
 from aiSelfTest.services.multimodal_attachment import build_gateway_chat_payload
 from aiSelfTest.services.multimodal_gateway import call_chat_endpoint, extract_chat_reply
+from aiSelfTest.services.task_steps.llm_result import LlmDetectionParser, LlmDetectionResult
+from aiSelfTest.services.task_steps.matcher import TaskItemDataMatcher, VideoRecognitionChoice
+from aiSelfTest.services.task_steps.video_recognition import VideoFrameExtractor
 from aiSelfTest.services.task_submission import submit_task_item_outputs
 from aiSelfTest.services.utils import optional_float, format_dt, clip_end_at, parse_window_end, truncate
 
@@ -66,7 +69,7 @@ CLASSIFY_NAME_MAP = {
 ID_TYPE_NAME_MAP = {
     0: "ai",
     1: "人工",
-    3: "专家",
+    2: "专家",
 }
 
 
@@ -125,6 +128,14 @@ class TaskDownloadResult:
     result_file_path: str | None = None
 
 
+@dataclass(frozen=True)
+class TaskItemRecognitionResult:
+    """单个 TaskItem 的结构化识别结果。"""
+
+    image_result: LlmDetectionResult | None = None
+    video_results: Mapping[int, Sequence[VideoRecognitionChoice]] | None = None
+
+
 class TaskFileDownloader(Protocol):
     """任务文件下载协议。"""
 
@@ -147,8 +158,8 @@ class TaskItemRecognizer(Protocol):
             task: Task,
             task_item: TaskItem,
             data_rows: Sequence[TaskItemData],
-    ) -> Mapping[int, str]:
-        """识别任务项并按 TaskItemData ID 返回名称。"""
+    ) -> TaskItemRecognitionResult:
+        """识别任务项并返回结构化结果。"""
 
 
 class AuthenticatedTaskExecutionSource:
@@ -190,13 +201,21 @@ class AuthenticatedTaskExecutionSource:
         payload: dict[str, Any] = {
             "size": size,
             "current": current,
-            "keyword": filters.keyword,
-            "spName": filters.sp_name,
-            "startTime": self.normalize_window_boundary(window.start_at, end_of_day=False),
-            "endTime": self.normalize_window_boundary(window.end_at, end_of_day=True),
             "sortColumn": "fe.created_time",
             "sortOrder": "ASC",
         }
+        keyword = (filters.keyword or "").strip()
+        if keyword:
+            payload["keyword"] = keyword
+        sp_name = (filters.sp_name or "").strip()
+        if sp_name:
+            payload["spName"] = sp_name
+        start_time = self.normalize_window_boundary(window.start_at, end_of_day=False)
+        if start_time:
+            payload["startTime"] = start_time
+        end_time = self.normalize_window_boundary(window.end_at, end_of_day=True)
+        if end_time:
+            payload["endTime"] = end_time
         if filters.classify_list:
             payload["classifyList"] = filters.classify_list
         if filters.media_types:
@@ -205,8 +224,9 @@ class AuthenticatedTaskExecutionSource:
             payload["uploadType"] = filters.upload_types
         if filters.identify_source:
             payload["idWayList"] = filters.identify_source
-        if filters.module is not None:
-            payload["module"] = filters.module
+        module = (filters.module or "").strip()
+        if module:
+            payload["module"] = module
         else:
             payload["module"] = "camera"
         return payload
@@ -249,15 +269,12 @@ class AuthenticatedTaskExecutionSource:
         all_records: list[Mapping[str, Any]] = []
         current = 1
         client_api = ClientApi(session, task.client_id)
-        auth_result = client_api.authenticate_client_model()
-        headers = {"Authorization": auth_result.client.access_token}
-        page_url = ClientUtils.build_url(auth_result.client.api_url, UPSTREAM_FILE_PAGE_PATH)
-        timeout = get_settings().request_timeout_seconds
 
         for _ in range(MAX_UPSTREAM_PAGE_COUNT):
             payload = self.build_upstream_page_payload(filters, window, current=current, size=UPSTREAM_PAGE_SIZE)
+
             try:
-                response = requests.post(page_url, headers=headers, json=payload, timeout=timeout)
+                response = client_api.find_file_page(payload)
             except RequestException as exc:
                 raise AppException(
                     code=ErrorCode.TASK_FAILED,
@@ -289,9 +306,6 @@ class AuthenticatedTaskExecutionSource:
                                source_record: SourceTaskItemRecord) -> SourceTaskItemDetail:
         """按文件 ID 拉取单个上游文件的识别结果详情。"""
         client_api = ClientApi(session, task.client_id)
-        auth_result = client_api.authenticate_client_model()
-        headers = {"Authorization": auth_result.client.access_token}
-        detail_url = ClientUtils.build_url(auth_result.client.api_url, UPSTREAM_FILE_DETAIL_PATH)
         file_id = source_record.file_id
         if not file_id:
             raise AppException(
@@ -301,12 +315,7 @@ class AuthenticatedTaskExecutionSource:
             )
 
         try:
-            response = requests.get(
-                detail_url,
-                headers=headers,
-                params={"fileId": file_id},
-                timeout=get_settings().request_timeout_seconds,
-            )
+            response = client_api.get_result_by_fileId({"fileId": file_id})
         except RequestException as exc:
             raise AppException(
                 code=ErrorCode.TASK_FAILED,
@@ -348,14 +357,14 @@ def build_task_item_save_name(client: Any, source_record: SourceTaskItemRecord, 
 
     cleaned_parts: list[str] = []
     for part in (
-        getattr(client, "tenant_name", ""),
-        getattr(client, "tenant_code", ""),
-        source_record.device_name,
-        source_record.module,
-        source_record.file_id,
-        source_record.file_num,
-        ID_TYPE_NAME_MAP.get(source_record.id_type, "未知"),
-        CLASSIFY_NAME_MAP.get(source_record.classify, "未知"),
+            getattr(client, "tenant_name", ""),
+            getattr(client, "tenant_code", ""),
+            source_record.device_name,
+            source_record.module,
+            source_record.file_id,
+            source_record.file_num,
+            ID_TYPE_NAME_MAP.get(source_record.id_type, "未知"),
+            CLASSIFY_NAME_MAP.get(source_record.classify, "未知"),
     ):
         text = str(part or "").strip()
         for char in ('/', "\\", ":", "*", "?", '"', "<", ">", "|"):
@@ -375,12 +384,7 @@ class RequestsTaskFileDownloader:
                  source_record: SourceTaskItemRecord) -> TaskDownloadResult:
         """下载原始文件和视频结果文件。"""
 
-        item_dir = (
-                get_settings().data_dir
-                / "task_files"
-                / str(task.id or 0)
-                / str(task_item.id or 0)
-        )
+        item_dir = get_settings().data_dir / "task_files" / f"{task.name}_{task.id}"
         item_dir.mkdir(parents=True, exist_ok=True)
         client = get_client_or_raise(session, task.client_id)
         original_path = item_dir / build_task_item_save_name(client, source_record, task_item.file_extension)
@@ -452,19 +456,61 @@ class RequestsTaskFileDownloader:
 class MultimodalTaskItemRecognizer:
     """基于已启用多模态模型的任务项识别器。"""
 
+    def __init__(self) -> None:
+        """初始化识别依赖。"""
+
+        self.parser = LlmDetectionParser()
+        self.video_extractor = VideoFrameExtractor()
+
     def recognize(self, session: Session, task: Task, task_item: TaskItem,
-                  data_rows: Sequence[TaskItemData]) -> Mapping[int, str]:
-        """调用多模态模型并解析识别名称。"""
+                  data_rows: Sequence[TaskItemData]) -> TaskItemRecognitionResult:
+        """按图片或视频分支调用多模态模型。"""
 
         model = self._get_default_multimodal_model(session)
         prompt = self._get_task_prompt(session, task.config_id)
-        messages = [
-            MultimodalChatMessagePayload(
-                role="user",
-                content=self._build_task_recognition_prompt(prompt, task_item, data_rows),
-                attachments=self._build_task_item_attachments(task_item),
-            )
-        ]
+        if task_item.file_bmp == 2:
+            return self._recognize_video(model, prompt, task_item, data_rows)
+        return TaskItemRecognitionResult(image_result=self._call_model(model, prompt, task_item, data_rows,
+                                                                       self._build_image_attachments(task_item)))
+
+    def _recognize_video(self, model: MultimodalModel, prompt: str, task_item: TaskItem,
+                         data_rows: Sequence[TaskItemData]) -> TaskItemRecognitionResult:
+        """按 TaskItemData.track_ids 抽取视频关键帧裁剪图并识别。"""
+
+        file_path = Path(task_item.file_path) if task_item.file_path else None
+        if file_path is None:
+            raise AppException(code=ErrorCode.TASK_FAILED, message="视频任务缺少本地文件", status_code=502)
+        result_files = sorted(file_path.parent.glob("*.datajson"))
+        if not result_files:
+            raise AppException(code=ErrorCode.TASK_FAILED, message="视频任务未找到 datajson 文件", status_code=502)
+
+        detections = self.video_extractor.load_detections(result_files[0])
+        video_results: dict[int, list[VideoRecognitionChoice]] = {}
+        for row in data_rows:
+            row_detections = self.video_extractor.find_row_detections(row, detections)
+            key_detections = self.video_extractor.select_key_detections(row_detections)
+            attachments = self.video_extractor.build_crop_attachments(file_path, key_detections)
+            if not attachments:
+                video_results[row.id or 0] = []
+                logger.warning("视频任务明细未找到可识别关键帧 task_item_id={} row_id={}", task_item.id, row.id)
+                continue
+            result = self._call_model(model, prompt, task_item, [row], attachments)
+            video_results[row.id or 0] = [
+                VideoRecognitionChoice(name=detected.name, score=key_detections[0].score if key_detections else 0)
+                for detected in (result.data if result else [])
+            ]
+        return TaskItemRecognitionResult(video_results=video_results)
+
+    def _call_model(self, model: MultimodalModel, prompt: str, task_item: TaskItem,
+                    data_rows: Sequence[TaskItemData],
+                    attachments: Sequence[MultimodalAttachmentPayload]) -> LlmDetectionResult:
+        """调用多模态模型并解析 `{width,height,data}`。"""
+
+        messages = [MultimodalChatMessagePayload(
+            role="user",
+            content=self._build_task_recognition_prompt(prompt, task_item, data_rows),
+            attachments=list(attachments),
+        )]
         payload = build_gateway_chat_payload(
             model_name=model.model_name,
             messages=messages,
@@ -482,7 +528,7 @@ class MultimodalTaskItemRecognizer:
                 message="大模型未返回可解析的识别结果",
                 status_code=502,
             )
-        return self._parse_recognition_reply(reply, data_rows)
+        return self.parser.parse(reply)
 
     @staticmethod
     def _get_default_multimodal_model(session: Session) -> MultimodalModel:
@@ -507,7 +553,7 @@ class MultimodalTaskItemRecognizer:
 
         config = session.get(Config, config_id)
         if config is None or not config.text.strip():
-            return "请识别附件中的目标，并返回识别名称。"
+            return "请识别附件中的动物、人、车，并返回 JSON。"
         return config.text.strip()
 
     @staticmethod
@@ -515,9 +561,13 @@ class MultimodalTaskItemRecognizer:
                                        data_rows: Sequence[TaskItemData]) -> str:
         """构造任务执行用大模型提示词。"""
 
+        image_size_text = ""
+        file_path = Path(task_item.file_path) if task_item.file_path else None
+        if task_item.file_bmp == 1 and file_path and file_path.exists():
+            with Image.open(file_path) as image:
+                image_size_text = f"图片尺寸：width={image.width}, height={image.height}\n"
         source_rows = [
             {
-                "id": row.id or 0,
                 "name": row.name,
                 "trackIds": row.track_ids,
                 "bbox": [row.minx, row.miny, row.maxx, row.maxy],
@@ -526,42 +576,28 @@ class MultimodalTaskItemRecognizer:
         ]
         return (
             f"{prompt}\n\n"
-            "请根据附件内容复核下列原始识别结果，并只返回 JSON 数组。\n"
-            "数组元素格式为 {\"id\": 任务明细ID, \"name\": \"识别名称\"}。\n"
+            "请识别附件图片中的动物、人、车，只返回 JSON 对象，不要返回 Markdown。\n"
+            "没有动物、人、车时返回 {\"width\": 图片宽度, \"height\": 图片高度, \"data\": []}。\n"
+            "有目标时返回 {\"width\": 图片宽度, \"height\": 图片高度, "
+            "\"data\": [{\"name\": \"动物名称/人/车\", \"bbox\": [xmin, ymin, xmax, ymax]}]}。\n"
             f"文件名：{task_item.name}\n"
+            f"{image_size_text}"
             f"原始识别结果：{json.dumps(source_rows, ensure_ascii=False)}"
         )
 
     @classmethod
-    def _build_task_item_attachments(cls, task_item: TaskItem) -> list[MultimodalAttachmentPayload]:
-        """根据本地下载产物构造模型附件。"""
+    def _build_image_attachments(cls, task_item: TaskItem) -> list[MultimodalAttachmentPayload]:
+        """构造图片整图附件。"""
 
         attachments: list[MultimodalAttachmentPayload] = []
         file_path = Path(task_item.file_path) if task_item.file_path else None
-        if task_item.file_bmp == 1 and file_path and file_path.exists():
+        if file_path and file_path.exists():
             attachments.append(
                 MultimodalAttachmentPayload(
                     name=file_path.name,
                     mimeType=mimetypes.guess_type(file_path.name)[0] or "image/jpeg",
                     kind="image",
                     dataUrl=cls._file_to_data_url(file_path),
-                )
-            )
-
-        if task_item.file_bmp == 2:
-            result_path = None
-            if file_path:
-                result_files = sorted(file_path.parent.glob("*.datajson"))
-                result_path = result_files[0] if result_files else None
-            text_content = ""
-            if result_path and result_path.exists():
-                text_content = result_path.read_text(encoding="utf-8")[:4000]
-            attachments.append(
-                MultimodalAttachmentPayload(
-                    name=result_path.name if result_path else "result_file_data",
-                    mimeType="application/json",
-                    kind="document",
-                    textContent=text_content or "视频任务未找到本地结果数据文件，请根据提示词和原始识别结果复核。",
                 )
             )
         return attachments
@@ -573,79 +609,6 @@ class MultimodalTaskItemRecognizer:
         mime_type = mimetypes.guess_type(file_path.name)[0] or "application/octet-stream"
         encoded = base64.b64encode(file_path.read_bytes()).decode("ascii")
         return f"data:{mime_type};base64,{encoded}"
-
-    @classmethod
-    def _parse_recognition_reply(cls, reply: str, data_rows: Sequence[TaskItemData]) -> dict[int, str]:
-        """解析大模型识别回复为 TaskItemData ID 到识别名称的映射。"""
-
-        text = reply.strip()
-        try:
-            payload = json.loads(cls._extract_json_text(text))
-        except json.JSONDecodeError:
-            if len(data_rows) == 1 and text:
-                return {data_rows[0].id or 0: text}
-            raise AppException(
-                code=ErrorCode.TASK_FAILED,
-                message="大模型识别结果不是可解析 JSON",
-                status_code=502,
-            )
-
-        rows = cls._extract_recognition_rows(payload)
-        if not rows and len(data_rows) == 1:
-            name = (
-                payload.get("name", "")
-                if isinstance(payload, Mapping)
-                else ""
-            )
-            return {data_rows[0].id or 0: name} if name else {}
-
-        result: dict[int, str] = {}
-        source_by_id = {row.id or 0: row for row in data_rows}
-        for index, row_payload in enumerate(rows):
-            if not isinstance(row_payload, Mapping):
-                continue
-            row_id = row_payload.get("id", 0)
-            if row_id == 0 and index < len(data_rows):
-                row_id = data_rows[index].id or 0
-            if row_id not in source_by_id:
-                continue
-            name = row_payload.get("name", "")
-            if name:
-                result[row_id] = name
-        return result
-
-    @staticmethod
-    def _extract_json_text(text: str) -> str:
-        """从模型回复中提取 JSON 文本。"""
-
-        if text.startswith("```"):
-            lines = text.splitlines()
-            if lines and lines[0].startswith("```"):
-                lines = lines[1:]
-            if lines and lines[-1].startswith("```"):
-                lines = lines[:-1]
-            text = "\n".join(lines).strip()
-
-        starts = [position for position in (text.find("["), text.find("{")) if position >= 0]
-        if not starts:
-            return text
-        start = min(starts)
-        end = max(text.rfind("]"), text.rfind("}"))
-        return text[start:end + 1] if end >= start else text
-
-    @staticmethod
-    def _extract_recognition_rows(payload: Any) -> list[Mapping[str, Any]]:
-        """从多种 JSON 结构中提取识别结果数组。"""
-
-        if isinstance(payload, list):
-            return [row for row in payload if isinstance(row, Mapping)]
-        if not isinstance(payload, Mapping):
-            return []
-        for key in ("results", "recordData", "record_data", "data", "items"):
-            value = payload.get(key)
-            if isinstance(value, list):
-                return [row for row in value if isinstance(row, Mapping)]
-        return []
 
 
 class TaskExecutionRunner:
@@ -1019,7 +982,7 @@ class TaskExecutionRunner:
                         message="大模型未返回可匹配的识别结果",
                         status_code=502,
                     )
-                self._apply_recognition_results(data_rows, recognition_results)
+                self._apply_recognition_results(task_item, data_rows, recognition_results)
                 task_item.llm_state = "success"
                 task_item.llm_error = None
                 task_item.llm_at = self.execution_now
@@ -1055,36 +1018,31 @@ class TaskExecutionRunner:
             self.session.add(task_item)
             self.session.commit()
 
-    def _apply_recognition_results(self, data_rows: Sequence[TaskItemData],
-                                   recognition_results: Mapping[int, str]) -> None:
-        """把大模型识别结果写回 TaskItemData。"""
+    def _apply_recognition_results(self, task_item: TaskItem, data_rows: Sequence[TaskItemData],
+                                   recognition_results: TaskItemRecognitionResult) -> None:
+        """把图片或视频大模型识别结果写回 TaskItemData。"""
 
-        normalized = {
-            int(row_id): llm_name.strip()
-            for row_id, llm_name in recognition_results.items()
-            if llm_name and str(llm_name).strip()
-        }
-        for row in data_rows:
-            row_id = row.id or 0
-            llm_name = normalized.get(row_id)
-            if llm_name is None:
-                row.status = TaskItemDataStatus.DELETE.value
-            else:
-                row.llm_name = llm_name
-                row.status = (
-                    TaskItemDataStatus.DEFAULT.value
-                    if llm_name.strip() == row.name.strip()
-                    else TaskItemDataStatus.UPDATE.value
-                )
-            self.session.add(row)
-        if data_rows:
-            self.session.commit()
+        matcher = TaskItemDataMatcher()
+        if task_item.file_bmp == 2:
+            video_results = recognition_results.video_results or {}
+            for row in data_rows:
+                matcher.apply_video_choice(row, video_results.get(row.id or 0, []))
+                self.session.add(row)
+            if data_rows:
+                self.session.commit()
+            return
+
+        image_result = recognition_results.image_result
+        if image_result is None:
+            raise AppException(code=ErrorCode.TASK_FAILED, message="图片任务缺少大模型识别结果", status_code=502)
+        matcher.apply_image_results(self.session, task_item.id or 0, data_rows, image_result.data)
 
     @staticmethod
     def _is_auto_task(task: Task) -> bool:
         """判断任务是否采用自动执行模式。"""
 
         return task.execution_mode in {TaskExecutionMode.AUTO.value, "auto"}
+
 
 def run_task_execution(session: Session, task_id: int,
                        downloader: TaskFileDownloader | None = None, recognizer: TaskItemRecognizer | None = None,

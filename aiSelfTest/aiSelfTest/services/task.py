@@ -35,7 +35,6 @@ def list_tasks(session: Session) -> TaskListData:
     """查询任务列表。"""
 
     rows = session.exec(select(Task).order_by(Task.id.desc())).all()
-    logger.debug("任务列表查询完成 count={}", len(rows))
     items = [
         TaskResponse.from_model(task, filters=_deserialize_filters(task.filters_json))
         for task in rows
@@ -75,7 +74,6 @@ def get_task_detail(session: Session, task_id: int) -> TaskResponse:
     """查询任务详情。"""
 
     task = _get_task_or_raise(session, task_id)
-    logger.debug("任务详情查询完成: task_id={}, execution_status={}", task_id, task.execution_status)
     return TaskResponse.from_model(task, filters=_deserialize_filters(task.filters_json))
 
 
@@ -205,13 +203,6 @@ def list_task_items(
     start = (page - 1) * page_size
     end = start + page_size
     paged_items = items[start:end]
-    logger.debug(
-        "任务项列表查询完成 task_id={} total={} page={} page_size={}",
-        task_id,
-        len(items),
-        page,
-        page_size,
-    )
     return TaskItemListData(items=paged_items, total=len(items), page=page, page_size=page_size)
 
 
@@ -223,11 +214,6 @@ def get_task_item_detail(session: Session, task_item_id: int) -> TaskItemDetailD
         select(TaskItemData).where(TaskItemData.task_item_id == task_item_id).order_by(TaskItemData.id.desc())
     ).all()
     review_rows = [TaskItemReviewRow.from_model(row) for row in data_rows]
-    logger.debug(
-        "任务项详情查询完成: task_item_id={}, review_row_count={}",
-        task_item_id,
-        len(review_rows),
-    )
     return TaskItemDetailData.from_model(task_item, review_rows=review_rows)
 
 

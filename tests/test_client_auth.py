@@ -387,6 +387,80 @@ def test_client_api_retries_find_file_page_on_retryable_status(
     assert calls[0].endswith("/openApi/icFile/findFilePage")
 
 
+def test_client_api_reauthenticates_find_file_page_when_token_expired(
+    monkeypatch,
+) -> None:
+    class FakeSession:
+        """记录 ClientApi 写回 token 时需要的最小 session 行为。"""
+
+        def add(self, obj: Any) -> None:
+            return None
+
+        def commit(self) -> None:
+            return None
+
+        def refresh(self, obj: Any) -> None:
+            return None
+
+    client = SimpleNamespace(
+        id=1,
+        api_url="https://example.com",
+        account="frog-admin",
+        password="secret-123",
+        status="启用",
+        tenant_code="",
+        tenant_name="",
+        access_token="stale-token",
+        refresh_token="",
+        expires_at=_future_timestamp(),
+    )
+    client_auth_module = importlib.import_module("aiSelfTest.services.client_auth")
+    api = client_auth_module.ClientApi(FakeSession(), client.id)
+    api.client = client
+    calls: list[tuple[str, str | None]] = []
+
+    def fake_post(url: str, **kwargs):
+        authorization = (kwargs.get("headers") or {}).get("Authorization")
+        calls.append((url, authorization))
+
+        if url.endswith("/openApi/icFile/findFilePage"):
+            if authorization == "stale-token":
+                return FakeResponse(401, {"message": "登录失效"}, "登录失效")
+            if authorization == "fresh-token":
+                return FakeResponse(200, {"records": []})
+            raise AssertionError(f"未预期的业务请求 Authorization: {authorization}")
+
+        if url.endswith("/auth/login"):
+            assert kwargs["json"] == {
+                "userName": "frog-admin",
+                "password": "secret-123",
+                "clientType": "WEB",
+            }
+            return FakeResponse(
+                200,
+                {
+                    "accessToken": "fresh-token",
+                    "refreshToken": "fresh-refresh-token",
+                    "expiresIn": 3600,
+                },
+            )
+
+        raise AssertionError(f"未预期的请求: {url}")
+
+    monkeypatch.setattr(client_auth_module.requests, "post", fake_post)
+
+    response = api.find_file_page({"size": 10, "current": 1})
+
+    assert response.status_code == 200
+    assert calls == [
+        ("https://example.com/openApi/icFile/findFilePage", "stale-token"),
+        ("https://example.com/auth/login", None),
+        ("https://example.com/openApi/icFile/findFilePage", "fresh-token"),
+    ]
+    assert client.access_token == "fresh-token"
+    assert client.refresh_token == "fresh-refresh-token"
+
+
 def test_client_api_retries_get_result_by_fileId_on_request_exception(
     monkeypatch,
 ) -> None:
