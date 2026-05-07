@@ -333,6 +333,8 @@ def _refresh_task_finish_state(session: Session, task_id: int, now: datetime | N
     finished_at = now or datetime.now()
     task.execution_status = TaskExecutionStatus.FINISH.value
     task.finished_at = finished_at
+    task.stage_started_at = None
+    task.last_progress_at = None
     task.updated_at = finished_at
     task.processed_count = len(rows)
     task.total_count = len(rows)

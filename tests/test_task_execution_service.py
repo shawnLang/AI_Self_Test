@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import importlib
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -165,6 +166,7 @@ def test_build_upstream_page_payload_skips_empty_filter_values() -> None:
         "current": 1,
         "sortColumn": "fe.created_time",
         "sortOrder": "ASC",
+        "module": "camera",
     }
 
 
@@ -241,6 +243,8 @@ def test_task_execution_ingests_records_and_advances_shared_trunk(
     assert task.execution_status == task_status.VERIFY.value
     assert task.total_count == 2
     assert task.processed_count == 2
+    assert task.stage_started_at is None
+    assert task.last_progress_at is None
     assert task.last_run_started_at is not None
     assert task.last_pull_end_at is not None
     assert {item.file_id for item in items} == {"101", "102"}
@@ -492,6 +496,39 @@ def test_task_execution_skips_reentrant_running_task(
     assert stored_task.execution_status == "数据加载"
     assert stored_task.skipped_count == 1
     assert items == []
+
+
+def test_task_execution_records_stage_progress_timestamps(
+    app_client: TestClient,
+    db_session: Session,
+) -> None:
+    task_id = _create_task(app_client, execution_mode="manual")
+    task_model, _, _ = _import_task_models()
+    task_status, *_ = _import_task_status_enums()
+
+    task_execution_module = importlib.import_module("aiSelfTest.services.task_execution")
+    runner = task_execution_module.TaskExecutionRunner(
+        db_session,
+        task_id,
+        now=datetime(2026, 4, 25, 10, 0, 0),
+    )
+
+    runner._set_task_stage(task_status.DOWN, reset_processed=True)
+    task = db_session.get(task_model, task_id)
+    assert task.stage_started_at is not None
+    assert task.last_progress_at is None
+
+    runner._increment_processed_count()
+    task = db_session.get(task_model, task_id)
+    assert task.processed_count == 1
+    assert task.last_progress_at is not None
+    assert task.last_progress_at >= task.stage_started_at
+
+    runner._enter_verify_stage()
+    task = db_session.get(task_model, task_id)
+    assert task.execution_status == task_status.VERIFY.value
+    assert task.stage_started_at is None
+    assert task.last_progress_at is None
 
 
 def _create_task(app_client: TestClient, *, execution_mode: str, auto_execute: bool = False) -> int:

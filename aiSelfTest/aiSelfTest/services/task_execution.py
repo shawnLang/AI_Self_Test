@@ -688,6 +688,8 @@ class TaskExecutionRunner:
         self.task.started_at = self.execution_now
         self.task.last_run_started_at = self.execution_now
         self.task.finished_at = None
+        self.task.stage_started_at = None
+        self.task.last_progress_at = None
         self.task.last_error = None
         self.task.updated_at = self.execution_now
         self.session.add(self.task)
@@ -723,7 +725,10 @@ class TaskExecutionRunner:
                 self.task = task
             self.task.execution_status = TaskExecutionStatus.FAIL.value
             self.task.last_error = str(exc)
-            self.task.updated_at = datetime.now()
+            failed_at = datetime.now()
+            self.task.stage_started_at = None
+            self.task.last_progress_at = None
+            self.task.updated_at = failed_at
             self.session.add(self.task)
             self.session.commit()
             logger.exception(f"任务执行 task_id={self.task_id} 执行失败")
@@ -825,9 +830,12 @@ class TaskExecutionRunner:
     def _enter_verify_stage(self) -> None:
         """进入人工复核阶段，不重置进度。"""
 
+        now = datetime.now()
         self.task.execution_status = TaskExecutionStatus.VERIFY.value
         self.task.finished_at = None
-        self.task.updated_at = self.execution_now
+        self.task.stage_started_at = None
+        self.task.last_progress_at = None
+        self.task.updated_at = now
         self.session.add(self.task)
         self.session.commit()
         self.session.refresh(self.task)
@@ -861,10 +869,13 @@ class TaskExecutionRunner:
     def _set_task_stage(self, status: TaskExecutionStatus, *, reset_processed: bool) -> None:
         """设置任务阶段，并按阶段需要重置进度。"""
 
+        now = datetime.now()
         self.task.execution_status = status.value
         if reset_processed:
             self.task.processed_count = 0
-        self.task.updated_at = self.execution_now
+        self.task.stage_started_at = now
+        self.task.last_progress_at = None
+        self.task.updated_at = now
         self.session.add(self.task)
         self.session.commit()
         self.session.refresh(self.task)
@@ -872,8 +883,10 @@ class TaskExecutionRunner:
     def _increment_processed_count(self) -> None:
         """单个 TaskItem 完成或跳过当前阶段后递增进度。"""
 
+        now = datetime.now()
         self.task.processed_count += 1
-        self.task.updated_at = self.execution_now
+        self.task.last_progress_at = now
+        self.task.updated_at = now
         self.session.add(self.task)
         self.session.commit()
 

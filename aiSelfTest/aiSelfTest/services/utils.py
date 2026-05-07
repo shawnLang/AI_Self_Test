@@ -1,3 +1,5 @@
+"""任务服务通用格式化与转换工具。"""
+
 from datetime import datetime
 from typing import Any, Optional
 

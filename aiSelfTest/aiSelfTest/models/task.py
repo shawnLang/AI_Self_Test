@@ -122,6 +122,8 @@ class Task(SQLModel, table=True):
     processed_count: int = Field(default=0, description="处理次数")
     started_at: Optional[datetime] = Field(default=None, description="开始时间")
     finished_at: Optional[datetime] = Field(default=None, description="完成时间")
+    stage_started_at: Optional[datetime] = Field(default=None, description="当前阶段开始时间")
+    last_progress_at: Optional[datetime] = Field(default=None, description="最近进度更新时间")
     last_pull_end_at: Optional[datetime] = Field(default=None, description="上次拉取结束时间")
     last_run_started_at: Optional[datetime] = Field(default=None, description="上次执行发起时间")
     skipped_count: int = Field(default=0, description="累计跳过重复条数")

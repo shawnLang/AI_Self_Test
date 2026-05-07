@@ -44,4 +44,12 @@ def test_task_card_action_buttons_do_not_wrap_or_confuse_run_with_schedule() -> 
     assert "skipped_count: number" in source
     assert "skipped_count: number" in api_source
     assert "task.skipped_count" in source
+    assert "estimated_remaining_seconds: number | null" in source
+    assert "estimated_remaining_seconds: number | null" in api_source
+    assert "runningExecutionStatuses" in source
+    assert "task.execution_status === '创建' && Boolean(task.started_at)" in source
+    assert "formatRemainingTime(task.estimated_remaining_seconds, isExecuting)" in source
+    assert "计算中" in source
     assert "暂未估算" in source
+    assert "约 ${totalSeconds} 秒" in source
+    assert "约 ${minutes} 分 ${remainingSeconds} 秒" in source

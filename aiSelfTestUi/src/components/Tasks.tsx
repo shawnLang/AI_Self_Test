@@ -16,6 +16,8 @@ type TaskItem = {
   processed_count: number;
   skipped_count: number;
   last_error: string | null;
+  estimated_remaining_seconds: number | null;
+  started_at?: string | null;
 };
 
 type TaskListData = {
@@ -33,11 +35,14 @@ const intervalLabelMap: Record<number, string> = {
 const statusTextMap: Record<string, string> = {
   创建: '未开始',
   下载: '下载中',
+  数据加载: '数据加载中',
   模型识别: '识别中',
   核查: '待核查',
   结束: '已完成',
   失败: '执行失败',
 };
+
+const runningExecutionStatuses = new Set(['数据加载', '下载', '模型识别']);
 
 export default function Tasks({
   onCreateTask,
@@ -174,7 +179,10 @@ const TaskMonitorCard: React.FC<TaskMonitorCardProps> = ({
   const total = Number(task.total_count || 0);
   const progress = total > 0 ? Math.min(100, Math.round((processed / total) * 100)) : 0;
   const canReview = task.execution_status === '核查' || task.execution_status === '结束';
-  const statusText = statusTextMap[task.execution_status] || task.execution_status || '未开始';
+  const isPreparing = task.execution_status === '创建' && Boolean(task.started_at);
+  const isExecuting = isPreparing || runningExecutionStatuses.has(task.execution_status);
+  const statusText = isPreparing ? '准备中' : statusTextMap[task.execution_status] || task.execution_status || '未开始';
+  const remainingTimeText = formatRemainingTime(task.estimated_remaining_seconds, isExecuting);
   
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm transition-colors">
@@ -279,7 +287,7 @@ const TaskMonitorCard: React.FC<TaskMonitorCardProps> = ({
         </div>
         <div>
           <span className="block text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">预计剩余时间</span>
-          <span className="font-medium">暂未估算</span>
+          <span className="font-medium">{remainingTimeText}</span>
         </div>
         {task.execution_status === '失败' && (
           <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400 ml-auto">
@@ -291,3 +299,34 @@ const TaskMonitorCard: React.FC<TaskMonitorCardProps> = ({
     </div>
   );
 };
+
+function formatRemainingTime(seconds: number | null | undefined, isRunning: boolean): string {
+  if (typeof seconds !== 'number') {
+    return isRunning ? '计算中' : '暂未估算';
+  }
+  if (seconds <= 0) {
+    return '即将完成';
+  }
+
+  const totalSeconds = Math.ceil(seconds);
+  if (totalSeconds < 60) {
+    return `约 ${totalSeconds} 秒`;
+  }
+
+  if (totalSeconds < 3600) {
+    const minutes = Math.floor(totalSeconds / 60);
+    const remainingSeconds = totalSeconds % 60;
+    if (remainingSeconds === 0) {
+      return `约 ${minutes} 分钟`;
+    }
+    return `约 ${minutes} 分 ${remainingSeconds} 秒`;
+  }
+
+  const totalMinutes = Math.ceil(totalSeconds / 60);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  if (minutes === 0) {
+    return `约 ${hours} 小时`;
+  }
+  return `约 ${hours} 小时 ${minutes} 分钟`;
+}

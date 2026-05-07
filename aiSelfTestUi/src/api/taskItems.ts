@@ -28,6 +28,7 @@ export type TaskSummary = {
   processed_count: number;
   skipped_count: number;
   last_error: string | null;
+  estimated_remaining_seconds: number | null;
   started_at?: string | null;
   finished_at?: string | null;
   filters: TaskFiltersPayload;

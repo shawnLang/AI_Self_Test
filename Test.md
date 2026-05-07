@@ -66,8 +66,9 @@ rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 
 ## 目标
 
-- 上游分页请求体只包含有实际值的筛选参数。
-- `None`、空字符串、空列表不写入上游分页请求体。
+- 上游分页请求体只包含有实际值的筛选参数，`module` 除外。
+- `None`、空字符串、空列表不写入上游分页请求体；`module` 为空时兜底为
+  `camera`。
 - 有值的筛选参数仍按既有字段名和转换规则写入。
 
 ## 用例
@@ -76,7 +77,7 @@ rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
    `keyword`、`spName`、`startTime`、`endTime`。
 2. `classify_list`、`media_types`、`upload_types`、`identify_source` 为空列表时，
    请求体不包含对应上游字段。
-3. `module` 为空字符串时，请求体不包含 `module`，避免覆盖上游默认条件。
+3. `module` 为空字符串时，请求体包含 `module: "camera"`，确保默认按相机模块查询。
 4. 筛选参数有值时，请求体继续包含对应上游字段，并保留分页与排序字段。
 
 ## 验证命令
@@ -259,5 +260,32 @@ cd aiSelfTestUi && npm run lint
 
 ```bash
 .env/bin/python -m pytest tests/test_task_api.py tests/test_frontend_contract_static.py
+cd aiSelfTestUi && npm run lint
+```
+
+# 任务管理预计剩余时间测试清单
+
+## 目标
+
+- 后端为任务列表和任务详情返回 `estimated_remaining_seconds`。
+- 预计剩余时间表示当前执行阶段的本轮剩余耗时，不表示下次自动调度时间。
+- 前端任务管理卡片展示后端估算结果，无法估算时给出明确占位。
+
+## 用例
+
+1. `TaskResponse` 包含 `estimated_remaining_seconds` 字段。
+2. 运行中任务在有 `stage_started_at`、`last_progress_at`、`total_count`、
+   `processed_count` 时返回大于 0 的剩余秒数。
+3. `创建`、`核查`、`结束`、`失败` 或未开始任务返回 `null`。
+4. 任务执行进入新阶段时记录 `stage_started_at`，单项进度推进时记录
+   `last_progress_at`。
+5. 前端任务类型包含 `estimated_remaining_seconds`，任务卡片有值时展示
+   格式化的 `约 ...`，运行中但无值时展示 `计算中`，非运行状态显示
+   `暂未估算`。
+
+## 验证命令
+
+```bash
+.env/bin/python -m pytest tests/test_task_api.py tests/test_task_execution_service.py tests/test_frontend_contract_static.py
 cd aiSelfTestUi && npm run lint
 ```

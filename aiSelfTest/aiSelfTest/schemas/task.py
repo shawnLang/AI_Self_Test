@@ -13,6 +13,7 @@ from PIL import Image
 from aiSelfTest.config import get_settings
 from aiSelfTest.models.task import (
     Task,
+    TaskExecutionStatus,
     TaskItem,
     TaskItemConfirmState,
     TaskItemData,
@@ -26,6 +27,11 @@ from aiSelfTest.models.task import (
 ExecutionModeValue = Literal["auto", "manual"]
 MediaTypeValue = Literal["image", "video"]
 TASK_FILE_STATIC_PREFIX = "/api/task-files"
+ESTIMATABLE_TASK_STATUSES = {
+    TaskExecutionStatus.DATA_LOAD.value,
+    TaskExecutionStatus.DOWN.value,
+    TaskExecutionStatus.LLM.value,
+}
 
 
 def resolve_task_item_media_url(row: TaskItem) -> str:
@@ -46,6 +52,28 @@ def resolve_task_item_media_url(row: TaskItem) -> str:
         return f"{TASK_FILE_STATIC_PREFIX}/{quoted_path}"
 
     return ""
+
+
+def estimate_task_remaining_seconds(task: Task) -> int | None:
+    """估算任务当前执行阶段的剩余秒数。"""
+
+    if task.execution_status not in ESTIMATABLE_TASK_STATUSES:
+        return None
+    if task.total_count <= 0 or task.processed_count <= 0:
+        return None
+    if task.stage_started_at is None or task.last_progress_at is None:
+        return None
+
+    remaining_count = task.total_count - task.processed_count
+    if remaining_count <= 0:
+        return 0
+
+    elapsed_seconds = (task.last_progress_at - task.stage_started_at).total_seconds()
+    if elapsed_seconds <= 0:
+        return None
+
+    average_seconds = elapsed_seconds / task.processed_count
+    return max(0, round(average_seconds * remaining_count))
 
 
 class TaskFiltersPayload(BaseModel):
@@ -117,6 +145,7 @@ class TaskResponse(BaseModel):
     processed_count: int
     skipped_count: int
     last_error: str | None
+    estimated_remaining_seconds: int | None = None
     started_at: datetime | None = None
     finished_at: datetime | None = None
     filters: TaskFiltersPayload
@@ -147,6 +176,7 @@ class TaskResponse(BaseModel):
             processed_count=task.processed_count,
             skipped_count=task.skipped_count,
             last_error=task.last_error,
+            estimated_remaining_seconds=estimate_task_remaining_seconds(task),
             started_at=task.started_at,
             finished_at=task.finished_at,
             filters=filters,

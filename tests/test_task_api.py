@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib
+from datetime import datetime
 from typing import Any
 
 from fastapi.testclient import TestClient
@@ -154,6 +155,7 @@ def test_create_task_and_get_detail(app_client: TestClient) -> None:
     assert created["execution_mode"] == "manual"
     assert created["auto_execute"] is False
     assert created["skipped_count"] == 0
+    assert created["estimated_remaining_seconds"] is None
 
     detail_response = app_client.get(f"/api/tasks/detail/{created['id']}")
 
@@ -161,8 +163,39 @@ def test_create_task_and_get_detail(app_client: TestClient) -> None:
     detail = _unwrap_success(detail_response.json())
     assert detail["id"] == created["id"]
     assert detail["skipped_count"] == 0
+    assert detail["estimated_remaining_seconds"] is None
     assert detail["filters"]["classify_list"] == [1, 2]
     assert detail["filters"]["media_types"] == ["image", "video"]
+
+
+def test_task_detail_returns_estimated_remaining_seconds(
+    app_client: TestClient,
+    db_session: Session,
+) -> None:
+    client_id, config_id = _create_client_and_config(app_client)
+    create_response = app_client.post(
+        "/api/tasks/create",
+        json=_create_task_payload(client_id, config_id),
+    )
+    created = _unwrap_success(create_response.json())
+
+    task_module = importlib.import_module("aiSelfTest.models.task")
+    task = db_session.get(task_module.Task, created["id"])
+    assert task is not None
+
+    task.execution_status = task_module.TaskExecutionStatus.DOWN.value
+    task.total_count = 10
+    task.processed_count = 4
+    task.stage_started_at = datetime(2026, 5, 7, 10, 0, 0)
+    task.last_progress_at = datetime(2026, 5, 7, 10, 2, 0)
+    db_session.add(task)
+    db_session.commit()
+
+    detail_response = app_client.get(f"/api/tasks/detail/{created['id']}")
+
+    assert detail_response.status_code == 200
+    detail = _unwrap_success(detail_response.json())
+    assert detail["estimated_remaining_seconds"] == 180
 
 
 def test_create_task_requires_config_id(app_client: TestClient) -> None:
