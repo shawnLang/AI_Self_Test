@@ -111,6 +111,35 @@ class FakeTaskItemRecognizer:
         )
 
 
+class MatchingTaskItemRecognizer(FakeTaskItemRecognizer):
+    """测试用大模型识别器，返回与原始识别名称一致的结果。"""
+
+    def recognize(self, **kwargs: Any) -> Any:
+        """返回和原始名称一致的识别结果。"""
+
+        task_item = kwargs["task_item"]
+        data_rows = kwargs["data_rows"]
+        from aiSelfTest.services.task_execution import TaskItemRecognitionResult
+        from aiSelfTest.services.task_steps.llm_result import BoundingBox, LlmDetectedObject, LlmDetectionResult
+        from aiSelfTest.services.task_steps.matcher import VideoRecognitionChoice
+
+        self.calls.append(task_item.id)
+        if task_item.file_bmp == 2:
+            return TaskItemRecognitionResult(
+                video_results={row.id: [VideoRecognitionChoice(name=row.name, score=0.9)] for row in data_rows}
+            )
+        return TaskItemRecognitionResult(
+            image_result=LlmDetectionResult(
+                width=100,
+                height=100,
+                data=[
+                    LlmDetectedObject(name=row.name, bbox=BoundingBox(row.minx, row.miny, row.maxx, row.maxy))
+                    for row in data_rows
+                ],
+            )
+        )
+
+
 class FlakyTaskItemRecognizer(FakeTaskItemRecognizer):
     """首次识别失败、后续成功的测试识别器。"""
 
@@ -352,6 +381,42 @@ def test_task_execution_retries_transient_llm_recognition_error(
     assert item.status == item_status.VERIFY_PENDING.value
     assert recognizer.failed_item_ids == {item.id}
     assert recognizer.calls == [item.id]
+
+
+def test_task_execution_auto_skips_matched_items_but_keeps_verify_page_visibility(
+    app_client: TestClient,
+    db_session: Session,
+    monkeypatch,
+) -> None:
+    task_id = _create_task(app_client, execution_mode="manual")
+    _install_task_upstream_mock(monkeypatch, records=_source_records()[:1])
+    run_task_execution = _import_run_task_execution()
+    task_model, task_item_model, task_item_data_model = _import_task_models()
+    task_status, item_status, llm_state, confirm_state, remote_state, train_state = _import_task_status_enums()
+    downloader = FakeTaskFileDownloader(_get_data_dir())
+    recognizer = MatchingTaskItemRecognizer()
+
+    result = run_task_execution(
+        db_session,
+        task_id,
+        downloader=downloader,
+        recognizer=recognizer,
+        now=datetime(2026, 4, 25, 10, 0, 0),
+    )
+
+    task = db_session.get(task_model, task_id)
+    item = db_session.exec(select(task_item_model).where(task_item_model.task_id == task_id)).one()
+    rows = db_session.exec(select(task_item_data_model).where(task_item_data_model.task_item_id == item.id)).all()
+
+    assert result.execution_status == task_status.FINISH.value
+    assert task.execution_status == task_status.FINISH.value
+    assert item.llm_state == llm_state.SUCCESS.value
+    assert item.status == item_status.SKIPPED.value
+    assert item.confirm_state == confirm_state.SKIPPED.value
+    assert item.remote_state == remote_state.PENDING.value
+    assert item.train_state == train_state.PENDING.value
+    assert rows != []
+    assert {row.status for row in rows} == {"默认"}
 
 
 def test_auto_execute_stops_at_verify_without_submitting(

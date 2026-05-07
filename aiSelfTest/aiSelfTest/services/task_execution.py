@@ -54,6 +54,7 @@ from aiSelfTest.services.multimodal_gateway import call_chat_endpoint, extract_c
 from aiSelfTest.services.task_steps.llm_result import LlmDetectionParser, LlmDetectionResult
 from aiSelfTest.services.task_steps.matcher import TaskItemDataMatcher, VideoRecognitionChoice
 from aiSelfTest.services.task_steps.video_recognition import VideoFrameExtractor
+from aiSelfTest.services.task_review import apply_task_item_review_state, refresh_task_finish_state
 from aiSelfTest.services.utils import optional_float, format_dt, clip_end_at, parse_window_end, truncate
 
 RUNNING_TASK_STATUSES = {
@@ -703,6 +704,8 @@ class TaskExecutionRunner:
             self._run_download_stage()
             self._run_llm_stage()
             self._enter_verify_stage()
+            refresh_task_finish_state(self.session, self.task_id, now=self.execution_now)
+            self.session.refresh(self.task)
             logger.info(
                 "任务执行 task进入复核阶段 task_id={} 新增Item数量={} 跳过数量={} 详情数量={} 处理数量={}",
                 self.task_id,
@@ -1101,12 +1104,13 @@ class TaskExecutionRunner:
                     status_code=502,
                 )
             self._apply_recognition_results(task_item, data_rows, recognition_results)
+            refreshed_data_rows = self.session.exec(
+                select(TaskItemData).where(TaskItemData.task_item_id == task_item.id)
+            ).all()
             task_item.llm_state = TaskItemLlmState.SUCCESS.value
             task_item.llm_error = None
             task_item.llm_at = self.execution_now
-            task_item.status = TaskItemStatus.VERIFY_PENDING.value
-            task_item.confirm_state = TaskItemConfirmState.PENDING.value
-            task_item.updated_at = self.execution_now
+            apply_task_item_review_state(task_item, refreshed_data_rows, self.execution_now)
             self.session.add(task_item)
             self.session.commit()
             return True

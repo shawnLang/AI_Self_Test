@@ -8,11 +8,11 @@ from datetime import datetime
 from aiSelfTest.exceptions import AppException, ErrorCode
 from aiSelfTest.models.task import (
     Task,
-    TaskExecutionStatus,
     TaskItem,
     TaskItemConfirmState,
     TaskItemData,
     TaskItemDataStatus,
+    TaskItemRemoteState,
     TaskItemStatus,
 )
 from aiSelfTest.schemas.task import (
@@ -21,19 +21,23 @@ from aiSelfTest.schemas.task import (
     TaskDeleteData,
     TaskFiltersPayload,
     TaskItemActionData,
-    TaskItemDeleteRequest,
+    TaskItemBatchActionData,
+    TaskItemBatchActionRow,
     TaskItemDetailData,
     TaskItemListData,
     TaskItemListRow,
     TaskItemRejectRequest,
     TaskItemReviewRow,
+    TaskItemReviewRowUpdateRequest,
     TaskItemActionRequest,
+    TaskItemSubmitTaskRequest,
     TaskListData,
     TaskResponse,
     TaskUpdateRequest,
     resolve_task_item_source_size,
 )
 from aiSelfTest.services.task_execution import run_task_execution
+from aiSelfTest.services.task_review import apply_task_item_review_state, refresh_task_finish_state
 from aiSelfTest.services.task_scheduler import sync_global_task_scheduler
 from aiSelfTest.services.task_submission import submit_task_item_outputs
 from loguru import logger
@@ -234,6 +238,7 @@ def confirm_task_item(session: Session, payload: TaskItemActionRequest) -> TaskI
     """确认 TaskItem。"""
 
     task_item = _get_task_item_or_raise(session, payload.task_item_id)
+    _ensure_task_item_can_be_manually_reviewed(session, task_item, "确认")
     now = datetime.now()
     task_item.confirm_state = TaskItemConfirmState.CONFIRMED.value
     task_item.confirmed_at = now
@@ -242,7 +247,7 @@ def confirm_task_item(session: Session, payload: TaskItemActionRequest) -> TaskI
     session.add(task_item)
     session.commit()
     session.refresh(task_item)
-    _refresh_task_finish_state(session, task_item.task_id, now=now)
+    refresh_task_finish_state(session, task_item.task_id, now=now)
     logger.info("任务项确认完成 task_item_id={} confirm_state={}", task_item.id, task_item.confirm_state)
     return TaskItemActionData(id=task_item.id or 0, confirm_state=task_item.confirm_state)
 
@@ -251,6 +256,7 @@ def reject_task_item(session: Session, payload: TaskItemRejectRequest) -> TaskIt
     """跳过 TaskItem，不提交客户端但计为已处理。"""
 
     task_item = _get_task_item_or_raise(session, payload.task_item_id)
+    _ensure_task_item_can_be_manually_reviewed(session, task_item, "跳过")
     now = datetime.now()
     task_item.confirm_state = TaskItemConfirmState.SKIPPED.value
     task_item.status = TaskItemStatus.SKIPPED.value
@@ -258,30 +264,51 @@ def reject_task_item(session: Session, payload: TaskItemRejectRequest) -> TaskIt
     session.add(task_item)
     session.commit()
     session.refresh(task_item)
-    _refresh_task_finish_state(session, task_item.task_id, now=now)
+    refresh_task_finish_state(session, task_item.task_id, now=now)
     logger.info("任务项跳过完成 task_item_id={} reason_length={}", task_item.id, len(payload.reason))
     return TaskItemActionData(id=task_item.id or 0, confirm_state=task_item.confirm_state)
 
 
-def delete_task_item_rows(session: Session, payload: TaskItemDeleteRequest) -> TaskItemActionData:
-    """删除复核层对象，但不删除源 TaskItem。"""
+def update_task_item_review_row(session: Session, payload: TaskItemReviewRowUpdateRequest) -> TaskItemActionData:
+    """更新 TaskItemData 复核状态与识别名称。"""
 
     task_item = _get_task_item_or_raise(session, payload.task_item_id)
-    if payload.task_item_data_ids:
-        rows = session.exec(
-            select(TaskItemData).where(TaskItemData.id.in_(payload.task_item_data_ids))
-        ).all()
-        for row in rows:
-            row.status = TaskItemDataStatus.DELETE.value
-            session.add(row)
-    task_item.updated_at = datetime.now()
+    if task_item.status == TaskItemStatus.FINISHED.value:
+        raise AppException(
+            code=ErrorCode.PARAM_INVALID,
+            message="已完成提交的任务项不能修改复核明细",
+            status_code=400,
+        )
+
+    data_row = session.get(TaskItemData, payload.task_item_data_id)
+    if data_row is None or data_row.task_item_id != task_item.id:
+        raise AppException(
+            code=ErrorCode.NOT_FOUND,
+            message="任务项复核明细不存在",
+            status_code=404,
+        )
+
+    now = datetime.now()
+    data_row.status = payload.status
+    data_row.llm_name = payload.llm_name.strip() if payload.llm_name else None
+    session.add(data_row)
+    session.flush()
+
+    data_rows = session.exec(
+        select(TaskItemData).where(TaskItemData.task_item_id == task_item.id)
+    ).all()
+    apply_task_item_review_state(task_item, data_rows, now)
+    if task_item.confirm_state == TaskItemConfirmState.PENDING.value:
+        task_item.confirmed_at = None
     session.add(task_item)
     session.commit()
     session.refresh(task_item)
+    refresh_task_finish_state(session, task_item.task_id, now=now)
     logger.info(
-        "任务项复核明细删除完成 task_item_id={} requested_detail_count={}",
+        "任务项复核明细更新完成 task_item_id={} task_item_data_id={} status={}",
         task_item.id,
-        len(payload.task_item_data_ids),
+        data_row.id,
+        data_row.status,
     )
     return TaskItemActionData(id=task_item.id or 0, confirm_state=task_item.confirm_state)
 
@@ -296,9 +323,18 @@ def submit_task_item(session: Session, payload: TaskItemActionRequest) -> TaskIt
             message="任务项必须人工确认后才能提交",
             status_code=400,
         )
+    if task_item.remote_state not in {
+        TaskItemRemoteState.PENDING.value,
+        TaskItemRemoteState.FAIL.value,
+    }:
+        raise AppException(
+            code=ErrorCode.PARAM_INVALID,
+            message="任务项当前远端状态不能提交",
+            status_code=400,
+        )
 
     result = submit_task_item_outputs(session, task_item)
-    _refresh_task_finish_state(session, task_item.task_id)
+    refresh_task_finish_state(session, task_item.task_id)
     logger.info(
         "任务项提交完成 task_item_id={} remote_state={} train_state={}",
         task_item.id,
@@ -312,110 +348,59 @@ def submit_task_item(session: Session, payload: TaskItemActionRequest) -> TaskIt
     )
 
 
-def _refresh_task_finish_state(session: Session, task_id: int, now: datetime | None = None) -> None:
-    """所有 TaskItem 都完成或跳过后，把任务推进到结束态。"""
+def submit_task_items_by_task(
+        session: Session,
+        payload: TaskItemSubmitTaskRequest,
+) -> TaskItemBatchActionData:
+    """按任务提交所有已确认且待提交或提交失败的 TaskItem。"""
 
-    task = session.get(Task, task_id)
-    if task is None or task.execution_status != TaskExecutionStatus.VERIFY.value:
-        return
+    _get_task_or_raise(session, payload.task_id)
+    task_items = session.exec(
+        select(TaskItem).where(
+            TaskItem.task_id == payload.task_id,
+            TaskItem.confirm_state == TaskItemConfirmState.CONFIRMED.value,
+            TaskItem.remote_state.in_({
+                TaskItemRemoteState.PENDING.value,
+                TaskItemRemoteState.FAIL.value,
+            }),
+        ).order_by(TaskItem.id.asc())
+    ).all()
 
-    rows = session.exec(select(TaskItem).where(TaskItem.task_id == task_id)).all()
-    if not rows:
-        return
-
-    finished_statuses = {
-        TaskItemStatus.FINISHED.value,
-        TaskItemStatus.SKIPPED.value,
-    }
-    if not all(row.status in finished_statuses for row in rows):
-        return
-
-    finished_at = now or datetime.now()
-    task.execution_status = TaskExecutionStatus.FINISH.value
-    task.finished_at = finished_at
-    task.stage_started_at = None
-    task.last_progress_at = None
-    task.updated_at = finished_at
-    task.processed_count = len(rows)
-    task.total_count = len(rows)
-    session.add(task)
-    session.commit()
-
-
-def list_completed_review_tasks(session: Session) -> list[dict[str, int | str]]:
-    """查询可复核任务列表（兼容层）。"""
-
-    tasks = session.exec(select(Task).where(Task.execution_status == "结束").order_by(Task.id.desc())).all()
-    logger.debug("已完成复核任务查询完成 count={}", len(tasks))
-    return [
-        {"id": task.id or 0, "name": task.name}
-        for task in tasks
-        if session.exec(select(TaskItem).where(TaskItem.task_id == task.id)).first() is not None
-    ]
-
-
-def list_review_items(session: Session, task_id: int) -> list[dict[str, object]]:
-    """查询复核项列表（兼容层）。"""
-
-    task = _get_task_or_raise(session, task_id)
-    items = session.exec(select(TaskItem).where(TaskItem.task_id == task_id).order_by(TaskItem.id.desc())).all()
-    logger.debug("复核项列表查询完成 task_id={} count={}", task_id, len(items))
-    return [_build_review_item(task, item, session) for item in items]
-
-
-def confirm_review_items(session: Session, ids: list[str]) -> dict[str, object]:
-    """批量确认复核项（兼容层）。"""
-
-    success_count = 0
-    failure_count = 0
-    results: list[dict[str, str]] = []
-
-    for raw_id in ids:
+    results: list[TaskItemBatchActionRow] = []
+    for task_item in task_items:
         try:
-            task_item_id = int(raw_id)
-            confirm_task_item(session, TaskItemActionRequest(task_item_id=task_item_id))
-            success_count += 1
-            results.append({"status": "success", "message": f"复核项 {task_item_id} 确认成功"})
+            submit_task_item(session, TaskItemActionRequest(task_item_id=task_item.id or 0))
+            results.append(
+                TaskItemBatchActionRow(
+                    id=task_item.id or 0,
+                    status="success",
+                    message=f"任务项 {task_item.id} 已提交远端",
+                )
+            )
         except Exception as exc:  # noqa: BLE001
-            failure_count += 1
-            logger.warning("复核项确认失败 raw_id={} error={}", raw_id, exc)
-            results.append({"status": "failed", "message": str(exc)})
+            logger.warning("任务级提交远端失败 task_id={} task_item_id={} error={}", payload.task_id, task_item.id, exc)
+            results.append(
+                TaskItemBatchActionRow(
+                    id=task_item.id or 0,
+                    status="failed",
+                    message=str(exc),
+                )
+            )
 
+    success_count = len([row for row in results if row.status == "success"])
+    failure_count = len(results) - success_count
     logger.info(
-        "兼容复核项批量确认完成: success_count={}, failure_count={}",
+        "任务级提交远端完成 task_id={} submit_count={} success_count={} failure_count={}",
+        payload.task_id,
+        len(task_items),
         success_count,
         failure_count,
     )
-    return {
-        "successCount": success_count,
-        "failureCount": failure_count,
-        "results": results,
-    }
-
-
-def delete_review_item(session: Session, task_item_id: int) -> None:
-    """删除复核层对象（兼容层）。"""
-
-    task_item = _get_task_item_or_raise(session, task_item_id)
-    data_rows = session.exec(
-        select(TaskItemData).where(TaskItemData.task_item_id == task_item_id)
-    ).all()
-    delete_task_item_rows(
-        session,
-        TaskItemDeleteRequest(
-            task_item_id=task_item.id or 0,
-            task_item_data_ids=[row.id or 0 for row in data_rows if row.id is not None],
-        ),
+    return TaskItemBatchActionData(
+        success_count=success_count,
+        failure_count=failure_count,
+        results=results,
     )
-    logger.info("复核项删除完成 task_item_id={} detail_count={}", task_item_id, len(data_rows))
-
-
-def delete_review_items(session: Session, ids: list[str]) -> None:
-    """批量删除复核层对象（兼容层）。"""
-
-    for raw_id in ids:
-        delete_review_item(session, int(raw_id))
-    logger.info("复核项批量删除完成 count={}", len(ids))
 
 
 def _serialize_filters(filters: TaskFiltersPayload) -> str:
@@ -430,56 +415,6 @@ def _deserialize_filters(raw: str | None) -> TaskFiltersPayload:
     if not raw:
         return TaskFiltersPayload()
     return TaskFiltersPayload.model_validate(json.loads(raw))
-
-
-def _build_review_item(task: Task, task_item: TaskItem, session: Session) -> dict[str, object]:
-    """构造旧复核页面消费的一行任务项数据。"""
-
-    data_rows = session.exec(
-        select(TaskItemData).where(TaskItemData.task_item_id == task_item.id).order_by(TaskItemData.id.desc())
-    ).all()
-    review_rows = [_build_compat_review_row(row) for row in data_rows]
-    submit_count = len([row for row in review_rows if bool(row["willSubmit"])])
-    excluded_count = len([row for row in review_rows if row["decision"] == "exclude"])
-    media_type = "video" if task_item.file_bmp == 2 else "image"
-    ai_values = [str(row["aiName"]) for row in review_rows if row["aiName"]]
-    original_values = [str(row["originalName"]) for row in review_rows if row["originalName"]]
-    return {
-        "id": task_item.id or 0,
-        "taskName": task.name,
-        "mediaType": media_type,
-        "imageUrl": task_item.file_url,
-        "mediaUrl": task_item.file_url,
-        "originalResult": "、".join(original_values),
-        "aiResult": "、".join(ai_values),
-        "reviewRows": review_rows,
-        "submitCount": submit_count,
-        "excludedCount": excluded_count,
-        "willSubmitEmptyArray": submit_count == 0,
-        "remoteError": task_item.remote_error,
-    }
-
-
-def _build_compat_review_row(row: TaskItemData) -> dict[str, object]:
-    """把 TaskItemData 转换为旧复核页兼容行。"""
-
-    if row.status == TaskItemDataStatus.DELETE.value:
-        decision = "exclude"
-    elif row.llm_name and row.name and row.llm_name.strip() == row.name.strip():
-        decision = "keep"
-    elif row.llm_name:
-        decision = "rename"
-    else:
-        decision = "exclude"
-
-    return {
-        "recordId": row.id or 0,
-        "originalName": row.name,
-        "aiName": row.llm_name,
-        "decision": decision,
-        "willSubmit": decision != "exclude" and bool(row.llm_name),
-        "groundingStatus": "structured",
-    }
 
 
 def _get_task_or_raise(session: Session, task_id: int) -> Task:
@@ -506,6 +441,31 @@ def _get_task_item_or_raise(session: Session, task_item_id: int) -> TaskItem:
             status_code=404,
         )
     return task_item
+
+
+def _ensure_task_item_can_be_manually_reviewed(
+        session: Session,
+        task_item: TaskItem,
+        action_name: str,
+) -> None:
+    """校验 TaskItem 是否仍需要人工确认或跳过。"""
+
+    if task_item.confirm_state != TaskItemConfirmState.PENDING.value:
+        raise AppException(
+            code=ErrorCode.PARAM_INVALID,
+            message=f"任务项当前状态不能{action_name}",
+            status_code=400,
+        )
+
+    data_rows = session.exec(
+        select(TaskItemData).where(TaskItemData.task_item_id == task_item.id)
+    ).all()
+    if data_rows and all(row.status == TaskItemDataStatus.DEFAULT.value for row in data_rows):
+        raise AppException(
+            code=ErrorCode.PARAM_INVALID,
+            message=f"结果一致的任务项已自动跳过，不能人工{action_name}",
+            status_code=400,
+        )
 
 
 def _sync_scheduler(task_id: int | None) -> None:

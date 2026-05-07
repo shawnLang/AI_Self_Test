@@ -141,6 +141,13 @@ export type ReviewRow = {
   };
 };
 
+export type TaskItemReviewRowUpdateRequest = {
+  task_item_id: number;
+  task_item_data_id: number;
+  status: TaskItemDataStatus | string;
+  llm_name: string | null;
+};
+
 export type ReviewItem = {
   id: number;
   taskId: number;
@@ -148,6 +155,7 @@ export type ReviewItem = {
   mediaType: MediaType;
   imageUrl: string;
   mediaUrl: string;
+  status: string;
   originalResult: string;
   aiResult: string;
   reviewRows: ReviewRow[];
@@ -163,6 +171,12 @@ export type ReviewItem = {
 export type TaskItemBatchActionResult = {
   successCount: number;
   failureCount: number;
+  results: Array<{ id: number; status: 'success' | 'failed'; message: string }>;
+};
+
+export type TaskItemServerBatchActionData = {
+  success_count: number;
+  failure_count: number;
   results: Array<{ id: number; status: 'success' | 'failed'; message: string }>;
 };
 
@@ -218,10 +232,10 @@ export function rejectTaskItem(taskItemId: number, reason: string): Promise<Task
   });
 }
 
-export function deleteTaskItemRows(taskItemId: number, taskItemDataIds: number[] = []): Promise<TaskItemActionData> {
-  return fetchApi<TaskItemActionData>('/api/task-items/action-delete', {
+export function updateTaskItemReviewRow(payload: TaskItemReviewRowUpdateRequest): Promise<TaskItemActionData> {
+  return fetchApi<TaskItemActionData>('/api/task-items/action-update-row', {
     method: 'POST',
-    body: JSON.stringify({ task_item_id: taskItemId, task_item_data_ids: taskItemDataIds }),
+    body: JSON.stringify(payload),
   });
 }
 
@@ -230,6 +244,18 @@ export function submitTaskItem(taskItemId: number): Promise<TaskItemActionData> 
     method: 'POST',
     body: JSON.stringify({ task_item_id: taskItemId }),
   });
+}
+
+export async function submitTaskReviewItems(taskId: number): Promise<TaskItemBatchActionResult> {
+  const data = await fetchApi<TaskItemServerBatchActionData>('/api/task-items/action-submit-task', {
+    method: 'POST',
+    body: JSON.stringify({ task_id: taskId }),
+  });
+  return {
+    successCount: data.success_count,
+    failureCount: data.failure_count,
+    results: data.results,
+  };
 }
 
 export async function listReviewTaskOptions(): Promise<ReviewTaskOption[]> {
@@ -265,10 +291,10 @@ export async function confirmReviewItems(ids: string[]): Promise<TaskItemBatchAc
   });
 }
 
-export async function deleteReviewItems(ids: string[], rowsByItemId: Record<string, number[]> = {}): Promise<TaskItemBatchActionResult> {
+export async function skipReviewItems(ids: string[]): Promise<TaskItemBatchActionResult> {
   return runBatchAction(ids, async (id) => {
-    await deleteTaskItemRows(id, rowsByItemId[String(id)] ?? []);
-    return `任务项 ${id} 的复核差异已标记删除`;
+    await rejectTaskItem(id, 'manual_skip');
+    return `任务项 ${id} 已跳过`;
   });
 }
 
@@ -311,6 +337,7 @@ function toReviewItem(task: TaskSummary, listRow: TaskItemListRow, detail: TaskI
     mediaType: detail.media_type,
     imageUrl: detail.media.url,
     mediaUrl: detail.media.url,
+    status: listRow.status,
     originalResult: originalValues.join('、'),
     aiResult: aiValues.join('、'),
     reviewRows,

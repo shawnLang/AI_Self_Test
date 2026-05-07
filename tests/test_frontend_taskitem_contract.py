@@ -55,7 +55,7 @@ def test_data_query_displays_saved_filters_like_create_task() -> None:
 
 
 def test_review_uses_task_item_actions_for_basic_confirmation() -> None:
-    """Review 页面只做基础确认页，不再把 compat reviews 当主语义。"""
+    """Review 页面使用 TaskItem Actions，不再提供删除差异语义。"""
 
     review_text = read_frontend_file("components/Review.tsx")
     api_text = read_frontend_file("api/taskItems.ts")
@@ -63,10 +63,58 @@ def test_review_uses_task_item_actions_for_basic_confirmation() -> None:
     assert "../api/taskItems" in review_text
     assert "../api/review" not in review_text
     assert "/api/task-items/action-confirm" in api_text
-    assert "/api/task-items/action-delete" in api_text
+    assert "/api/task-items/action-reject" in api_text
+    assert "/api/task-items/action-submit" in api_text
+    assert "/api/task-items/action-submit-task" in api_text
+    assert "/api/task-items/action-update-row" in api_text
+    assert "/api/task-items/action-delete" not in api_text
     assert "/api/task-items/detail/" in api_text
-    assert "确认只更新 TaskItem 确认状态" in review_text
-    assert "移除差异不删除源 TaskItem" in review_text
+    assert "确认不提交远端" in review_text
+    assert "提交远端" in review_text
+    assert "跳过" in review_text
+    assert "批量跳过" in review_text
+    assert "批量提交远端" in review_text
+    assert "submitTaskReviewItems(Number(selectedTaskId))" in review_text
+    assert "taskSubmittableIds" in review_text
+    assert "submitReviewItems" not in review_text
+    assert "移除差异" not in review_text
+    assert "移除复核差异" not in review_text
+
+
+def test_review_frontend_supports_row_editing_and_selection() -> None:
+    """复核页应支持逐行编辑 llm_name/status 和显式多选批量操作。"""
+
+    api_text = read_frontend_file("api/taskItems.ts")
+    review_text = read_frontend_file("components/Review.tsx")
+
+    assert "updateTaskItemReviewRow" in api_text
+    assert "TaskItemReviewRowUpdateRequest" in api_text
+    assert "task_item_data_id" in api_text
+    assert "llm_name" in api_text
+    assert "source_name" in api_text
+    assert "原结果" in review_text
+    assert "识别名称" in review_text
+    assert "状态" in review_text
+    assert "保存" in review_text
+    assert "selectedItemIds" in review_text
+    assert "全选当前可处理项" in review_text
+    assert "清空选择" in review_text
+
+
+def test_review_frontend_supports_confirm_state_filter() -> None:
+    """复核页应支持按待复核、已确认、跳过筛选。"""
+
+    review_text = read_frontend_file("components/Review.tsx")
+
+    assert "type ReviewConfirmFilter" in review_text
+    assert "confirmFilter" in review_text
+    assert "setConfirmFilter" in review_text
+    assert "待复核" in review_text
+    assert "已确认" in review_text
+    assert "跳过" in review_text
+    assert "pendingConfirmCount" in review_text
+    assert "confirmedCount" in review_text
+    assert "skippedCount" in review_text
 
 
 def test_review_task_options_include_verify_stage_tasks() -> None:

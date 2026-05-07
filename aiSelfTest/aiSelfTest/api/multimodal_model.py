@@ -280,4 +280,4 @@ def delete_multimodal_chat_session_route(session_id: int, session: Session = Dep
         session_id,
         len(message_rows),
     )
-    return success_res(data=session_id)
+    return success_res(data=MultimodalChatSessionDeleteData(id=session_id))

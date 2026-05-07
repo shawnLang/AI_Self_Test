@@ -209,16 +209,34 @@ class TaskItemActionRequest(BaseModel):
     task_item_id: int = Field(gt=0, description="任务项ID")
 
 
+class TaskItemSubmitTaskRequest(BaseModel):
+    """按任务提交所有可提交 TaskItem 请求。"""
+
+    task_id: int = Field(gt=0, description="任务ID")
+
+
 class TaskItemRejectRequest(TaskItemActionRequest):
     """TaskItem 拒绝动作请求。"""
 
     reason: str = Field(min_length=1, max_length=200, description="拒绝原因")
 
 
-class TaskItemDeleteRequest(TaskItemActionRequest):
-    """TaskItem 删除动作请求。"""
+class TaskItemReviewRowUpdateRequest(TaskItemActionRequest):
+    """TaskItemData 复核行更新请求。"""
 
-    task_item_data_ids: list[int] = Field(default_factory=list, description="待删除明细ID")
+    task_item_data_id: int = Field(gt=0, description="任务项明细ID")
+    status: str = Field(description="复核状态")
+    llm_name: str | None = Field(default=None, max_length=100, description="识别名称")
+
+    @field_validator("status")
+    @classmethod
+    def validate_status(cls, value: str) -> str:
+        """校验复核状态只能使用 TaskItemDataStatus 定义值。"""
+
+        allowed_statuses = {item.value for item in TaskItemDataStatus}
+        if value not in allowed_statuses:
+            raise ValueError("复核状态必须是 默认/新增/修改/删除")
+        return value
 
 
 class TaskItemBBox(BaseModel):
@@ -430,3 +448,19 @@ class TaskItemActionData(BaseModel):
     confirm_state: str | None = None
     remote_state: str | None = None
     train_state: str | None = None
+
+
+class TaskItemBatchActionRow(BaseModel):
+    """TaskItem 批量动作单项结果。"""
+
+    id: int
+    status: str
+    message: str
+
+
+class TaskItemBatchActionData(BaseModel):
+    """TaskItem 批量动作响应体。"""
+
+    success_count: int
+    failure_count: int
+    results: list[TaskItemBatchActionRow]

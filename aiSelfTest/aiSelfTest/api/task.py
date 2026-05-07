@@ -10,10 +10,12 @@ from aiSelfTest.schemas.task import (
     TaskDeleteData,
     TaskItemActionData,
     TaskItemActionRequest,
-    TaskItemDeleteRequest,
+    TaskItemBatchActionData,
     TaskItemDetailData,
     TaskItemListData,
     TaskItemRejectRequest,
+    TaskItemReviewRowUpdateRequest,
+    TaskItemSubmitTaskRequest,
     TaskListData,
     TaskResponse,
     TaskUpdateRequest,
@@ -22,7 +24,6 @@ from aiSelfTest.services.task import (
     confirm_task_item,
     create_task,
     delete_task,
-    delete_task_item_rows,
     get_task_detail,
     get_task_item_detail,
     list_task_items,
@@ -32,7 +33,9 @@ from aiSelfTest.services.task import (
     start_task,
     stop_task,
     submit_task_item,
-    update_task
+    submit_task_items_by_task,
+    update_task,
+    update_task_item_review_row,
 )
 from fastapi import APIRouter, Depends, Query, status
 from sqlmodel import Session
@@ -145,12 +148,15 @@ def reject_task_item_route(payload: TaskItemRejectRequest, session: Session = De
     return ApiResponse(code=0, message="success", data=reject_task_item(session, payload))
 
 
-@task_item_router.post("/action-delete", response_model=ApiResponse[TaskItemActionData])
-def delete_task_item_route(payload: TaskItemDeleteRequest, session: Session = Depends(get_session)) -> ApiResponse[
+@task_item_router.post("/action-update-row", response_model=ApiResponse[TaskItemActionData])
+def update_task_item_review_row_route(
+        payload: TaskItemReviewRowUpdateRequest,
+        session: Session = Depends(get_session),
+) -> ApiResponse[
     TaskItemActionData]:
-    """删除任务项复核数据。"""
+    """更新任务项复核明细。"""
 
-    return ApiResponse(code=0, message="success", data=delete_task_item_rows(session, payload))
+    return ApiResponse(code=0, message="success", data=update_task_item_review_row(session, payload))
 
 
 @task_item_router.post("/action-submit", response_model=ApiResponse[TaskItemActionData])
@@ -159,3 +165,13 @@ def submit_task_item_route(payload: TaskItemActionRequest, session: Session = De
     """提交任务项到远端。"""
 
     return ApiResponse(code=0, message="success", data=submit_task_item(session, payload))
+
+
+@task_item_router.post("/action-submit-task", response_model=ApiResponse[TaskItemBatchActionData])
+def submit_task_items_by_task_route(
+        payload: TaskItemSubmitTaskRequest,
+        session: Session = Depends(get_session),
+) -> ApiResponse[TaskItemBatchActionData]:
+    """按任务提交所有可提交任务项到远端。"""
+
+    return ApiResponse(code=0, message="success", data=submit_task_items_by_task(session, payload))

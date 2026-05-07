@@ -10,8 +10,10 @@ from sqlmodel import Session, select
 
 from aiSelfTest.models.task import (
     TaskItemConfirmState,
+    TaskItemDataStatus,
     TaskItemLlmState,
     TaskItemRemoteState,
+    TaskItemStatus,
     TaskItemTrainState,
 )
 
@@ -330,6 +332,7 @@ def test_task_item_reject_action_marks_item_skipped_without_deleting_source(
     )
 
     assert response.status_code == 200
+    db_session.expire_all()
     stored = db_session.exec(select(task_item_model).where(task_item_model.id == task_item.id)).one_or_none()
     assert stored is not None
     assert stored.confirm_state == TaskItemConfirmState.SKIPPED.value
@@ -337,47 +340,129 @@ def test_task_item_reject_action_marks_item_skipped_without_deleting_source(
     assert stored.remote_state == TaskItemRemoteState.PENDING.value
 
 
-def test_task_item_delete_action_does_not_delete_source_task_item(
+def test_task_item_confirm_and_reject_actions_block_matched_items(
+    app_client: TestClient,
+    db_session: Session,
+) -> None:
+    _, _, task_id = _create_base_entities(app_client)
+    confirm_item, confirm_data = _seed_task_item(db_session, task_id, file_id="file-confirm")
+    reject_item, reject_data = _seed_task_item(db_session, task_id, file_id="file-reject")
+    confirm_data.status = TaskItemDataStatus.DEFAULT.value
+    reject_data.status = TaskItemDataStatus.DEFAULT.value
+    db_session.add(confirm_data)
+    db_session.add(reject_data)
+    db_session.commit()
+
+    confirm_response = app_client.post(
+        "/api/task-items/action-confirm",
+        json={"task_item_id": confirm_item.id},
+    )
+    reject_response = app_client.post(
+        "/api/task-items/action-reject",
+        json={"task_item_id": reject_item.id, "reason": "manual_skip"},
+    )
+
+    assert confirm_response.status_code == 400
+    assert confirm_response.json()["code"] == 1001
+    assert reject_response.status_code == 400
+    assert reject_response.json()["code"] == 1001
+    db_session.refresh(confirm_item)
+    db_session.refresh(reject_item)
+    assert confirm_item.confirm_state == TaskItemConfirmState.PENDING.value
+    assert reject_item.confirm_state == TaskItemConfirmState.PENDING.value
+
+
+def test_task_item_update_row_action_updates_status_and_llm_name(
     app_client: TestClient,
     db_session: Session,
 ) -> None:
     _, _, task_id = _create_base_entities(app_client)
     task_item, task_item_data = _seed_task_item(db_session, task_id)
     task_item_model, task_item_data_model = import_task_item_models()
-    retained_data = task_item_data_model(
-        task_item_id=task_item.id,
-        name="苍鹭",
-        score=0.88,
-        track_ids="1002",
-        sp_amount=1,
-        llm_name="苍鹭",
-        status="修改",
-    )
-    db_session.add(retained_data)
-    db_session.commit()
-    db_session.refresh(retained_data)
 
     response = app_client.post(
-        "/api/task-items/action-delete",
-        json={"task_item_id": task_item.id, "task_item_data_ids": [task_item_data.id]},
+        "/api/task-items/action-update-row",
+        json={
+            "task_item_id": task_item.id,
+            "task_item_data_id": task_item_data.id,
+            "status": TaskItemDataStatus.DEFAULT.value,
+            "llm_name": "白鹭",
+        },
     )
 
     assert response.status_code == 200
     db_session.expire_all()
-    assert db_session.exec(
-        select(task_item_model).where(task_item_model.id == task_item.id)
-    ).one_or_none() is not None
-    assert db_session.exec(
-        select(task_item_data_model).where(task_item_data_model.id == task_item_data.id)
-    ).one_or_none() is not None
-    deleted_row = db_session.exec(
+    stored_item = db_session.exec(select(task_item_model).where(task_item_model.id == task_item.id)).one()
+    stored_row = db_session.exec(
         select(task_item_data_model).where(task_item_data_model.id == task_item_data.id)
     ).one()
-    retained_row = db_session.exec(
-        select(task_item_data_model).where(task_item_data_model.id == retained_data.id)
-    ).one()
-    assert deleted_row.status == "删除"
-    assert retained_row.status == "修改"
+    assert stored_row.name == "白鹭"
+    assert stored_row.llm_name == "白鹭"
+    assert stored_row.status == TaskItemDataStatus.DEFAULT.value
+    assert stored_item.status == TaskItemStatus.SKIPPED.value
+    assert stored_item.confirm_state == TaskItemConfirmState.SKIPPED.value
+
+
+def test_task_item_update_row_rejects_row_from_other_task_item(
+    app_client: TestClient,
+    db_session: Session,
+) -> None:
+    _, _, task_id = _create_base_entities(app_client)
+    first, _ = _seed_task_item(db_session, task_id, file_id="file-first", file_fid="fid-first")
+    second, second_data = _seed_task_item(db_session, task_id, file_id="file-second", file_fid="fid-second")
+
+    response = app_client.post(
+        "/api/task-items/action-update-row",
+        json={
+            "task_item_id": first.id,
+            "task_item_data_id": second_data.id,
+            "status": TaskItemDataStatus.UPDATE.value,
+            "llm_name": "夜鹭",
+        },
+    )
+
+    assert response.status_code == 404
+    db_session.refresh(second_data)
+    db_session.refresh(second)
+    assert second_data.llm_name == "白鹭"
+    assert second_data.status == "修改"
+    assert second.status == "待复核"
+
+
+def test_task_item_update_row_blocks_finished_item(
+    app_client: TestClient,
+    db_session: Session,
+) -> None:
+    _, _, task_id = _create_base_entities(app_client)
+    task_item, task_item_data = _seed_task_item(
+        db_session,
+        task_id,
+        status=TaskItemStatus.FINISHED.value,
+        confirm_state=TaskItemConfirmState.CONFIRMED.value,
+        remote_state=TaskItemRemoteState.SUCCESS.value,
+    )
+
+    response = app_client.post(
+        "/api/task-items/action-update-row",
+        json={
+            "task_item_id": task_item.id,
+            "task_item_data_id": task_item_data.id,
+            "status": TaskItemDataStatus.DEFAULT.value,
+            "llm_name": "白鹭",
+        },
+    )
+
+    assert response.status_code == 400
+    assert response.json()["code"] == 1001
+
+
+def test_task_item_delete_action_is_not_registered(app_client: TestClient) -> None:
+    response = app_client.post(
+        "/api/task-items/action-delete",
+        json={"task_item_id": 1, "task_item_data_ids": [1]},
+    )
+
+    assert response.status_code == 404
 
 
 def test_task_item_submit_action_returns_success(
@@ -397,11 +482,71 @@ def test_task_item_submit_action_returns_success(
 
     assert response.status_code == 200
     assert response.json()["code"] == 0
+    db_session.expire_all()
     stored = db_session.exec(select(task_item_model).where(task_item_model.id == task_item.id)).one()
     assert stored.remote_state == TaskItemRemoteState.SUCCESS.value
     assert stored.train_state == TaskItemTrainState.SAVED.value
     assert stored.status == "已完成"
     assert _training_annotation_path(task_id, task_item.id).exists()
+
+
+def test_task_item_submit_task_action_submits_all_confirmed_pending_items(
+    app_client: TestClient,
+    db_session: Session,
+) -> None:
+    _, _, task_id = _create_base_entities(app_client)
+    task_item_model, _ = import_task_item_models()
+    pending_item, _ = _seed_task_item(
+        db_session,
+        task_id,
+        file_id="file-pending-submit",
+        file_fid="fid-pending-submit",
+        confirm_state=TaskItemConfirmState.CONFIRMED.value,
+        remote_state=TaskItemRemoteState.PENDING.value,
+        status=TaskItemStatus.CONFIRMED.value,
+    )
+    retry_item, _ = _seed_task_item(
+        db_session,
+        task_id,
+        file_id="file-retry-submit",
+        file_fid="fid-retry-submit",
+        confirm_state=TaskItemConfirmState.CONFIRMED.value,
+        remote_state=TaskItemRemoteState.FAIL.value,
+        status=TaskItemStatus.CONFIRMED.value,
+    )
+    skipped_item, _ = _seed_task_item(
+        db_session,
+        task_id,
+        file_id="file-skipped",
+        file_fid="fid-skipped",
+        confirm_state=TaskItemConfirmState.SKIPPED.value,
+        status=TaskItemStatus.SKIPPED.value,
+    )
+    pending_review_item, _ = _seed_task_item(
+        db_session,
+        task_id,
+        file_id="file-pending-review",
+        file_fid="fid-pending-review",
+        confirm_state=TaskItemConfirmState.PENDING.value,
+        status=TaskItemStatus.VERIFY_PENDING.value,
+    )
+
+    response = app_client.post("/api/task-items/action-submit-task", json={"task_id": task_id})
+
+    assert response.status_code == 200
+    data = _unwrap_success(response.json())
+    assert data["success_count"] == 2
+    assert data["failure_count"] == 0
+    assert {row["id"] for row in data["results"]} == {pending_item.id, retry_item.id}
+    db_session.expire_all()
+    rows = db_session.exec(select(task_item_model).where(task_item_model.task_id == task_id)).all()
+    rows_by_id = {row.id: row for row in rows}
+    assert rows_by_id[pending_item.id].status == TaskItemStatus.FINISHED.value
+    assert rows_by_id[retry_item.id].remote_state == TaskItemRemoteState.SUCCESS.value
+    assert rows_by_id[skipped_item.id].status == TaskItemStatus.SKIPPED.value
+    assert rows_by_id[pending_review_item.id].status == TaskItemStatus.VERIFY_PENDING.value
+    assert _training_annotation_path(task_id, pending_item.id).exists()
+    assert _training_annotation_path(task_id, retry_item.id).exists()
 
 
 def test_task_item_submit_unconfirmed_item_is_blocked(
@@ -410,6 +555,26 @@ def test_task_item_submit_unconfirmed_item_is_blocked(
 ) -> None:
     _, _, task_id = _create_base_entities(app_client)
     task_item, _ = _seed_task_item(db_session, task_id, confirm_state=TaskItemConfirmState.PENDING.value)
+
+    response = app_client.post("/api/task-items/action-submit", json={"task_item_id": task_item.id})
+
+    assert response.status_code == 400
+    assert response.json()["code"] == 1001
+    db_session.refresh(task_item)
+    assert task_item.remote_state == TaskItemRemoteState.PENDING.value
+
+
+def test_task_item_submit_skipped_item_is_blocked(
+    app_client: TestClient,
+    db_session: Session,
+) -> None:
+    _, _, task_id = _create_base_entities(app_client)
+    task_item, _ = _seed_task_item(
+        db_session,
+        task_id,
+        confirm_state=TaskItemConfirmState.SKIPPED.value,
+        status=TaskItemStatus.SKIPPED.value,
+    )
 
     response = app_client.post("/api/task-items/action-submit", json={"task_item_id": task_item.id})
 
@@ -456,6 +621,7 @@ def test_task_finishes_after_confirmed_submit_and_skipped_items(
 
     assert skip_response.status_code == 200
     assert submit_response.status_code == 200
+    db_session.expire_all()
     stored_task = db_session.get(task_model, task_id)
     stored_items = db_session.exec(select(task_item_model).where(task_item_model.task_id == task_id)).all()
     assert stored_task.execution_status == "结束"

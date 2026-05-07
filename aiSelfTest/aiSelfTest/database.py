@@ -1,7 +1,6 @@
 """数据库连接与会话管理。"""
 from typing import Generator
 
-import aiSelfTest.models  # noqa: F401
 from alembic import command
 from alembic.config import Config
 from loguru import logger
@@ -9,7 +8,9 @@ from sqlalchemy import event
 from sqlalchemy.pool import NullPool
 from sqlmodel import Session, create_engine
 
+import aiSelfTest.models  # noqa: F401
 from aiSelfTest.config import get_settings
+from aiSelfTest.exceptions import AppException
 
 settings = get_settings()
 
@@ -40,7 +41,10 @@ def get_session() -> Generator[Session, None, None]:
     with Session(engine) as session:
         try:
             yield session
-        except Exception as e:
+        except AppException:
+            session.rollback()
+            raise
+        except Exception:
             logger.exception("数据库会话异常")
             session.rollback()
             raise

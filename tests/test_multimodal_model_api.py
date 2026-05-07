@@ -570,6 +570,12 @@ def test_delete_multimodal_chat_session_removes_session_and_messages(
     assert detail_response.status_code == 404
     assert detail_response.json()["code"] == 1002
 
+    duplicate_delete_response = app_client.delete(
+        f"/api/multimodal-models/delete-session/{session_id}"
+    )
+    assert duplicate_delete_response.status_code == 404
+    assert duplicate_delete_response.json()["code"] == 1002
+
 
 def test_stream_chat_with_multimodal_model_returns_sse_and_persists_messages(
     app_client: TestClient,

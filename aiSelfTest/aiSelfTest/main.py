@@ -16,7 +16,6 @@ from aiSelfTest.api.client import router as client_router
 from aiSelfTest.api.config import router as config_router
 from aiSelfTest.api.dashboard import router as dashboard_router
 from aiSelfTest.api.multimodal_model import router as multimodal_model_router
-from aiSelfTest.api.review import router as review_router
 from aiSelfTest.api.task import task_item_router, task_router
 from aiSelfTest.config import get_settings
 from aiSelfTest.database import run_migrations
@@ -104,7 +103,6 @@ def create_app() -> FastAPI:
     app.include_router(multimodal_model_router, prefix="/api", tags=["多模态模型"])
     app.include_router(task_router, prefix="/api", tags=["任务"])
     app.include_router(task_item_router, prefix="/api", tags=["任务项"])
-    app.include_router(review_router, prefix="/api", tags=["结果复核"])
     app.mount("/api/task-files", StaticFiles(directory=task_files_dir), name="task-files")
 
     @app.get("/")

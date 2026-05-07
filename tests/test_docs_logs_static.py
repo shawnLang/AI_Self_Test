@@ -36,7 +36,6 @@ STRICT_LOGURU_HOTSPOTS = (
     PACKAGE_ROOT / "api" / "config.py",
     PACKAGE_ROOT / "api" / "dashboard.py",
     PACKAGE_ROOT / "api" / "multimodal_model.py",
-    PACKAGE_ROOT / "api" / "review.py",
     PACKAGE_ROOT / "api" / "task.py",
     PACKAGE_ROOT / "services" / "client.py",
     PACKAGE_ROOT / "services" / "config.py",

@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
-import { Check, Trash2, List, LayoutGrid, Image as ImageIcon, CheckSquare, ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { Check, List, LayoutGrid, Image as ImageIcon, CheckSquare, ChevronLeft, ChevronRight, SkipForward, UploadCloud, Save } from 'lucide-react';
 import {
   confirmReviewItems,
-  deleteReviewItems,
+  skipReviewItems,
+  submitTaskItem,
+  submitTaskReviewItems,
+  updateTaskItemReviewRow,
+  type TaskItemDataStatus,
   type ReviewItem,
 } from '../api/taskItems';
 import {
@@ -17,12 +21,19 @@ import {
   type ConsistencyFilter,
 } from '../hooks/useReviewItem';
 
+const reviewStatusOptions: TaskItemDataStatus[] = ['默认', '新增', '修改', '删除'];
+type RowDraft = { status: string; aiName: string };
+type ReviewConfirmFilter = 'all' | 'pending' | 'confirmed' | 'skipped';
+
 export default function Review({ initialTaskId = null }: { initialTaskId?: number | null }) {
   const [viewMode, setViewMode] = useState<'list' | 'grid' | 'gallery'>('grid');
   const [activeItemId, setActiveItemId] = useState<string | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string>(initialTaskId ? String(initialTaskId) : '');
   const [consistencyFilter, setConsistencyFilter] = useState<ConsistencyFilter>('all');
+  const [confirmFilter, setConfirmFilter] = useState<ReviewConfirmFilter>('all');
   const [previewItem, setPreviewItem] = useState<ReviewItem | null>(null);
+  const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
+  const [rowDrafts, setRowDrafts] = useState<Record<string, RowDraft>>({});
   const { data: taskOptions = [] } = useCompletedReviewTasks();
   const { data: items = [] } = useReviews(selectedTaskId);
   const { invalidateTasks, invalidateReviews } = useInvalidateReviews();
@@ -39,57 +50,73 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
     } else {
       setSelectedTaskId('');
     }
+    setSelectedItemIds([]);
   }, [taskOptions, initialTaskId]);
+
+  const invalidateCurrentReview = async () => {
+    await invalidateReviews(selectedTaskId);
+    await invalidateTasks();
+  };
+
+  const handleBatchResult = (data: any, label: string) => {
+    if (Number(data.failureCount || 0) > 0) {
+      window.alert(`${label}完成：成功 ${Number(data.successCount || 0)} 条，失败 ${Number(data.failureCount || 0)} 条。`);
+    }
+  };
 
   const handleConfirm = async (id: string) => {
     try {
       const data = await confirmReviewItems([id]);
-      if (Number(data.failureCount || 0) > 0) {
-        const failed = Array.isArray(data.results) ? data.results.filter((item) => item.status === 'failed') : [];
-        const message = failed.map((item) => item.message).filter(Boolean).join('\n') || '确认回写失败';
-        window.alert(message);
-      }
-      await invalidateReviews(selectedTaskId);
+      handleBatchResult(data, '确认');
+      setSelectedItemIds((current) => current.filter((itemId) => itemId !== id));
+      await invalidateCurrentReview();
     } catch (e) { console.error(e); }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleSkip = async (id: string) => {
     try {
-      const item = items.find((current) => String(current.id) === id);
-      const rowsByItemId = item ? { [id]: getTaskItemDataIds(item) } : {};
-      const data = await deleteReviewItems([id], rowsByItemId);
-      if (Number(data.failureCount || 0) > 0) {
-        const failed = data.results.find((result) => result.status === 'failed');
-        window.alert(failed?.message || '复核差异移除失败');
-      }
-      await invalidateReviews(selectedTaskId);
+      const data = await skipReviewItems([id]);
+      handleBatchResult(data, '跳过');
+      setSelectedItemIds((current) => current.filter((itemId) => itemId !== id));
+      await invalidateCurrentReview();
     } catch (e) { console.error(e); }
   };
 
-  const handleBatchDelete = async () => {
-    if (!filteredItems.length) return;
-    if (!window.confirm('确定要批量移除当前筛选下的复核差异吗？此操作不会删除源 TaskItem 或源媒体。')) {
-      return;
-    }
+  const handleSubmit = async (id: string) => {
     try {
-      const rowsByItemId = Object.fromEntries(filteredItems.map((item) => [String(item.id), getTaskItemDataIds(item)]));
-      const data = await deleteReviewItems(filteredItems.map(i => String(i.id)), rowsByItemId);
-      if (Number(data.failureCount || 0) > 0) {
-        window.alert(`批量移除完成：成功 ${Number(data.successCount || 0)} 条，失败 ${Number(data.failureCount || 0)} 条。`);
-      }
-      await invalidateReviews(selectedTaskId);
-      await invalidateTasks();
+      await submitTaskItem(Number(id));
+      setSelectedItemIds((current) => current.filter((itemId) => itemId !== id));
+      await invalidateCurrentReview();
     } catch (e) { console.error(e); }
   };
 
   const handleBatchConfirm = async () => {
-    if (!filteredItems.length) return;
+    if (!selectedConfirmableIds.length) return;
     try {
-      const data = await confirmReviewItems(filteredItems.map(i => String(i.id)));
-      if (Number(data.failureCount || 0) > 0) {
-        window.alert(`批量确认完成：成功 ${Number(data.successCount || 0)} 条，失败 ${Number(data.failureCount || 0)} 条。失败项仍保留在待复核列表。`);
-      }
-      await invalidateReviews(selectedTaskId);
+      const data = await confirmReviewItems(selectedConfirmableIds);
+      handleBatchResult(data, '批量确认');
+      setSelectedItemIds([]);
+      await invalidateCurrentReview();
+    } catch (e) { console.error(e); }
+  };
+
+  const handleBatchSkip = async () => {
+    if (!selectedSkippableIds.length) return;
+    if (!window.confirm('确定要批量跳过选中的待复核项吗？')) return;
+    try {
+      const data = await skipReviewItems(selectedSkippableIds);
+      handleBatchResult(data, '批量跳过');
+      setSelectedItemIds([]);
+      await invalidateCurrentReview();
+    } catch (e) { console.error(e); }
+  };
+
+  const handleBatchSubmit = async () => {
+    if (!selectedTaskId || taskSubmittableIds.length === 0) return;
+    try {
+      const data = await submitTaskReviewItems(Number(selectedTaskId));
+      handleBatchResult(data, '批量提交远端');
+      await invalidateCurrentReview();
     } catch (e) { console.error(e); }
   };
 
@@ -101,16 +128,85 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
     setPreviewItem(null);
   };
 
-  const getTaskItemDataIds = (item: ReviewItem) => getReviewRows(item)
-    .map((row: any) => Number(row.recordId))
-    .filter((id: number) => Number.isFinite(id) && id > 0);
-
   const {
-    filteredItems,
+    filteredItems: consistencyFilteredItems,
     matchedCount,
     mismatchedCount,
     totalCount,
   } = useReviewItem(items, consistencyFilter);
+  const pendingConfirmCount = consistencyFilteredItems.filter((item) => item.confirmState === '待确认').length;
+  const confirmedCount = consistencyFilteredItems.filter((item) => item.confirmState === '已确认').length;
+  const skippedCount = consistencyFilteredItems.filter((item) => item.confirmState === '已跳过').length;
+  const filteredItems = useMemo(
+    () => consistencyFilteredItems.filter((item) => {
+      if (confirmFilter === 'pending') return item.confirmState === '待确认';
+      if (confirmFilter === 'confirmed') return item.confirmState === '已确认';
+      if (confirmFilter === 'skipped') return item.confirmState === '已跳过';
+      return true;
+    }),
+    [consistencyFilteredItems, confirmFilter],
+  );
+
+  const isConfirmable = (item: ReviewItem) => item.confirmState === '待确认' && !isResultMatched(item);
+  const isSkippable = (item: ReviewItem) => item.confirmState === '待确认' && !isResultMatched(item);
+  const isSubmittable = (item: ReviewItem) => item.confirmState === '已确认'
+    && ['待提交', '提交失败'].includes(item.remoteState || '');
+  const isSelectable = (item: ReviewItem) => isConfirmable(item) || isSkippable(item) || isSubmittable(item);
+  const isRowEditable = (item: ReviewItem) => !['已完成'].includes(item.status || '')
+    && !['已提交'].includes(item.remoteState || '');
+
+  const selectedItems = useMemo(
+    () => items.filter((item) => selectedItemIds.includes(String(item.id))),
+    [items, selectedItemIds],
+  );
+  const selectedConfirmableIds = selectedItems.filter(isConfirmable).map((item) => String(item.id));
+  const selectedSkippableIds = selectedItems.filter(isSkippable).map((item) => String(item.id));
+  const taskSubmittableIds = items.filter(isSubmittable).map((item) => String(item.id));
+
+  const toggleItemSelection = (id: string) => {
+    setSelectedItemIds((current) => current.includes(id)
+      ? current.filter((itemId) => itemId !== id)
+      : [...current, id]);
+  };
+
+  const selectCurrentProcessableItems = () => {
+    setSelectedItemIds(filteredItems.filter(isSelectable).map((item) => String(item.id)));
+  };
+
+  const clearSelection = () => {
+    setSelectedItemIds([]);
+  };
+
+  const getRowDraft = (row: any): RowDraft => {
+    const key = String(row.recordId);
+    return rowDrafts[key] ?? { status: row.sourceStatus || '默认', aiName: row.aiName || '' };
+  };
+
+  const setRowDraft = (row: any, patch: Partial<RowDraft>) => {
+    const key = String(row.recordId);
+    setRowDrafts((current) => ({
+      ...current,
+      [key]: { ...getRowDraft(row), ...patch },
+    }));
+  };
+
+  const handleSaveRow = async (item: ReviewItem, row: any) => {
+    const draft = getRowDraft(row);
+    try {
+      await updateTaskItemReviewRow({
+        task_item_id: item.id,
+        task_item_data_id: Number(row.recordId),
+        status: draft.status,
+        llm_name: draft.aiName.trim() || null,
+      });
+      setRowDrafts((current) => {
+        const next = { ...current };
+        delete next[String(row.recordId)];
+        return next;
+      });
+      await invalidateCurrentReview();
+    } catch (e) { console.error(e); }
+  };
 
   React.useEffect(() => {
     if (filteredItems.length === 0) {
@@ -123,6 +219,11 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
       setActiveItemId(String(filteredItems[0].id));
     }
   }, [filteredItems, activeItemId]);
+
+  React.useEffect(() => {
+    const validIds = new Set(items.map((item) => String(item.id)));
+    setSelectedItemIds((current) => current.filter((id) => validIds.has(id)));
+  }, [items]);
 
   const getActiveIndex = () => filteredItems.findIndex((item) => String(item.id) === activeItemId);
 
@@ -299,6 +400,82 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
     </div>
   );
 
+  const renderSelectionCheckbox = (item: ReviewItem) => {
+    const id = String(item.id);
+    const selectable = isSelectable(item);
+
+    return (
+      <input
+        type="checkbox"
+        aria-label={`选择复核项 ${id}`}
+        checked={selectedItemIds.includes(id)}
+        disabled={!selectable}
+        onChange={() => toggleItemSelection(id)}
+        className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 disabled:opacity-40"
+      />
+    );
+  };
+
+  const renderStatusPill = (item: ReviewItem) => {
+    if (item.status === '已完成' || item.remoteState === '已提交') {
+      return '已提交';
+    }
+    if (item.confirmState === '已跳过') {
+      return isResultMatched(item) ? '自动跳过' : '已跳过';
+    }
+    if (item.confirmState === '已确认') {
+      return item.remoteState === '提交失败' ? '待重试提交' : '待提交远端';
+    }
+    return '待复核';
+  };
+
+  const renderItemActions = (item: ReviewItem, block = false) => {
+    const layoutClass = block ? 'flex flex-col gap-2' : 'flex flex-wrap justify-end gap-2';
+    const buttonClass = block
+      ? 'w-full justify-center'
+      : 'justify-center';
+
+    return (
+      <div className={layoutClass}>
+        {isConfirmable(item) && (
+          <button
+            type="button"
+            onClick={() => handleConfirm(String(item.id))}
+            className={`${buttonClass} inline-flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors`}
+          >
+            <Check className="w-4 h-4" />
+            确认
+          </button>
+        )}
+        {isSkippable(item) && (
+          <button
+            type="button"
+            onClick={() => handleSkip(String(item.id))}
+            className={`${buttonClass} inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors`}
+          >
+            <SkipForward className="w-4 h-4" />
+            跳过
+          </button>
+        )}
+        {isSubmittable(item) && (
+          <button
+            type="button"
+            onClick={() => handleSubmit(String(item.id))}
+            className={`${buttonClass} inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-3 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors`}
+          >
+            <UploadCloud className="w-4 h-4" />
+            {item.remoteState === '提交失败' ? '重试提交远端' : '提交远端'}
+          </button>
+        )}
+        {!isSelectable(item) && (
+          <span className="inline-flex items-center justify-center rounded-lg bg-gray-100 px-3 py-2 text-sm font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300">
+            {renderStatusPill(item)}
+          </span>
+        )}
+      </div>
+    );
+  };
+
   const renderReviewRows = (item: any, compact = false) => {
     const rows = getReviewRows(item);
     if (rows.length === 0) {
@@ -319,15 +496,40 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
                 {getDecisionLabel(row)}
               </span>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <div>
-                <span className="block text-[11px] text-gray-500 dark:text-gray-400 mb-0.5">原结果</span>
-                <span className="text-red-700 dark:text-red-300">{row.originalName || '--'}</span>
-              </div>
-              <div>
-                <span className="block text-[11px] text-gray-500 dark:text-gray-400 mb-0.5">大模型</span>
-                <span className="text-green-700 dark:text-green-300">{row.aiName || (row.decision === 'exclude' ? '无' : '--')}</span>
-              </div>
+            <div className="grid grid-cols-[auto_minmax(0,1fr)_auto_minmax(0,1fr)_auto_minmax(4.5rem,5.5rem)_auto] items-center gap-2 min-w-0">
+              <span className="whitespace-nowrap text-[11px] text-gray-500 dark:text-gray-400">原结果</span>
+              <span className="min-w-0 truncate text-red-700 dark:text-red-300" title={row.originalName || '--'}>
+                {row.originalName || '--'}
+              </span>
+              <label className="whitespace-nowrap text-[11px] text-gray-500 dark:text-gray-400">识别名称</label>
+              <input
+                type="text"
+                value={getRowDraft(row).aiName}
+                disabled={!isRowEditable(item)}
+                onChange={(event) => setRowDraft(row, { aiName: event.target.value })}
+                className="min-w-0 rounded-md border border-gray-300 bg-white px-2 py-1 text-sm text-green-700 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-green-300 dark:disabled:bg-gray-900"
+              />
+              <label className="whitespace-nowrap text-[11px] text-gray-500 dark:text-gray-400">状态</label>
+              <select
+                value={getRowDraft(row).status}
+                disabled={!isRowEditable(item)}
+                onChange={(event) => setRowDraft(row, { status: event.target.value })}
+                className="min-w-0 rounded-md border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:disabled:bg-gray-900"
+              >
+                {reviewStatusOptions.map((status) => (
+                  <option key={status} value={status}>{status}</option>
+                ))}
+              </select>
+              <button
+                type="button"
+                onClick={() => handleSaveRow(item, row)}
+                disabled={!isRowEditable(item)}
+                className="flex-none inline-flex items-center justify-center gap-1.5 rounded-md bg-blue-600 px-2.5 py-1.5 text-xs font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500 dark:disabled:bg-gray-700 transition-colors"
+                title="保存"
+              >
+                <Save className="w-3.5 h-3.5" />
+                保存
+              </button>
             </div>
             {row.errorMessage && (
               <div className="mt-2 text-[11px] text-gray-500 dark:text-gray-400">
@@ -345,6 +547,7 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
       <table className="w-full text-left border-collapse">
         <thead>
           <tr className="bg-gray-50 dark:bg-gray-900/50 border-b border-gray-200 dark:border-gray-700">
+            <th className="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">选择</th>
             <th className="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">缩略图</th>
             <th className="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">任务</th>
             <th className="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">原有系统</th>
@@ -358,6 +561,9 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
             const matched = isResultMatched(item);
             return (
             <tr key={item.id} className={`hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors ${matched ? 'border-l-4 border-l-green-500' : 'border-l-4 border-l-red-500'}`}>
+              <td className="px-4 py-3 align-top">
+                {renderSelectionCheckbox(item)}
+              </td>
               <td className="px-4 py-3 whitespace-nowrap">
                 <div className="w-16 rounded overflow-hidden bg-gray-100 dark:bg-gray-900 flex-shrink-0">
                   {item.mediaType === 'video' ? (
@@ -396,8 +602,7 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
                 </span>
               </td>
               <td className="px-4 py-3 whitespace-nowrap text-right space-x-2">
-                <button onClick={() => handleConfirm(String(item.id))} className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 text-sm font-medium">确认</button>
-                <button onClick={() => handleDelete(String(item.id))} className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 text-sm font-medium">移除差异</button>
+                {renderItemActions(item)}
               </td>
             </tr>
           )})}
@@ -433,6 +638,9 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
                 结果一致
               </div>
             )}
+            <div className="absolute bottom-2 left-2 rounded bg-white/90 px-2 py-1 dark:bg-gray-900/90">
+              {renderSelectionCheckbox(item)}
+            </div>
           </div>
           
           <div className="p-5 flex-1 flex flex-col justify-between">
@@ -448,21 +656,8 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
               )}
             </div>
 
-            <div className="flex gap-2 mt-6">
-              <button 
-                onClick={() => handleConfirm(String(item.id))}
-                className="flex-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
-              >
-                <Check className="w-4 h-4" />
-                确认
-              </button>
-              <button 
-                onClick={() => handleDelete(String(item.id))}
-                className="px-4 bg-gray-50 dark:bg-gray-700 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 border border-gray-200 dark:border-gray-600 hover:border-red-200 dark:hover:border-red-800 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center"
-                title="移除复核差异"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
+            <div className="mt-6">
+              {renderItemActions(item)}
             </div>
           </div>
         </div>
@@ -517,6 +712,9 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
                 </button>
               </>
             )}
+            <div className="absolute bottom-3 left-3 rounded bg-white/90 px-2 py-1 dark:bg-gray-900/90">
+              {renderSelectionCheckbox(activeItem)}
+            </div>
           </div>
           {/* 缩略图条 */}
           <div className="flex gap-2 overflow-x-auto flex-shrink-0 pb-1">
@@ -538,7 +736,7 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
         </div>
 
         {/* 右侧：识别详情（内部可滚动，整体不超出视口） */}
-        <div className={`w-full lg:w-72 flex flex-col bg-white dark:bg-gray-800 rounded-xl border-2 shadow-sm transition-colors overflow-hidden ${matched ? 'border-green-500 dark:border-green-400' : 'border-red-500 dark:border-red-400'}`}>
+        <div className={`w-full lg:w-[30rem] flex flex-col bg-white dark:bg-gray-800 rounded-xl border-2 shadow-sm transition-colors overflow-hidden ${matched ? 'border-green-500 dark:border-green-400' : 'border-red-500 dark:border-red-400'}`}>
           <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
             <h3 className="text-base font-semibold text-gray-900 dark:text-white">识别详情</h3>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 truncate">任务：{activeItem.taskName || '--'}</p>
@@ -557,15 +755,8 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
               </div>
             )}
           </div>
-          <div className="p-4 flex flex-col gap-2 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
-            <button onClick={() => handleConfirm(String(activeItem.id))}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
-              <Check className="w-4 h-4" />确认
-            </button>
-            <button onClick={() => handleDelete(String(activeItem.id))}
-              className="w-full bg-white dark:bg-gray-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 border border-gray-200 dark:border-gray-700 hover:border-red-200 dark:hover:border-red-800 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
-              <Trash2 className="w-4 h-4" />移除复核差异
-            </button>
+          <div className="p-4 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
+            {renderItemActions(activeItem, true)}
           </div>
         </div>
       </div>
@@ -577,7 +768,7 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">结果复核（TaskItem Actions）</h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">基础确认页：确认只更新 TaskItem 确认状态，不触发远端提交；移除差异不删除源 TaskItem。</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">确认不提交远端；提交远端是独立操作。可编辑识别名称和状态，并对选中项批量处理。</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <select
@@ -626,6 +817,53 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
             </button>
           </div>
 
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setConfirmFilter('all')}
+              className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                confirmFilter === 'all'
+                  ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900'
+                  : 'bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300'
+              }`}
+            >
+              状态全部 {consistencyFilteredItems.length}
+            </button>
+            <button
+              type="button"
+              onClick={() => setConfirmFilter('pending')}
+              className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                confirmFilter === 'pending'
+                  ? 'bg-amber-600 text-white'
+                  : 'bg-white dark:bg-gray-800 border border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300'
+              }`}
+            >
+              待复核 {pendingConfirmCount}
+            </button>
+            <button
+              type="button"
+              onClick={() => setConfirmFilter('confirmed')}
+              className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                confirmFilter === 'confirmed'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-white dark:bg-gray-800 border border-blue-300 dark:border-blue-700 text-blue-700 dark:text-blue-300'
+              }`}
+            >
+              已确认 {confirmedCount}
+            </button>
+            <button
+              type="button"
+              onClick={() => setConfirmFilter('skipped')}
+              className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                confirmFilter === 'skipped'
+                  ? 'bg-gray-600 text-white'
+                  : 'bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300'
+              }`}
+            >
+              跳过 {skippedCount}
+            </button>
+          </div>
+
           <div className="flex bg-gray-100 dark:bg-gray-800 p-1 rounded-lg border border-gray-200 dark:border-gray-700">
             <button 
               onClick={() => setViewMode('list')}
@@ -652,11 +890,48 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
 
           <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-1"></div>
 
-          <button onClick={handleBatchDelete} className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-            批量移除差异
+          <span className="text-sm text-gray-500 dark:text-gray-400">
+            已选 {selectedItemIds.length} 项
+          </span>
+          <button
+            type="button"
+            onClick={selectCurrentProcessableItems}
+            className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+          >
+            全选当前可处理项
           </button>
-          <button onClick={handleBatchConfirm} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+          <button
+            type="button"
+            onClick={clearSelection}
+            disabled={selectedItemIds.length === 0}
+            className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 transition-colors"
+          >
+            清空选择
+          </button>
+          <button
+            type="button"
+            onClick={handleBatchConfirm}
+            disabled={selectedConfirmableIds.length === 0}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:bg-gray-300 disabled:text-gray-500"
+          >
             批量确认
+          </button>
+          <button
+            type="button"
+            onClick={handleBatchSkip}
+            disabled={selectedSkippableIds.length === 0}
+            className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 transition-colors"
+          >
+            批量跳过
+          </button>
+          <button
+            type="button"
+            onClick={handleBatchSubmit}
+            disabled={taskSubmittableIds.length === 0}
+            className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:bg-gray-300 disabled:text-gray-500"
+            title="提交当前任务下全部已确认且待提交或提交失败的复核项"
+          >
+            批量提交远端 {taskSubmittableIds.length}
           </button>
         </div>
       </div>

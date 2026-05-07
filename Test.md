@@ -42,6 +42,33 @@
 rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 ```
 
+# 多模态聊天会话删除测试清单
+
+## 目标
+
+- 删除聊天会话接口返回统一 API 响应结构，`data` 必须是 Pydantic 对象。
+- 删除成功后同步删除会话消息，避免残留历史消息。
+- 重复删除或删除不存在会话时返回统一 404 业务错误，不再记录为数据库会话异常。
+
+## 用例
+
+1. `DELETE /api/multimodal-models/delete-session/{session_id}` 成功时返回
+   `{"id": session_id}`。
+2. 删除成功后，`multimodal_chat_session` 与 `multimodal_chat_message` 均无对应记录。
+3. 再次查询或删除同一会话时返回 `404`，错误码为 `1002`。
+
+## 验证命令
+
+```bash
+.env/bin/python -m pytest tests/test_multimodal_model_api.py
+```
+
+运行 pytest 后清理：
+
+```bash
+rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
+```
+
 # client_auth token 失效重登测试清单
 
 ## 目标
@@ -313,4 +340,51 @@ cd aiSelfTestUi && npm run lint
 ```bash
 .env/bin/python -m pytest tests/test_task_api.py tests/test_task_execution_service.py tests/test_frontend_contract_static.py
 cd aiSelfTestUi && npm run lint
+```
+
+# 结果复核页面重构测试清单
+
+## 目标
+
+- 结果一致的 TaskItem 在后端自动标记为跳过，但复核页面仍可查看。
+- 结果复核页面允许逐条修改 `TaskItemData.status` 与 `TaskItemData.llm_name`。
+- `TaskItemData.name` 保持只读，作为原始识别名称展示。
+- 确认只做人审确认，不提交远端；远端提交使用独立按钮和接口。
+- 批量提交远端是任务级操作，不依赖页面多选，并一次处理当前任务下所有待提交和提交失败的已确认项。
+- 彻底删除 `/api/task-items/action-delete` 与 `/api/reviews/*` 兼容接口。
+- 禁用“删除复核差异 / 移除差异 / 批量移除差异”语义。
+
+## 用例
+
+1. 大模型识别后，所有 `TaskItemData.status` 均为 `默认` 的 TaskItem 自动变为
+   `已跳过 / 已跳过`。
+2. 存在 `新增 / 修改 / 删除` 的 TaskItem 保持 `待复核 / 待确认`。
+3. `POST /api/task-items/action-update-row` 可以修改指定明细的 `status` 和
+   `llm_name`，且不能修改不属于当前 TaskItem 的明细。
+4. 已完成远端提交的 TaskItem 不允许继续修改复核明细。
+5. 修改复核明细后，TaskItem 的确认状态会按一致性重新计算。
+6. `POST /api/task-items/action-confirm` 只设置 `已确认 / 已确认`，
+   `remote_state` 仍为 `待提交`。
+7. `POST /api/task-items/action-reject` 设置 `已跳过 / 已跳过`，不提交远端。
+8. `POST /api/task-items/action-submit` 只允许已确认且待提交或提交失败的项提交。
+9. 提交成功后 TaskItem 变为 `已完成`，任务在所有项均为 `已跳过` 或
+   `已完成` 后进入 `结束`。
+10. `/api/task-items/action-delete` 不再注册，访问返回 404。
+11. `/api/reviews/*` 不再注册，访问返回 404。
+12. 前端不再引用 delete review API，不再展示“移除差异”相关文案。
+13. 前端复核页包含跳过、批量跳过、提交远端、批量提交远端和逐行保存能力。
+14. 前端批量提交远端不依赖多选，按当前任务一次提交全部可提交项。
+15. 前端复核页支持按复核状态筛选：全部、待复核、已确认、跳过。
+
+## 验证命令
+
+```bash
+.env/bin/python -m pytest tests/test_task_item_api.py tests/test_task_execution_service.py tests/test_frontend_taskitem_contract.py
+cd aiSelfTestUi && npm run lint
+```
+
+运行 pytest 后清理：
+
+```bash
+rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 ```
