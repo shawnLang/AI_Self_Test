@@ -35,24 +35,50 @@ ESTIMATABLE_TASK_STATUSES = {
 }
 
 
+def resolve_task_file_url(file_path: Path | str | None) -> str:
+    """返回任务文件的本地静态访问地址，路径无效或越界时返回空字符串。"""
+
+    if not file_path:
+        return ""
+
+    resolved_path = Path(file_path).expanduser().resolve()
+    if not resolved_path.is_file():
+        return ""
+
+    task_files_dir = (get_settings().data_dir / "task_files").resolve()
+    try:
+        relative_path = resolved_path.relative_to(task_files_dir)
+    except ValueError:
+        return ""
+
+    quoted_path = quote(relative_path.as_posix(), safe="/")
+    return f"{TASK_FILE_STATIC_PREFIX}/{quoted_path}"
+
+
 def resolve_task_item_media_url(row: TaskItem) -> str:
-    """返回已下载文件的本地静态访问地址，未下载或文件缺失时返回空字符串。"""
+    """返回已下载媒体文件的本地静态访问地址，未下载或文件缺失时返回空字符串。"""
 
     if row.down_state and row.file_path:
-        file_path = Path(row.file_path).expanduser().resolve()
-        if not file_path.is_file():
-            return ""
-
-        task_files_dir = (get_settings().data_dir / "task_files").resolve()
-        try:
-            relative_path = file_path.relative_to(task_files_dir)
-        except ValueError:
-            return ""
-
-        quoted_path = quote(relative_path.as_posix(), safe="/")
-        return f"{TASK_FILE_STATIC_PREFIX}/{quoted_path}"
-
+        return resolve_task_file_url(row.file_path)
     return ""
+
+
+def resolve_task_item_result_file_url(row: TaskItem) -> str | None:
+    """返回视频同目录 datajson 的静态访问地址，不读取或解析 datajson 内容。"""
+
+    if row.file_bmp != 2 or not row.down_state or not row.file_path:
+        return None
+
+    file_path = Path(row.file_path).expanduser()
+    if not file_path.is_file():
+        return None
+
+    datajson_files = sorted(file_path.parent.glob("*.datajson"))
+    if not datajson_files:
+        return None
+
+    result_file_url = resolve_task_file_url(datajson_files[0])
+    return result_file_url or None
 
 
 def estimate_task_remaining_seconds(task: Task) -> int | None:
@@ -281,6 +307,7 @@ class TaskItemReviewRow(BaseModel):
     source_name: str | None
     llm_name: str | None
     status: str
+    track_ids: str
     bbox: TaskItemBBox | None = None
     source_size: TaskItemSourceSize | None = None
 
@@ -298,6 +325,7 @@ class TaskItemReviewRow(BaseModel):
             source_name=row.name,
             llm_name=row.llm_name,
             status=row.status,
+            track_ids=row.track_ids,
             bbox=TaskItemBBox.from_model(row),
             source_size=source_size,
         )
@@ -406,7 +434,7 @@ class TaskItemDetailData(BaseModel):
             media_type=media_type,
             media=TaskItemMedia(
                 url=resolve_task_item_media_url(row),
-                result_file_url=None,
+                result_file_url=resolve_task_item_result_file_url(row),
             ),
             step_state=TaskItemStepState(
                 download="success" if row.down_state else "pending",

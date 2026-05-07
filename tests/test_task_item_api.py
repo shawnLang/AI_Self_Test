@@ -202,6 +202,7 @@ def test_task_item_detail_returns_review_rows(
     assert data["id"] == task_item.id
     assert data["review_rows"][0]["task_item_data_id"] == task_item_data.id
     assert data["review_rows"][0]["status"] == "修改"
+    assert data["review_rows"][0]["track_ids"] == "1001"
 
 
 def test_task_item_detail_returns_bbox_and_status_based_review_summary(
@@ -298,6 +299,44 @@ def test_task_item_detail_returns_bbox_and_status_based_review_summary(
         "maxx": 30.0,
         "maxy": 40.0,
     }
+    assert data["media"]["result_file_url"] is None
+
+
+def test_video_task_item_detail_returns_datajson_url_without_parsing(
+    app_client: TestClient,
+    db_session: Session,
+) -> None:
+    """视频详情只暴露 datajson 静态 URL 与 track_ids，不解析 datajson 内容。"""
+
+    from aiSelfTest.config import get_settings
+
+    _, _, task_id = _create_base_entities(app_client)
+    task_item, task_item_data = _seed_task_item(db_session, task_id)
+    item_dir = get_settings().data_dir / "task_files" / "video-overlay-task"
+    item_dir.mkdir(parents=True, exist_ok=True)
+    video_path = item_dir / "video-1.mp4"
+    datajson_path = item_dir / "video-1.datajson"
+    video_path.write_bytes(b"fake video")
+    datajson_path.write_text(
+        '[{"not": "a valid two dimensional datajson but should still be served"}]',
+        encoding="utf-8",
+    )
+    task_item.file_path = str(video_path)
+    db_session.add(task_item)
+    db_session.commit()
+
+    response = app_client.get(f"/api/task-items/detail/{task_item.id}")
+
+    assert response.status_code == 200
+    data = _unwrap_success(response.json())
+    assert data["media"]["url"] == "/api/task-files/video-overlay-task/video-1.mp4"
+    assert data["media"]["result_file_url"] == "/api/task-files/video-overlay-task/video-1.datajson"
+    assert data["review_rows"][0]["task_item_data_id"] == task_item_data.id
+    assert data["review_rows"][0]["track_ids"] == "1001"
+
+    static_response = app_client.get(data["media"]["result_file_url"])
+    assert static_response.status_code == 200
+    assert "valid two dimensional" in static_response.text
 
 
 def test_task_item_confirm_action_updates_confirm_state(

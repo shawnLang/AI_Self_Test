@@ -42,6 +42,43 @@
 rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 ```
 
+# 视频 datajson 前端绘框测试清单
+
+## 目标
+
+- 后端不解析 `.datajson` 内容，只向前端暴露视频结果文件 URL。
+- 后端在复核行中返回 `TaskItemData.track_ids`，供前端匹配轨迹。
+- 前端读取 `.datajson`，按视频当前帧和 `track_ids` 筛选 bbox 并叠加绘制。
+- 视频绘框优先覆盖画廊视图和预览弹窗，列表和网格可保持轻量预览。
+
+## 用例
+
+1. 视频 TaskItem 详情接口的 `media.result_file_url` 返回本地 `.datajson` 静态 URL。
+2. 图片 TaskItem 详情接口的 `media.result_file_url` 返回 `null`。
+3. TaskItem 详情接口的每条 `review_rows` 返回 `track_ids`。
+4. 前端类型包含 `track_ids`、`trackIds`、`resultFileUrl` 与视频 detection 类型。
+5. 前端通过 `fetch(item.resultFileUrl)` 加载 `.datajson`，并处理加载失败。
+6. 前端按 `TaskItemData.track_ids` 与 `.datajson.trackId` 匹配当前帧 detection。
+7. 前端按视频 `videoWidth/videoHeight` 将 bbox 像素坐标换算为百分比绘制。
+8. 画廊视图和预览弹窗使用视频叠框组件，不再直接裸渲染视频。
+9. 前端同时支持 `.datajson` 外层帧序号和 detection.index 建立帧索引。
+10. 当前播放帧没有 detection 时，前端使用最近有效帧的 detection 保持连续绘制，
+    避免只在少数关键帧闪现。
+11. 前端缓存已排序帧号，不在每次动画帧中重新扫描全部 `.datajson`。
+
+## 验证命令
+
+```bash
+.env/bin/python -m pytest tests/test_task_item_api.py tests/test_frontend_taskitem_contract.py
+cd aiSelfTestUi && npm run lint
+```
+
+运行 pytest 后清理：
+
+```bash
+rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
+```
+
 # 多模态聊天会话删除测试清单
 
 ## 目标

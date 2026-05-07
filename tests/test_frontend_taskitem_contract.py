@@ -148,3 +148,36 @@ def test_review_frontend_uses_task_item_data_status_bbox_and_summary_contract() 
     assert "if (row.sourceStatus) return row.sourceStatus" in review_text
     assert "groundingMeta: row.source_size ? { sourceSize: row.source_size } : undefined" in api_text
     assert "定位：" not in review_text
+
+
+def test_review_frontend_uses_datajson_video_overlay_contract() -> None:
+    """视频绘框应由前端读取 datajson 并按 track_ids 过滤绘制。"""
+
+    api_text = read_frontend_file("api/taskItems.ts")
+    review_text = read_frontend_file("components/Review.tsx")
+
+    assert "track_ids: string" in api_text
+    assert "trackIds: row.track_ids" in api_text
+    assert "resultFileUrl: detail.media.result_file_url" in api_text
+    assert "type VideoDatajsonDetection" in api_text
+    assert "VideoWithDatajsonOverlay" in review_text
+    assert "fetch(item.resultFileUrl)" in review_text
+    assert "trackIdSet.has(String(detection.trackId))" in review_text
+    assert "video.videoWidth" in review_text
+    assert "video.videoHeight" in review_text
+    assert "renderVideoWithBboxOverlay(activeItem, 'w-full h-full object-contain')" in review_text
+    assert "renderVideoWithBboxOverlay(previewItem, 'max-h-[78vh] max-w-full rounded-md')" in review_text
+
+
+def test_review_frontend_keeps_video_overlay_between_sparse_datajson_frames() -> None:
+    """datajson 帧稀疏时，视频叠框应使用最近有效帧保持连续绘制。"""
+
+    review_text = read_frontend_file("components/Review.tsx")
+
+    assert "frameIndexes" in review_text
+    assert "findNearestFrameIndex" in review_text
+    assert "findVisibleDetections" in review_text
+    assert "byFrame.set(fallbackIndex, frameDetections)" in review_text
+    assert "byFrame.set(detection.frameIndex, indexedDetections)" in review_text
+    assert "lastFrameIndex <= frameIndex" in review_text
+    assert "Math.abs(nextFrameIndex - frameIndex)" in review_text

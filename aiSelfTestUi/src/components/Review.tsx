@@ -8,6 +8,9 @@ import {
   updateTaskItemReviewRow,
   type TaskItemDataStatus,
   type ReviewItem,
+  type ReviewRow,
+  type VideoDatajsonDetection,
+  type VideoDatajsonPayload,
 } from '../api/taskItems';
 import {
   useCompletedReviewTasks,
@@ -24,6 +27,267 @@ import {
 const reviewStatusOptions: TaskItemDataStatus[] = ['默认', '新增', '修改', '删除'];
 type RowDraft = { status: string; aiName: string };
 type ReviewConfirmFilter = 'all' | 'pending' | 'confirmed' | 'skipped';
+type VideoOverlayDetection = {
+  frameIndex: number;
+  trackId: string;
+  bbox: [number, number, number, number];
+  score: number;
+};
+type IndexedVideoDetections = {
+  byFrame: Map<number, VideoOverlayDetection[]>;
+  sourceFrameCount: number;
+};
+
+const BBOX_COLORS: Record<string, string> = {
+  keep: 'border-green-400',
+  add: 'border-blue-400',
+  rename: 'border-amber-400',
+  exclude: 'border-gray-400',
+  error: 'border-red-400',
+};
+const BBOX_LABEL_COLORS: Record<string, string> = {
+  keep: 'bg-green-500',
+  add: 'bg-blue-500',
+  rename: 'bg-amber-500',
+  exclude: 'bg-gray-500',
+  error: 'bg-red-500',
+};
+
+function parseVideoDatajson(payload: unknown): IndexedVideoDetections {
+  const frames = Array.isArray(payload) ? payload as VideoDatajsonPayload : [];
+  const byFrame = new Map<number, VideoOverlayDetection[]>();
+
+  frames.forEach((framePayload, fallbackIndex) => {
+    if (!Array.isArray(framePayload)) return;
+    const frameDetections: VideoOverlayDetection[] = [];
+    framePayload.forEach((rawDetection) => {
+      const detection = parseVideoDetection(rawDetection, fallbackIndex);
+      if (!detection) return;
+      frameDetections.push(detection);
+      const indexedDetections = byFrame.get(detection.frameIndex) ?? [];
+      indexedDetections.push(detection);
+      byFrame.set(detection.frameIndex, indexedDetections);
+    });
+    if (frameDetections.length > 0) {
+      byFrame.set(fallbackIndex, frameDetections);
+    }
+  });
+
+  return { byFrame, sourceFrameCount: frames.length };
+}
+
+function parseVideoDetection(
+  detection: VideoDatajsonDetection,
+  fallbackIndex: number,
+): VideoOverlayDetection | null {
+  if (!detection || typeof detection !== 'object') return null;
+  const bbox = Array.isArray(detection.bbox) ? detection.bbox : [];
+  if (bbox.length !== 4) return null;
+
+  const trackId = String(detection.trackId ?? '').trim();
+  if (!trackId) return null;
+
+  const frameIndex = Number(detection.index ?? fallbackIndex);
+  const score = Number(detection.score ?? 0);
+  const parsedBbox = bbox.map((value) => Number(value));
+  if (!Number.isFinite(frameIndex) || parsedBbox.some((value) => !Number.isFinite(value))) {
+    return null;
+  }
+  if (parsedBbox[2] <= parsedBbox[0] || parsedBbox[3] <= parsedBbox[1]) {
+    return null;
+  }
+
+  return {
+    frameIndex: Math.round(frameIndex),
+    trackId,
+    bbox: [parsedBbox[0], parsedBbox[1], parsedBbox[2], parsedBbox[3]],
+    score: Number.isFinite(score) ? score : 0,
+  };
+}
+
+function findNearestFrameIndex(frameIndexes: number[], frameIndex: number): number | null {
+  if (frameIndexes.length === 0) return null;
+
+  let lastFrameIndex = frameIndexes[0];
+  for (const nextFrameIndex of frameIndexes) {
+    if (nextFrameIndex === frameIndex) return nextFrameIndex;
+    if (nextFrameIndex > frameIndex) {
+      return Math.abs(nextFrameIndex - frameIndex) < Math.abs(frameIndex - lastFrameIndex)
+        ? nextFrameIndex
+        : lastFrameIndex;
+    }
+    if (lastFrameIndex <= frameIndex) {
+      lastFrameIndex = nextFrameIndex;
+    }
+  }
+  return lastFrameIndex;
+}
+
+function findVisibleDetections(
+  detectionsByFrame: IndexedVideoDetections,
+  frameIndexes: number[],
+  frameIndex: number,
+  rowsByTrackId: Map<string, ReviewRow>,
+): VideoOverlayDetection[] {
+  const nearestFrameIndex = findNearestFrameIndex(frameIndexes, frameIndex);
+  if (nearestFrameIndex === null) return [];
+
+  const trackIdSet = new Set(rowsByTrackId.keys());
+  return (detectionsByFrame.byFrame.get(nearestFrameIndex) ?? []).filter((detection) => (
+    trackIdSet.has(String(detection.trackId))
+  ));
+}
+
+function getRowsByTrackId(rows: ReviewRow[]): Map<string, ReviewRow> {
+  const rowsByTrackId = new Map<string, ReviewRow>();
+  rows.forEach((row) => {
+    String(row.trackIds || '')
+      .split(',')
+      .map((part) => part.trim())
+      .filter(Boolean)
+      .forEach((trackId) => rowsByTrackId.set(trackId, row));
+  });
+  return rowsByTrackId;
+}
+
+function VideoWithDatajsonOverlay({ item, className }: { item: ReviewItem; className: string }) {
+  const videoRef = React.useRef<HTMLVideoElement | null>(null);
+  const wrapperRef = React.useRef<HTMLDivElement | null>(null);
+  const [detectionsByFrame, setDetectionsByFrame] = React.useState<IndexedVideoDetections>({
+    byFrame: new Map(),
+    sourceFrameCount: 0,
+  });
+  const [currentFrameIndex, setCurrentFrameIndex] = React.useState(0);
+  const [videoBox, setVideoBox] = React.useState({ width: 0, height: 0, left: 0, top: 0 });
+  const [loadState, setLoadState] = React.useState<'idle' | 'loading' | 'ready' | 'failed'>('idle');
+
+  React.useEffect(() => {
+    if (!item.resultFileUrl) {
+      setDetectionsByFrame({ byFrame: new Map(), sourceFrameCount: 0 });
+      setLoadState('idle');
+      return;
+    }
+
+    let cancelled = false;
+    setLoadState('loading');
+    fetch(item.resultFileUrl)
+      .then((response) => {
+        if (!response.ok) throw new Error(`datajson load failed: ${response.status}`);
+        return response.json();
+      })
+      .then((payload) => {
+        if (cancelled) return;
+        setDetectionsByFrame(parseVideoDatajson(payload));
+        setLoadState('ready');
+      })
+      .catch((error) => {
+        console.error(error);
+        if (cancelled) return;
+        setDetectionsByFrame({ byFrame: new Map(), sourceFrameCount: 0 });
+        setLoadState('failed');
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [item.resultFileUrl]);
+
+  React.useEffect(() => {
+    const video = videoRef.current;
+    const wrapper = wrapperRef.current;
+    if (!video || !wrapper) return;
+
+    let frameId = 0;
+    const update = () => {
+      const maxFrameIndex = detectionsByFrame.sourceFrameCount > 0
+        ? detectionsByFrame.sourceFrameCount - 1
+        : detectionsByFrame.byFrame.size > 0 ? Math.max(...detectionsByFrame.byFrame.keys()) : 0;
+      const estimatedFps = video.duration > 0 && maxFrameIndex > 0 ? (maxFrameIndex + 1) / video.duration : 0;
+      setCurrentFrameIndex(estimatedFps > 0 ? Math.round(video.currentTime * estimatedFps) : 0);
+
+      const wrapperWidth = wrapper.clientWidth;
+      const wrapperHeight = wrapper.clientHeight;
+      const videoWidth = video.videoWidth;
+      const videoHeight = video.videoHeight;
+      if (wrapperWidth > 0 && wrapperHeight > 0 && videoWidth > 0 && videoHeight > 0) {
+        const scale = Math.min(wrapperWidth / videoWidth, wrapperHeight / videoHeight);
+        const renderedWidth = videoWidth * scale;
+        const renderedHeight = videoHeight * scale;
+        setVideoBox({
+          width: renderedWidth,
+          height: renderedHeight,
+          left: (wrapperWidth - renderedWidth) / 2,
+          top: (wrapperHeight - renderedHeight) / 2,
+        });
+      }
+
+      frameId = window.requestAnimationFrame(update);
+    };
+
+    frameId = window.requestAnimationFrame(update);
+    return () => window.cancelAnimationFrame(frameId);
+  }, [detectionsByFrame]);
+
+  const rowsByTrackId = React.useMemo(() => getRowsByTrackId(item.reviewRows), [item.reviewRows]);
+  const frameIndexes = React.useMemo(
+    () => [...detectionsByFrame.byFrame.keys()].sort((left, right) => left - right),
+    [detectionsByFrame],
+  );
+  const visibleDetections = findVisibleDetections(
+    detectionsByFrame,
+    frameIndexes,
+    currentFrameIndex,
+    rowsByTrackId,
+  );
+
+  return (
+    <div ref={wrapperRef} className={`relative overflow-hidden bg-black ${className}`}>
+      <video
+        ref={videoRef}
+        src={item.mediaUrl || item.imageUrl}
+        className="h-full w-full object-contain"
+        controls
+        muted
+        playsInline
+        preload="metadata"
+      />
+      <div className="pointer-events-none absolute inset-0">
+        {visibleDetections.map((detection, index) => {
+          const row = rowsByTrackId.get(detection.trackId);
+          if (!row || videoBox.width <= 0 || videoBox.height <= 0) return null;
+          const video = videoRef.current;
+          if (!video || video.videoWidth <= 0 || video.videoHeight <= 0) return null;
+
+          const [minx, miny, maxx, maxy] = detection.bbox;
+          const left = videoBox.left + (minx / video.videoWidth) * videoBox.width;
+          const top = videoBox.top + (miny / video.videoHeight) * videoBox.height;
+          const width = ((maxx - minx) / video.videoWidth) * videoBox.width;
+          const height = ((maxy - miny) / video.videoHeight) * videoBox.height;
+          const borderClass = BBOX_COLORS[row.decision] ?? 'border-blue-400';
+          const labelClass = BBOX_LABEL_COLORS[row.decision] ?? 'bg-blue-500';
+
+          return (
+            <div
+              key={`${detection.frameIndex}-${detection.trackId}-${index}`}
+              className={`absolute border-2 ${borderClass}`}
+              style={{ left, top, width, height }}
+              title={`${row.originalName || '--'} ${detection.score ? detection.score.toFixed(2) : ''}`}
+            >
+              <span className={`absolute -top-4 left-0 ${labelClass} text-white text-[10px] font-bold px-1 leading-4 rounded-sm`}>
+                {index + 1}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+      {loadState === 'failed' && (
+        <div className="pointer-events-none absolute bottom-2 right-2 rounded bg-black/65 px-2 py-1 text-[11px] text-white">
+          未加载轨迹数据
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function Review({ initialTaskId = null }: { initialTaskId?: number | null }) {
   const [viewMode, setViewMode] = useState<'list' | 'grid' | 'gallery'>('grid');
@@ -265,26 +529,15 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [viewMode, filteredItems, activeItemId, previewItem]);
 
-  const renderMedia = (item: any, className: string) => {
+  const renderVideoWithBboxOverlay = (item: ReviewItem, className: string) => (
+    <VideoWithDatajsonOverlay item={item} className={className} />
+  );
+
+  const renderMedia = (item: ReviewItem, className: string) => {
     if (item.mediaType === 'video') {
-      return <video src={item.mediaUrl || item.imageUrl} className={className} controls muted playsInline preload="metadata" />;
+      return renderVideoWithBboxOverlay(item, className);
     }
     return <img src={item.imageUrl} alt="Thumbnail" className={className} referrerPolicy="no-referrer" />;
-  };
-
-  const BBOX_COLORS: Record<string, string> = {
-    keep: 'border-green-400',
-    add: 'border-blue-400',
-    rename: 'border-amber-400',
-    exclude: 'border-gray-400',
-    error: 'border-red-400',
-  };
-  const BBOX_LABEL_COLORS: Record<string, string> = {
-    keep: 'bg-green-500',
-    add: 'bg-blue-500',
-    rename: 'bg-amber-500',
-    exclude: 'bg-gray-500',
-    error: 'bg-red-500',
   };
 
   const renderImageWithBboxOverlay = (item: any, options?: { contain?: boolean }) => {
@@ -679,7 +932,7 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
         <div className={`flex-1 flex flex-col gap-3 bg-white dark:bg-gray-800 p-4 rounded-xl border-2 shadow-sm transition-colors min-w-0 ${matched ? 'border-green-500 dark:border-green-400' : 'border-red-500 dark:border-red-400'}`}>
           <div className="flex-1 bg-gray-100 dark:bg-gray-900 rounded-lg overflow-hidden relative min-h-0">
             {activeItem.mediaType === 'video' ? (
-              <video src={activeItem.mediaUrl || activeItem.imageUrl} className="w-full h-full object-contain" controls playsInline />
+              renderVideoWithBboxOverlay(activeItem, 'w-full h-full object-contain')
             ) : (
               <button
                 type="button"
@@ -726,7 +979,7 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
                     : 'border-transparent opacity-60 hover:opacity-100'
                 }`}>
                 {item.mediaType === 'video' ? (
-                  <video src={item.mediaUrl || item.imageUrl} className="w-full h-full object-cover" muted playsInline preload="metadata" />
+                  renderVideoWithBboxOverlay(item, 'w-full h-full object-cover')
                 ) : (
                   <img src={item.imageUrl} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                 )}
@@ -974,13 +1227,7 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
 
             <div className="w-full max-h-[78vh] flex items-center justify-center overflow-auto">
               {previewItem.mediaType === 'video' ? (
-                <video
-                  src={previewItem.mediaUrl || previewItem.imageUrl}
-                  className="max-h-[78vh] max-w-full rounded-md"
-                  controls
-                  autoPlay
-                  playsInline
-                />
+                renderVideoWithBboxOverlay(previewItem, 'max-h-[78vh] max-w-full rounded-md')
               ) : (
                 <div className="w-full">
                   {renderImageWithBboxOverlay(previewItem)}

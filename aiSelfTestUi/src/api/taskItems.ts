@@ -85,6 +85,7 @@ export type TaskItemReviewRow = {
   source_name: string | null;
   llm_name: string | null;
   status: TaskItemDataStatus | string;
+  track_ids: string;
   bbox: TaskItemBBox | null;
   source_size: TaskItemSourceSize | null;
 };
@@ -136,12 +137,23 @@ export type ReviewRow = {
   willSubmit: boolean;
   groundingStatus: string;
   sourceStatus: string;
+  trackIds: string;
   bbox: TaskItemBBox | null;
   sourceSize: TaskItemSourceSize | null;
   groundingMeta?: {
     sourceSize: TaskItemSourceSize;
   };
 };
+
+export type VideoDatajsonDetection = {
+  index?: number | string | null;
+  trackId?: number | string | null;
+  bbox?: unknown;
+  score?: number | string | null;
+};
+
+export type VideoDatajsonFrame = VideoDatajsonDetection[];
+export type VideoDatajsonPayload = VideoDatajsonFrame[];
 
 export type TaskItemReviewRowUpdateRequest = {
   task_item_id: number;
@@ -157,6 +169,7 @@ export type ReviewItem = {
   mediaType: MediaType;
   imageUrl: string;
   mediaUrl: string;
+  resultFileUrl: string | null;
   status: string;
   originalResult: string;
   aiResult: string;
@@ -339,6 +352,7 @@ function toReviewItem(task: TaskSummary, listRow: TaskItemListRow, detail: TaskI
     mediaType: detail.media_type,
     imageUrl: detail.media.url,
     mediaUrl: detail.media.url,
+    resultFileUrl: detail.media.result_file_url,
     status: listRow.status,
     originalResult: originalValues.join('、'),
     aiResult: aiValues.join('、'),
@@ -365,6 +379,7 @@ function toReviewRow(row: TaskItemReviewRow): ReviewRow {
     willSubmit: ['默认', '新增', '修改'].includes(row.status),
     groundingStatus: '',
     sourceStatus: row.status,
+    trackIds: row.track_ids,
     bbox: row.bbox,
     sourceSize: row.source_size,
     groundingMeta: row.source_size ? { sourceSize: row.source_size } : undefined,
