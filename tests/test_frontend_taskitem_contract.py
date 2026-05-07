@@ -181,3 +181,17 @@ def test_review_frontend_keeps_video_overlay_between_sparse_datajson_frames() ->
     assert "byFrame.set(detection.frameIndex, indexedDetections)" in review_text
     assert "lastFrameIndex <= frameIndex" in review_text
     assert "Math.abs(nextFrameIndex - frameIndex)" in review_text
+
+
+def test_review_frontend_fullscreens_video_overlay_container() -> None:
+    """视频全屏应全屏叠框容器，避免原生 video 全屏丢失 overlay。"""
+
+    review_text = read_frontend_file("components/Review.tsx")
+
+    assert "Maximize2" in review_text
+    assert "Minimize2" in review_text
+    assert "requestFullscreen()" in review_text
+    assert "document.exitFullscreen()" in review_text
+    assert "document.fullscreenElement === wrapperRef.current" in review_text
+    assert "controlsList=\"nofullscreen\"" in review_text
+    assert "aria-label={isFullscreen ? '退出全屏' : '全屏'}" in review_text

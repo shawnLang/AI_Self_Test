@@ -65,6 +65,8 @@ rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 10. 当前播放帧没有 detection 时，前端使用最近有效帧的 detection 保持连续绘制，
     避免只在少数关键帧闪现。
 11. 前端缓存已排序帧号，不在每次动画帧中重新扫描全部 `.datajson`。
+12. 视频全屏时必须全屏外层叠框容器，而不是只全屏 `<video>` 元素。
+13. 全屏容器内继续显示 bbox overlay，并提供进入/退出全屏按钮。
 
 ## 验证命令
 

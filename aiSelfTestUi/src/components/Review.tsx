@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Check, List, LayoutGrid, Image as ImageIcon, CheckSquare, ChevronLeft, ChevronRight, SkipForward, UploadCloud, Save } from 'lucide-react';
+import { Check, List, LayoutGrid, Image as ImageIcon, CheckSquare, ChevronLeft, ChevronRight, SkipForward, UploadCloud, Save, Maximize2, Minimize2 } from 'lucide-react';
 import {
   confirmReviewItems,
   skipReviewItems,
@@ -160,6 +160,7 @@ function VideoWithDatajsonOverlay({ item, className }: { item: ReviewItem; class
   const [currentFrameIndex, setCurrentFrameIndex] = React.useState(0);
   const [videoBox, setVideoBox] = React.useState({ width: 0, height: 0, left: 0, top: 0 });
   const [loadState, setLoadState] = React.useState<'idle' | 'loading' | 'ready' | 'failed'>('idle');
+  const [isFullscreen, setIsFullscreen] = React.useState(false);
 
   React.useEffect(() => {
     if (!item.resultFileUrl) {
@@ -228,6 +229,23 @@ function VideoWithDatajsonOverlay({ item, className }: { item: ReviewItem; class
     return () => window.cancelAnimationFrame(frameId);
   }, [detectionsByFrame]);
 
+  React.useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(document.fullscreenElement === wrapperRef.current);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
+  const toggleFullscreen = async () => {
+    if (document.fullscreenElement === wrapperRef.current) {
+      await document.exitFullscreen();
+      return;
+    }
+    await wrapperRef.current?.requestFullscreen();
+  };
+
   const rowsByTrackId = React.useMemo(() => getRowsByTrackId(item.reviewRows), [item.reviewRows]);
   const frameIndexes = React.useMemo(
     () => [...detectionsByFrame.byFrame.keys()].sort((left, right) => left - right),
@@ -250,6 +268,7 @@ function VideoWithDatajsonOverlay({ item, className }: { item: ReviewItem; class
         muted
         playsInline
         preload="metadata"
+        controlsList="nofullscreen"
       />
       <div className="pointer-events-none absolute inset-0">
         {visibleDetections.map((detection, index) => {
@@ -285,6 +304,15 @@ function VideoWithDatajsonOverlay({ item, className }: { item: ReviewItem; class
           未加载轨迹数据
         </div>
       )}
+      <button
+        type="button"
+        onClick={toggleFullscreen}
+        className="absolute right-2 top-2 z-10 inline-flex h-8 w-8 items-center justify-center rounded bg-black/65 text-white transition-colors hover:bg-black/80"
+        aria-label={isFullscreen ? '退出全屏' : '全屏'}
+        title={isFullscreen ? '退出全屏' : '全屏'}
+      >
+        {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+      </button>
     </div>
   );
 }
