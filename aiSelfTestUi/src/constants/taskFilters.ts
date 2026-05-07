@@ -7,6 +7,7 @@ export type TaskFilterFormData = {
   fileBmp: string;
   uploadType: string;
   idType: string;
+  module: string;
   size: number;
   current: number;
 };
@@ -24,6 +25,12 @@ export const classifyOptions = [
   { value: 4, label: '处理中' }
 ];
 
+export const moduleOptions = [
+  { value: 'camera', label: '红外相机' },
+  { value: 'lure', label: '喂鸟器' },
+  { value: 'video', label: '摄像头' }
+];
+
 export const defaultTaskFilters: TaskFilterFormData = {
   classifyList: [1, 2],
   keyword: '',
@@ -33,6 +40,7 @@ export const defaultTaskFilters: TaskFilterFormData = {
   fileBmp: 'all',
   uploadType: 'all',
   idType: 'all',
+  module: 'camera',
   size: 50,
   current: 1
 };
@@ -65,6 +73,9 @@ export const normalizeTaskFiltersForForm = (filters: Record<string, unknown> | P
   const canonicalFileBmp = mediaTypes.length === 1 ? mediaTypes[0] : undefined;
   const canonicalUploadType = Array.isArray(uploadTypes) ? uploadTypes[0] : uploadTypes;
   const canonicalIdType = Array.isArray(identifySource) ? identifySource[0] : identifySource;
+  const canonicalModule = moduleOptions.some((option) => option.value === source.module)
+    ? String(source.module)
+    : defaultTaskFilters.module;
 
   return {
     classifyList: Array.isArray(classifyList)
@@ -77,6 +88,7 @@ export const normalizeTaskFiltersForForm = (filters: Record<string, unknown> | P
     fileBmp: fileBmpValueMap[String(source.fileBmp ?? canonicalFileBmp ?? 'all').trim()] || 'all',
     uploadType: canonicalUploadType === undefined || canonicalUploadType === null || canonicalUploadType === '' ? 'all' : String(canonicalUploadType),
     idType: canonicalIdType === undefined || canonicalIdType === null || canonicalIdType === '' ? 'all' : String(canonicalIdType),
+    module: canonicalModule,
     size: Number(source.size) > 0 ? Number(source.size) : defaultTaskFilters.size,
     current: Number(source.current) > 0 ? Number(source.current) : defaultTaskFilters.current
   };

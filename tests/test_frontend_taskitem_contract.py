@@ -46,12 +46,14 @@ def test_data_query_displays_saved_filters_like_create_task() -> None:
     assert "文件格式" in text
     assert "识别类型" in text
     assert "上传类型" in text
+    assert "模块" in text
     assert "开始时间" in text
     assert "结束时间" in text
     assert "formatClassifyList(taskFilters?.classify_list)" in text
     assert "formatMediaTypes(taskFilters?.media_types)" in text
     assert "formatIdentifySources(taskFilters?.identify_source)" in text
     assert "formatUploadTypes(taskFilters?.upload_types)" in text
+    assert "formatModule(taskFilters?.module)" in text
 
 
 def test_review_uses_task_item_actions_for_basic_confirmation() -> None:

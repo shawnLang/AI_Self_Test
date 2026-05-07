@@ -2,6 +2,7 @@ import { fetchApi } from '../utils/api';
 
 export type ExecutionMode = 'auto' | 'manual';
 export type MediaType = 'image' | 'video';
+export type ModuleType = 'camera' | 'lure' | 'video';
 
 export type TaskFiltersPayload = {
   classify_list: number[];
@@ -12,6 +13,7 @@ export type TaskFiltersPayload = {
   media_types: MediaType[];
   upload_types: number[];
   identify_source: number[];
+  module: ModuleType;
 };
 
 export type TaskSummary = {

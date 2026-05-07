@@ -5,10 +5,11 @@ import {
   listTaskItems,
   runTaskNow,
   type MediaType,
+  type ModuleType,
   type TaskItemListRow,
   type TaskSummary,
 } from '../api/taskItems';
-import { classifyOptions, fileBmpOptions } from '../constants/taskFilters';
+import { classifyOptions, fileBmpOptions, moduleOptions } from '../constants/taskFilters';
 
 const mediaTypeLabel: Record<MediaType, string> = {
   image: '图片',
@@ -173,6 +174,7 @@ export default function DataQuery({ taskId, onBack }: { taskId: number, onBack: 
             <FilterLine label="关键词" value={taskFilters?.keyword || '--'} />
             <FilterLine label="物种名称" value={taskFilters?.sp_name || '--'} />
             <FilterLine label="文件格式" value={formatMediaTypes(taskFilters?.media_types)} />
+            <FilterLine label="模块" value={formatModule(taskFilters?.module)} />
             <FilterLine label="识别类型" value={formatIdentifySources(taskFilters?.identify_source)} />
             <FilterLine label="上传类型" value={formatUploadTypes(taskFilters?.upload_types)} />
             <FilterLine label="开始时间" value={taskFilters?.start_at || '--'} />
@@ -376,6 +378,11 @@ function formatIdentifySources(values: number[] | undefined) {
 
 function formatUploadTypes(values: number[] | undefined) {
   return formatOptionList(values, (value) => uploadTypeLabel[value] || String(value));
+}
+
+function formatModule(value: ModuleType | undefined) {
+  if (!value) return '红外相机';
+  return moduleOptions.find((option) => option.value === value)?.label || String(value);
 }
 
 function formatOptionList<T extends string | number>(values: T[] | undefined, resolveLabel: (value: T) => string) {

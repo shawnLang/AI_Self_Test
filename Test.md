@@ -209,8 +209,10 @@ cd aiSelfTestUi && npm run lint
 
 - 任务详情页“任务保存筛选条件”展示内容与创建任务筛选条件保持一致。
 - 展示字段包括识别分类、关键词、物种名称、文件格式、识别类型、上传类型、
-  开始时间、结束时间。
+  开始时间、结束时间、模块。
 - 识别分类、文件格式、识别类型、上传类型必须显示中文标签，不直接显示原始值。
+- 模块筛选为单选字段，默认值为红外相机 `camera`，可选值为红外相机、喂鸟器、
+  摄像头。
 
 ## 用例
 
@@ -219,11 +221,16 @@ cd aiSelfTestUi && npm run lint
 3. 任务详情页展示 `识别类型`，将 `identify_source` 转换为 `AI 识别 / 人工识别`。
 4. 任务详情页展示 `上传类型`，将 `upload_types` 转换为中文上传来源。
 5. 任务详情页分别展示 `开始时间` 和 `结束时间`，不再合并为单个时间字段。
+6. 创建任务页展示模块单选，默认选择红外相机。
+7. 创建任务请求将 `filters.module` 保存为 `camera`、`lure` 或 `video`。
+8. 任务管理卡片展示模块中文标签。
+9. 任务详情页展示模块中文标签。
+10. 任务执行上游分页 payload 使用保存的单值 `module`。
 
 ## 验证命令
 
 ```bash
-.env/bin/python -m pytest tests/test_frontend_taskitem_contract.py
+.env/bin/python -m pytest tests/test_task_api.py tests/test_task_execution_service.py tests/test_frontend_contract_static.py tests/test_frontend_taskitem_contract.py
 cd aiSelfTestUi && npm run lint
 ```
 

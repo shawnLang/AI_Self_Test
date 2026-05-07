@@ -26,6 +26,7 @@ from aiSelfTest.models.task import (
 
 ExecutionModeValue = Literal["auto", "manual"]
 MediaTypeValue = Literal["image", "video"]
+ModuleValue = Literal["camera", "lure", "video"]
 TASK_FILE_STATIC_PREFIX = "/api/task-files"
 ESTIMATABLE_TASK_STATUSES = {
     TaskExecutionStatus.DATA_LOAD.value,
@@ -89,7 +90,15 @@ class TaskFiltersPayload(BaseModel):
     media_types: list[MediaTypeValue] = Field(default_factory=list, description="媒体类型")
     upload_types: list[int] = Field(default_factory=list, description="上传类型")
     identify_source: list[int] = Field(default_factory=list, description="识别来源")
-    module: str = Field(default="camera", max_length=200, description="设备所属模块(camera,lure,tracker,video,voice)")
+    module: ModuleValue = Field(default="camera", description="设备所属模块(camera,lure,video)")
+
+    @field_validator("module", mode="before")
+    @classmethod
+    def normalize_module(cls, value: str | None) -> str:
+        """空模块按历史默认值红外相机处理。"""
+
+        text = str(value or "").strip()
+        return text or "camera"
 
 
 class TaskPayloadBase(BaseModel):

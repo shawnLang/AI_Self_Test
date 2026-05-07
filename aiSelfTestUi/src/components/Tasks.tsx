@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Clock, Settings2, Trash2, Pause, AlertTriangle, CheckSquare, Play } from 'lucide-react';
+import { moduleOptions } from '../constants/taskFilters';
 import { fetchApi } from '../utils/api';
+
+type TaskFiltersPayload = {
+  module?: string | null;
+};
 
 type TaskItem = {
   id: number;
@@ -18,6 +23,7 @@ type TaskItem = {
   last_error: string | null;
   estimated_remaining_seconds: number | null;
   started_at?: string | null;
+  filters: TaskFiltersPayload;
 };
 
 type TaskListData = {
@@ -183,6 +189,7 @@ const TaskMonitorCard: React.FC<TaskMonitorCardProps> = ({
   const isExecuting = isPreparing || runningExecutionStatuses.has(task.execution_status);
   const statusText = isPreparing ? '准备中' : statusTextMap[task.execution_status] || task.execution_status || '未开始';
   const remainingTimeText = formatRemainingTime(task.estimated_remaining_seconds, isExecuting);
+  const moduleText = formatModule(task.filters?.module);
   
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm transition-colors">
@@ -203,6 +210,7 @@ const TaskMonitorCard: React.FC<TaskMonitorCardProps> = ({
           <div className="flex flex-wrap gap-4 text-sm text-gray-500 dark:text-gray-400 mt-2">
             <span className="flex items-center gap-1"><Settings2 className="w-4 h-4" /> 项目 #{task.client_id}</span>
             <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> {intervalLabelMap[task.interval_hours] || `${task.interval_hours} 小时`}</span>
+            <span className="flex items-center gap-1">模块: {moduleText}</span>
             <span className="flex items-center gap-1">执行方式: {task.execution_mode === 'auto' ? '自动执行' : '手动执行'}</span>
           </div>
         </div>
@@ -329,4 +337,11 @@ function formatRemainingTime(seconds: number | null | undefined, isRunning: bool
     return `约 ${hours} 小时`;
   }
   return `约 ${hours} 小时 ${minutes} 分钟`;
+}
+
+function formatModule(value: string | null | undefined): string {
+  if (!value) {
+    return '红外相机';
+  }
+  return moduleOptions.find((option) => option.value === value)?.label || value;
 }

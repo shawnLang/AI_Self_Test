@@ -214,7 +214,7 @@ def test_build_upstream_page_payload_keeps_non_empty_filter_values() -> None:
             media_types=["image", "video"],
             upload_types=[3],
             identify_source=[0],
-            module="camera",
+            module="lure",
         ),
         window=TaskExecutionWindow(start_at="2026-04-20", end_at="2026-04-25"),
         current=2,
@@ -234,7 +234,7 @@ def test_build_upstream_page_payload_keeps_non_empty_filter_values() -> None:
         "fileBmp": [1, 2],
         "uploadType": [3],
         "idWayList": [0],
-        "module": "camera",
+        "module": "lure",
     }
 
 

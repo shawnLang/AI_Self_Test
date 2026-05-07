@@ -87,7 +87,7 @@ def create_app() -> FastAPI:
         request_id = request.headers.get("X-Request-ID", str(uuid4()))
         with logger.contextualize(request_id=request_id):
             response = await call_next(request)
-            if response.status_code != 200 and response.status_code != 304:
+            if response.status_code != 200 and response.status_code != 304 and response.status_code != 206:
                 logger.info(
                     "HTTP 请求完成: method={}, path={}, status_code={}",
                     request.method,

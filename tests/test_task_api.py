@@ -112,6 +112,7 @@ def _create_task_payload(client_id: int, config_id: int, **overrides: Any) -> di
             "media_types": ["image", "video"],
             "upload_types": [],
             "identify_source": [],
+            "module": "camera",
         },
     }
     payload.update(overrides)
@@ -166,6 +167,39 @@ def test_create_task_and_get_detail(app_client: TestClient) -> None:
     assert detail["estimated_remaining_seconds"] is None
     assert detail["filters"]["classify_list"] == [1, 2]
     assert detail["filters"]["media_types"] == ["image", "video"]
+    assert detail["filters"]["module"] == "camera"
+
+
+def test_create_task_accepts_single_module_filter(app_client: TestClient) -> None:
+    """创建任务应支持保存单选模块筛选。"""
+
+    client_id, config_id = _create_client_and_config(app_client)
+    payload = _create_task_payload(client_id, config_id)
+    payload["filters"]["module"] = "lure"
+
+    create_response = app_client.post("/api/tasks/create", json=payload)
+
+    assert create_response.status_code == 201
+    created = _unwrap_success(create_response.json())
+    assert created["filters"]["module"] == "lure"
+
+    detail_response = app_client.get(f"/api/tasks/detail/{created['id']}")
+    detail = _unwrap_success(detail_response.json())
+    assert detail["filters"]["module"] == "lure"
+
+
+def test_create_task_rejects_invalid_module_filter(app_client: TestClient) -> None:
+    """模块筛选只能使用后端支持的固定模块值。"""
+
+    client_id, config_id = _create_client_and_config(app_client)
+    payload = _create_task_payload(client_id, config_id)
+    payload["filters"]["module"] = "tracker"
+
+    response = app_client.post("/api/tasks/create", json=payload)
+
+    assert response.status_code == 400
+    body = response.json()
+    assert body["code"] == 1001
 
 
 def test_task_detail_returns_estimated_remaining_seconds(
@@ -262,6 +296,7 @@ def test_update_task_persists_schedule_and_filters(app_client: TestClient) -> No
                 "media_types": ["video"],
                 "upload_types": [1],
                 "identify_source": [0],
+                "module": "video",
             },
         ),
     )
@@ -273,6 +308,7 @@ def test_update_task_persists_schedule_and_filters(app_client: TestClient) -> No
     assert updated["execution_mode"] == "auto"
     assert updated["auto_execute"] is True
     assert updated["filters"]["media_types"] == ["video"]
+    assert updated["filters"]["module"] == "video"
 
 
 def test_delete_task_cascades_task_items(
@@ -386,6 +422,7 @@ def test_task_action_run_fetches_real_upstream_and_persists_task_items(
             assert kwargs["json"]["fileBmp"] == [1, 2]
             assert kwargs["json"]["startTime"] == "2026-04-20 00:00:00"
             assert kwargs["json"]["endTime"] == "2026-04-25 23:59:59"
+            assert kwargs["json"]["module"] == "camera"
             return FakeResponse(
                 200,
                 {

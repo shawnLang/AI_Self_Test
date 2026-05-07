@@ -1,6 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { classifyOptions, defaultTaskFilters, fileBmpOptions, resolveApiFileBmpValue, type TaskFilterFormData } from '../constants/taskFilters';
+import {
+  classifyOptions,
+  defaultTaskFilters,
+  fileBmpOptions,
+  moduleOptions,
+  resolveApiFileBmpValue,
+  type TaskFilterFormData,
+} from '../constants/taskFilters';
 import type { ClientItem, ClientListData } from '../types/client';
 import { fetchApi } from '../utils/api';
 
@@ -108,6 +115,10 @@ export default function CreateTask({ onBack }: { onBack: () => void }) {
     });
   };
 
+  const formatModule = (value: string) => (
+    moduleOptions.find((option) => option.value === value)?.label || '红外相机'
+  );
+
   const updateFilter = <K extends keyof TaskFilterFormData>(key: K, value: TaskFilterFormData[K]) => {
     setFormData((prev) => ({
       ...prev,
@@ -158,6 +169,7 @@ export default function CreateTask({ onBack }: { onBack: () => void }) {
             media_types: mediaTypes,
             upload_types: formData.filters.uploadType === 'all' ? [] : [Number(formData.filters.uploadType)],
             identify_source: formData.filters.idType === 'all' ? [] : [Number(formData.filters.idType)],
+            module: formData.filters.module,
           },
         })
       });
@@ -264,6 +276,29 @@ export default function CreateTask({ onBack }: { onBack: () => void }) {
                         key={option.value}
                         type="button"
                         onClick={() => toggleClassify(option.value)}
+                        className={`px-3 py-1.5 rounded-md text-sm border transition-colors ${
+                          checked
+                            ? 'bg-blue-50 border-blue-500 text-blue-700 dark:bg-blue-900/30 dark:border-blue-400 dark:text-blue-300'
+                            : 'bg-gray-50 border-gray-300 text-gray-600 dark:bg-gray-900 dark:border-gray-600 dark:text-gray-300'
+                        }`}
+                      >
+                        {checked ? '☑' : '☐'} {option.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">模块</label>
+                <div className="flex flex-wrap gap-2">
+                  {moduleOptions.map((option) => {
+                    const checked = formData.filters.module === option.value;
+                    return (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => updateFilter('module', option.value)}
                         className={`px-3 py-1.5 rounded-md text-sm border transition-colors ${
                           checked
                             ? 'bg-blue-50 border-blue-500 text-blue-700 dark:bg-blue-900/30 dark:border-blue-400 dark:text-blue-300'
@@ -437,6 +472,10 @@ export default function CreateTask({ onBack }: { onBack: () => void }) {
                 <li className="flex justify-between">
                   <span>文件格式:</span>
                   <span className="font-medium text-gray-900 dark:text-white">{formData.filters.fileBmp === 'image' ? '图片' : formData.filters.fileBmp === 'video' ? '视频' : formData.filters.fileBmp === 'audio' ? '音频' : '不限制'}</span>
+                </li>
+                <li className="flex justify-between">
+                  <span>模块:</span>
+                  <span className="font-medium text-gray-900 dark:text-white">{formatModule(formData.filters.module)}</span>
                 </li>
                 <li className="flex justify-between">
                   <span>识别类型:</span>
