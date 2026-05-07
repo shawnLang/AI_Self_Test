@@ -12,7 +12,7 @@ from pathlib import Path
 # 忽略的文件
 ignore_files = ['*.iml', 'setup_build.py', '.git*','CLAUDE.md','README.md']
 # 忽略的 文件夹
-ignore_folders = ['package', '__pycache__', '.git', '.idea', 'build', '*.egg-info', 'deploy', 'dist', 'lib','ui','.claude','.venv']
+ignore_folders = ['package', '__pycache__', '.git', '.idea', 'build', '*.egg-info', 'deploy', 'dist', 'lib','ui','.claude','.venv','.aiSelfTest']
 
 # 需要编译的文件夹路径
 root_path = Path(__file__).parent.resolve()

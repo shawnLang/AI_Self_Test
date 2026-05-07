@@ -220,6 +220,31 @@ cd aiSelfTestUi && npm run lint
 cd aiSelfTestUi && npm run lint
 ```
 
+# setup_build 使用当前 Python 环境测试清单
+
+## 目标
+
+- `setup_build` 构建 wheel 时使用当前运行环境的 Python 解释器。
+- 构建命令不再根据系统写死为 `python` 或 `python3`。
+
+## 用例
+
+1. `setup_build` 调用构建命令时，第一个参数等于 `sys.executable`。
+2. 构建命令参数包含 `-m build --wheel`，保持原有 wheel 构建行为。
+3. Linux 与 Windows 分支只影响输出解码编码，不影响 Python 解释器选择。
+
+## 验证命令
+
+```bash
+.env/bin/python -m pytest tests/test_build_utils.py
+```
+
+运行 pytest 后清理：
+
+```bash
+rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
+```
+
 # 任务管理按钮布局与语义测试清单
 
 ## 目标

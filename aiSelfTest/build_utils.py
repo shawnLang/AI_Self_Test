@@ -294,12 +294,17 @@ def setup_build(package_path: Path) -> None:
         raise RuntimeError("缺少 smbclient 依赖，无法上传构建产物。") from _SMB_IMPORT_ERROR
     if platform.system() == 'Windows':
         encoding = 'gbk'
-        command = 'python -m build --wheel'
     else:
         encoding = 'utf-8'
-        command = 'python3 -m build --wheel'
+    command = [sys.executable, '-m', 'build', '--wheel']
     logger.info("开始构建 wheel: package_path={} command={}", package_path, command)
-    process = subprocess.Popen(command, cwd=package_path, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process = subprocess.Popen(
+        command,
+        cwd=package_path,
+        shell=False,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
     # 监听命令的输出和错误信息
     while True:
         output = process.stdout.readline()
