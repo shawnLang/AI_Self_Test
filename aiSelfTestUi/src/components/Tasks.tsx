@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Clock, Settings2, Trash2, Pause, Square, AlertTriangle, CheckSquare, Play } from 'lucide-react';
+import { Plus, Clock, Settings2, Trash2, Pause, AlertTriangle, CheckSquare, Play } from 'lucide-react';
 import { fetchApi } from '../utils/api';
 
 type TaskItem = {
@@ -14,6 +14,7 @@ type TaskItem = {
   execution_status: string;
   total_count: number;
   processed_count: number;
+  skipped_count: number;
   last_error: string | null;
 };
 
@@ -177,16 +178,16 @@ const TaskMonitorCard: React.FC<TaskMonitorCardProps> = ({
   
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm transition-colors">
-      <div className="flex justify-between items-start mb-4">
-        <div>
+      <div className="flex flex-col gap-4 mb-4 2xl:flex-row 2xl:items-start 2xl:justify-between">
+        <div className="min-w-0">
           <div className="flex items-center gap-3">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{task.name}</h3>
+            <h3 className="truncate text-lg font-semibold text-gray-900 dark:text-white" title={task.name}>{task.name}</h3>
             {isRunning ? (
-              <span className="px-2 py-0.5 rounded text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400">
+              <span className="whitespace-nowrap px-2 py-0.5 rounded text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400">
                 {statusText}
               </span>
             ) : (
-              <span className="px-2 py-0.5 rounded text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+              <span className="whitespace-nowrap px-2 py-0.5 rounded text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
                 {statusText}
               </span>
             )}
@@ -198,10 +199,10 @@ const TaskMonitorCard: React.FC<TaskMonitorCardProps> = ({
           </div>
         </div>
         
-        <div className="flex gap-2 items-center">
+        <div className="flex flex-wrap gap-2 items-center justify-start 2xl:justify-end">
           <button 
             onClick={onQueryData}
-            className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 dark:text-blue-400 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 border border-blue-200 dark:border-blue-800 rounded-lg flex items-center gap-2 transition-colors"
+            className="inline-flex whitespace-nowrap px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 dark:text-blue-400 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 border border-blue-200 dark:border-blue-800 rounded-lg items-center gap-2 transition-colors"
           >
             🔍 查看任务详情
           </button>
@@ -209,36 +210,29 @@ const TaskMonitorCard: React.FC<TaskMonitorCardProps> = ({
           {!isRunning && (
             <button 
               onClick={() => onStatusChange(true)}
-              className="p-2 text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/40 rounded-lg transition-colors" 
-              title="启动"
+              className="inline-flex whitespace-nowrap px-3 py-2 text-sm font-medium text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/40 border border-green-200 dark:border-green-800 rounded-lg items-center gap-2 transition-colors" 
+              title="启用自动调度"
             >
-              <Play className="w-5 h-5" />
+              <Play className="w-4 h-4" />
+              启用调度
             </button>
           )}
 
           {isRunning && (
-            <>
-              <button 
-                onClick={() => onStatusChange(false)}
-                className="p-2 text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/40 rounded-lg transition-colors" 
-                title="暂停"
-              >
-                <Pause className="w-5 h-5" />
-              </button>
-              <button 
-                onClick={() => onStatusChange(false)}
-                className="p-2 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 rounded-lg transition-colors" 
-                title="停止"
-              >
-                <Square className="w-5 h-5" />
-              </button>
-            </>
+            <button 
+              onClick={() => onStatusChange(false)}
+              className="inline-flex whitespace-nowrap px-3 py-2 text-sm font-medium text-orange-700 dark:text-orange-300 bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/40 border border-orange-200 dark:border-orange-800 rounded-lg items-center gap-2 transition-colors" 
+              title="暂停自动调度"
+            >
+              <Pause className="w-4 h-4" />
+              暂停调度
+            </button>
           )}
 
           {canReview && (
             <button
               onClick={onReview}
-              className="px-4 py-2 text-sm font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 dark:text-emerald-300 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40 border border-emerald-200 dark:border-emerald-800 rounded-lg flex items-center gap-2 transition-colors"
+              className="inline-flex whitespace-nowrap px-3 py-2 text-sm font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 dark:text-emerald-300 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40 border border-emerald-200 dark:border-emerald-800 rounded-lg items-center gap-2 transition-colors"
             >
               <CheckSquare className="w-4 h-4" />
               结果复核
@@ -250,7 +244,7 @@ const TaskMonitorCard: React.FC<TaskMonitorCardProps> = ({
           <button
             onClick={onRunNow}
             disabled={isRunning || runningNow}
-            className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-violet-700 bg-violet-50 hover:bg-violet-100 disabled:bg-gray-100 disabled:text-gray-400 dark:text-violet-300 dark:bg-violet-900/20 dark:hover:bg-violet-900/40 dark:disabled:bg-gray-800 dark:disabled:text-gray-500 border border-violet-200 dark:border-violet-800 rounded-lg transition-colors"
+            className="inline-flex whitespace-nowrap items-center gap-2 px-3 py-2 text-sm font-medium text-violet-700 bg-violet-50 hover:bg-violet-100 disabled:bg-gray-100 disabled:text-gray-400 dark:text-violet-300 dark:bg-violet-900/20 dark:hover:bg-violet-900/40 dark:disabled:bg-gray-800 dark:disabled:text-gray-500 border border-violet-200 dark:border-violet-800 rounded-lg transition-colors"
             title="立即执行"
           >
             <Play className="w-4 h-4" />
@@ -281,11 +275,11 @@ const TaskMonitorCard: React.FC<TaskMonitorCardProps> = ({
       <div className="flex flex-wrap gap-6 text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-900/50 p-3 rounded-lg transition-colors">
         <div>
           <span className="block text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">跳过重复项</span>
-          <span className="font-medium">--</span>
+          <span className="font-medium">{task.skipped_count ?? 0}</span>
         </div>
         <div>
           <span className="block text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">预计剩余时间</span>
-          <span className="font-medium">{isRunning ? '处理中...' : '--'}</span>
+          <span className="font-medium">暂未估算</span>
         </div>
         {task.execution_status === '失败' && (
           <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400 ml-auto">

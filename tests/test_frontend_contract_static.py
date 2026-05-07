@@ -29,3 +29,19 @@ def test_tasks_page_uses_canonical_task_routes() -> None:
     assert "/api/tasks/action-stop/" in source
     assert "/api/tasks/action-run/" in source
     assert "/api/tasks/delete/" in source
+
+
+def test_task_card_action_buttons_do_not_wrap_or_confuse_run_with_schedule() -> None:
+    source = _read_frontend_file("components/Tasks.tsx")
+    api_source = _read_frontend_file("api/taskItems.ts")
+
+    assert "whitespace-nowrap" in source
+    assert "启用调度" in source
+    assert "暂停调度" in source
+    assert "立即执行" in source
+    assert "title=\"启用自动调度\"" in source
+    assert "title=\"立即执行\"" in source
+    assert "skipped_count: number" in source
+    assert "skipped_count: number" in api_source
+    assert "task.skipped_count" in source
+    assert "暂未估算" in source

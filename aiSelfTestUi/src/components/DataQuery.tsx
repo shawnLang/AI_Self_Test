@@ -8,10 +8,22 @@ import {
   type TaskItemListRow,
   type TaskSummary,
 } from '../api/taskItems';
+import { classifyOptions, fileBmpOptions } from '../constants/taskFilters';
 
 const mediaTypeLabel: Record<MediaType, string> = {
   image: '图片',
   video: '视频',
+};
+
+const identifySourceLabel: Record<number, string> = {
+  0: 'AI 识别',
+  1: '人工识别',
+};
+
+const uploadTypeLabel: Record<number, string> = {
+  0: '监测设备上传',
+  1: '移动打卡',
+  2: '后台录入',
 };
 
 const intervalLabelMap: Record<number, string> = {
@@ -124,40 +136,47 @@ export default function DataQuery({ taskId, onBack }: { taskId: number, onBack: 
         </div>
       )}
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 mb-6">
-        <section className="xl:col-span-2 bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm transition-colors">
-          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{task?.name || `任务 #${taskId}`}</h3>
-              <div className="flex flex-wrap gap-3 text-sm text-gray-500 dark:text-gray-400 mt-2">
+      <div className="grid grid-cols-1 2xl:grid-cols-[minmax(360px,0.85fr)_minmax(560px,1.15fr)] gap-3 mb-4">
+        <section className="bg-white dark:bg-gray-800 px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm transition-colors">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div className="min-w-0">
+              <h3 className="truncate text-base font-semibold text-gray-900 dark:text-white" title={task?.name || `任务 #${taskId}`}>
+                {task?.name || `任务 #${taskId}`}
+              </h3>
+              <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
                 <span>项目 #{task?.client_id ?? '--'}</span>
-                <span>提示词配置 #{task?.config_id ?? '--'}</span>
+                <span>提示词 #{task?.config_id ?? '--'}</span>
                 <span>{task ? intervalLabelMap[task.interval_hours] || `${task.interval_hours} 小时` : '--'}</span>
                 <span>{task?.execution_mode === 'auto' ? '自动执行' : '手动执行'}</span>
                 <span>{task?.auto_execute ? '创建后自动执行' : '手动触发执行'}</span>
               </div>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex shrink-0 flex-wrap gap-2">
               <StatusBadge label={`状态：${task?.execution_status || '--'}`} tone={task?.execution_status === '失败' ? 'red' : task?.active ? 'green' : 'gray'} />
               <StatusBadge label={`进度：${task?.processed_count ?? 0}/${task?.total_count ?? 0}`} tone="blue" />
             </div>
           </div>
 
           {task?.last_error && (
-            <div className="mt-4 rounded-lg border border-orange-200 bg-orange-50 text-orange-700 dark:border-orange-900/40 dark:bg-orange-900/20 dark:text-orange-300 px-4 py-3 text-sm">
+            <div className="mt-2 rounded-md border border-orange-200 bg-orange-50 text-orange-700 dark:border-orange-900/40 dark:bg-orange-900/20 dark:text-orange-300 px-3 py-2 text-xs">
               {task.last_error}
             </div>
           )}
         </section>
 
-        <section className="bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm transition-colors">
-          <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">任务保存筛选条件</h3>
-          <div className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
-            <FilterLine label="分类" value={formatList(taskFilters?.classify_list)} />
+        <section className="bg-white dark:bg-gray-800 px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm transition-colors">
+          <div className="mb-2 flex items-center justify-between gap-3">
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-white">任务保存筛选条件</h3>
+          </div>
+          <div className="grid grid-cols-1 gap-x-4 gap-y-1.5 text-xs text-gray-600 dark:text-gray-300 sm:grid-cols-2 xl:grid-cols-4">
+            <FilterLine label="识别分类" value={formatClassifyList(taskFilters?.classify_list)} />
             <FilterLine label="关键词" value={taskFilters?.keyword || '--'} />
-            <FilterLine label="物种" value={taskFilters?.sp_name || '--'} />
-            <FilterLine label="时间" value={`${taskFilters?.start_at || '--'} ~ ${taskFilters?.end_at || '--'}`} />
-            <FilterLine label="媒体" value={formatList(taskFilters?.media_types.map((item) => mediaTypeLabel[item]))} />
+            <FilterLine label="物种名称" value={taskFilters?.sp_name || '--'} />
+            <FilterLine label="文件格式" value={formatMediaTypes(taskFilters?.media_types)} />
+            <FilterLine label="识别类型" value={formatIdentifySources(taskFilters?.identify_source)} />
+            <FilterLine label="上传类型" value={formatUploadTypes(taskFilters?.upload_types)} />
+            <FilterLine label="开始时间" value={taskFilters?.start_at || '--'} />
+            <FilterLine label="结束时间" value={taskFilters?.end_at || '--'} />
           </div>
         </section>
       </div>
@@ -330,16 +349,38 @@ function StatusBadge({ label, tone }: { label: string; tone: 'gray' | 'blue' | '
 
 function FilterLine({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-start justify-between gap-3">
-      <span className="text-gray-400 dark:text-gray-500 shrink-0">{label}</span>
-      <span className="text-right break-all">{value || '--'}</span>
+    <div className="flex min-w-0 items-center justify-between gap-2">
+      <span className="shrink-0 text-gray-400 dark:text-gray-500">{label}</span>
+      <span className="truncate text-right text-gray-700 dark:text-gray-200" title={value || '--'}>{value || '--'}</span>
     </div>
   );
 }
 
-function formatList(values: Array<string | number> | undefined) {
-  if (!values || values.length === 0) return '--';
-  return values.join('、');
+function formatClassifyList(values: number[] | undefined) {
+  return formatOptionList(
+    values,
+    (value) => classifyOptions.find((option) => option.value === value)?.label || String(value),
+  );
+}
+
+function formatMediaTypes(values: MediaType[] | undefined) {
+  return formatOptionList(values, (value) => {
+    const fileBmpLabel = fileBmpOptions.find((option) => option.value === value)?.label;
+    return fileBmpLabel || mediaTypeLabel[value] || String(value);
+  });
+}
+
+function formatIdentifySources(values: number[] | undefined) {
+  return formatOptionList(values, (value) => identifySourceLabel[value] || String(value));
+}
+
+function formatUploadTypes(values: number[] | undefined) {
+  return formatOptionList(values, (value) => uploadTypeLabel[value] || String(value));
+}
+
+function formatOptionList<T extends string | number>(values: T[] | undefined, resolveLabel: (value: T) => string) {
+  if (!values || values.length === 0) return '不限制';
+  return values.map(resolveLabel).join('、');
 }
 
 function matchStatusFilter(item: TaskItemListRow, filter: StatusFilter) {

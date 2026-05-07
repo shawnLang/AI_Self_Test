@@ -26,6 +26,7 @@ export type TaskSummary = {
   execution_status: string;
   total_count: number;
   processed_count: number;
+  skipped_count: number;
   last_error: string | null;
   started_at?: string | null;
   finished_at?: string | null;

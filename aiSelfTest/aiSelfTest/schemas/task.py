@@ -115,6 +115,7 @@ class TaskResponse(BaseModel):
     execution_status: str
     total_count: int
     processed_count: int
+    skipped_count: int
     last_error: str | None
     started_at: datetime | None = None
     finished_at: datetime | None = None
@@ -144,6 +145,7 @@ class TaskResponse(BaseModel):
             execution_status=task.execution_status,
             total_count=task.total_count,
             processed_count=task.processed_count,
+            skipped_count=task.skipped_count,
             last_error=task.last_error,
             started_at=task.started_at,
             finished_at=task.finished_at,

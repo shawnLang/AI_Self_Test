@@ -40,6 +40,31 @@ class FakeResponse:
         return None
 
 
+class FakeApiTaskItemRecognizer:
+    """API 任务执行测试用识别器。"""
+
+    def recognize(self, **kwargs: Any) -> Any:
+        """返回与上游详情匹配的识别结果，避免依赖真实模型配置。"""
+
+        data_rows = kwargs["data_rows"]
+        from aiSelfTest.services.task_execution import TaskItemRecognitionResult
+        from aiSelfTest.services.task_steps.llm_result import BoundingBox, LlmDetectedObject, LlmDetectionResult
+
+        return TaskItemRecognitionResult(
+            image_result=LlmDetectionResult(
+                width=100,
+                height=100,
+                data=[
+                    LlmDetectedObject(
+                        name=row.name,
+                        bbox=BoundingBox(row.minx, row.miny, row.maxx, row.maxy),
+                    )
+                    for row in data_rows
+                ],
+            )
+        )
+
+
 def _unwrap_success(response_json: dict[str, Any]) -> Any:
     assert response_json["code"] == 0
     assert response_json["message"] == "success"
@@ -128,12 +153,14 @@ def test_create_task_and_get_detail(app_client: TestClient) -> None:
     assert created["interval_hours"] == 1
     assert created["execution_mode"] == "manual"
     assert created["auto_execute"] is False
+    assert created["skipped_count"] == 0
 
     detail_response = app_client.get(f"/api/tasks/detail/{created['id']}")
 
     assert detail_response.status_code == 200
     detail = _unwrap_success(detail_response.json())
     assert detail["id"] == created["id"]
+    assert detail["skipped_count"] == 0
     assert detail["filters"]["classify_list"] == [1, 2]
     assert detail["filters"]["media_types"] == ["image", "video"]
 
@@ -381,6 +408,11 @@ def test_task_action_run_fetches_real_upstream_and_persists_task_items(
     monkeypatch.setattr(client_auth_module.requests, "post", fake_post)
     monkeypatch.setattr(task_execution_module.requests, "post", fake_post)
     monkeypatch.setattr(task_execution_module.requests, "get", fake_upstream_get)
+    monkeypatch.setattr(
+        task_execution_module,
+        "MultimodalTaskItemRecognizer",
+        lambda: FakeApiTaskItemRecognizer(),
+    )
 
     response = app_client.post(f"/api/tasks/action-run/{task_id}")
 
@@ -400,7 +432,7 @@ def test_task_action_run_fetches_real_upstream_and_persists_task_items(
     assert items[0].down_state is True
     assert len(rows) == 1
     assert rows[0].name == "白鹭"
-    assert rows[0].llm_name is None
+    assert rows[0].llm_name == "白鹭"
 
 
 def _install_empty_upstream_mock(monkeypatch) -> None:

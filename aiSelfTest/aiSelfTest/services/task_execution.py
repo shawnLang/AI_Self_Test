@@ -323,9 +323,14 @@ class AuthenticatedTaskExecutionSource:
 
 
 def build_upstream_file_download_url(client_api_url: str, file_name: str) -> str:
-    """按客户端服务地址拼接文件下载地址。"""
+    """按客户端服务地址拼接文件下载地址，绝对地址原样返回。"""
 
-    normalized_name = (file_name or "").strip().lstrip("/")
+    stripped_name = (file_name or "").strip()
+    parsed_file_url = urlparse(stripped_name)
+    if parsed_file_url.scheme and parsed_file_url.netloc:
+        return stripped_name
+
+    normalized_name = stripped_name.lstrip("/")
     parsed = urlparse(client_api_url)
     base_path = parsed.path.rstrip("/")
     if base_path.endswith("/api"):
@@ -523,7 +528,7 @@ class MultimodalTaskItemRecognizer:
         ).first()
         if model is None:
             raise AppException(
-                code=ErrorCode.PARAMS_ERROR,
+                code=ErrorCode.PARAM_INVALID,
                 message="没有启用的多模态模型配置，无法自动识别",
                 status_code=400,
             )

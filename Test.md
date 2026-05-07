@@ -150,3 +150,114 @@ rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 .env/bin/python -m pytest tests/test_task_item_api.py tests/test_frontend_taskitem_contract.py
 cd aiSelfTestUi && npm run lint
 ```
+
+# Dashboard 真实统计接口测试清单
+
+## 目标
+
+- `GET /api/dashboard/stats` 不再返回固定假数据。
+- 总览统计基于 `Task` 与 `TaskItem` 当前数据库状态实时计算。
+- 返回结构保持前端兼容字段：`activeTasks`、`processedToday`、`pendingReviews`、
+  `anomalies`、`recentActivities`。
+
+## 用例
+
+1. 无任务数据时，所有统计数量为 0，近期活动为空列表。
+2. `activeTasks` 统计执行状态处于运行阶段的任务数量。
+3. `processedToday` 统计当天已确认、已跳过、已完成的复核项数量。
+4. `pendingReviews` 统计待确认复核项数量。
+5. `anomalies` 统计执行状态为失败的任务数量。
+6. `recentActivities` 返回最近完成任务摘要，按完成时间倒序排列。
+
+## 验证命令
+
+```bash
+.env/bin/python -m pytest tests/test_client_api.py tests/test_dashboard_api.py
+```
+
+# 任务详情筛选条件展示测试清单
+
+## 目标
+
+- 任务详情页“任务保存筛选条件”展示内容与创建任务筛选条件保持一致。
+- 展示字段包括识别分类、关键词、物种名称、文件格式、识别类型、上传类型、
+  开始时间、结束时间。
+- 识别分类、文件格式、识别类型、上传类型必须显示中文标签，不直接显示原始值。
+
+## 用例
+
+1. 任务详情页展示 `识别分类`，并通过 `classifyOptions` 转换为中文。
+2. 任务详情页展示 `文件格式`，并通过 `fileBmpOptions` 转换为中文。
+3. 任务详情页展示 `识别类型`，将 `identify_source` 转换为 `AI 识别 / 人工识别`。
+4. 任务详情页展示 `上传类型`，将 `upload_types` 转换为中文上传来源。
+5. 任务详情页分别展示 `开始时间` 和 `结束时间`，不再合并为单个时间字段。
+
+## 验证命令
+
+```bash
+.env/bin/python -m pytest tests/test_frontend_taskitem_contract.py
+cd aiSelfTestUi && npm run lint
+```
+
+# 任务详情顶部布局压缩测试清单
+
+## 目标
+
+- 任务详情页顶部任务摘要与筛选条件两块内容重新排版，降低高度占用。
+- 筛选条件采用紧凑网格展示，保留完整字段和值。
+- TaskItem 列表在首屏获得更多可见空间。
+
+## 用例
+
+1. 任务摘要卡片使用更小内边距、字号和间距。
+2. 筛选条件卡片按多列紧凑展示 8 个筛选字段。
+3. 列表容器仍保持 `flex-1 min-h-0`，不被顶部区域挤压。
+
+## 验证命令
+
+```bash
+cd aiSelfTestUi && npm run lint
+```
+
+# 任务管理按钮布局与语义测试清单
+
+## 目标
+
+- 任务管理卡片中的 `查看任务详情`、`结果复核`、`立即执行` 按钮文本不换行。
+- 自动调度开关与立即执行区分展示，避免误以为两个按钮功能相同。
+- 保留启动/停止调度路由和立即执行路由，确保两类操作都可访问。
+
+## 用例
+
+1. 文本按钮使用 `whitespace-nowrap` 防止中文按钮文案折行。
+2. 自动调度按钮显示为 `启用调度 / 暂停调度`，不再只显示播放图标。
+3. `立即执行` 按钮继续调用 `/api/tasks/action-run/{id}`。
+
+## 验证命令
+
+```bash
+.env/bin/python -m pytest tests/test_frontend_contract_static.py
+cd aiSelfTestUi && npm run lint
+```
+
+# 任务管理状态与运行指标测试清单
+
+## 目标
+
+- 任务管理卡片中的状态标签不换行。
+- 后端已实现的 `skipped_count` 返回给前端，用于展示跳过重复项。
+- 预计剩余时间当前未实现，前端应明确显示未提供，而不是伪装成真实估算。
+
+## 用例
+
+1. `TaskResponse` 返回 `skipped_count`。
+2. 前端任务类型包含 `skipped_count`，任务卡片展示真实跳过重复项数量。
+3. 状态标签使用 `whitespace-nowrap` 防止换行。
+4. 预计剩余时间显示 `暂未估算`。
+
+## 验证命令
+
+```bash
+.env/bin/python -m pytest tests/test_task_api.py tests/test_frontend_contract_static.py
+cd aiSelfTestUi && npm run lint
+```
