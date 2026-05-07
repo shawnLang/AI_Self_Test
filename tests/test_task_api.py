@@ -331,7 +331,7 @@ def test_delete_task_cascades_task_items(
         file_num="file-001",
         file_extension="jpg",
         file_url="https://example.com/file.jpg",
-        file_id="file-001",
+        file_id=101,
         file_fid="fid-001",
         sp_name_list="白鹭",
         classify=1,
@@ -452,7 +452,7 @@ def test_task_action_run_fetches_real_upstream_and_persists_task_items(
     def fake_upstream_get(url: str, **kwargs: Any) -> FakeResponse:
         calls.append(("GET", url, kwargs))
         if url.endswith("/openApi/icFile/getResultByFileId1"):
-            assert kwargs["params"] == {"fileId": "101"}
+            assert kwargs["params"] == {"fileId": 101}
             return FakeResponse(
                 200,
                 {

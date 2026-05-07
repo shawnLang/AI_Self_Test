@@ -44,8 +44,6 @@ def _create_client(
     access_token: str | None = None,
     refresh_token: str | None = None,
     expires_at: int | None = None,
-    auth_header_style: str | None = None,
-    working_url_path: str | None = None,
 ) -> Any:
     client_model = import_client_model()
     client = client_model(
@@ -57,8 +55,6 @@ def _create_client(
         access_token=access_token,
         refresh_token=refresh_token,
         expires_at=expires_at,
-        auth_header_style=auth_header_style,
-        working_url_path=working_url_path,
     )
     db_session.add(client)
     db_session.commit()
@@ -100,10 +96,10 @@ def test_authenticate_client_route_logs_in_when_tokens_missing(
 ) -> None:
     client = _create_client(db_session)
     client_auth_module = importlib.import_module("aiSelfTest.services.client_auth")
-    calls: list[tuple[str, str, dict[str, Any] | None, dict[str, str] | None]] = []
+    calls: list[tuple[str, dict[str, Any] | None, dict[str, str] | None]] = []
 
-    def fake_request(method: str, url: str, **kwargs):
-        calls.append((method, url, kwargs.get("json"), kwargs.get("headers")))
+    def fake_post(url: str, **kwargs):
+        calls.append((url, kwargs.get("json"), kwargs.get("headers")))
         if url.endswith("/auth/login"):
             return FakeResponse(
                 200,
@@ -113,9 +109,9 @@ def test_authenticate_client_route_logs_in_when_tokens_missing(
                     "expiresIn": 3600,
                 },
             )
-        raise AssertionError(f"未预期的请求: {method} {url}")
+        raise AssertionError(f"未预期的请求: {url}")
 
-    monkeypatch.setattr(client_auth_module.requests, "request", fake_request)
+    monkeypatch.setattr(client_auth_module.requests, "post", fake_post)
 
     response = app_client.post(f"/api/clients/authenticate/{client.id}")
 
@@ -132,9 +128,8 @@ def test_authenticate_client_route_logs_in_when_tokens_missing(
     assert refreshed_client.expires_at is not None
     assert refreshed_client.expires_at > int(time.time())
     assert len(calls) == 1
-    assert calls[0][0] == "POST"
-    assert calls[0][1].endswith("/auth/login")
-    assert calls[0][2] == {
+    assert calls[0][0].endswith("/auth/login")
+    assert calls[0][1] == {
         "userName": "frog-admin",
         "password": "secret-123",
         "clientType": "WEB",
@@ -153,10 +148,10 @@ def test_authenticate_client_route_refreshes_expired_token(
         expires_at=_expired_timestamp(),
     )
     client_auth_module = importlib.import_module("aiSelfTest.services.client_auth")
-    calls: list[tuple[str, str, dict[str, str] | None]] = []
+    calls: list[tuple[str, dict[str, str] | None]] = []
 
-    def fake_request(method: str, url: str, **kwargs):
-        calls.append((method, url, kwargs.get("headers")))
+    def fake_post(url: str, **kwargs):
+        calls.append((url, kwargs.get("headers")))
         if url.endswith("/auth/refresh"):
             assert kwargs["headers"]["Authorization"] == "refresh-token"
             return FakeResponse(
@@ -167,9 +162,9 @@ def test_authenticate_client_route_refreshes_expired_token(
                     "expiresIn": 3600,
                 },
             )
-        raise AssertionError(f"未预期的请求: {method} {url}")
+        raise AssertionError(f"未预期的请求: {url}")
 
-    monkeypatch.setattr(client_auth_module.requests, "request", fake_request)
+    monkeypatch.setattr(client_auth_module.requests, "post", fake_post)
 
     response = app_client.post(f"/api/clients/authenticate/{client.id}")
 
@@ -191,10 +186,10 @@ def test_authenticate_client_route_falls_back_to_login_when_refresh_fails(
         expires_at=_expired_timestamp(),
     )
     client_auth_module = importlib.import_module("aiSelfTest.services.client_auth")
-    calls: list[tuple[str, str]] = []
+    calls: list[str] = []
 
-    def fake_request(method: str, url: str, **kwargs):
-        calls.append((method, url))
+    def fake_post(url: str, **kwargs):
+        calls.append(url)
         if url.endswith("/auth/refresh"):
             return FakeResponse(401, {"message": "token expired"}, "token expired")
         if url.endswith("/auth/login"):
@@ -206,153 +201,19 @@ def test_authenticate_client_route_falls_back_to_login_when_refresh_fails(
                     "expiresIn": 3600,
                 },
             )
-        raise AssertionError(f"未预期的请求: {method} {url}")
+        raise AssertionError(f"未预期的请求: {url}")
 
-    monkeypatch.setattr(client_auth_module.requests, "request", fake_request)
+    monkeypatch.setattr(client_auth_module.requests, "post", fake_post)
 
     response = app_client.post(f"/api/clients/authenticate/{client.id}")
 
     assert response.status_code == 200
     payload = response.json()["data"]
     assert payload["usedStrategy"] == "login"
-    assert [url for _, url in calls] == [
-        "https://example.com/auth/refresh",
+    assert calls == [
         "https://example.com/auth/refresh",
         "https://example.com/auth/login",
     ]
-
-
-def test_perform_authenticated_request_supports_bearer_fallback(
-    db_session: Session,
-    monkeypatch,
-) -> None:
-    client = _create_client(
-        db_session,
-        access_token="plain-token",
-        refresh_token="refresh-token",
-        expires_at=_future_timestamp(),
-    )
-    client_auth_module = importlib.import_module("aiSelfTest.services.client_auth")
-    calls: list[str] = []
-
-    def fake_request(method: str, url: str, **kwargs):
-        authorization = kwargs["headers"]["Authorization"]
-        calls.append(authorization)
-        if authorization == "plain-token":
-            return FakeResponse(401, {"message": "token invalid"}, "token invalid")
-        if authorization == "Bearer plain-token":
-            return FakeResponse(200, {"results": []})
-        raise AssertionError(f"未预期的 Authorization: {authorization}")
-
-    monkeypatch.setattr(client_auth_module.requests, "request", fake_request)
-
-    response = client_auth_module.perform_authenticated_request(
-        db_session,
-        client.id,
-        "POST",
-        "/openApi/icFile/findFilePage",
-        json={"size": 10, "current": 1},
-    )
-
-    assert response.status_code == 200
-    assert calls == ["plain-token", "Bearer plain-token"]
-    db_session.expire_all()
-    refreshed_client = db_session.exec(
-        select(import_client_model()).where(import_client_model().id == client.id)
-    ).one()
-    assert refreshed_client.auth_header_style == "bearer"
-    assert refreshed_client.working_url_path == "/openApi/icFile/findFilePage"
-
-
-def test_perform_authenticated_request_uses_cached_authorization_style(
-    db_session: Session,
-    monkeypatch,
-) -> None:
-    client = _create_client(
-        db_session,
-        access_token="cached-token",
-        refresh_token="refresh-token",
-        expires_at=_future_timestamp(),
-        auth_header_style="bearer",
-        working_url_path="/openApi/icFile/findFilePage",
-    )
-    client_auth_module = importlib.import_module("aiSelfTest.services.client_auth")
-    calls: list[str] = []
-
-    def fake_request(method: str, url: str, **kwargs):
-        authorization = kwargs["headers"]["Authorization"]
-        calls.append(authorization)
-        return FakeResponse(200, {"results": []})
-
-    monkeypatch.setattr(client_auth_module.requests, "request", fake_request)
-
-    response = client_auth_module.perform_authenticated_request(
-        db_session,
-        client.id,
-        "POST",
-        "/openApi/icFile/findFilePage",
-        json={"size": 10, "current": 1},
-    )
-
-    assert response.status_code == 200
-    assert calls == ["Bearer cached-token"]
-
-
-def test_perform_authenticated_request_reauthenticates_when_token_invalid(
-    db_session: Session,
-    monkeypatch,
-) -> None:
-    client = _create_client(
-        db_session,
-        access_token="stale-token",
-        refresh_token="refresh-token",
-        expires_at=_future_timestamp(),
-    )
-    client_auth_module = importlib.import_module("aiSelfTest.services.client_auth")
-    calls: list[tuple[str, str, str | None]] = []
-
-    def fake_request(method: str, url: str, **kwargs):
-        authorization = (kwargs.get("headers") or {}).get("Authorization")
-        calls.append((method, url, authorization))
-
-        if url.endswith("/openApi/icFile/findFilePage"):
-            if authorization in ("stale-token", "Bearer stale-token"):
-                return FakeResponse(401, {"message": "token invalid"}, "token invalid")
-            if authorization == "fresh-token":
-                return FakeResponse(200, {"results": []})
-            raise AssertionError(f"未预期的业务请求 Authorization: {authorization}")
-
-        if url.endswith("/auth/refresh"):
-            return FakeResponse(401, {"message": "refresh token invalid"}, "refresh token invalid")
-
-        if url.endswith("/auth/login"):
-            return FakeResponse(
-                200,
-                {
-                    "accessToken": "fresh-token",
-                    "refreshToken": "fresh-refresh-token",
-                    "expiresIn": 3600,
-                },
-            )
-
-        raise AssertionError(f"未预期的请求: {method} {url}")
-
-    monkeypatch.setattr(client_auth_module.requests, "request", fake_request)
-
-    response = client_auth_module.perform_authenticated_request(
-        db_session,
-        client.id,
-        "POST",
-        "/openApi/icFile/findFilePage",
-        json={"size": 10, "current": 1},
-    )
-
-    assert response.status_code == 200
-    refreshed_client = db_session.exec(
-        select(import_client_model()).where(import_client_model().id == client.id)
-    ).one()
-    assert refreshed_client.access_token == "fresh-token"
-    assert any(url.endswith("/auth/login") for _, url, _ in calls)
 
 
 def test_client_api_retries_find_file_page_on_retryable_status(
@@ -477,20 +338,52 @@ def test_client_api_retries_get_result_by_fileId_on_request_exception(
     api.client = client
     calls: list[str] = []
 
-    def fake_post(url: str, **kwargs):
+    def fake_get(url: str, **kwargs):
         calls.append(url)
-        assert kwargs["json"] == {"fileId": "file-001"}
+        assert kwargs["params"] == {"fileId": "file-001"}
         if len(calls) == 1:
             raise ConnectTimeout("临时连接超时")
         return FakeResponse(200, {"fileId": "file-001"})
 
-    monkeypatch.setattr(client_auth_module.requests, "post", fake_post)
+    monkeypatch.setattr(client_auth_module.requests, "get", fake_get)
 
     response = api.get_result_by_fileId({"fileId": "file-001"})
 
     assert response.status_code == 200
     assert len(calls) == 2
     assert calls[0].endswith("/openApi/icFile/getResultByFileId1")
+
+
+def test_client_api_updates_ai_polling_result(monkeypatch) -> None:
+    """客户端 API 应调用更新 ai 巡检结果接口。"""
+
+    client = SimpleNamespace(
+        id=1,
+        api_url="https://example.com",
+        status="启用",
+        access_token="cached-token",
+        refresh_token="refresh-token",
+        expires_at=_future_timestamp(),
+    )
+    client_auth_module = importlib.import_module("aiSelfTest.services.client_auth")
+    api = client_auth_module.ClientApi(object(), client.id)
+    api.client = client
+    calls: list[str] = []
+    payload = {"id": 101, "recordData": [{"name": "白鹭"}]}
+
+    def fake_post(url: str, **kwargs):
+        calls.append(url)
+        assert kwargs["headers"] == {"Authorization": "cached-token"}
+        assert kwargs["json"] == payload
+        return FakeResponse(200, True)
+
+    monkeypatch.setattr(client_auth_module.requests, "post", fake_post)
+
+    response = api.update_ai_polling_result(payload)
+
+    assert response.status_code == 200
+    assert response.json() is True
+    assert calls == ["https://example.com/openApi/icFile/aiPollingResult"]
 
 
 def test_client_api_retries_raise_app_exception_after_request_failures(
@@ -509,11 +402,11 @@ def test_client_api_retries_raise_app_exception_after_request_failures(
     api.client = client
     calls: list[str] = []
 
-    def fake_post(url: str, **kwargs):
+    def fake_get(url: str, **kwargs):
         calls.append(url)
         raise ConnectTimeout("持续连接超时")
 
-    monkeypatch.setattr(client_auth_module.requests, "post", fake_post)
+    monkeypatch.setattr(client_auth_module.requests, "get", fake_get)
 
     with pytest.raises(client_auth_module.AppException):
         api.get_result_by_fileId({"fileId": "file-001"})

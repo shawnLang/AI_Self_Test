@@ -9,6 +9,7 @@ from typing import Any
 
 import cv2
 import numpy as np
+import pytest
 from fastapi.testclient import TestClient
 from PIL import Image
 from sqlmodel import Session, select
@@ -276,7 +277,7 @@ def test_task_execution_ingests_records_and_advances_shared_trunk(
     assert task.last_progress_at is None
     assert task.last_run_started_at is not None
     assert task.last_pull_end_at is not None
-    assert {item.file_id for item in items} == {"101", "102"}
+    assert {item.file_id for item in items} == {101, 102}
     assert {item.file_fid for item in items} == {"fid-image-1", "fid-video-1"}
     assert {item.file_url for item in items} == {"image-1.jpg", "video-1.mp4"}
     assert {item.file_bmp for item in items} == {1, 2}
@@ -529,8 +530,31 @@ def test_task_execution_uses_file_id_instead_of_file_fid_for_deduplication(
     assert first.inserted_count == 2
     assert second.inserted_count == 1
     assert second.skipped_count == 1
-    assert {item.file_id for item in items} == {"101", "102", "103"}
+    assert {item.file_id for item in items} == {101, 102, 103}
     assert len([item for item in items if item.file_fid == "fid-image-1"]) == 2
+
+
+def test_task_execution_rejects_non_integer_upstream_file_id(
+    app_client: TestClient,
+    db_session: Session,
+    monkeypatch,
+) -> None:
+    """上游分页 id 必须是整数，才能用于远端提交。"""
+
+    task_id = _create_task(app_client, execution_mode="auto")
+    records = _source_records()
+    records[0]["id"] = "file-001"
+    _install_task_upstream_mock(monkeypatch, records)
+    run_task_execution = _import_run_task_execution()
+
+    with pytest.raises(Exception, match="上游分页数据 id 不是整数"):
+        run_task_execution(
+            db_session,
+            task_id,
+            downloader=FakeTaskFileDownloader(_get_data_dir()),
+            recognizer=FakeTaskItemRecognizer(),
+            now=datetime(2026, 4, 25, 10, 0, 0),
+        )
 
 
 def test_task_execution_skips_reentrant_running_task(

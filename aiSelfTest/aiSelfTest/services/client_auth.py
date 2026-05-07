@@ -27,6 +27,7 @@ REFRESH_PATH = "/auth/refresh"
 TENANT_CONFIG_PATH_TEMPLATE = "/sys/sysTenantConfig/getByCode/{code}"
 UPSTREAM_FILE_PAGE_PATH = "/openApi/icFile/findFilePage"
 UPSTREAM_FILE_DETAIL_PATH = "/openApi/icFile/getResultByFileId1"
+UPSTREAM_FILE_AI_POLLING_RESULT_PATH = "/openApi/icFile/aiPollingResult"
 
 
 @dataclass
@@ -71,6 +72,8 @@ class ClientUtils:
         try:
             payload = response.json()
         except Exception:  # noqa: BLE001
+            return False
+        if not isinstance(payload, dict):
             return False
 
         messages = [
@@ -352,6 +355,17 @@ class ClientApi:
         }
         path = ClientUtils.build_url(auth_result.client.api_url, UPSTREAM_FILE_DETAIL_PATH)
         response = self.post_with_retry(path, headers, params, method="GET")
+        return response
+
+    def update_ai_polling_result(self, params: dict[str, Any]) -> Response:
+        """更新上游 AI 巡检结果。"""
+
+        auth_result = self.authenticate_client_model()
+        headers = {
+            "Authorization": auth_result.client.access_token
+        }
+        path = ClientUtils.build_url(auth_result.client.api_url, UPSTREAM_FILE_AI_POLLING_RESULT_PATH)
+        response = self.post_with_retry(path, headers, params)
         return response
 
 

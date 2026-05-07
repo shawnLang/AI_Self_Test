@@ -99,7 +99,7 @@ class SourceTaskItemRecord:
     file_fid: str
     file_url: str
     file_bmp: int
-    file_id: str = ""
+    file_id: int | None = None
     device_name: str = ""
     file_num: str = ""
     file_extension: str = ""
@@ -290,7 +290,7 @@ class AuthenticatedTaskExecutionSource:
         """按文件 ID 拉取单个上游文件的识别结果详情。"""
         client_api = ClientApi(session, task.client_id)
         file_id = source_record.file_id
-        if not file_id:
+        if file_id is None:
             raise AppException(
                 code=ErrorCode.TASK_FAILED,
                 message="上游文件缺少 file_id，无法查询详情",
@@ -852,7 +852,7 @@ class TaskExecutionRunner:
                 file_fid=str(row.get("fileFid", "")),
                 file_url=str(row.get("fileUrl", "")),
                 file_bmp=int(row.get("fileBmp") or 1),
-                file_id=str(row.get("id", "")),
+                file_id=self._parse_source_file_id(row.get("id")),
                 device_name=str(row.get("deName", "")),
                 file_num=str(row.get("fileNum", "")),
                 file_extension=str(row.get("fileExtension", "")),
@@ -925,7 +925,7 @@ class TaskExecutionRunner:
             file_fid=task_item.file_fid,
             file_url=task_item.file_url,
             file_bmp=task_item.file_bmp,
-            file_id=task_item.file_id or "",
+            file_id=task_item.file_id,
             device_name=task_item.device_name,
             file_num=task_item.file_num,
             file_extension=task_item.file_extension,
@@ -942,7 +942,7 @@ class TaskExecutionRunner:
         if not source_records:
             return [], 0
 
-        incoming_file_ids = [record.file_id for record in source_records if record.file_id]
+        incoming_file_ids = [record.file_id for record in source_records if record.file_id is not None]
         if len(incoming_file_ids) != len(source_records):
             raise AppException(
                 code=ErrorCode.TASK_FAILED,
@@ -973,7 +973,7 @@ class TaskExecutionRunner:
                 file_num=truncate(record.file_num, 50),
                 file_extension=truncate(record.file_extension, 10),
                 file_url=truncate(record.file_url, 200),
-                file_id=truncate(record.file_id, 50),
+                file_id=record.file_id,
                 file_fid=truncate(record.file_fid, 50),
                 sp_name_list=truncate(record.sp_name_list, 100),
                 classify=record.classify,
@@ -1002,6 +1002,19 @@ class TaskExecutionRunner:
             skipped_count,
         )
         return inserted, skipped_count
+
+    @staticmethod
+    def _parse_source_file_id(value: Any) -> int:
+        """解析上游分页返回的整数文件 ID。"""
+
+        try:
+            return int(value)
+        except (TypeError, ValueError) as exc:
+            raise AppException(
+                code=ErrorCode.TASK_FAILED,
+                message="上游分页数据 id 不是整数，无法按 file_id 去重",
+                status_code=502,
+            ) from exc
 
     def _insert_task_item_data_rows(self, task_item: TaskItem, source_record: SourceTaskItemRecord) -> int:
         """拉取并插入单个任务项的识别明细行。"""

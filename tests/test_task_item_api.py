@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any
 
 from fastapi.testclient import TestClient
@@ -93,7 +94,7 @@ def _seed_task_item(
         "file_num": "file-001",
         "file_extension": "mp4",
         "file_url": "https://example.com/video.mp4",
-        "file_id": "file-001",
+        "file_id": 101,
         "file_fid": "fid-001",
         "sp_name_list": "白鹭",
         "classify": 1,
@@ -154,7 +155,7 @@ def test_task_item_list_filters_by_media_status_and_confirm_state(
         name="image-confirmed.jpg",
         file_extension="jpg",
         file_url="https://example.com/image.jpg",
-        file_id="file-image-confirmed",
+        file_id=201,
         file_fid="fid-image-confirmed",
         file_bmp=1,
         result_file_data="",
@@ -165,7 +166,7 @@ def test_task_item_list_filters_by_media_status_and_confirm_state(
         db_session,
         task_id,
         name="video-pending.mp4",
-        file_id="file-video-pending",
+        file_id=202,
         file_fid="fid-video-pending",
         status="待复核",
         confirm_state=TaskItemConfirmState.PENDING.value,
@@ -218,7 +219,7 @@ def test_task_item_detail_returns_bbox_and_status_based_review_summary(
         name="image-1.jpg",
         file_extension="jpg",
         file_url="https://example.com/image.jpg",
-        file_id="file-image-1",
+        file_id=203,
         file_fid="fid-image-1",
         file_bmp=1,
         result_file_data="",
@@ -384,8 +385,8 @@ def test_task_item_confirm_and_reject_actions_block_matched_items(
     db_session: Session,
 ) -> None:
     _, _, task_id = _create_base_entities(app_client)
-    confirm_item, confirm_data = _seed_task_item(db_session, task_id, file_id="file-confirm")
-    reject_item, reject_data = _seed_task_item(db_session, task_id, file_id="file-reject")
+    confirm_item, confirm_data = _seed_task_item(db_session, task_id, file_id=301)
+    reject_item, reject_data = _seed_task_item(db_session, task_id, file_id=302)
     confirm_data.status = TaskItemDataStatus.DEFAULT.value
     reject_data.status = TaskItemDataStatus.DEFAULT.value
     db_session.add(confirm_data)
@@ -447,8 +448,8 @@ def test_task_item_update_row_rejects_row_from_other_task_item(
     db_session: Session,
 ) -> None:
     _, _, task_id = _create_base_entities(app_client)
-    first, _ = _seed_task_item(db_session, task_id, file_id="file-first", file_fid="fid-first")
-    second, second_data = _seed_task_item(db_session, task_id, file_id="file-second", file_fid="fid-second")
+    first, _ = _seed_task_item(db_session, task_id, file_id=401, file_fid="fid-first")
+    second, second_data = _seed_task_item(db_session, task_id, file_id=402, file_fid="fid-second")
 
     response = app_client.post(
         "/api/task-items/action-update-row",
@@ -507,6 +508,7 @@ def test_task_item_delete_action_is_not_registered(app_client: TestClient) -> No
 def test_task_item_submit_action_returns_success(
     app_client: TestClient,
     db_session: Session,
+    monkeypatch,
 ) -> None:
     _, _, task_id = _create_base_entities(app_client)
     task_item, _ = _seed_task_item(
@@ -516,6 +518,7 @@ def test_task_item_submit_action_returns_success(
         status="已确认",
     )
     task_item_model, _ = import_task_item_models()
+    submitted_payloads = _install_submit_success_mock(monkeypatch)
 
     response = app_client.post("/api/task-items/action-submit", json={"task_item_id": task_item.id})
 
@@ -526,19 +529,136 @@ def test_task_item_submit_action_returns_success(
     assert stored.remote_state == TaskItemRemoteState.SUCCESS.value
     assert stored.train_state == TaskItemTrainState.SAVED.value
     assert stored.status == "已完成"
+    assert submitted_payloads[0]["id"] == 101
+    assert submitted_payloads[0]["recordData"] == [
+        {
+            "name": "白鹭",
+            "speciesName": "",
+            "score": 0.91,
+            "trackIds": "1001",
+            "spAmount": 1,
+            "lastUpdatedTime": submitted_payloads[0]["recordData"][0]["lastUpdatedTime"],
+            "minx": None,
+            "miny": None,
+            "maxx": None,
+            "maxy": None,
+        }
+    ]
+    assert "id" not in submitted_payloads[0]["recordData"][0]
     assert _training_annotation_path(task_id, task_item.id).exists()
+
+
+def test_task_item_submit_payload_uses_final_record_data_without_deleted_rows(
+    app_client: TestClient,
+    db_session: Session,
+    monkeypatch,
+) -> None:
+    """远端提交应提交最终 recordData，不包含单条记录 id。"""
+
+    _, _, task_id = _create_base_entities(app_client)
+    task_item, default_row = _seed_task_item(
+        db_session,
+        task_id,
+        file_id=701,
+        confirm_state=TaskItemConfirmState.CONFIRMED.value,
+        status="已确认",
+    )
+    _, task_item_data_model = import_task_item_models()
+    default_row.status = TaskItemDataStatus.DEFAULT.value
+    default_row.minx = 1
+    default_row.miny = 2
+    default_row.maxx = 10
+    default_row.maxy = 12
+    update_row = task_item_data_model(
+        task_item_id=task_item.id,
+        name="苍鹭",
+        score=0.8,
+        track_ids="track-2",
+        sp_amount=1,
+        minx=20,
+        miny=30,
+        maxx=40,
+        maxy=50,
+        llm_name="夜鹭",
+        status=TaskItemDataStatus.UPDATE.value,
+    )
+    add_row = task_item_data_model(
+        task_item_id=task_item.id,
+        name="",
+        score=0,
+        track_ids="",
+        sp_amount=1,
+        minx=60,
+        miny=70,
+        maxx=80,
+        maxy=90,
+        llm_name="人",
+        status=TaskItemDataStatus.ADD.value,
+    )
+    delete_row = task_item_data_model(
+        task_item_id=task_item.id,
+        name="车",
+        score=0.7,
+        track_ids="track-3",
+        sp_amount=1,
+        llm_name=None,
+        status=TaskItemDataStatus.DELETE.value,
+    )
+    db_session.add(default_row)
+    db_session.add(update_row)
+    db_session.add(add_row)
+    db_session.add(delete_row)
+    db_session.commit()
+    submitted_payloads = _install_submit_success_mock(monkeypatch)
+
+    response = app_client.post("/api/task-items/action-submit", json={"task_item_id": task_item.id})
+
+    assert response.status_code == 200
+    payload = submitted_payloads[0]
+    assert payload["id"] == 701
+    assert [row["name"] for row in payload["recordData"]] == ["白鹭", "夜鹭", "人"]
+    assert all("id" not in row for row in payload["recordData"])
+
+
+def test_task_item_submit_remote_false_marks_failed(
+    app_client: TestClient,
+    db_session: Session,
+    monkeypatch,
+) -> None:
+    """远端返回 false 时不能标记为已完成。"""
+
+    _, _, task_id = _create_base_entities(app_client)
+    task_item, _ = _seed_task_item(
+        db_session,
+        task_id,
+        file_id=801,
+        confirm_state=TaskItemConfirmState.CONFIRMED.value,
+        status=TaskItemStatus.CONFIRMED.value,
+    )
+    task_item_model, _ = import_task_item_models()
+    _install_submit_success_mock(monkeypatch, response_json=False)
+
+    response = app_client.post("/api/task-items/action-submit", json={"task_item_id": task_item.id})
+
+    assert response.status_code == 502
+    db_session.expire_all()
+    stored = db_session.exec(select(task_item_model).where(task_item_model.id == task_item.id)).one()
+    assert stored.remote_state == TaskItemRemoteState.FAIL.value
+    assert stored.remote_error
+    assert stored.status == TaskItemStatus.CONFIRMED.value
 
 
 def test_task_item_submit_task_action_submits_all_confirmed_pending_items(
     app_client: TestClient,
     db_session: Session,
+    monkeypatch,
 ) -> None:
     _, _, task_id = _create_base_entities(app_client)
     task_item_model, _ = import_task_item_models()
     pending_item, _ = _seed_task_item(
         db_session,
         task_id,
-        file_id="file-pending-submit",
+        file_id=501,
         file_fid="fid-pending-submit",
         confirm_state=TaskItemConfirmState.CONFIRMED.value,
         remote_state=TaskItemRemoteState.PENDING.value,
@@ -547,7 +667,7 @@ def test_task_item_submit_task_action_submits_all_confirmed_pending_items(
     retry_item, _ = _seed_task_item(
         db_session,
         task_id,
-        file_id="file-retry-submit",
+        file_id=502,
         file_fid="fid-retry-submit",
         confirm_state=TaskItemConfirmState.CONFIRMED.value,
         remote_state=TaskItemRemoteState.FAIL.value,
@@ -556,7 +676,7 @@ def test_task_item_submit_task_action_submits_all_confirmed_pending_items(
     skipped_item, _ = _seed_task_item(
         db_session,
         task_id,
-        file_id="file-skipped",
+        file_id=503,
         file_fid="fid-skipped",
         confirm_state=TaskItemConfirmState.SKIPPED.value,
         status=TaskItemStatus.SKIPPED.value,
@@ -564,11 +684,13 @@ def test_task_item_submit_task_action_submits_all_confirmed_pending_items(
     pending_review_item, _ = _seed_task_item(
         db_session,
         task_id,
-        file_id="file-pending-review",
+        file_id=504,
         file_fid="fid-pending-review",
         confirm_state=TaskItemConfirmState.PENDING.value,
         status=TaskItemStatus.VERIFY_PENDING.value,
     )
+
+    submitted_payloads = _install_submit_success_mock(monkeypatch)
 
     response = app_client.post("/api/task-items/action-submit-task", json={"task_id": task_id})
 
@@ -584,6 +706,7 @@ def test_task_item_submit_task_action_submits_all_confirmed_pending_items(
     assert rows_by_id[retry_item.id].remote_state == TaskItemRemoteState.SUCCESS.value
     assert rows_by_id[skipped_item.id].status == TaskItemStatus.SKIPPED.value
     assert rows_by_id[pending_review_item.id].status == TaskItemStatus.VERIFY_PENDING.value
+    assert [payload["id"] for payload in submitted_payloads] == [501, 502]
     assert _training_annotation_path(task_id, pending_item.id).exists()
     assert _training_annotation_path(task_id, retry_item.id).exists()
 
@@ -626,13 +749,14 @@ def test_task_item_submit_skipped_item_is_blocked(
 def test_task_finishes_after_confirmed_submit_and_skipped_items(
     app_client: TestClient,
     db_session: Session,
+    monkeypatch,
 ) -> None:
     _, _, task_id = _create_base_entities(app_client)
     task_model, task_item_model = import_task_and_item_models()
     first, _ = _seed_task_item(
         db_session,
         task_id,
-        file_id="file-submit",
+        file_id=601,
         file_fid="fid-submit",
         confirm_state=TaskItemConfirmState.CONFIRMED.value,
         status="已确认",
@@ -640,7 +764,7 @@ def test_task_finishes_after_confirmed_submit_and_skipped_items(
     second, _ = _seed_task_item(
         db_session,
         task_id,
-        file_id="file-skip",
+        file_id=602,
         file_fid="fid-skip",
         confirm_state=TaskItemConfirmState.PENDING.value,
         status="待复核",
@@ -651,6 +775,7 @@ def test_task_finishes_after_confirmed_submit_and_skipped_items(
     task.processed_count = 2
     db_session.add(task)
     db_session.commit()
+    _install_submit_success_mock(monkeypatch)
 
     skip_response = app_client.post(
         "/api/task-items/action-reject",
@@ -677,6 +802,26 @@ def import_task_and_item_models():
     from aiSelfTest.models.task import Task, TaskItem
 
     return Task, TaskItem
+
+
+def _install_submit_success_mock(monkeypatch, response_json: Any = True) -> list[dict[str, Any]]:
+    """安装远端提交桩，记录提交 payload。"""
+
+    from aiSelfTest.services import task_submission
+
+    submitted_payloads: list[dict[str, Any]] = []
+
+    class FakeClientApi:
+        def __init__(self, session: Session, client_id: int) -> None:
+            self.session = session
+            self.client_id = client_id
+
+        def update_ai_polling_result(self, payload: dict[str, Any]) -> Any:
+            submitted_payloads.append(payload)
+            return SimpleNamespace(status_code=200, text=str(response_json), json=lambda: response_json)
+
+    monkeypatch.setattr(task_submission, "ClientApi", FakeClientApi)
+    return submitted_payloads
 
 
 def _training_annotation_path(task_id: int, task_item_id: int) -> Path:

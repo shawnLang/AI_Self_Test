@@ -1,4 +1,4 @@
-"""旧 task 页面兼容接口测试。"""
+"""当前 task 页面接口兼容测试。"""
 
 from __future__ import annotations
 
@@ -26,6 +26,18 @@ class FakeResponse:
         """返回预设 JSON 响应体。"""
 
         return self._json_data
+
+
+class FakeTaskItemRecognizer:
+    """兼容接口测试用识别器。"""
+
+    def recognize(self, **kwargs: Any) -> Any:
+        """返回空识别结果，避免依赖真实多模态模型。"""
+
+        from aiSelfTest.services.task_execution import TaskItemRecognitionResult
+        from aiSelfTest.services.task_steps.llm_result import LlmDetectionResult
+
+        return TaskItemRecognitionResult(image_result=LlmDetectionResult(width=100, height=100, data=[]))
 
 
 def _unwrap_success(response_json: dict[str, Any]) -> Any:
@@ -75,7 +87,7 @@ def _seed_task_fixture(app_client: TestClient, db_session: Session) -> tuple[int
         file_num="file-001",
         file_extension="jpg",
         file_url="https://example.com/image.jpg",
-        file_id="file-001",
+        file_id=101,
         file_fid="fid-001",
         sp_name_list="白鹭",
         classify=1,
@@ -97,13 +109,13 @@ def test_legacy_task_detail_route_returns_form_compatible_filters(
 ) -> None:
     task_id, _ = _seed_task_fixture(app_client, db_session)
 
-    response = app_client.get(f"/api/tasks/{task_id}")
+    response = app_client.get(f"/api/tasks/detail/{task_id}")
 
     assert response.status_code == 200
-    data = response.json()
+    data = _unwrap_success(response.json())
     assert data["id"] == task_id
-    assert data["filters"]["classifyList"] == [1, 2]
-    assert data["filters"]["fileBmp"] == "image"
+    assert data["filters"]["classify_list"] == [1, 2]
+    assert data["filters"]["media_types"] == ["image"]
 
 
 def test_legacy_query_data_route_returns_results(
@@ -112,16 +124,15 @@ def test_legacy_query_data_route_returns_results(
 ) -> None:
     task_id, task_item_id = _seed_task_fixture(app_client, db_session)
 
-    response = app_client.post(
-        f"/api/tasks/{task_id}/query-data",
-        json={"current": 1, "size": 20},
+    response = app_client.get(
+        "/api/task-items/list",
+        params={"task_id": task_id, "page": 1, "page_size": 20},
     )
 
     assert response.status_code == 200
-    data = response.json()
-    assert data["results"][0]["id"] == task_item_id
-    assert data["results"][0]["mediaType"] == "image"
-    assert data["results"][0]["spNameList"] == "白鹭"
+    data = _unwrap_success(response.json())
+    assert data["items"][0]["id"] == task_item_id
+    assert data["items"][0]["media_type"] == "image"
 
 
 def test_legacy_execute_route_triggers_task_run(
@@ -133,13 +144,10 @@ def test_legacy_execute_route_triggers_task_run(
     task_model, _, _ = import_task_models()
     _install_empty_upstream_mock(monkeypatch)
 
-    response = app_client.post(
-        f"/api/tasks/{task_id}/execute",
-        json={"fileIds": [], "selectedItems": []},
-    )
+    response = app_client.post(f"/api/tasks/action-run/{task_id}")
 
     assert response.status_code == 200
-    assert response.json()["ok"] is True
+    assert _unwrap_success(response.json())["id"] == task_id
     task = db_session.get(task_model, task_id)
     assert task is not None
     assert task.started_at is not None
@@ -174,8 +182,15 @@ def _install_empty_upstream_mock(monkeypatch) -> None:
             )
         raise AssertionError(f"未预期的 POST 请求: {url}")
 
+    def fake_get(url: str, **_: Any) -> FakeResponse:
+        if url.endswith("/openApi/icFile/getResultByFileId1"):
+            return FakeResponse(200, {"recordData": []})
+        raise AssertionError(f"未预期的 GET 请求: {url}")
+
     monkeypatch.setattr(client_auth_module.requests, "post", fake_post)
     monkeypatch.setattr(task_execution_module.requests, "post", fake_post)
+    monkeypatch.setattr(task_execution_module.requests, "get", fake_get)
+    monkeypatch.setattr(task_execution_module, "MultimodalTaskItemRecognizer", FakeTaskItemRecognizer)
 
 
 def import_task_models():

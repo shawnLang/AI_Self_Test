@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy import Integer
 from sqlalchemy.exc import IntegrityError
 from sqlmodel import Session, select
 
@@ -77,7 +78,7 @@ def test_task_item_same_task_same_file_id_must_be_unique(
         file_num="file-001",
         file_extension="jpg",
         file_url="https://example.com/file.jpg",
-        file_id="file-001",
+        file_id=101,
         file_fid="fid-001",
         sp_name_list="白鹭",
         classify=1,
@@ -93,7 +94,7 @@ def test_task_item_same_task_same_file_id_must_be_unique(
         file_num="file-002",
         file_extension="jpg",
         file_url="https://example.com/file-2.jpg",
-        file_id="file-001",
+        file_id=101,
         file_fid="fid-002",
         sp_name_list="苍鹭",
         classify=1,
@@ -110,6 +111,15 @@ def test_task_item_same_task_same_file_id_must_be_unique(
     with pytest.raises(IntegrityError):
         db_session.commit()
     db_session.rollback()
+
+
+def test_task_item_file_id_is_integer_column(app_client: TestClient) -> None:
+    """TaskItem.file_id 应保存上游整数 id。"""
+
+    _create_task_fixture(app_client)
+    _, task_item_model, _ = import_task_models()
+
+    assert isinstance(task_item_model.__table__.c.file_id.type, Integer)
 
 
 def test_task_status_enums_expose_state_machine_contract(app_client: TestClient) -> None:

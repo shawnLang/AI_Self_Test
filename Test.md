@@ -42,6 +42,43 @@
 rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 ```
 
+# 真实远端提交与整型 file_id 测试清单
+
+## 目标
+
+- `TaskItem.file_id` 保存上游文件整数 `id`，不再保存字符串。
+- 结果复核的“提交远端”真实调用客户端 `更新ai巡检结果` 接口。
+- 远端响应 HTTP 200 且 JSON 为 `true` 时，才标记 `remote_state=已提交`。
+- 远端失败时标记 `remote_state=提交失败`，保留可重试状态。
+
+## 用例
+
+1. `TaskItem.file_id` 模型字段为整数，唯一约束仍为 `task_id + file_id`。
+2. Alembic 迁移将 `task_item.file_id` 从字符串改为整数。
+3. 任务执行从上游分页 `id` 解析出整数 `file_id` 并落库。
+4. 上游分页 `id` 缺失或不是整数时，任务执行失败并给出明确错误。
+5. `ClientApi.update_ai_polling_result()` 调用 `/openApi/icFile/aiPollingResult`。
+6. 提交 payload 顶层为 `{"id": task_item.file_id, "recordData": [...]}`。
+7. `recordData` 不包含单条记录 `id` 字段。
+8. `默认` 行提交原始 `name`。
+9. `修改` 与 `新增` 行提交 `llm_name`。
+10. `删除` 行不进入 `recordData`，最终无结果时提交空数组。
+11. 远端返回 `true` 后，TaskItem 才进入 `已完成 / 已提交`。
+12. 远端返回 `false` 或 HTTP 500 时，TaskItem 进入 `提交失败` 且不进入 `已完成`。
+13. 批量提交能继续处理后续项，并正确统计成功与失败。
+
+## 验证命令
+
+```bash
+.env/bin/python -m pytest tests/test_client_auth.py tests/test_task_execution_service.py tests/test_task_item_api.py tests/test_task_model_contract.py
+```
+
+运行 pytest 后清理：
+
+```bash
+rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
+```
+
 # 视频 datajson 前端绘框测试清单
 
 ## 目标
