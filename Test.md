@@ -1,3 +1,32 @@
+# 多模态网关仅保留 /v1 路径测试清单
+
+## 目标
+
+- 多模态模型探测只调用 OpenAI 标准 `/v1/models`。
+- 多模态聊天只调用 OpenAI 标准 `/v1/chat/completions`。
+- 不再兼容去掉 `/v1` 后的 `/models` 与 `/chat/completions`。
+- 认证头只使用 OpenAI 标准 `Authorization: Bearer <api_key>`。
+- 不再兼容 `X-API-Key` 与 `api-key` 认证头。
+
+## 用例
+
+1. 输入网关根地址时，模型探测只生成 `/v1/models` 候选地址。
+2. 输入网关根地址时，聊天调用只生成 `/v1/chat/completions` 候选地址。
+3. 输入完整 `/v1/chat/completions` 地址时，模型探测仍推导为 `/v1/models`。
+4. 模型探测请求只发送 `Authorization: Bearer <api_key>` 认证头。
+
+## 验证命令
+
+```bash
+.env/bin/python -m pytest tests/test_multimodal_model_api.py
+```
+
+运行 pytest 后清理：
+
+```bash
+rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
+```
+
 # TaskExecutionRunner 大模型识别与匹配测试清单
 
 # 删除任务同步清理下载文件测试清单
@@ -35,6 +64,7 @@ rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 - 视频分支按每条 `TaskItemData.track_ids` 从 `*.videojson` 抽取最多 5 帧裁剪图识别。
 - `*.videojson` 不发给大模型，其中 `name / errorName / detName` 不参与最终名称判定。
 - 视频分支不产生新增，只按每条 `TaskItemData` 判定默认、修改、删除。
+- 大模型识别阶段必须先处理所有图片任务项，再处理视频任务项。
 
 ## 用例
 
@@ -56,6 +86,7 @@ rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 16. 单个 TaskItem 大模型识别遇到网关临时异常时，最多重试 3 次。
 17. 某次识别重试成功后，任务继续执行并进入人工复核阶段。
 18. 多次重试仍失败时，仅该 TaskItem 标记为识别失败，任务整体按原逻辑失败并记录错误。
+19. 即使视频 TaskItem 先入库，大模型识别阶段也必须先识别全部图片，再识别视频。
 
 ## 验证命令
 

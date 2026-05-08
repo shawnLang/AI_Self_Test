@@ -344,6 +344,38 @@ def test_manual_task_execution_runs_full_pre_review_flow_after_click(
     assert len(recognizer.calls) == 2
 
 
+def test_task_execution_recognizes_all_images_before_videos(
+    app_client: TestClient,
+    db_session: Session,
+    monkeypatch,
+) -> None:
+    """大模型识别阶段应先处理全部图片，再处理视频。"""
+
+    task_id = _create_task(app_client, execution_mode="auto")
+    source_records = _source_records()
+    _install_task_upstream_mock(monkeypatch, records=[source_records[1], source_records[0]])
+    run_task_execution = _import_run_task_execution()
+    _, task_item_model, _ = _import_task_models()
+    downloader = FakeTaskFileDownloader(_get_data_dir())
+    recognizer = FakeTaskItemRecognizer()
+
+    run_task_execution(
+        db_session,
+        task_id,
+        downloader=downloader,
+        recognizer=recognizer,
+        now=datetime(2026, 4, 25, 10, 0, 0),
+    )
+
+    items = db_session.exec(
+        select(task_item_model).where(task_item_model.task_id == task_id).order_by(task_item_model.id)
+    ).all()
+    media_type_by_item_id = {item.id: item.file_bmp for item in items}
+
+    assert [item.file_bmp for item in items] == [2, 1]
+    assert [media_type_by_item_id[item_id] for item_id in recognizer.calls] == [1, 2]
+
+
 def test_task_execution_retries_transient_llm_recognition_error(
     app_client: TestClient,
     db_session: Session,

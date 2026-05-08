@@ -13,13 +13,11 @@ from loguru import logger
 from requests import Response
 from requests.exceptions import RequestException
 
-DETECT_PATH_SUFFIXES = ("/v1/models", "/models")
-CHAT_PATH_SUFFIXES = ("/v1/chat/completions", "/chat/completions")
+DETECT_PATH_SUFFIXES = ("/v1/models",)
+CHAT_PATH_SUFFIXES = ("/v1/chat/completions",)
 KNOWN_ENDPOINT_SUFFIXES = DETECT_PATH_SUFFIXES + CHAT_PATH_SUFFIXES
 AUTH_HEADER_VARIANTS = (
     ("Authorization", "Bearer {api_key}"),
-    ("X-API-Key", "{api_key}"),
-    ("api-key", "{api_key}"),
 )
 
 

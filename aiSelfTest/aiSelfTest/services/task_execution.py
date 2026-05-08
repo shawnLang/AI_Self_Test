@@ -813,7 +813,7 @@ class TaskExecutionRunner:
         """执行大模型识别并更新进度。"""
 
         self._set_task_stage(TaskExecutionStatus.LLM, reset_processed=True)
-        for task_item in self._list_task_items():
+        for task_item in self._list_task_items_for_llm_stage():
             if task_item.llm_state == TaskItemLlmState.SUCCESS.value:
                 self._increment_processed_count()
                 continue
@@ -907,6 +907,25 @@ class TaskExecutionRunner:
                 select(TaskItem).where(TaskItem.task_id == self.task_id).order_by(TaskItem.id)
             ).all()
         )
+
+    def _list_task_items_for_llm_stage(self) -> list[TaskItem]:
+        """按大模型识别顺序列出任务项：图片优先，视频随后，同类型按 ID 排序。"""
+
+        return sorted(
+            self._list_task_items(),
+            key=lambda task_item: (self._task_item_llm_media_priority(task_item), task_item.id or 0),
+        )
+
+    @staticmethod
+    def _task_item_llm_media_priority(task_item: TaskItem) -> int:
+        """返回大模型识别阶段的媒体类型优先级。"""
+
+        if task_item.file_bmp == 1:
+            return 0
+        if task_item.file_bmp == 2:
+            return 1
+        return 2
+
 
     def _has_task_item_data(self, task_item: TaskItem) -> bool:
         """判断任务项是否已有详情行或详情文件数据。"""

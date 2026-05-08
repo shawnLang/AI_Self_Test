@@ -201,19 +201,20 @@ def test_detect_multimodal_models_tries_candidate_urls_and_returns_models(
     assert calls[0][1] == "https://gateway.example.com/v1/models"
 
 
-def test_detect_multimodal_models_supports_x_api_key_fallback(
+def test_detect_multimodal_models_uses_bearer_authorization_only(
     app_client: TestClient,
     monkeypatch,
 ) -> None:
     service_module = importlib.import_module("aiSelfTest.services.multimodal_gateway")
+    urls_seen: list[str] = []
     headers_seen: list[dict[str, str] | None] = []
 
     def fake_get(url: str, **kwargs: Any) -> FakeResponse:
+        urls_seen.append(url)
+        assert url == "https://gateway.example.com/v1/models"
         headers = kwargs.get("headers")
         headers_seen.append(headers)
         if headers == {"Authorization": "Bearer model-secret-key"}:
-            return FakeResponse(401, {"message": "unauthorized"}, "unauthorized")
-        if headers == {"X-API-Key": "model-secret-key"}:
             return FakeResponse(200, {"models": ["gpt-4.1-mini"]})
         raise AssertionError(f"未预期的认证头: {headers}")
 
@@ -230,9 +231,9 @@ def test_detect_multimodal_models_supports_x_api_key_fallback(
     assert response.status_code == 200
     data = _unwrap_success(response.json())
     assert data["models"] == ["gpt-4.1-mini"]
-    assert headers_seen[:2] == [
+    assert urls_seen == ["https://gateway.example.com/v1/models"]
+    assert headers_seen == [
         {"Authorization": "Bearer model-secret-key"},
-        {"X-API-Key": "model-secret-key"},
     ]
 
 
