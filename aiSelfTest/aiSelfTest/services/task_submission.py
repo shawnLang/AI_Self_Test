@@ -65,11 +65,9 @@ class AiPollingPayloadBuilder:
         name = row.name if row.status == TaskItemDataStatus.DEFAULT.value else row.llm_name
         return {
             "name": name or "",
-            "speciesName": "",
             "score": row.score,
             "trackIds": row.track_ids,
             "spAmount": row.sp_amount,
-            "lastUpdatedTime": submitted_at.isoformat(timespec="seconds"),
             "minx": row.minx,
             "miny": row.miny,
             "maxx": row.maxx,

@@ -1,5 +1,81 @@
 # 多模态网关仅保留 /v1 路径测试清单
 
+# 任务执行 Celery 多进程改造测试清单
+
+## 目标
+
+- 任务立即执行和创建后自动执行不再同步调用 `run_task_execution()`。
+- API 只创建执行记录并提交后台队列，快速返回当前执行实例状态。
+- 同一任务同一时间只能存在一个 `queued/running` 执行记录。
+- Worker 以 `execution_id` 为幂等键执行任务，并写入成功、失败和超时状态。
+- API 进程不再启动 APScheduler，定时触发改由 Celery Beat 扫描。
+- 执行中或排队中的任务禁止删除，关键配置禁止修改。
+
+## 用例
+
+1. `TaskExecution` 模型包含 `task_id`、`trigger_type`、`status`、`celery_task_id`、
+   `started_at`、`finished_at`、`last_heartbeat_at`、`error`、`retry_count` 等字段。
+2. `task_execution` 表存在同任务 active 执行唯一约束，防止重复排队和运行。
+3. `TaskDispatchService.submit()` 成功时创建 `queued` 执行记录并返回执行 ID。
+4. `TaskDispatchService.submit()` 传入 `manual`、`schedule`、`create_auto`、`repair`
+   之外的来源时返回参数错误。
+5. 同一任务已有 `queued/running` 执行记录时，手动触发返回 `3002`。
+6. Celery 投递失败时，执行记录进入 `cancelled` 或 `failed`，任务清空当前执行 ID。
+7. 立即执行接口快速返回，不等待 `run_task_execution()` 完成。
+8. 创建自动执行任务时，创建接口快速返回，并提交后台执行。
+9. Worker 只处理 `queued` 执行记录，非 `queued` 状态直接跳过。
+10. Worker 成功执行后，执行记录进入 `success`，并清空任务当前执行 ID。
+11. Worker 执行失败后，执行记录进入 `failed`，错误信息写入 `error`。
+12. queued 超时补偿能重新投递或标记失败。
+13. running 心跳超时补偿能恢复执行记录和任务聚合状态为失败。
+14. 执行中删除任务返回 `3002`。
+15. 执行中修改关键配置返回 `3002`。
+16. 任务列表和动作接口返回 `current_execution_id`、`current_execution_status`
+    与 `display_status`。
+17. FastAPI lifespan 不再创建或启动 APScheduler。
+18. Celery Beat 扫描 `active=True` 且 `next_run_at <= now` 的任务，并提交定时执行。
+
+## 验证命令
+
+```bash
+.env/bin/python -m pytest tests/test_task_celery_execution.py tests/test_task_model_contract.py
+```
+
+运行 pytest 后清理：
+
+```bash
+rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
+```
+
+# 客户端认证 expiresIn 绝对时间戳测试清单
+
+## 目标
+
+- 上游登录接口返回的 `expiresIn` 支持绝对时间戳。
+- 13 位毫秒级绝对时间戳入库前转换为 10 位秒级时间戳。
+- 10 位秒级绝对时间戳保持不变。
+- 兼容既有秒级过期时长，例如 `3600` 仍按当前时间加 3600 秒处理。
+- 不修改数据库字段结构。
+
+## 用例
+
+1. 登录响应返回 13 位毫秒级 `expiresIn` 时，认证接口返回成功。
+2. 13 位毫秒级 `expiresIn` 保存到 `client.expires_at` 前会除以 1000。
+3. 10 位秒级绝对时间戳保存时不再叠加当前时间。
+4. 小于绝对时间戳阈值的 `expiresIn` 继续按过期时长处理。
+
+## 验证命令
+
+```bash
+.env/bin/python -m pytest tests/test_client_auth.py
+```
+
+运行 pytest 后清理：
+
+```bash
+rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
+```
+
 ## 目标
 
 - 多模态模型探测只调用 OpenAI 标准 `/v1/models`。
@@ -47,7 +123,7 @@ rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 ## 验证命令
 
 ```bash
-.env/bin/python -m pytest tests/test_task_api.py tests/test_frontend_contract_static.py
+.env/bin/python -m pytest tests/test_task_celery_execution.py tests/test_frontend_contract_static.py
 ```
 
 运行 pytest 后清理：
@@ -91,7 +167,7 @@ rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 ## 验证命令
 
 ```bash
-.env/bin/python -m pytest tests/test_task_execution_service.py
+.env/bin/python -m pytest tests/test_task_celery_execution.py
 ```
 
 运行 pytest 后清理：
@@ -122,7 +198,7 @@ rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 ## 验证命令
 
 ```bash
-.env/bin/python -m pytest tests/test_task_api.py tests/test_task_item_api.py tests/test_task_execution_service.py tests/test_multimodal_model_api.py
+.env/bin/python -m pytest tests/test_task_celery_execution.py tests/test_task_item_api.py tests/test_task_celery_execution.py tests/test_multimodal_model_api.py
 ```
 
 运行 pytest 后清理：
@@ -159,7 +235,7 @@ rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 ## 验证命令
 
 ```bash
-.env/bin/python -m pytest tests/test_client_auth.py tests/test_task_execution_service.py tests/test_task_item_api.py tests/test_task_model_contract.py
+.env/bin/python -m pytest tests/test_client_auth.py tests/test_task_celery_execution.py tests/test_task_item_api.py tests/test_task_model_contract.py
 ```
 
 运行 pytest 后清理：
@@ -175,6 +251,9 @@ rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 - 后端不解析 `.videojson` 内容，只向前端暴露视频结果文件 URL。
 - 后端在复核行中返回 `TaskItemData.track_ids`，供前端匹配轨迹。
 - 前端读取 `.videojson`，按视频当前帧和 `track_ids` 筛选 bbox 并叠加绘制。
+- 视频叠框编号必须对应右侧详细结果中的 `结果 1`、`结果 2` 行序号。
+- 绘框颜色只用于区分每条结果，结果列表中的编号必须使用相同颜色。
+- 结果状态使用文字、图标和框线样式区分，不再占用结果对应色。
 - 视频绘框优先覆盖画廊视图和预览弹窗，列表和网格可保持轻量预览。
 
 ## 用例
@@ -193,6 +272,10 @@ rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 11. 前端缓存已排序帧号，不在每次动画帧中重新扫描全部 `.videojson`。
 12. 视频全屏时必须全屏外层叠框容器，而不是只全屏 `<video>` 元素。
 13. 全屏容器内继续显示 bbox overlay，并提供进入/退出全屏按钮。
+14. 当 `.videojson` 当前帧 detection 顺序与 `review_rows` 顺序不一致时，叠框文本
+    仍按匹配到的详细结果行显示 `1`、`2` 等序号。
+15. 图片和视频绘框通过结果序号选择颜色，结果列表 `结果 N` 编号使用同一颜色。
+16. `默认/新增/修改/删除` 状态通过状态徽标、图标和边框线型区分。
 
 ## 验证命令
 
@@ -275,7 +358,7 @@ rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 ## 验证命令
 
 ```bash
-.env/bin/python -m pytest tests/test_task_execution_service.py
+.env/bin/python -m pytest tests/test_task_celery_execution.py
 ```
 
 # Task 执行状态机与人工复核测试清单
@@ -315,7 +398,7 @@ rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 ## 验证命令
 
 ```bash
-.env/bin/python -m pytest tests/test_task_execution_service.py tests/test_task_item_api.py tests/test_task_api.py tests/test_task_model_contract.py tests/test_frontend_taskitem_contract.py
+.env/bin/python -m pytest tests/test_task_celery_execution.py tests/test_task_item_api.py tests/test_task_celery_execution.py tests/test_task_model_contract.py tests/test_frontend_taskitem_contract.py
 ```
 
 # TaskItem 复核界面状态、绘框与统计修复测试清单
@@ -395,7 +478,7 @@ cd aiSelfTestUi && npm run lint
 ## 验证命令
 
 ```bash
-.env/bin/python -m pytest tests/test_task_api.py tests/test_task_execution_service.py tests/test_frontend_contract_static.py tests/test_frontend_taskitem_contract.py
+.env/bin/python -m pytest tests/test_task_celery_execution.py tests/test_frontend_contract_static.py tests/test_frontend_taskitem_contract.py
 cd aiSelfTestUi && npm run lint
 ```
 
@@ -483,7 +566,7 @@ cd aiSelfTestUi && npm run lint
 ## 验证命令
 
 ```bash
-.env/bin/python -m pytest tests/test_task_api.py tests/test_frontend_contract_static.py
+.env/bin/python -m pytest tests/test_task_celery_execution.py tests/test_frontend_contract_static.py
 cd aiSelfTestUi && npm run lint
 ```
 
@@ -510,7 +593,7 @@ cd aiSelfTestUi && npm run lint
 ## 验证命令
 
 ```bash
-.env/bin/python -m pytest tests/test_task_api.py tests/test_task_execution_service.py tests/test_frontend_contract_static.py
+.env/bin/python -m pytest tests/test_task_celery_execution.py tests/test_frontend_contract_static.py
 cd aiSelfTestUi && npm run lint
 ```
 
@@ -551,7 +634,7 @@ cd aiSelfTestUi && npm run lint
 ## 验证命令
 
 ```bash
-.env/bin/python -m pytest tests/test_task_item_api.py tests/test_task_execution_service.py tests/test_frontend_taskitem_contract.py
+.env/bin/python -m pytest tests/test_task_item_api.py tests/test_task_celery_execution.py tests/test_frontend_taskitem_contract.py
 cd aiSelfTestUi && npm run lint
 ```
 
@@ -584,7 +667,7 @@ rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 ## 验证命令
 
 ```bash
-.env/bin/python -m pytest tests/test_task_api.py tests/test_task_item_api.py tests/test_task_execution_service.py tests/test_multimodal_model_api.py
+.env/bin/python -m pytest tests/test_task_celery_execution.py tests/test_task_item_api.py tests/test_task_celery_execution.py tests/test_multimodal_model_api.py
 ```
 
 运行 pytest 后清理：

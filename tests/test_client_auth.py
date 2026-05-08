@@ -136,6 +136,50 @@ def test_authenticate_client_route_logs_in_when_tokens_missing(
     }
 
 
+def test_authenticate_client_route_accepts_millisecond_epoch_expires_in(
+    app_client: TestClient,
+    db_session: Session,
+    monkeypatch,
+) -> None:
+    """上游返回毫秒级绝对过期时间戳时，入库前应转换为秒级时间戳。"""
+
+    client = _create_client(db_session)
+    client_auth_module = importlib.import_module("aiSelfTest.services.client_auth")
+
+    def fake_post(url: str, **kwargs):
+        if url.endswith("/auth/login"):
+            return FakeResponse(
+                200,
+                {
+                    "accessToken": "login-access-token",
+                    "refreshToken": "login-refresh-token",
+                    "expiresIn": 1779991525810,
+                },
+            )
+        raise AssertionError(f"未预期的请求: {url}")
+
+    monkeypatch.setattr(client_auth_module.requests, "post", fake_post)
+
+    response = app_client.post(f"/api/clients/authenticate/{client.id}")
+
+    assert response.status_code == 200
+    assert response.json()["data"]["usedStrategy"] == "login"
+
+    db_session.expire_all()
+    refreshed_client = db_session.exec(
+        select(import_client_model()).where(import_client_model().id == client.id)
+    ).one()
+    assert refreshed_client.expires_at == 1779991525
+
+
+def test_resolve_expires_at_accepts_second_epoch_expires_in() -> None:
+    """上游返回秒级绝对时间戳时，不应再次叠加当前时间。"""
+
+    client_auth_module = importlib.import_module("aiSelfTest.services.client_auth")
+
+    assert client_auth_module.ClientUtils.resolve_expires_at(1779991525) == 1779991525
+
+
 def test_authenticate_client_route_refreshes_expired_token(
     app_client: TestClient,
     db_session: Session,

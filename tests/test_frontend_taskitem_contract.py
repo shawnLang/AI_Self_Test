@@ -169,6 +169,36 @@ def test_review_frontend_uses_videojson_video_overlay_contract() -> None:
     assert "renderVideoWithBboxOverlay(previewItem, 'max-h-[78vh] max-w-full rounded-md')" in review_text
 
 
+def test_review_frontend_video_overlay_label_matches_review_row_index() -> None:
+    """视频叠框编号应对应详细结果行，而不是当前帧 detection 顺序。"""
+
+    review_text = read_frontend_file("components/Review.tsx")
+    video_overlay_text = review_text.split(
+        "function VideoWithVideoJsonOverlay", 1
+    )[1].split("export default function Review", 1)[0]
+
+    assert "type RowWithDisplayIndex" in review_text
+    assert "getRowsByTrackId(item.reviewRows.map((row, index) => ({ ...row, displayIndex: index + 1 })))" in video_overlay_text
+    assert "{row.displayIndex}" in video_overlay_text
+    assert "{index + 1}" not in video_overlay_text
+
+
+def test_review_frontend_result_color_is_shared_by_overlay_and_row_list() -> None:
+    """结果颜色应只表示结果对应关系，并同步用于绘框和结果列表。"""
+
+    review_text = read_frontend_file("components/Review.tsx")
+
+    assert "RESULT_COLOR_CLASSES" in review_text
+    assert "getResultColorClass(row.displayIndex, 'border')" in review_text
+    assert "getResultColorClass(row.displayIndex, 'label')" in review_text
+    assert "getResultColorClass(index + 1, 'border')" in review_text
+    assert "getResultColorClass(index + 1, 'label')" in review_text
+    assert "getResultColorClass(index + 1, 'text')" in review_text
+    assert "getStatusBorderClass(row)" in review_text
+    assert "getStatusIcon(row)" in review_text
+    assert "const StatusIcon = getStatusIcon(row)" in review_text
+
+
 def test_review_frontend_keeps_video_overlay_between_sparse_videojson_frames() -> None:
     """videojson 帧稀疏时，视频叠框应使用最近有效帧保持连续绘制。"""
 

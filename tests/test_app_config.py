@@ -60,9 +60,7 @@ def test_lifespan_runs_alembic_migrations(
         column["name"]
         for column in inspector.get_columns("client")
     }
-    assert {"expires_at", "auth_header_style", "working_url_path"}.issubset(
-        client_columns
-    )
+    assert {"tenant_code", "tenant_name", "expires_at"}.issubset(client_columns)
     task_columns = {
         column["name"]
         for column in inspector.get_columns("task")
@@ -73,7 +71,9 @@ def test_lifespan_runs_alembic_migrations(
         "skipped_count",
         "stage_started_at",
         "last_progress_at",
+        "next_run_at",
+        "current_execution_id",
     }.issubset(task_columns)
 
     version = db_session.exec(text("select version_num from alembic_version")).one()
-    assert version[0] == "20260507_0002"
+    assert version[0] == "20260508_0000"

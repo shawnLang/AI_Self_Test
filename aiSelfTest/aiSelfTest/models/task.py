@@ -44,6 +44,26 @@ class TaskExecutionStatus(str, Enum):
     FAIL = "失败"
 
 
+class TaskExecutionTriggerType(str, Enum):
+    """任务执行触发来源。"""
+
+    MANUAL = "manual"
+    SCHEDULE = "schedule"
+    CREATE_AUTO = "create_auto"
+    REPAIR = "repair"
+
+
+class TaskExecutionRecordStatus(str, Enum):
+    """单次任务执行实例状态。"""
+
+    QUEUED = "queued"
+    RUNNING = "running"
+    SUCCESS = "success"
+    FAILED = "failed"
+    SKIPPED = "skipped"
+    CANCELLED = "cancelled"
+
+
 class TaskItemStatus(str, Enum):
     """任务项执行与复核状态。"""
 
@@ -126,8 +146,34 @@ class Task(SQLModel, table=True):
     last_progress_at: Optional[datetime] = Field(default=None, description="最近进度更新时间")
     last_pull_end_at: Optional[datetime] = Field(default=None, description="上次拉取结束时间")
     last_run_started_at: Optional[datetime] = Field(default=None, description="上次执行发起时间")
+    next_run_at: Optional[datetime] = Field(default=None, description="下次定时执行时间")
+    current_execution_id: Optional[int] = Field(default=None, index=True, description="当前执行实例ID")
     skipped_count: int = Field(default=0, description="累计跳过重复条数")
     last_error: Optional[str] = Field(default=None, description="最后错误")
+    created_at: datetime = Field(default_factory=datetime.now, description="创建时间")
+    updated_at: datetime = Field(default_factory=datetime.now, description="更新时间")
+
+
+class TaskExecution(SQLModel, table=True):
+    """单次任务执行实例。"""
+
+    __tablename__ = "task_execution"
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    task_id: int = Field(foreign_key="task.id", index=True, description="关联任务ID")
+    trigger_type: str = Field(max_length=20, description="触发来源")
+    status: str = Field(
+        default=TaskExecutionRecordStatus.QUEUED.value,
+        max_length=20,
+        index=True,
+        description="执行实例状态",
+    )
+    celery_task_id: Optional[str] = Field(default=None, max_length=100, index=True, description="Celery任务ID")
+    started_at: Optional[datetime] = Field(default=None, description="开始执行时间")
+    finished_at: Optional[datetime] = Field(default=None, description="结束时间")
+    last_heartbeat_at: Optional[datetime] = Field(default=None, description="Worker最近心跳时间")
+    error: Optional[str] = Field(default=None, description="错误信息")
+    retry_count: int = Field(default=0, description="补偿或重试次数")
     created_at: datetime = Field(default_factory=datetime.now, description="创建时间")
     updated_at: datetime = Field(default_factory=datetime.now, description="更新时间")
 

@@ -12,6 +12,8 @@ from aiSelfTest.database import get_session
 from aiSelfTest.exceptions import AppException, ErrorCode
 from aiSelfTest.models.task import (
     Task,
+    TaskExecution,
+    TaskExecutionTriggerType,
     TaskItem,
     TaskItemConfirmState,
     TaskItemData,
@@ -41,9 +43,8 @@ from aiSelfTest.schemas.task import (
     TaskUpdateRequest,
     resolve_task_item_source_size,
 )
-from aiSelfTest.services.task_execution import run_task_execution
+from aiSelfTest.services.task_dispatch import ACTIVE_EXECUTION_STATUSES, TaskDispatchService
 from aiSelfTest.services.task_review import apply_task_item_review_state, refresh_task_finish_state
-from aiSelfTest.services.task_scheduler import sync_global_task_scheduler
 from aiSelfTest.services.task_submission import TaskSubmissionService
 from fastapi import APIRouter, Depends, Query, status
 from loguru import logger
@@ -59,7 +60,11 @@ def list_tasks_route(session: Session = Depends(get_session)) -> ApiResponse[Tas
 
     rows = session.exec(select(Task).order_by(Task.id.desc())).all()
     items = [
-        TaskResponse.from_model(task, filters=_deserialize_filters(task.filters_json))
+        TaskResponse.from_model(
+            task,
+            filters=_deserialize_filters(task.filters_json),
+            current_execution=_get_active_execution(session, task.id or 0),
+        )
         for task in rows
     ]
     return ApiResponse(code=0, message="success", data=TaskListData(items=items))
@@ -82,8 +87,14 @@ def create_task_route(payload: TaskCreateRequest, session: Session = Depends(get
     session.add(task)
     session.commit()
     session.refresh(task)
+    current_execution = None
     if task.auto_execute:
-        run_task_execution(session, task.id or 0)
+        dispatch_result = TaskDispatchService(session).submit(
+            task_id=task.id or 0,
+            trigger_type=TaskExecutionTriggerType.CREATE_AUTO.value,
+        )
+        task = dispatch_result.task
+        current_execution = dispatch_result.execution
         session.refresh(task)
     logger.info(
         "任务创建完成 task_id={} name={} client_id={} config_id={} interval={} execution_mode={}",
@@ -94,7 +105,7 @@ def create_task_route(payload: TaskCreateRequest, session: Session = Depends(get
         task.interval,
         task.execution_mode,
     )
-    data = TaskResponse.from_model(task, filters=payload.filters)
+    data = TaskResponse.from_model(task, filters=payload.filters, current_execution=current_execution)
     return ApiResponse(code=0, message="success", data=data)
 
 
@@ -103,7 +114,11 @@ def get_task_detail_route(task_id: int, session: Session = Depends(get_session))
     """查询任务详情。"""
 
     task = _get_task_or_raise(session, task_id)
-    data = TaskResponse.from_model(task, filters=_deserialize_filters(task.filters_json))
+    data = TaskResponse.from_model(
+        task,
+        filters=_deserialize_filters(task.filters_json),
+        current_execution=_get_active_execution(session, task_id),
+    )
     return ApiResponse(code=0, message="success", data=data)
 
 
@@ -113,6 +128,7 @@ def update_task_route(task_id: int, payload: TaskUpdateRequest, session: Session
     """更新任务。"""
 
     task = _get_task_or_raise(session, task_id)
+    _ensure_task_can_be_modified(session, task_id)
     task.name = payload.name
     task.client_id = payload.client_id
     task.config_id = payload.config_id
@@ -133,8 +149,15 @@ def update_task_route(task_id: int, payload: TaskUpdateRequest, session: Session
         task.execution_mode,
         task.auto_execute,
     )
-    _sync_scheduler(task.id)
-    return ApiResponse(code=0, message="success", data=TaskResponse.from_model(task, filters=payload.filters))
+    return ApiResponse(
+        code=0,
+        message="success",
+        data=TaskResponse.from_model(
+            task,
+            filters=payload.filters,
+            current_execution=_get_active_execution(session, task.id or 0),
+        ),
+    )
 
 
 @task_router.delete("/delete/{task_id}", response_model=ApiResponse[TaskDeleteData])
@@ -144,6 +167,7 @@ def delete_task_route(task_id: int, session: Session = Depends(get_session)) -> 
     download_dirs: set[Path] = set()
     with session.begin():
         task = _get_task_or_raise(session, task_id)
+        _ensure_task_can_be_deleted(session, task_id, task)
         task_items = session.exec(select(TaskItem).where(TaskItem.task_id == task_id)).all()
         task_item_ids = [row.id for row in task_items if row.id is not None]
         download_dirs = _resolve_task_download_dirs(task_items)
@@ -162,15 +186,20 @@ def delete_task_route(task_id: int, session: Session = Depends(get_session)) -> 
             session.delete(row)
         session.flush()
 
+        task_executions = session.exec(select(TaskExecution).where(TaskExecution.task_id == task_id)).all()
+        for row in task_executions:
+            session.delete(row)
+        session.flush()
+
         session.delete(task)
 
-    _sync_scheduler(task_id)
     deleted_download_dir_count = _delete_task_download_dirs(task_id, download_dirs)
     logger.info(
-        "任务删除完成 task_id={} task_item_count={} detail_count={} download_dir_count={}",
+        "任务删除完成 task_id={} task_item_count={} detail_count={} execution_count={} download_dir_count={}",
         task_id,
         len(task_items),
         len(task_item_data_rows),
+        len(task_executions),
         deleted_download_dir_count,
     )
     return ApiResponse(code=0, message="success", data=TaskDeleteData(id=task_id))
@@ -182,13 +211,13 @@ def start_task_route(task_id: int, session: Session = Depends(get_session)) -> A
 
     task = _get_task_or_raise(session, task_id)
     task.active = True
+    task.next_run_at = datetime.now()
     task.updated_at = datetime.now()
     session.add(task)
     session.commit()
     session.refresh(task)
-    _sync_scheduler(task.id)
     logger.info("任务已启动 task_id={} execution_status={}", task.id, task.execution_status)
-    data = TaskActionData(id=task.id or 0, active=task.active, execution_status=task.execution_status)
+    data = TaskActionData.from_model(task, _get_active_execution(session, task.id or 0))
     return ApiResponse(code=0, message="success", data=data)
 
 
@@ -202,9 +231,8 @@ def stop_task_route(task_id: int, session: Session = Depends(get_session)) -> Ap
     session.add(task)
     session.commit()
     session.refresh(task)
-    _sync_scheduler(task.id)
     logger.info("任务已停止 task_id={} execution_status={}", task.id, task.execution_status)
-    data = TaskActionData(id=task.id or 0, active=task.active, execution_status=task.execution_status)
+    data = TaskActionData.from_model(task, _get_active_execution(session, task.id or 0))
     return ApiResponse(code=0, message="success", data=data)
 
 
@@ -212,10 +240,12 @@ def stop_task_route(task_id: int, session: Session = Depends(get_session)) -> Ap
 def run_task_route(task_id: int, session: Session = Depends(get_session)) -> ApiResponse[TaskActionData]:
     """立即执行一次任务。"""
 
-    run_task_execution(session, task_id)
-    task = _get_task_or_raise(session, task_id)
-    logger.info("任务手动执行完成 task_id={} execution_status={}", task.id, task.execution_status)
-    data = TaskActionData(id=task.id or 0, active=task.active, execution_status=task.execution_status)
+    dispatch_result = TaskDispatchService(session).submit(
+        task_id=task_id,
+        trigger_type=TaskExecutionTriggerType.MANUAL.value,
+    )
+    logger.info("任务手动执行已入队 task_id={} execution_id={}", task_id, dispatch_result.execution.id)
+    data = TaskActionData.from_model(dispatch_result.task, dispatch_result.execution)
     return ApiResponse(code=0, message="success", data=data)
 
 
@@ -547,6 +577,48 @@ def _get_task_item_or_raise(session: Session, task_item_id: int) -> TaskItem:
     return task_item
 
 
+def _get_active_execution(session: Session, task_id: int) -> TaskExecution | None:
+    """查询任务当前排队或运行中的执行实例。"""
+
+    return session.exec(
+        select(TaskExecution)
+        .where(TaskExecution.task_id == task_id)
+        .where(TaskExecution.status.in_(ACTIVE_EXECUTION_STATUSES))
+        .order_by(TaskExecution.created_at.desc())
+    ).first()
+
+
+def _ensure_task_can_be_deleted(session: Session, task_id: int, task: Task) -> None:
+    """校验任务当前是否允许删除。"""
+
+    if _get_active_execution(session, task_id) is not None or _is_task_in_execution_stage(task):
+        raise AppException(
+            code=ErrorCode.RESOURCE_BUSY,
+            message="任务正在执行，不能删除",
+            status_code=409,
+        )
+
+
+def _ensure_task_can_be_modified(session: Session, task_id: int) -> None:
+    """校验任务当前是否允许修改关键配置。"""
+
+    task = _get_task_or_raise(session, task_id)
+    if _get_active_execution(session, task_id) is not None or _is_task_in_execution_stage(task):
+        raise AppException(
+            code=ErrorCode.RESOURCE_BUSY,
+            message="任务正在执行，不能修改关键配置",
+            status_code=409,
+        )
+
+
+def _is_task_in_execution_stage(task: Task) -> bool:
+    """判断任务聚合状态是否处于执行阶段。"""
+
+    if task.execution_status == "创建":
+        return task.last_run_started_at is not None
+    return task.execution_status in {"数据加载", "下载", "模型识别"}
+
+
 def _ensure_task_item_can_be_manually_reviewed(
         session: Session,
         task_item: TaskItem,
@@ -570,12 +642,3 @@ def _ensure_task_item_can_be_manually_reviewed(
             message=f"结果一致的任务项已自动跳过，不能人工{action_name}",
             status_code=400,
         )
-
-
-def _sync_scheduler(task_id: int | None) -> None:
-    """同步单进程调度器；缺全局调度器时安全跳过。"""
-
-    if task_id is None:
-        return
-
-    sync_global_task_scheduler(task_id)

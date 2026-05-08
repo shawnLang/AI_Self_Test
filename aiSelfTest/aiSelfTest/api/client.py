@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from aiSelfTest.database import get_session
-from aiSelfTest.models import Client, Task, TaskItem, TaskItemData
+from aiSelfTest.models import Client, Task, TaskExecution, TaskItem, TaskItemData
 from aiSelfTest.schemas.client import (
     ClientAuthenticateData,
     ClientCreateRequest,
@@ -117,6 +117,16 @@ def delete_client_route(client_id: int, session: Session = Depends(get_session),
             session.delete(task_item)
         session.flush()
 
+        if task_ids:
+            task_executions = session.exec(
+                select(TaskExecution).where(TaskExecution.task_id.in_(task_ids))
+            ).all()
+            for task_execution in task_executions:
+                session.delete(task_execution)
+            session.flush()
+        else:
+            task_executions = []
+
         for task in tasks:
             session.delete(task)
         session.flush()
@@ -124,7 +134,8 @@ def delete_client_route(client_id: int, session: Session = Depends(get_session),
         session.delete(client)
 
     logger.info(f"API 请求删除客户端完成: client_id={client_id}, task_count={len(tasks)}, "
-                f"task_item_count={len(task_items)}, task_item_data_count={len(task_item_data_rows)}")
+                f"task_item_count={len(task_items)}, task_item_data_count={len(task_item_data_rows)}, "
+                f"task_execution_count={len(task_executions)}")
 
     return success_res(data=ClientDeleteData(id=client_id))
 

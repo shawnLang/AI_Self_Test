@@ -4,8 +4,6 @@ from typing import Generator
 from alembic import command
 from alembic.config import Config
 from loguru import logger
-from sqlalchemy import event
-from sqlalchemy.pool import NullPool
 from sqlmodel import Session, create_engine
 
 import aiSelfTest.models  # noqa: F401
@@ -17,23 +15,8 @@ settings = get_settings()
 # 同步引擎 (用于 Alembic 迁移和同步操作)
 engine = create_engine(
     settings.database_url,
-    connect_args={"check_same_thread": False},
-    # SQLite 本地文件更适合短连接，避免跨线程复用连接产生意外状态。
-    poolclass=NullPool,
+    pool_pre_ping=True,
 )
-
-
-@event.listens_for(engine, "connect")
-def _set_sqlite_pragma(dbapi_connection, _connection_record) -> None:
-    """在每次连接建立后设置 SQLite 运行参数。"""
-
-    cursor = dbapi_connection.cursor()
-    # WAL 提升并发读写能力；busy_timeout 降低锁冲突失败概率；
-    # foreign_keys 保证外键约束在 SQLite 下生效。
-    cursor.execute("PRAGMA journal_mode=WAL")
-    cursor.execute("PRAGMA busy_timeout=5000")
-    cursor.execute("PRAGMA foreign_keys=ON")
-    cursor.close()
 
 
 def get_session() -> Generator[Session, None, None]:
@@ -70,5 +53,5 @@ def _build_alembic_config() -> Config:
         "script_location",
         (settings.package_dir / "alembic").as_posix(),
     )
-    alembic_config.set_main_option("sqlalchemy.url", settings.database_url)
+    alembic_config.set_main_option("sqlalchemy.url", settings.database_url.replace("%", "%%"))
     return alembic_config

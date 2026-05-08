@@ -26,6 +26,9 @@ export type TaskSummary = {
   auto_execute: boolean;
   active: boolean;
   execution_status: string;
+  current_execution_id: number | null;
+  current_execution_status: string | null;
+  display_status: string;
   total_count: number;
   processed_count: number;
   skipped_count: number;
@@ -44,6 +47,9 @@ export type TaskActionData = {
   id: number;
   active: boolean;
   execution_status: string;
+  current_execution_id: number | null;
+  current_execution_status: string | null;
+  display_status: string;
 };
 
 export type TaskItemListRow = {

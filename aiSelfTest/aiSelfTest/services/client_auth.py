@@ -20,6 +20,8 @@ from aiSelfTest.services.client import get_client_or_raise
 
 TOKEN_ERROR_KEYWORDS = ("token", "令牌", "授权")
 TOKEN_REUSE_BUFFER_SECONDS = 60
+SECONDS_EPOCH_THRESHOLD = 1_000_000_000
+MILLISECONDS_EPOCH_THRESHOLD = 1_000_000_000_000
 UPSTREAM_REQUEST_RETRY_ATTEMPTS = 3
 UPSTREAM_RETRYABLE_STATUS_CODES = {429, 500, 502, 503, 504}
 LOGIN_PATH = "/auth/login"
@@ -41,10 +43,17 @@ class ClientAuthenticationResult:
 class ClientUtils:
     @staticmethod
     def resolve_expires_at(expires_in: Any) -> int | None:
-        """将token过期时长转换为绝对秒级时间戳。"""
+        """将上游过期字段统一转换为绝对秒级时间戳。"""
+
         if expires_in is None:
             return None
-        return int(time() + int(expires_in))
+
+        expires_value = int(expires_in)
+        if expires_value >= MILLISECONDS_EPOCH_THRESHOLD:
+            return expires_value // 1000
+        if expires_value >= SECONDS_EPOCH_THRESHOLD:
+            return expires_value
+        return int(time() + expires_value)
 
     @staticmethod
     def will_expire_soon(expires_at: int | None) -> bool:

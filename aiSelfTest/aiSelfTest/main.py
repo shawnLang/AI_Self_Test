@@ -25,10 +25,6 @@ from aiSelfTest.exceptions import (
     pydantic_validation_exception_handler,
     validation_exception_handler,
 )
-from aiSelfTest.services.task_scheduler import (
-    create_task_scheduler,
-    set_global_task_scheduler,
-)
 from aiSelfTest.version import __version__
 
 
@@ -42,15 +38,9 @@ async def lifespan(app: FastAPI):
 
     logger.info("启动 aiSelfTest FastAPI 应用...")
     run_migrations()
-    task_scheduler = create_task_scheduler()
-    app.state.task_scheduler = task_scheduler
-    set_global_task_scheduler(task_scheduler)
-    task_scheduler.start()
     try:
         yield
     finally:
-        task_scheduler.shutdown()
-        set_global_task_scheduler(None)
         logger.info("关闭 aiSelfTest FastAPI 应用...")
 
 

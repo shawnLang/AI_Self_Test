@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Check, List, LayoutGrid, Image as ImageIcon, CheckSquare, ChevronLeft, ChevronRight, SkipForward, UploadCloud, Save, Maximize2, Minimize2 } from 'lucide-react';
+import { AlertTriangle, Check, List, LayoutGrid, Image as ImageIcon, CheckSquare, ChevronLeft, ChevronRight, SkipForward, UploadCloud, Save, Maximize2, Minimize2, Pencil, Plus, Trash2 } from 'lucide-react';
 import {
   confirmReviewItems,
   skipReviewItems,
@@ -27,6 +27,7 @@ import {
 const reviewStatusOptions: TaskItemDataStatus[] = ['默认', '新增', '修改', '删除'];
 type RowDraft = { status: string; aiName: string };
 type ReviewConfirmFilter = 'all' | 'pending' | 'confirmed' | 'skipped';
+type RowWithDisplayIndex = ReviewRow & { displayIndex: number };
 type VideoOverlayDetection = {
   frameIndex: number;
   trackId: string;
@@ -38,20 +39,35 @@ type IndexedVideoDetections = {
   sourceFrameCount: number;
 };
 
-const BBOX_COLORS: Record<string, string> = {
-  keep: 'border-green-400',
-  add: 'border-blue-400',
-  rename: 'border-amber-400',
-  exclude: 'border-gray-400',
-  error: 'border-red-400',
-};
-const BBOX_LABEL_COLORS: Record<string, string> = {
-  keep: 'bg-green-500',
-  add: 'bg-blue-500',
-  rename: 'bg-amber-500',
-  exclude: 'bg-gray-500',
-  error: 'bg-red-500',
-};
+const RESULT_COLOR_CLASSES = [
+  { border: 'border-sky-400', label: 'bg-sky-500', text: 'text-sky-700 dark:text-sky-300' },
+  { border: 'border-fuchsia-400', label: 'bg-fuchsia-500', text: 'text-fuchsia-700 dark:text-fuchsia-300' },
+  { border: 'border-emerald-400', label: 'bg-emerald-500', text: 'text-emerald-700 dark:text-emerald-300' },
+  { border: 'border-orange-400', label: 'bg-orange-500', text: 'text-orange-700 dark:text-orange-300' },
+  { border: 'border-violet-400', label: 'bg-violet-500', text: 'text-violet-700 dark:text-violet-300' },
+  { border: 'border-rose-400', label: 'bg-rose-500', text: 'text-rose-700 dark:text-rose-300' },
+] as const;
+
+function getResultColorClass(index: number, part: keyof typeof RESULT_COLOR_CLASSES[number]) {
+  const safeIndex = Math.max(0, index - 1);
+  return RESULT_COLOR_CLASSES[safeIndex % RESULT_COLOR_CLASSES.length][part];
+}
+
+function getStatusBorderClass(row: any) {
+  if (row.sourceStatus === '新增' || row.decision === 'add') return 'border-solid';
+  if (row.sourceStatus === '修改' || row.decision === 'rename') return 'border-dashed';
+  if (row.sourceStatus === '删除' || row.decision === 'exclude') return 'border-dotted opacity-70';
+  if (row.sourceStatus === '默认' || row.decision === 'keep') return 'border-solid';
+  return 'border-dashed';
+}
+
+function getStatusIcon(row: any) {
+  if (row.sourceStatus === '新增' || row.decision === 'add') return Plus;
+  if (row.sourceStatus === '修改' || row.decision === 'rename') return Pencil;
+  if (row.sourceStatus === '删除' || row.decision === 'exclude') return Trash2;
+  if (row.sourceStatus === '默认' || row.decision === 'keep') return Check;
+  return AlertTriangle;
+}
 
 function parseVideoVideoJson(payload: unknown): IndexedVideoDetections {
   const frames = Array.isArray(payload) ? payload as VideoVideoJsonPayload : [];
@@ -127,7 +143,7 @@ function findVisibleDetections(
   detectionsByFrame: IndexedVideoDetections,
   frameIndexes: number[],
   frameIndex: number,
-  rowsByTrackId: Map<string, ReviewRow>,
+  rowsByTrackId: Map<string, RowWithDisplayIndex>,
 ): VideoOverlayDetection[] {
   const nearestFrameIndex = findNearestFrameIndex(frameIndexes, frameIndex);
   if (nearestFrameIndex === null) return [];
@@ -138,8 +154,8 @@ function findVisibleDetections(
   ));
 }
 
-function getRowsByTrackId(rows: ReviewRow[]): Map<string, ReviewRow> {
-  const rowsByTrackId = new Map<string, ReviewRow>();
+function getRowsByTrackId(rows: RowWithDisplayIndex[]): Map<string, RowWithDisplayIndex> {
+  const rowsByTrackId = new Map<string, RowWithDisplayIndex>();
   rows.forEach((row) => {
     String(row.trackIds || '')
       .split(',')
@@ -246,7 +262,10 @@ function VideoWithVideoJsonOverlay({ item, className }: { item: ReviewItem; clas
     await wrapperRef.current?.requestFullscreen();
   };
 
-  const rowsByTrackId = React.useMemo(() => getRowsByTrackId(item.reviewRows), [item.reviewRows]);
+  const rowsByTrackId = React.useMemo(
+    () => getRowsByTrackId(item.reviewRows.map((row, index) => ({ ...row, displayIndex: index + 1 }))),
+    [item.reviewRows],
+  );
   const frameIndexes = React.useMemo(
     () => [...detectionsByFrame.byFrame.keys()].sort((left, right) => left - right),
     [detectionsByFrame],
@@ -282,18 +301,18 @@ function VideoWithVideoJsonOverlay({ item, className }: { item: ReviewItem; clas
           const top = videoBox.top + (miny / video.videoHeight) * videoBox.height;
           const width = ((maxx - minx) / video.videoWidth) * videoBox.width;
           const height = ((maxy - miny) / video.videoHeight) * videoBox.height;
-          const borderClass = BBOX_COLORS[row.decision] ?? 'border-blue-400';
-          const labelClass = BBOX_LABEL_COLORS[row.decision] ?? 'bg-blue-500';
+          const borderClass = getResultColorClass(row.displayIndex, 'border');
+          const labelClass = getResultColorClass(row.displayIndex, 'label');
 
           return (
             <div
               key={`${detection.frameIndex}-${detection.trackId}-${index}`}
-              className={`absolute border-2 ${borderClass}`}
+              className={`absolute border-2 ${borderClass} ${getStatusBorderClass(row)}`}
               style={{ left, top, width, height }}
               title={`${row.originalName || '--'} ${detection.score ? detection.score.toFixed(2) : ''}`}
             >
               <span className={`absolute -top-4 left-0 ${labelClass} text-white text-[10px] font-bold px-1 leading-4 rounded-sm`}>
-                {index + 1}
+                {row.displayIndex}
               </span>
             </div>
           );
@@ -579,8 +598,8 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
     const renderBboxes = (rows: any[]) => rows.flatMap((row: any, index: number) => {
       const b = row.bbox;
       const s = row.groundingMeta.sourceSize;
-      const borderClass = BBOX_COLORS[row.decision] ?? 'border-blue-400';
-      const labelClass = BBOX_LABEL_COLORS[row.decision] ?? 'bg-blue-500';
+      const borderClass = getResultColorClass(index + 1, 'border');
+      const labelClass = getResultColorClass(index + 1, 'label');
       const toPercent = (box: any) => ({
         left: (box.minx / s.width) * 100,
         top: (box.miny / s.height) * 100,
@@ -591,7 +610,7 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
       const elems = [
         <div
           key={`bbox-${index}`}
-          className={`absolute border-2 ${borderClass} pointer-events-none`}
+          className={`absolute border-2 ${borderClass} ${getStatusBorderClass(row)} pointer-events-none`}
           style={{ left: `${orig.left}%`, top: `${orig.top}%`, width: `${orig.width}%`, height: `${orig.height}%` }}
         >
           <span className={`absolute -top-4 left-0 ${labelClass} text-white text-[10px] font-bold px-1 leading-4 rounded-sm`}>
@@ -649,15 +668,8 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
   };
 
   const getDecisionClass = (row: any) => {
-    if (row.sourceStatus === '新增') return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300';
-    if (row.sourceStatus === '修改') return 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300';
-    if (row.sourceStatus === '删除') return 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300';
-    if (row.sourceStatus === '默认') return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300';
-    if (row.decision === 'keep') return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300';
-    if (row.decision === 'add') return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300';
-    if (row.decision === 'rename') return 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300';
-    if (row.decision === 'exclude') return 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300';
-    return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300';
+    if (row.decision === 'error') return 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300';
+    return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200';
   };
 
   const renderSummaryBadges = (item: any) => (
@@ -769,11 +781,19 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
 
     return (
       <div className={`space-y-2 ${compact ? 'text-xs' : 'text-sm'}`}>
-        {rows.map((row: any, index: number) => (
-          <div key={`${row.recordId ?? index}-${index}`} className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 p-3">
+        {rows.map((row: any, index: number) => {
+          const StatusIcon = getStatusIcon(row);
+          return (
+          <div key={`${row.recordId ?? index}-${index}`} className={`rounded-lg border bg-gray-50 dark:bg-gray-900/50 p-3 ${getResultColorClass(index + 1, 'border')}`}>
             <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-              <span className="font-medium text-gray-900 dark:text-gray-100">结果 {index + 1}</span>
-              <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${getDecisionClass(row)}`}>
+              <span className={`inline-flex items-center gap-1.5 font-medium ${getResultColorClass(index + 1, 'text')}`}>
+                <span className={`inline-flex h-5 min-w-5 items-center justify-center rounded-sm px-1 text-[11px] font-bold text-white ${getResultColorClass(index + 1, 'label')}`}>
+                  {index + 1}
+                </span>
+                结果 {index + 1}
+              </span>
+              <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${getDecisionClass(row)}`}>
+                <StatusIcon className="h-3 w-3" />
                 {getDecisionLabel(row)}
               </span>
             </div>
@@ -818,7 +838,7 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
               </div>
             )}
           </div>
-        ))}
+        )})}
       </div>
     );
   };

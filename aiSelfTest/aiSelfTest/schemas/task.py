@@ -13,6 +13,8 @@ from PIL import Image
 from aiSelfTest.config import get_settings
 from aiSelfTest.models.task import (
     Task,
+    TaskExecution,
+    TaskExecutionRecordStatus,
     TaskExecutionStatus,
     TaskItem,
     TaskItemConfirmState,
@@ -32,6 +34,15 @@ ESTIMATABLE_TASK_STATUSES = {
     TaskExecutionStatus.DATA_LOAD.value,
     TaskExecutionStatus.DOWN.value,
     TaskExecutionStatus.LLM.value,
+}
+DISPLAY_STATUS_MAP = {
+    TaskExecutionStatus.CREATE.value: "未开始",
+    TaskExecutionStatus.DATA_LOAD.value: "数据加载中",
+    TaskExecutionStatus.DOWN.value: "下载中",
+    TaskExecutionStatus.LLM.value: "模型识别中",
+    TaskExecutionStatus.VERIFY.value: "待核查",
+    TaskExecutionStatus.FINISH.value: "已完成",
+    TaskExecutionStatus.FAIL.value: "执行失败",
 }
 
 
@@ -101,6 +112,18 @@ def estimate_task_remaining_seconds(task: Task) -> int | None:
 
     average_seconds = elapsed_seconds / task.processed_count
     return max(0, round(average_seconds * remaining_count))
+
+
+def resolve_task_display_status(task: Task, current_execution_status: str | None) -> str:
+    """根据执行实例状态和业务阶段生成前端展示状态。"""
+
+    if current_execution_status == TaskExecutionRecordStatus.QUEUED.value:
+        return "排队中"
+    if current_execution_status == TaskExecutionRecordStatus.RUNNING.value:
+        if task.execution_status == TaskExecutionStatus.CREATE.value:
+            return "准备中"
+        return DISPLAY_STATUS_MAP.get(task.execution_status, task.execution_status or "执行中")
+    return DISPLAY_STATUS_MAP.get(task.execution_status, task.execution_status or "未开始")
 
 
 class TaskFiltersPayload(BaseModel):
@@ -176,6 +199,9 @@ class TaskResponse(BaseModel):
     auto_execute: bool
     active: bool
     execution_status: str
+    current_execution_id: int | None = None
+    current_execution_status: str | None = None
+    display_status: str
     total_count: int
     processed_count: int
     skipped_count: int
@@ -191,12 +217,15 @@ class TaskResponse(BaseModel):
         task: Task,
         *,
         filters: TaskFiltersPayload,
+        current_execution: TaskExecution | None = None,
     ) -> "TaskResponse":
         """将任务数据库模型转换为 API 响应模型。"""
 
         execution_mode: ExecutionModeValue = (
             "auto" if task.execution_mode in {"自动", "auto"} else "manual"
         )
+        current_execution_id = current_execution.id if current_execution else task.current_execution_id
+        current_execution_status = current_execution.status if current_execution else None
         return cls(
             id=task.id or 0,
             name=task.name,
@@ -207,6 +236,9 @@ class TaskResponse(BaseModel):
             auto_execute=task.auto_execute,
             active=task.active,
             execution_status=task.execution_status,
+            current_execution_id=current_execution_id,
+            current_execution_status=current_execution_status,
+            display_status=resolve_task_display_status(task, current_execution_status),
             total_count=task.total_count,
             processed_count=task.processed_count,
             skipped_count=task.skipped_count,
@@ -236,6 +268,24 @@ class TaskActionData(BaseModel):
     id: int
     active: bool
     execution_status: str
+    current_execution_id: int | None = None
+    current_execution_status: str | None = None
+    display_status: str
+
+    @classmethod
+    def from_model(cls, task: Task, current_execution: TaskExecution | None = None) -> "TaskActionData":
+        """将任务动作结果转换为响应体。"""
+
+        current_execution_id = current_execution.id if current_execution else task.current_execution_id
+        current_execution_status = current_execution.status if current_execution else None
+        return cls(
+            id=task.id or 0,
+            active=task.active,
+            execution_status=task.execution_status,
+            current_execution_id=current_execution_id,
+            current_execution_status=current_execution_status,
+            display_status=resolve_task_display_status(task, current_execution_status),
+        )
 
 
 class TaskItemActionRequest(BaseModel):

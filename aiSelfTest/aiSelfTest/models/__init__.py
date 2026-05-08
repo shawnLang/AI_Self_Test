@@ -9,8 +9,11 @@ from aiSelfTest.models.multimodal_chat import (
 from aiSelfTest.models.multimodal_model import ModelStatusType, MultimodalModel
 from aiSelfTest.models.task import (
     Task,
+    TaskExecution,
     TaskExecutionMode,
+    TaskExecutionRecordStatus,
     TaskExecutionStatus,
+    TaskExecutionTriggerType,
     TaskIntervalType,
     TaskItem,
     TaskItemConfirmState,
@@ -31,8 +34,11 @@ __all__ = [
     "ModelStatusType",
     "MultimodalModel",
     "Task",
+    "TaskExecution",
     "TaskExecutionMode",
+    "TaskExecutionRecordStatus",
     "TaskExecutionStatus",
+    "TaskExecutionTriggerType",
     "TaskIntervalType",
     "TaskItem",
     "TaskItemConfirmState",

@@ -17,6 +17,9 @@ type TaskItem = {
   auto_execute: boolean;
   active: boolean;
   execution_status: string;
+  current_execution_id: number | null;
+  current_execution_status: string | null;
+  display_status: string;
   total_count: number;
   processed_count: number;
   skipped_count: number;
@@ -49,6 +52,7 @@ const statusTextMap: Record<string, string> = {
 };
 
 const runningExecutionStatuses = new Set(['数据加载', '下载', '模型识别']);
+const activeExecutionStatuses = new Set(['queued', 'running']);
 
 export default function Tasks({
   onCreateTask,
@@ -189,13 +193,14 @@ const TaskMonitorCard: React.FC<TaskMonitorCardProps> = ({
   onReview,
 }) => {
   const isRunning = task.active;
+  const isExecutionActive = activeExecutionStatuses.has(task.current_execution_status || '');
   const processed = Number(task.processed_count || 0);
   const total = Number(task.total_count || 0);
   const progress = total > 0 ? Math.min(100, Math.round((processed / total) * 100)) : 0;
   const canReview = task.execution_status === '核查' || task.execution_status === '结束';
   const isPreparing = task.execution_status === '创建' && Boolean(task.started_at);
-  const isExecuting = isPreparing || runningExecutionStatuses.has(task.execution_status);
-  const statusText = isPreparing ? '准备中' : statusTextMap[task.execution_status] || task.execution_status || '未开始';
+  const isExecuting = isExecutionActive || isPreparing || runningExecutionStatuses.has(task.execution_status);
+  const statusText = task.display_status || (isPreparing ? '准备中' : statusTextMap[task.execution_status] || task.execution_status || '未开始');
   const remainingTimeText = formatRemainingTime(task.estimated_remaining_seconds, isExecuting);
   const moduleText = formatModule(task.filters?.module);
   
@@ -267,7 +272,8 @@ const TaskMonitorCard: React.FC<TaskMonitorCardProps> = ({
 
           <button
             onClick={onRunNow}
-            disabled={isRunning || runningNow}
+            disabled={isExecutionActive || runningNow}
+            aria-disabled={isExecutionActive || runningNow}
             className="inline-flex whitespace-nowrap items-center gap-2 px-3 py-2 text-sm font-medium text-violet-700 bg-violet-50 hover:bg-violet-100 disabled:bg-gray-100 disabled:text-gray-400 dark:text-violet-300 dark:bg-violet-900/20 dark:hover:bg-violet-900/40 dark:disabled:bg-gray-800 dark:disabled:text-gray-500 border border-violet-200 dark:border-violet-800 rounded-lg transition-colors"
             title="立即执行"
           >
@@ -277,6 +283,7 @@ const TaskMonitorCard: React.FC<TaskMonitorCardProps> = ({
           
           <button 
             onClick={onDelete} 
+            disabled={isExecutionActive}
             className="p-2 text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors" 
             title="删除任务"
           >
