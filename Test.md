@@ -1,12 +1,39 @@
 # TaskExecutionRunner 大模型识别与匹配测试清单
 
+# 删除任务同步清理下载文件测试清单
+
+## 目标
+
+- 删除任务时，除清理 `task`、`task_item`、`task_item_data` 数据外，同步删除该任务下载目录。
+- 文件清理必须限制在 `AI_SELF_TEST_DATA_DIR/task_files` 内，避免误删任意路径。
+- 前端删除任务时必须重点提示“任务数据和已下载文件都会删除”，并要求用户再次确认。
+
+## 用例
+
+1. 删除任务成功后，对应 `TaskItem.file_path` 所在任务下载目录被删除。
+2. 删除任务时，`TaskItem.file_path` 不存在或为空不会影响数据库删除。
+3. 删除任务时，位于 `task_files` 外部的路径不会被删除。
+4. 任务管理页面删除确认文案明确包含“任务数据”“已下载文件”“不可恢复”。
+
+## 验证命令
+
+```bash
+.env/bin/python -m pytest tests/test_task_api.py tests/test_frontend_contract_static.py
+```
+
+运行 pytest 后清理：
+
+```bash
+rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
+```
+
 ## 目标
 
 - `TaskExecutionRunner.run` 按“分页拉取 -> 新增/跳过 -> 详情入库 -> 下载 -> 模型识别”顺序执行。
 - 大模型统一返回 `{width,height,data}`，不再按 `TaskItemData.id` 返回名称。
 - 图片分支整图识别后按 bbox IoU 匹配，支持默认、修改、删除、新增。
-- 视频分支按每条 `TaskItemData.track_ids` 从 `*.datajson` 抽取最多 5 帧裁剪图识别。
-- `*.datajson` 不发给大模型，其中 `name / errorName / detName` 不参与最终名称判定。
+- 视频分支按每条 `TaskItemData.track_ids` 从 `*.videojson` 抽取最多 5 帧裁剪图识别。
+- `*.videojson` 不发给大模型，其中 `name / errorName / detName` 不参与最终名称判定。
 - 视频分支不产生新增，只按每条 `TaskItemData` 判定默认、修改、删除。
 
 ## 用例
@@ -21,7 +48,7 @@
 8. 图片模型返回 bbox 与原始 bbox IoU 命中且名称不同，原始行标记为 `修改`。
 9. 图片模型返回 bbox 未命中任何原始 bbox，新增 `TaskItemData` 并标记为 `新增`。
 10. 图片模型返回空 `data`，原始行标记为 `删除`。
-11. 视频 `datajson` 二维数组可按 `TaskItemData.track_ids` 命中多条 track detection。
+11. 视频 `videojson` 二维数组可按 `TaskItemData.track_ids` 命中多条 track detection。
 12. 视频关键帧最多 5 帧，包含首帧、末帧、bbox 最大帧、score 最高帧、时间中位帧。
 13. 视频模型返回空 `data` 时，对应 `TaskItemData` 标记为 `删除`。
 14. 视频模型返回名称与 `TaskItemData.name` 不同时，对应行标记为 `修改`。
@@ -34,6 +61,37 @@
 
 ```bash
 .env/bin/python -m pytest tests/test_task_execution_service.py
+```
+
+运行 pytest 后清理：
+
+```bash
+rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
+```
+
+# API 层直接实现业务测试清单
+
+## 目标
+
+- `api/task.py` 不再通过 `TaskService(session)` 或 `TaskItemService(session)` 中转。
+- `api/multimodal_model.py` 不再通过 `MultimodalModelService(session)` 或
+  `MultimodalChatService(session)` 中转。
+- 两个 API 文件直接实现当前路由对应业务流程，同时继续复用非中转型工具类。
+- 路由路径、响应结构、错误码和已有行为保持不变。
+
+## 用例
+
+1. `api/task.py` 内直接完成任务列表、创建、详情、更新、删除、启动、停止和立即执行。
+2. `api/task.py` 内直接完成任务项列表、详情、确认、跳过、复核行更新、单项提交和任务级批量提交。
+3. `api/multimodal_model.py` 内直接完成模型配置 CRUD 和模型探测。
+4. `api/multimodal_model.py` 内直接完成非流式聊天、流式聊天、会话列表、会话详情和会话删除。
+5. `api/task.py` 不再出现 `TaskService(` 或 `TaskItemService(`。
+6. `api/multimodal_model.py` 不再出现 `MultimodalModelService(` 或 `MultimodalChatService(`。
+
+## 验证命令
+
+```bash
+.env/bin/python -m pytest tests/test_task_api.py tests/test_task_item_api.py tests/test_task_execution_service.py tests/test_multimodal_model_api.py
 ```
 
 运行 pytest 后清理：
@@ -79,29 +137,29 @@ rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 ```
 
-# 视频 datajson 前端绘框测试清单
+# 视频 videojson 前端绘框测试清单
 
 ## 目标
 
-- 后端不解析 `.datajson` 内容，只向前端暴露视频结果文件 URL。
+- 后端不解析 `.videojson` 内容，只向前端暴露视频结果文件 URL。
 - 后端在复核行中返回 `TaskItemData.track_ids`，供前端匹配轨迹。
-- 前端读取 `.datajson`，按视频当前帧和 `track_ids` 筛选 bbox 并叠加绘制。
+- 前端读取 `.videojson`，按视频当前帧和 `track_ids` 筛选 bbox 并叠加绘制。
 - 视频绘框优先覆盖画廊视图和预览弹窗，列表和网格可保持轻量预览。
 
 ## 用例
 
-1. 视频 TaskItem 详情接口的 `media.result_file_url` 返回本地 `.datajson` 静态 URL。
+1. 视频 TaskItem 详情接口的 `media.result_file_url` 返回本地 `.videojson` 静态 URL。
 2. 图片 TaskItem 详情接口的 `media.result_file_url` 返回 `null`。
 3. TaskItem 详情接口的每条 `review_rows` 返回 `track_ids`。
 4. 前端类型包含 `track_ids`、`trackIds`、`resultFileUrl` 与视频 detection 类型。
-5. 前端通过 `fetch(item.resultFileUrl)` 加载 `.datajson`，并处理加载失败。
-6. 前端按 `TaskItemData.track_ids` 与 `.datajson.trackId` 匹配当前帧 detection。
+5. 前端通过 `fetch(item.resultFileUrl)` 加载 `.videojson`，并处理加载失败。
+6. 前端按 `TaskItemData.track_ids` 与 `.videojson.trackId` 匹配当前帧 detection。
 7. 前端按视频 `videoWidth/videoHeight` 将 bbox 像素坐标换算为百分比绘制。
 8. 画廊视图和预览弹窗使用视频叠框组件，不再直接裸渲染视频。
-9. 前端同时支持 `.datajson` 外层帧序号和 detection.index 建立帧索引。
+9. 前端同时支持 `.videojson` 外层帧序号和 detection.index 建立帧索引。
 10. 当前播放帧没有 detection 时，前端使用最近有效帧的 detection 保持连续绘制，
     避免只在少数关键帧闪现。
-11. 前端缓存已排序帧号，不在每次动画帧中重新扫描全部 `.datajson`。
+11. 前端缓存已排序帧号，不在每次动画帧中重新扫描全部 `.videojson`。
 12. 视频全屏时必须全屏外层叠框容器，而不是只全屏 `<video>` 元素。
 13. 全屏容器内继续显示 bbox overlay，并提供进入/退出全屏按钮。
 
@@ -464,6 +522,38 @@ cd aiSelfTestUi && npm run lint
 ```bash
 .env/bin/python -m pytest tests/test_task_item_api.py tests/test_task_execution_service.py tests/test_frontend_taskitem_contract.py
 cd aiSelfTestUi && npm run lint
+```
+
+运行 pytest 后清理：
+
+```bash
+rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
+```
+
+# Python 后端无引用 service class 清理测试清单
+
+## 目标
+
+- 删除已无调用方的 `TaskService`、`TaskItemService`、`MultimodalModelService`
+  和 `MultimodalChatService`。
+- 删除随上述 class 产生且已无调用方的配套 helper 模块。
+- 保留仍被调用的网关、提交、调度、执行、复核等实际业务组件。
+- API 响应结构、路由路径和已有行为保持不变。
+
+## 用例
+
+1. 后端代码中不再定义 `TaskService` 和 `TaskItemService`。
+2. 后端代码中不再定义 `MultimodalModelService` 和 `MultimodalChatService`。
+3. 后端代码中不再引用 `services/task.py`、`services/multimodal_chat.py`
+   和 `services/multimodal_model_crud.py`。
+4. `TaskSubmissionService`、`MultimodalGatewayClient`、`GatewayResponseParser`、
+   `GatewayStreamParser` 和 `GatewayUrlBuilder` 保持可用。
+5. 删除无引用 service class 后，任务 API、任务项 API、任务执行服务和多模态模型 API 继续通过回归测试。
+
+## 验证命令
+
+```bash
+.env/bin/python -m pytest tests/test_task_api.py tests/test_task_item_api.py tests/test_task_execution_service.py tests/test_multimodal_model_api.py
 ```
 
 运行 pytest 后清理：

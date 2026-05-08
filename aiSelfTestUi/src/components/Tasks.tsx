@@ -80,10 +80,18 @@ export default function Tasks({
     return () => clearInterval(timer);
   }, []);
 
-  const handleDelete = async (id: number) => {
-    if(!confirm('确定删除此任务吗？')) return;
+  const handleDelete = async (task: TaskItem) => {
+    const confirmed = window.confirm(
+      [
+        `确认删除任务「${task.name}」吗？`,
+        '',
+        '此操作会同时删除任务数据、任务项数据和对应的已下载文件。',
+        '删除后不可恢复，请确认已经不再需要这些结果文件。',
+      ].join('\n')
+    );
+    if(!confirmed) return;
     try {
-      await fetchApi(`/api/tasks/delete/${id}`, { method: 'DELETE' });
+      await fetchApi(`/api/tasks/delete/${task.id}`, { method: 'DELETE' });
       await fetchTasks();
     } catch (e) {
       console.error(e);
@@ -147,7 +155,7 @@ export default function Tasks({
             <TaskMonitorCard 
               key={task.id}
               task={task}
-              onDelete={() => handleDelete(task.id)}
+              onDelete={() => handleDelete(task)}
               onStatusChange={(active: boolean) => updateTaskStatus(task.id, active)}
               onRunNow={() => runTaskNow(task.id)}
               runningNow={runningNowTaskId === task.id}

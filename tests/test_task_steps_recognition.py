@@ -54,9 +54,9 @@ def test_image_matcher_updates_adds_and_deletes_rows() -> None:
         assert any(row.llm_name == "人" and row.status == "新增" for row in rows)
 
 
-def test_video_extractor_parses_datajson_and_selects_five_keyframes(tmp_path: Path) -> None:
-    datajson_path = tmp_path / "result.datajson"
-    datajson_path.write_text(
+def test_video_extractor_parses_videojson_and_selects_five_keyframes(tmp_path: Path) -> None:
+    videojson_path = tmp_path / "result.videojson"
+    videojson_path.write_text(
         """
         [
           [{"index": 0, "name": "错名", "score": 0.10, "detName": "鸟", "bbox": [0, 0, 10, 10], "trackId": 1}],
@@ -73,7 +73,7 @@ def test_video_extractor_parses_datajson_and_selects_five_keyframes(tmp_path: Pa
     row = TaskItemData(task_item_id=1, name="鹌鹑", score=0.9, track_ids="1,2", sp_amount=1)
     extractor = VideoFrameExtractor()
 
-    detections = extractor.find_row_detections(row, extractor.load_detections(datajson_path))
+    detections = extractor.find_row_detections(row, extractor.load_detections(videojson_path))
     key_detections = extractor.select_key_detections(detections)
 
     assert len(detections) == 7

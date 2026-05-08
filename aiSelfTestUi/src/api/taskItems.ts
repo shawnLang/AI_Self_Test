@@ -145,15 +145,15 @@ export type ReviewRow = {
   };
 };
 
-export type VideoDatajsonDetection = {
+export type VideoVideoJsonDetection = {
   index?: number | string | null;
   trackId?: number | string | null;
   bbox?: unknown;
   score?: number | string | null;
 };
 
-export type VideoDatajsonFrame = VideoDatajsonDetection[];
-export type VideoDatajsonPayload = VideoDatajsonFrame[];
+export type VideoVideoJsonFrame = VideoVideoJsonDetection[];
+export type VideoVideoJsonPayload = VideoVideoJsonFrame[];
 
 export type TaskItemReviewRowUpdateRequest = {
   task_item_id: number;

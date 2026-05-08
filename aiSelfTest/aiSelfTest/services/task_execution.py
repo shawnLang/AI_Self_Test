@@ -50,7 +50,7 @@ from aiSelfTest.schemas.task import TaskFiltersPayload
 from aiSelfTest.services.client import get_client_or_raise
 from aiSelfTest.services.client_auth import ClientApi, UPSTREAM_FILE_DETAIL_PATH, UPSTREAM_FILE_PAGE_PATH
 from aiSelfTest.services.multimodal_attachment import build_gateway_chat_payload
-from aiSelfTest.services.multimodal_gateway import call_chat_endpoint, extract_chat_reply
+from aiSelfTest.services.multimodal_gateway import GatewayResponseParser, MultimodalGatewayClient
 from aiSelfTest.services.task_steps.llm_result import LlmDetectionParser, LlmDetectionResult
 from aiSelfTest.services.task_steps.matcher import TaskItemDataMatcher, VideoRecognitionChoice
 from aiSelfTest.services.task_steps.video_recognition import VideoFrameExtractor
@@ -383,7 +383,7 @@ class RequestsTaskFileDownloader:
 
         result_file_path: Path | None = None
         if task_item.file_bmp == 2 and task_item.result_file_data:
-            result_file_path = item_dir / build_task_item_save_name(client, source_record, "datajson")
+            result_file_path = item_dir / build_task_item_save_name(client, source_record, "videojson")
             self._download_url(
                 build_upstream_file_download_url(client.api_url, task_item.result_file_data),
                 result_file_path,
@@ -449,6 +449,7 @@ class MultimodalTaskItemRecognizer:
 
         self.parser = LlmDetectionParser()
         self.video_extractor = VideoFrameExtractor()
+        self.gateway_client = MultimodalGatewayClient()
 
     def recognize(self, session: Session, task: Task, task_item: TaskItem,
                   data_rows: Sequence[TaskItemData]) -> TaskItemRecognitionResult:
@@ -468,9 +469,9 @@ class MultimodalTaskItemRecognizer:
         file_path = Path(task_item.file_path) if task_item.file_path else None
         if file_path is None:
             raise AppException(code=ErrorCode.TASK_FAILED, message="视频任务缺少本地文件", status_code=502)
-        result_files = sorted(file_path.parent.glob("*.datajson"))
+        result_files = sorted(file_path.parent.glob("*.videojson"))
         if not result_files:
-            raise AppException(code=ErrorCode.TASK_FAILED, message="视频任务未找到 datajson 文件", status_code=502)
+            raise AppException(code=ErrorCode.TASK_FAILED, message="视频任务未找到 videojson 文件", status_code=502)
 
         detections = self.video_extractor.load_detections(result_files[0])
         video_results: dict[int, list[VideoRecognitionChoice]] = {}
@@ -504,12 +505,12 @@ class MultimodalTaskItemRecognizer:
             messages=messages,
             stream=False,
         )
-        result = call_chat_endpoint(
+        result = self.gateway_client.call_chat_endpoint(
             endpoint_url=model.endpoint_url,
             api_key=model.api_key,
             payload=payload,
         )
-        reply = extract_chat_reply(result.payload)
+        reply = GatewayResponseParser.extract_chat_reply(result.payload)
         if not reply:
             raise AppException(
                 code=ErrorCode.TASK_FAILED,

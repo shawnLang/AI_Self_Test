@@ -36,6 +36,9 @@ def test_tasks_page_uses_canonical_task_routes() -> None:
     assert "/api/tasks/action-stop/" in source
     assert "/api/tasks/action-run/" in source
     assert "/api/tasks/delete/" in source
+    assert "任务数据" in source
+    assert "已下载文件" in source
+    assert "不可恢复" in source
 
 
 def test_task_card_action_buttons_do_not_wrap_or_confuse_run_with_schedule() -> None:

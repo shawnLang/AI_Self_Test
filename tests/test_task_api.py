@@ -323,6 +323,16 @@ def test_delete_task_cascades_task_items(
     task_id = _unwrap_success(task_response.json())["id"]
 
     _, task_item_model, task_item_data_model = import_task_models()
+    config_module = importlib.import_module("aiSelfTest.config")
+    data_dir = config_module.get_settings().data_dir
+    task_file_dir = data_dir / "task_files" / f"鸟类任务-001_{task_id}"
+    task_file_dir.mkdir(parents=True)
+    downloaded_file = task_file_dir / "downloaded-image.jpg"
+    downloaded_file.write_bytes(b"image")
+    external_dir = data_dir / "external-files"
+    external_dir.mkdir(parents=True)
+    external_file = external_dir / "external-image.jpg"
+    external_file.write_bytes(b"external")
 
     task_item = task_item_model(
         task_id=task_id,
@@ -339,8 +349,27 @@ def test_delete_task_cascades_task_items(
         result_file_data="",
         id_type=0,
         status="已创建",
+        file_path=downloaded_file.as_posix(),
+    )
+    external_task_item = task_item_model(
+        task_id=task_id,
+        name="external-image.jpg",
+        device_name="device-1",
+        file_num="file-002",
+        file_extension="jpg",
+        file_url="https://example.com/external.jpg",
+        file_id=102,
+        file_fid="fid-002",
+        sp_name_list="白鹭",
+        classify=1,
+        file_bmp=1,
+        result_file_data="",
+        id_type=0,
+        status="已创建",
+        file_path=external_file.as_posix(),
     )
     db_session.add(task_item)
+    db_session.add(external_task_item)
     db_session.commit()
     db_session.refresh(task_item)
 
@@ -361,6 +390,8 @@ def test_delete_task_cascades_task_items(
     assert data["id"] == task_id
     assert db_session.exec(select(task_item_model)).all() == []
     assert db_session.exec(select(task_item_data_model)).all() == []
+    assert not task_file_dir.exists()
+    assert external_file.exists()
 
 
 def test_task_action_start_stop_and_run(

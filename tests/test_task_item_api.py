@@ -303,11 +303,11 @@ def test_task_item_detail_returns_bbox_and_status_based_review_summary(
     assert data["media"]["result_file_url"] is None
 
 
-def test_video_task_item_detail_returns_datajson_url_without_parsing(
+def test_video_task_item_detail_returns_videojson_url_without_parsing(
     app_client: TestClient,
     db_session: Session,
 ) -> None:
-    """视频详情只暴露 datajson 静态 URL 与 track_ids，不解析 datajson 内容。"""
+    """视频详情只暴露 videojson 静态 URL 与 track_ids，不解析 videojson 内容。"""
 
     from aiSelfTest.config import get_settings
 
@@ -316,10 +316,10 @@ def test_video_task_item_detail_returns_datajson_url_without_parsing(
     item_dir = get_settings().data_dir / "task_files" / "video-overlay-task"
     item_dir.mkdir(parents=True, exist_ok=True)
     video_path = item_dir / "video-1.mp4"
-    datajson_path = item_dir / "video-1.datajson"
+    videojson_path = item_dir / "video-1.videojson"
     video_path.write_bytes(b"fake video")
-    datajson_path.write_text(
-        '[{"not": "a valid two dimensional datajson but should still be served"}]',
+    videojson_path.write_text(
+        '[{"not": "a valid two dimensional videojson but should still be served"}]',
         encoding="utf-8",
     )
     task_item.file_path = str(video_path)
@@ -331,7 +331,7 @@ def test_video_task_item_detail_returns_datajson_url_without_parsing(
     assert response.status_code == 200
     data = _unwrap_success(response.json())
     assert data["media"]["url"] == "/api/task-files/video-overlay-task/video-1.mp4"
-    assert data["media"]["result_file_url"] == "/api/task-files/video-overlay-task/video-1.datajson"
+    assert data["media"]["result_file_url"] == "/api/task-files/video-overlay-task/video-1.videojson"
     assert data["review_rows"][0]["task_item_data_id"] == task_item_data.id
     assert data["review_rows"][0]["track_ids"] == "1001"
 

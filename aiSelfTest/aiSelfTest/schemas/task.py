@@ -64,7 +64,7 @@ def resolve_task_item_media_url(row: TaskItem) -> str:
 
 
 def resolve_task_item_result_file_url(row: TaskItem) -> str | None:
-    """返回视频同目录 datajson 的静态访问地址，不读取或解析 datajson 内容。"""
+    """返回视频同目录 videojson 的静态访问地址，不读取或解析 videojson 内容。"""
 
     if row.file_bmp != 2 or not row.down_state or not row.file_path:
         return None
@@ -73,11 +73,11 @@ def resolve_task_item_result_file_url(row: TaskItem) -> str | None:
     if not file_path.is_file():
         return None
 
-    datajson_files = sorted(file_path.parent.glob("*.datajson"))
-    if not datajson_files:
+    videojson_files = sorted(file_path.parent.glob("*.videojson"))
+    if not videojson_files:
         return None
 
-    result_file_url = resolve_task_file_url(datajson_files[0])
+    result_file_url = resolve_task_file_url(videojson_files[0])
     return result_file_url or None
 
 

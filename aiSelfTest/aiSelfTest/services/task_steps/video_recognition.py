@@ -21,7 +21,7 @@ VIDEO_CROP_PADDING_RATIO = 0.15
 
 @dataclass(frozen=True)
 class TrackDetection:
-    """datajson 中命中的单条追踪检测结果。"""
+    """videojson 中命中的单条追踪检测结果。"""
 
     frame_index: int
     track_id: str
@@ -37,7 +37,7 @@ class TrackDetection:
 
 
 class VideoFrameExtractor:
-    """解析 datajson 并构造视频关键帧裁剪附件。"""
+    """解析 videojson 并构造视频关键帧裁剪附件。"""
 
     def __init__(self, max_keyframes: int = MAX_VIDEO_KEYFRAME_COUNT,
                  padding_ratio: float = VIDEO_CROP_PADDING_RATIO) -> None:
@@ -46,15 +46,15 @@ class VideoFrameExtractor:
         self.max_keyframes = max_keyframes
         self.padding_ratio = padding_ratio
 
-    def load_detections(self, datajson_path: Path) -> list[TrackDetection]:
-        """读取二维数组格式 datajson。"""
+    def load_detections(self, videojson_path: Path) -> list[TrackDetection]:
+        """读取二维数组格式 videojson。"""
 
         try:
-            payload = json.loads(datajson_path.read_text(encoding="utf-8"))
+            payload = json.loads(videojson_path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError) as exc:
             raise AppException(
                 code=ErrorCode.TASK_FAILED,
-                message=f"视频结果文件读取失败: {datajson_path}",
+                message=f"视频结果文件读取失败: {videojson_path}",
                 status_code=502,
             ) from exc
         if not isinstance(payload, list):
@@ -138,7 +138,7 @@ class VideoFrameExtractor:
 
     @staticmethod
     def _parse_detection(payload: Any, fallback_index: int) -> TrackDetection | None:
-        """从 datajson 单个对象解析 TrackDetection。"""
+        """从 videojson 单个对象解析 TrackDetection。"""
 
         if not isinstance(payload, Mapping):
             return None

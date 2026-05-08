@@ -54,7 +54,7 @@ class FakeTaskFileDownloader:
             Image.new("RGB", (100, 100), color=(255, 255, 255)).save(file_path)
         result_file_path = None
         if task_item.result_file_data:
-            result_file_path = item_dir / build_task_item_save_name(client, source_record, "datajson")
+            result_file_path = item_dir / build_task_item_save_name(client, source_record, "videojson")
             result_file_path.write_text(
                 """
                 [
@@ -300,7 +300,7 @@ def test_task_execution_ingests_records_and_advances_shared_trunk(
     assert video_item.result_file_data == "video-result.json"
     assert (
         Path(video_item.file_path).parent
-        / "树蛙保护区_tenant-001_camera-2_camera_102_VID-001_ai_有效.datajson"
+        / "树蛙保护区_tenant-001_camera-2_camera_102_VID-001_ai_有效.videojson"
     ).exists()
 
 

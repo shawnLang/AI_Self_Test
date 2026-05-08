@@ -9,8 +9,8 @@ import {
   type TaskItemDataStatus,
   type ReviewItem,
   type ReviewRow,
-  type VideoDatajsonDetection,
-  type VideoDatajsonPayload,
+  type VideoVideoJsonDetection,
+  type VideoVideoJsonPayload,
 } from '../api/taskItems';
 import {
   useCompletedReviewTasks,
@@ -53,8 +53,8 @@ const BBOX_LABEL_COLORS: Record<string, string> = {
   error: 'bg-red-500',
 };
 
-function parseVideoDatajson(payload: unknown): IndexedVideoDetections {
-  const frames = Array.isArray(payload) ? payload as VideoDatajsonPayload : [];
+function parseVideoVideoJson(payload: unknown): IndexedVideoDetections {
+  const frames = Array.isArray(payload) ? payload as VideoVideoJsonPayload : [];
   const byFrame = new Map<number, VideoOverlayDetection[]>();
 
   frames.forEach((framePayload, fallbackIndex) => {
@@ -77,7 +77,7 @@ function parseVideoDatajson(payload: unknown): IndexedVideoDetections {
 }
 
 function parseVideoDetection(
-  detection: VideoDatajsonDetection,
+  detection: VideoVideoJsonDetection,
   fallbackIndex: number,
 ): VideoOverlayDetection | null {
   if (!detection || typeof detection !== 'object') return null;
@@ -150,7 +150,7 @@ function getRowsByTrackId(rows: ReviewRow[]): Map<string, ReviewRow> {
   return rowsByTrackId;
 }
 
-function VideoWithDatajsonOverlay({ item, className }: { item: ReviewItem; className: string }) {
+function VideoWithVideoJsonOverlay({ item, className }: { item: ReviewItem; className: string }) {
   const videoRef = React.useRef<HTMLVideoElement | null>(null);
   const wrapperRef = React.useRef<HTMLDivElement | null>(null);
   const [detectionsByFrame, setDetectionsByFrame] = React.useState<IndexedVideoDetections>({
@@ -173,12 +173,12 @@ function VideoWithDatajsonOverlay({ item, className }: { item: ReviewItem; class
     setLoadState('loading');
     fetch(item.resultFileUrl)
       .then((response) => {
-        if (!response.ok) throw new Error(`datajson load failed: ${response.status}`);
+        if (!response.ok) throw new Error(`videojson load failed: ${response.status}`);
         return response.json();
       })
       .then((payload) => {
         if (cancelled) return;
-        setDetectionsByFrame(parseVideoDatajson(payload));
+        setDetectionsByFrame(parseVideoVideoJson(payload));
         setLoadState('ready');
       })
       .catch((error) => {
@@ -558,7 +558,7 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
   }, [viewMode, filteredItems, activeItemId, previewItem]);
 
   const renderVideoWithBboxOverlay = (item: ReviewItem, className: string) => (
-    <VideoWithDatajsonOverlay item={item} className={className} />
+    <VideoWithVideoJsonOverlay item={item} className={className} />
   );
 
   const renderMedia = (item: ReviewItem, className: string) => {
