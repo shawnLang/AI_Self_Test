@@ -526,7 +526,11 @@ class MultimodalTaskItemRecognizer:
                 if row is None:
                     continue
                 video_results.setdefault(row.id or 0, []).append(
-                    VideoRecognitionChoice(name=detected.name, score=matched_detection.area)
+                    VideoRecognitionChoice(
+                        name=detected.name,
+                        det_name=detected.det_name,
+                        score=matched_detection.area,
+                    )
                 )
         return TaskItemRecognitionResult(video_results=video_results)
 
@@ -635,6 +639,7 @@ class MultimodalTaskItemRecognizer:
         source_rows = [
             {
                 "name": row.name,
+                "detName": row.det_name,
                 "trackIds": row.track_ids,
                 "bbox": [row.minx, row.miny, row.maxx, row.maxy],
             }
@@ -642,10 +647,7 @@ class MultimodalTaskItemRecognizer:
         ]
         return (
             f"{prompt}\n\n"
-            "请识别附件图片中的动物、人、车，只返回 JSON 对象，不要返回 Markdown。\n"
-            "没有动物、人、车时返回 {\"width\": 图片宽度, \"height\": 图片高度, \"data\": []}。\n"
-            "有目标时返回 {\"width\": 图片宽度, \"height\": 图片高度, "
-            "\"data\": [{\"name\": \"动物名称/人/车\", \"bbox\": [xmin, ymin, xmax, ymax]}]}。\n"
+            "只返回 JSON 对象，不要返回 Markdown。\n"
             f"文件名：{task_item.name}\n"
             f"{image_size_text}"
             f"原始识别结果：{json.dumps(source_rows, ensure_ascii=False)}"
@@ -1113,6 +1115,21 @@ class TaskExecutionRunner:
                 status_code=502,
             ) from exc
 
+    @staticmethod
+    def _parse_optional_int(value: Any) -> int | None:
+        """解析上游可空整数 ID。"""
+
+        if value is None or value == "":
+            return None
+        try:
+            return int(value)
+        except (TypeError, ValueError) as exc:
+            raise AppException(
+                code=ErrorCode.TASK_FAILED,
+                message="上游详情数据 id 不是整数",
+                status_code=502,
+            ) from exc
+
     def _insert_task_item_data_rows(self, task_item: TaskItem, source_record: SourceTaskItemRecord) -> int:
         """拉取并插入单个任务项的识别明细行。"""
 
@@ -1131,8 +1148,11 @@ class TaskExecutionRunner:
         for row in detail_rows:
             task_item_data = TaskItemData(
                 task_item_id=task_item.id or 0,
+                source_id=self._parse_optional_int(row.get("id")),
                 name=truncate(str(row.get("name", "")), 100),
                 score=float(row.get("score") or 0),
+                det_name=truncate(str(row.get("detName", "")), 100),
+                det_score=float(row.get("detScore") or 0),
                 track_ids=truncate(str(row.get("trackIds", "")), 100),
                 sp_amount=int(row.get("spAmount") or 0),
                 minx=optional_float(row.get("minx")),
@@ -1140,6 +1160,7 @@ class TaskExecutionRunner:
                 maxx=optional_float(row.get("maxx")),
                 maxy=optional_float(row.get("maxy")),
                 llm_name=None,
+                llm_det_name=None,
                 status=TaskItemDataStatus.DEFAULT.value,
             )
             self.session.add(task_item_data)

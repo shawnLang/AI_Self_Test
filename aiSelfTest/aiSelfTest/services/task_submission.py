@@ -63,16 +63,23 @@ class AiPollingPayloadBuilder:
             return None
 
         name = row.name if row.status == TaskItemDataStatus.DEFAULT.value else row.llm_name
-        return {
+        det_name = row.det_name if row.status == TaskItemDataStatus.DEFAULT.value else row.llm_det_name or row.det_name
+        payload: dict[str, object] = {}
+        if row.source_id is not None:
+            payload["id"] = row.source_id
+        payload.update({
             "name": name or "",
             "score": row.score,
+            "detName": det_name or "",
+            "detScore": row.det_score,
             "trackIds": row.track_ids,
             "spAmount": row.sp_amount,
             "minx": row.minx,
             "miny": row.miny,
             "maxx": row.maxx,
             "maxy": row.maxy,
-        }
+        })
+        return payload
 
 
 class TrainingArtifactWriter:
@@ -126,12 +133,16 @@ class TrainingArtifactWriter:
 
         return {
             "id": row.id or 0,
+            "sourceId": row.source_id,
             "name": row.name,
             "score": row.score,
+            "detName": row.det_name,
+            "detScore": row.det_score,
             "trackIds": row.track_ids,
             "spAmount": row.sp_amount,
             "bbox": [row.minx, row.miny, row.maxx, row.maxy],
             "llmName": row.llm_name,
+            "llmDetName": row.llm_det_name,
             "status": row.status,
         }
 

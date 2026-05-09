@@ -28,7 +28,7 @@ LOGIN_PATH = "/auth/login"
 REFRESH_PATH = "/auth/refresh"
 TENANT_CONFIG_PATH_TEMPLATE = "/sys/sysTenantConfig/getByCode/{code}"
 UPSTREAM_FILE_PAGE_PATH = "/openApi/icFile/findFilePage"
-UPSTREAM_FILE_DETAIL_PATH = "/openApi/icFile/getResultByFileId1"
+UPSTREAM_FILE_DETAIL_PATH = "/openApi/icFile/getResultDetByFileId"
 UPSTREAM_FILE_AI_POLLING_RESULT_PATH = "/openApi/icFile/aiPollingResult"
 
 

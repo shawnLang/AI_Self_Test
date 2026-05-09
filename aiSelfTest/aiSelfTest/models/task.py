@@ -287,8 +287,11 @@ class TaskItemData(SQLModel, table=True):
         index=True,
         description="关联的任务item"
     )
+    source_id: Optional[int] = Field(default=None, description="上游识别结果明细ID")
     name: str = Field(max_length=100, description="原始识别名称")
     score: float = Field(default=0, description="原始识别率")
+    det_name: Optional[str] = Field(default=None, max_length=100, description="原始检测分类")
+    det_score: float = Field(default=0, description="原始检测分类分数")
     track_ids: str = Field(max_length=100, description="个体轨迹ids")
     sp_amount: int = Field(default=1, description="识别物种个体数")
     minx: Optional[float] = Field(default=None, description="左上角x")
@@ -296,4 +299,5 @@ class TaskItemData(SQLModel, table=True):
     maxx: Optional[float] = Field(default=None, description="右下角x")
     maxy: Optional[float] = Field(default=None, description="右下角y")
     llm_name: Optional[str] = Field(default=None, description="大模型识别名称")
+    llm_det_name: Optional[str] = Field(default=None, max_length=100, description="大模型检测分类")
     status: str = Field(default=TaskItemDataStatus.DEFAULT.value, description="状态")

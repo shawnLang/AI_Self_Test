@@ -935,6 +935,12 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
                 保存
               </button>
             </div>
+            <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-gray-500 dark:text-gray-400">
+              <span>原检测：{row.detName || '--'}</span>
+              <span>模型检测：{row.llmDetName || '--'}</span>
+              <span>检测分：{Number.isFinite(row.detScore) ? row.detScore : 0}</span>
+              {row.sourceId ? <span>源ID：{row.sourceId}</span> : null}
+            </div>
             {row.errorMessage && (
               <div className="mt-2 text-[11px] text-gray-500 dark:text-gray-400">
                 {row.errorMessage}

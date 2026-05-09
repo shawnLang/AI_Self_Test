@@ -229,7 +229,7 @@ def test_worker_cleans_old_added_rows_before_re_recognition(
 
     def fake_recognize(self, session: Session, task, task_item, data_rows):
         assert [row.id for row in data_rows] == [source_row.id]
-        detected = LlmDetectedObject(name="新名称", bbox=BoundingBox(0, 0, 100, 100))
+        detected = LlmDetectedObject(name="新名称", det_name="鸟", bbox=BoundingBox(0, 0, 100, 100))
         return TaskItemRecognitionResult(image_result=LlmDetectionResult(width=100, height=100, data=[detected]))
 
     monkeypatch.setattr(task_execution.MultimodalTaskItemRecognizer, "recognize", fake_recognize)
@@ -250,6 +250,7 @@ def test_worker_cleans_old_added_rows_before_re_recognition(
     assert len(remaining_rows) == 1
     assert remaining_rows[0].id == source_row.id
     assert source_row.llm_name == "新名称"
+    assert source_row.llm_det_name == "鸟"
     assert source_row.status == TaskItemDataStatus.UPDATE.value
     assert task_item.llm_state == TaskItemLlmState.SUCCESS.value
     assert task_item.confirm_state == TaskItemConfirmState.PENDING.value
@@ -289,7 +290,7 @@ def test_worker_continues_after_single_item_failure(
     from aiSelfTest.services.task_steps.llm_result import BoundingBox, LlmDetectedObject, LlmDetectionResult
 
     def fake_recognize(self, session: Session, task, task_item, data_rows):
-        detected = LlmDetectedObject(name="白鹭", bbox=BoundingBox(0, 0, 100, 100))
+        detected = LlmDetectedObject(name="白鹭", det_name="鸟", bbox=BoundingBox(0, 0, 100, 100))
         return TaskItemRecognitionResult(image_result=LlmDetectionResult(width=100, height=100, data=[detected]))
 
     monkeypatch.setattr(task_execution.MultimodalTaskItemRecognizer, "recognize", fake_recognize)

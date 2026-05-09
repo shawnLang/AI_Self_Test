@@ -140,6 +140,14 @@ def test_review_frontend_uses_task_item_data_status_bbox_and_summary_contract() 
     assert "type TaskItemSourceSize" in api_text
     assert "bbox: TaskItemBBox | null" in api_text
     assert "source_size: TaskItemSourceSize | null" in api_text
+    assert "source_id: number | null" in api_text
+    assert "det_name: string | null" in api_text
+    assert "det_score: number" in api_text
+    assert "llm_det_name: string | null" in api_text
+    assert "sourceId: row.source_id" in api_text
+    assert "detName: row.det_name" in api_text
+    assert "detScore: row.det_score" in api_text
+    assert "llmDetName: row.llm_det_name" in api_text
     assert "sourceStatus: row.status" in api_text
     assert "submitCount: reviewRows.filter((row) => row.willSubmit).length" in api_text
     assert "excludedCount: reviewRows.filter((row) => row.decision === 'exclude').length" in api_text

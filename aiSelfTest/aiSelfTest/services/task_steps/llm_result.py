@@ -50,6 +50,7 @@ class LlmDetectedObject:
     """大模型返回的单个目标。"""
 
     name: str
+    det_name: str
     bbox: BoundingBox
 
 
@@ -106,10 +107,17 @@ class LlmDetectionParser:
             if not isinstance(item, Mapping):
                 continue
             name = str(item.get("name", "")).strip()
+            det_name = str(item.get("detName", "")).strip()
             bbox_payload = item.get("bbox")
             if not name or not isinstance(bbox_payload, Sequence) or isinstance(bbox_payload, (str, bytes)):
                 continue
-            objects.append(LlmDetectedObject(name=name, bbox=BoundingBox.from_sequence(bbox_payload)))
+            objects.append(
+                LlmDetectedObject(
+                    name=name,
+                    det_name=det_name,
+                    bbox=BoundingBox.from_sequence(bbox_payload),
+                )
+            )
 
         return LlmDetectionResult(width=width, height=height, data=objects)
 

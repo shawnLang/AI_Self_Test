@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import Integer
+from sqlalchemy import Float, Integer
 from sqlalchemy.exc import IntegrityError
 from sqlmodel import Session, select
 
@@ -120,6 +120,20 @@ def test_task_item_file_id_is_integer_column(app_client: TestClient) -> None:
     _, task_item_model, _ = import_task_models()
 
     assert isinstance(task_item_model.__table__.c.file_id.type, Integer)
+
+
+def test_task_item_data_detection_columns_match_upstream_contract(app_client: TestClient) -> None:
+    """TaskItemData 应保存上游明细 ID、原始检测分类和模型检测分类。"""
+
+    _create_task_fixture(app_client)
+    _, _, task_item_data_model = import_task_models()
+
+    columns = task_item_data_model.__table__.c
+    assert isinstance(columns.source_id.type, Integer)
+    assert columns.source_id.nullable is True
+    assert columns.det_name.type.length == 100
+    assert isinstance(columns.det_score.type, Float)
+    assert columns.llm_det_name.type.length == 100
 
 
 def test_task_status_enums_expose_state_machine_contract(app_client: TestClient) -> None:

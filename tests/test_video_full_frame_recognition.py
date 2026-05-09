@@ -130,10 +130,11 @@ def test_apply_video_choices_uses_vote_and_larger_bbox_tie_breaker() -> None:
     """视频整帧多次命中同一行时，应按票数和 bbox 面积写回最终名称。"""
 
     row = _row(row_id=1, name="白鹭", track_ids="1")
+    row.det_name = "鸟"
     choices = [
-        _choice("苍鹭", score=100),
-        _choice("白鹭", score=20),
-        _choice("白鹭", score=30),
+        _choice("苍鹭", det_name="鸟", score=100),
+        _choice("白鹭", det_name="兽", score=20),
+        _choice("白鹭", det_name="鸟", score=30),
     ]
 
     from aiSelfTest.services.task_steps.matcher import TaskItemDataMatcher
@@ -141,7 +142,88 @@ def test_apply_video_choices_uses_vote_and_larger_bbox_tie_breaker() -> None:
     TaskItemDataMatcher().apply_video_choice(row, choices)
 
     assert row.llm_name == "白鹭"
+    assert row.det_name == "鸟"
+    assert row.llm_det_name == "鸟"
     assert row.status == "默认"
+
+
+def test_llm_detection_parser_reads_det_name() -> None:
+    """大模型新结构中的 detName 应解析为 llm 检测分类。"""
+
+    from aiSelfTest.services.task_steps.llm_result import LlmDetectionParser
+
+    result = LlmDetectionParser().parse(
+        '{"width": 320, "height": 240, '
+        '"data": [{"name": "白鹭", "detName": "鸟", "bbox": [1, 2, 3, 4]}]}'
+    )
+
+    assert result.width == 320
+    assert result.height == 240
+    assert result.data[0].name == "白鹭"
+    assert result.data[0].det_name == "鸟"
+    assert result.data[0].bbox.xmin == 1
+
+
+def test_image_matcher_writes_llm_det_name_without_overwriting_source_det_name() -> None:
+    """图片匹配只写模型检测分类，不覆盖上游原始检测分类。"""
+
+    from aiSelfTest.services.task_steps.llm_result import BoundingBox, LlmDetectedObject
+    from aiSelfTest.services.task_steps.matcher import TaskItemDataMatcher
+
+    class FakeSession:
+        def __init__(self) -> None:
+            self.added: list[Any] = []
+            self.committed = False
+
+        def add(self, row: Any) -> None:
+            self.added.append(row)
+
+        def commit(self) -> None:
+            self.committed = True
+
+    row = _row(row_id=1, name="白鹭", track_ids="1")
+    row.det_name = "鸟"
+    session = FakeSession()
+    detected = LlmDetectedObject(name="白鹭", det_name="兽", bbox=BoundingBox(0, 0, 100, 100))
+
+    TaskItemDataMatcher().apply_image_results(session, 10, [row], [detected])
+
+    assert row.det_name == "鸟"
+    assert row.llm_det_name == "兽"
+    assert row.llm_name == "白鹭"
+    assert row.status == "默认"
+    assert session.committed is True
+
+
+def test_task_recognition_prompt_uses_config_prompt_without_duplicate_format_rules(tmp_path: Path) -> None:
+    """配置提示词已含返回结构时，后端只追加上下文，不重复追加格式示例。"""
+
+    from aiSelfTest.services.task_execution import MultimodalTaskItemRecognizer
+
+    image_path = tmp_path / "image.jpg"
+    from PIL import Image
+
+    Image.new("RGB", (16, 9), color=(255, 255, 255)).save(image_path)
+    configured_prompt = (
+        "你是一个动物专家，如果没有就返回：{width:图片宽度,height:图片高度,data:[]}，"
+        "如果有动物,人,车返回{width:图片宽度,height:图片高度,"
+        "data:[{name:动物名称/人/车,detName:鸟/兽/人/车,bbox:[xmin,ymin,xmax,ymax]}]}"
+    )
+
+    prompt = MultimodalTaskItemRecognizer._build_task_recognition_prompt(
+        configured_prompt,
+        _image_task_item(image_path),
+        [_row(row_id=1, name="白鹭", track_ids="1")],
+    )
+
+    assert prompt.startswith(configured_prompt)
+    assert "只返回 JSON 对象，不要返回 Markdown" in prompt
+    assert "文件名：image.jpg" in prompt
+    assert "图片尺寸：width=16, height=9" in prompt
+    assert "原始识别结果：" in prompt
+    assert prompt.count("data:[{name:动物名称/人/车,detName:鸟/兽/人/车") == 1
+    assert "没有动物、人、车时返回" not in prompt
+    assert "有目标时返回" not in prompt
 
 
 class FakeFullFrameExtractor:
@@ -198,6 +280,12 @@ def _task_item_for_switch() -> Any:
     return TaskItem(id=10, task_id=1, name="video.mp4", file_bmp=2)
 
 
+def _image_task_item(image_path: Path) -> Any:
+    from aiSelfTest.models.task import TaskItem
+
+    return TaskItem(id=11, task_id=1, name=image_path.name, file_bmp=1, file_path=image_path.as_posix())
+
+
 def _row(row_id: int, name: str, track_ids: str) -> Any:
     from aiSelfTest.models.task import TaskItemData
 
@@ -224,11 +312,11 @@ def _detection(frame: int, track_id: str, bbox: tuple[float, float, float, float
 def _result(name: str, bbox: tuple[float, float, float, float]) -> Any:
     from aiSelfTest.services.task_steps.llm_result import BoundingBox, LlmDetectedObject, LlmDetectionResult
 
-    detected = LlmDetectedObject(name=name, bbox=BoundingBox(*bbox))
+    detected = LlmDetectedObject(name=name, det_name="鸟", bbox=BoundingBox(*bbox))
     return LlmDetectionResult(width=320, height=240, data=[detected])
 
 
-def _choice(name: str, score: float):
+def _choice(name: str, det_name: str = "", score: float = 0.0):
     from aiSelfTest.services.task_steps.matcher import VideoRecognitionChoice
 
-    return VideoRecognitionChoice(name=name, score=score)
+    return VideoRecognitionChoice(name=name, det_name=det_name, score=score)

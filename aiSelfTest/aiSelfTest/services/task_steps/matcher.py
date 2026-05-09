@@ -20,6 +20,7 @@ class VideoRecognitionChoice:
     """单条视频业务结果的大模型候选名称。"""
 
     name: str
+    det_name: str = ""
     score: float = 0.0
 
 
@@ -53,6 +54,7 @@ class TaskItemDataMatcher:
 
             if best_row is not None and best_iou >= self.image_iou_threshold:
                 best_row.llm_name = detected.name
+                best_row.llm_det_name = detected.det_name
                 best_row.status = (
                     TaskItemDataStatus.DEFAULT.value
                     if detected.name.strip() == best_row.name.strip()
@@ -73,6 +75,7 @@ class TaskItemDataMatcher:
                         maxx=detected.bbox.xmax,
                         maxy=detected.bbox.ymax,
                         llm_name=detected.name,
+                        llm_det_name=detected.det_name,
                         status=TaskItemDataStatus.ADD.value,
                     )
                 )
@@ -88,12 +91,14 @@ class TaskItemDataMatcher:
 
         if not choices:
             row.llm_name = None
+            row.llm_det_name = None
             row.status = TaskItemDataStatus.DELETE.value
             return
 
         name_counts = Counter(choice.name for choice in choices if choice.name.strip())
         if not name_counts:
             row.llm_name = None
+            row.llm_det_name = None
             row.status = TaskItemDataStatus.DELETE.value
             return
 
@@ -101,6 +106,7 @@ class TaskItemDataMatcher:
         top_names = {name for name, count in name_counts.items() if count == max_count}
         best_choice = max((choice for choice in choices if choice.name in top_names), key=lambda choice: choice.score)
         row.llm_name = best_choice.name
+        row.llm_det_name = best_choice.det_name
         row.status = (
             TaskItemDataStatus.DEFAULT.value
             if best_choice.name.strip() == row.name.strip()

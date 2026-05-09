@@ -150,7 +150,7 @@ rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 1. 自动任务首次执行时，分页数据按 `file_id` 写入 `task_item`，详情 `recordData` 写入 `task_item_data`。
 2. 第二次执行遇到相同 `file_id` 时跳过，即使 `file_fid` 不同也不新增。
 3. 两条数据 `file_fid` 相同但 `file_id` 不同时，允许作为不同 `TaskItem` 新增。
-4. 详情接口使用 `GET /openApi/icFile/getResultByFileId1`，并通过 `params={"fileId": file_id}` 传参。
+4. 详情接口使用 `GET /openApi/icFile/getResultDetByFileId`，并通过 `params={"fileId": file_id}` 传参。
 5. 所有新增项先完成 `TaskItemData` 入库，再进入下载阶段。
 6. 自动任务下载后调用大模型识别，手动任务下载后保持 `llm_state=待识别`。
 7. 代码中不再保留 `RequestFunc = Callable[..., Response]` 和 `request_func` 注入参数。
@@ -690,6 +690,95 @@ cd aiSelfTestUi && npm run lint
 ```bash
 .env/bin/python -m pytest tests/test_task_item_api.py tests/test_task_celery_execution.py tests/test_frontend_taskitem_contract.py
 cd aiSelfTestUi && npm run lint
+```
+
+运行 pytest 后清理：
+
+```bash
+rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
+```
+
+# TaskItemData 检测分类与远端明细 ID 测试清单
+
+## 目标
+
+- `TaskItemData` 保存上游详情行 ID、原始检测分类和原始检测分数。
+- 大模型返回 `detName` 时只写入 `llm_det_name`，不得覆盖原始 `det_name`。
+- 远端提交时按复核状态合成最终 `detName`，并仅在有上游详情行 ID 时提交 `id`。
+
+## 用例
+
+1. `TaskItemData` 模型包含整型可空 `source_id` 字段。
+2. `TaskItemData` 模型包含 `det_name`、`det_score`、`llm_det_name` 字段。
+3. 拉取任务详情时，`recordData[].id / detName / detScore` 正确落库。
+4. 复核详情接口返回 `source_id / det_name / det_score / llm_det_name`。
+5. 大模型 `{width,height,data:[{name,detName,bbox}]}` 解析出 `detName`。
+6. 图片 bbox 匹配写回 `llm_name / llm_det_name`，不覆盖 `det_name`。
+7. 视频 bbox 匹配投票写回 `llm_name / llm_det_name`，不覆盖 `det_name`。
+8. 远端提交 `默认` 行提交原始 `name / detName / detScore` 和上游明细 `id`。
+9. 远端提交 `修改` 行提交 `llm_name`，`detName` 优先使用 `llm_det_name`，
+   为空时兜底 `det_name`，并带上上游明细 `id`。
+10. 远端提交 `新增` 行提交 `llm_name / llm_det_name / detScore=0`，且不提交 `id`。
+11. 远端提交 `删除` 行不进入 `recordData`。
+12. 前端复核类型与映射包含检测分类字段，页面可展示原始检测分类与模型检测分类。
+
+## 验证命令
+
+```bash
+.env/bin/python -m pytest tests/test_task_model_contract.py tests/test_task_item_api.py tests/test_task_item_re_recognition.py tests/test_video_full_frame_recognition.py tests/test_frontend_taskitem_contract.py
+cd aiSelfTestUi && npm run lint
+```
+
+运行 pytest 后清理：
+
+```bash
+rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
+```
+
+# 删除任务级联重识别批次测试清单
+
+## 目标
+
+- 删除任务时同步删除 `task_item_recognition_batch` 中关联任务的批量重新识别记录。
+- 避免 PostgreSQL 外键 `task_item_recognition_batch_task_id_fkey` 阻止任务删除。
+
+## 用例
+
+1. 任务存在批量重新识别记录时，`DELETE /api/tasks/delete/{id}` 成功。
+2. 删除任务后，对应 `TaskItemRecognitionBatch`、`TaskItemData`、`TaskItem` 均被清理。
+3. 运行中或排队中的任务仍然按原逻辑禁止删除。
+
+## 验证命令
+
+```bash
+.env/bin/python -m pytest tests/test_task_celery_execution.py tests/test_task_item_re_recognition.py
+```
+
+运行 pytest 后清理：
+
+```bash
+rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
+```
+
+# 大模型任务提示词透传测试清单
+
+## 目标
+
+- 任务执行使用用户配置的提示词作为唯一返回结构约束。
+- 后端只追加通用 JSON 输出约束、文件名、图片尺寸和原始识别结果等上下文，不重复拼接固定 JSON 示例。
+
+## 用例
+
+1. `_build_task_recognition_prompt()` 返回内容以配置提示词开头。
+2. 返回内容包含“只返回 JSON 对象，不要返回 Markdown”。
+3. 返回内容包含 `文件名`、图片尺寸和原始识别结果上下文。
+4. 返回内容不额外追加“没有动物、人、车时返回”和“有目标时返回”等固定格式说明。
+5. 配置提示词中已有 `{width,height,data}` 和 `detName` 结构时，最终提示词只出现一次配置里的结构说明。
+
+## 验证命令
+
+```bash
+.env/bin/python -m pytest tests/test_video_full_frame_recognition.py
 ```
 
 运行 pytest 后清理：

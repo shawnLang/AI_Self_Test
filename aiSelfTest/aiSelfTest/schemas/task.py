@@ -364,8 +364,12 @@ class TaskItemReviewRow(BaseModel):
     """TaskItem 复核行。"""
 
     task_item_data_id: int
+    source_id: int | None = None
     source_name: str | None
     llm_name: str | None
+    det_name: str | None = None
+    det_score: float
+    llm_det_name: str | None = None
     status: str
     track_ids: str
     bbox: TaskItemBBox | None = None
@@ -382,8 +386,12 @@ class TaskItemReviewRow(BaseModel):
 
         return cls(
             task_item_data_id=row.id or 0,
+            source_id=row.source_id,
             source_name=row.name,
             llm_name=row.llm_name,
+            det_name=row.det_name,
+            det_score=row.det_score,
+            llm_det_name=row.llm_det_name,
             status=row.status,
             track_ids=row.track_ids,
             bbox=TaskItemBBox.from_model(row),

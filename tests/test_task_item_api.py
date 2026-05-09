@@ -115,11 +115,15 @@ def _seed_task_item(
 
     task_item_data = task_item_data_model(
         task_item_id=task_item.id,
+        source_id=9001,
         name="白鹭",
         score=0.91,
+        det_name="鸟",
+        det_score=0.81,
         track_ids="1001",
         sp_amount=1,
         llm_name="白鹭",
+        llm_det_name="鸟",
         status="修改",
     )
     db_session.add(task_item_data)
@@ -202,6 +206,10 @@ def test_task_item_detail_returns_review_rows(
     data = _unwrap_success(response.json())
     assert data["id"] == task_item.id
     assert data["review_rows"][0]["task_item_data_id"] == task_item_data.id
+    assert data["review_rows"][0]["source_id"] == 9001
+    assert data["review_rows"][0]["det_name"] == "鸟"
+    assert data["review_rows"][0]["det_score"] == 0.81
+    assert data["review_rows"][0]["llm_det_name"] == "鸟"
     assert data["review_rows"][0]["status"] == "修改"
     assert data["review_rows"][0]["track_ids"] == "1001"
 
@@ -225,6 +233,10 @@ def test_task_item_detail_returns_bbox_and_status_based_review_summary(
         result_file_data="",
     )
     _, task_item_data_model = import_task_item_models()
+    default_data.source_id = 9000
+    default_data.det_name = "鸟"
+    default_data.det_score = 0.8
+    default_data.llm_det_name = "鸟"
     default_data.status = "默认"
     default_data.minx = 1
     default_data.miny = 2
@@ -235,8 +247,11 @@ def test_task_item_detail_returns_bbox_and_status_based_review_summary(
     review_rows = [
         task_item_data_model(
             task_item_id=task_item.id,
+            source_id=9002,
             name="苍鹭",
             score=0.88,
+            det_name="鸟",
+            det_score=0.78,
             track_ids="1002",
             sp_amount=1,
             minx=10,
@@ -244,12 +259,15 @@ def test_task_item_detail_returns_bbox_and_status_based_review_summary(
             maxx=110,
             maxy=120,
             llm_name="夜鹭",
+            llm_det_name="鸟",
             status="修改",
         ),
         task_item_data_model(
             task_item_id=task_item.id,
             name="",
             score=0,
+            det_name="",
+            det_score=0,
             track_ids="",
             sp_amount=1,
             minx=50,
@@ -257,12 +275,16 @@ def test_task_item_detail_returns_bbox_and_status_based_review_summary(
             maxx=90,
             maxy=100,
             llm_name="人",
+            llm_det_name="人",
             status="新增",
         ),
         task_item_data_model(
             task_item_id=task_item.id,
+            source_id=9003,
             name="车",
             score=0.77,
+            det_name="车",
+            det_score=0.73,
             track_ids="1003",
             sp_amount=1,
             minx=130,
@@ -300,6 +322,10 @@ def test_task_item_detail_returns_bbox_and_status_based_review_summary(
         "maxx": 30.0,
         "maxy": 40.0,
     }
+    assert rows_by_status["默认"]["source_id"] == 9000
+    assert rows_by_status["默认"]["det_name"] == "鸟"
+    assert rows_by_status["默认"]["det_score"] == 0.8
+    assert rows_by_status["默认"]["llm_det_name"] == "鸟"
     assert data["media"]["result_file_url"] is None
 
 
@@ -532,8 +558,11 @@ def test_task_item_submit_action_returns_success(
     assert submitted_payloads[0]["id"] == 101
     assert submitted_payloads[0]["recordData"] == [
         {
+            "id": 9001,
             "name": "白鹭",
             "score": 0.91,
+            "detName": "鸟",
+            "detScore": 0.81,
             "trackIds": "1001",
             "spAmount": 1,
             "minx": None,
@@ -542,7 +571,6 @@ def test_task_item_submit_action_returns_success(
             "maxy": None,
         }
     ]
-    assert "id" not in submitted_payloads[0]["recordData"][0]
     assert _training_annotation_path(task_id, task_item.id).exists()
 
 
@@ -551,7 +579,7 @@ def test_task_item_submit_payload_uses_final_record_data_without_deleted_rows(
     db_session: Session,
     monkeypatch,
 ) -> None:
-    """远端提交应提交最终 recordData，不包含单条记录 id。"""
+    """远端提交应提交最终 recordData，并仅为上游原始行附带明细 id。"""
 
     _, _, task_id = _create_base_entities(app_client)
     task_item, default_row = _seed_task_item(
@@ -562,6 +590,10 @@ def test_task_item_submit_payload_uses_final_record_data_without_deleted_rows(
         status="已确认",
     )
     _, task_item_data_model = import_task_item_models()
+    default_row.source_id = 7101
+    default_row.det_name = "鸟"
+    default_row.det_score = 0.71
+    default_row.llm_det_name = "兽"
     default_row.status = TaskItemDataStatus.DEFAULT.value
     default_row.minx = 1
     default_row.miny = 2
@@ -569,8 +601,11 @@ def test_task_item_submit_payload_uses_final_record_data_without_deleted_rows(
     default_row.maxy = 12
     update_row = task_item_data_model(
         task_item_id=task_item.id,
+        source_id=7102,
         name="苍鹭",
         score=0.8,
+        det_name="鸟",
+        det_score=0.72,
         track_ids="track-2",
         sp_amount=1,
         minx=20,
@@ -578,12 +613,15 @@ def test_task_item_submit_payload_uses_final_record_data_without_deleted_rows(
         maxx=40,
         maxy=50,
         llm_name="夜鹭",
+        llm_det_name="鸟",
         status=TaskItemDataStatus.UPDATE.value,
     )
     add_row = task_item_data_model(
         task_item_id=task_item.id,
         name="",
         score=0,
+        det_name="",
+        det_score=0,
         track_ids="",
         sp_amount=1,
         minx=60,
@@ -591,12 +629,16 @@ def test_task_item_submit_payload_uses_final_record_data_without_deleted_rows(
         maxx=80,
         maxy=90,
         llm_name="人",
+        llm_det_name="人",
         status=TaskItemDataStatus.ADD.value,
     )
     delete_row = task_item_data_model(
         task_item_id=task_item.id,
+        source_id=7103,
         name="车",
         score=0.7,
+        det_name="车",
+        det_score=0.7,
         track_ids="track-3",
         sp_amount=1,
         llm_name=None,
@@ -614,8 +656,46 @@ def test_task_item_submit_payload_uses_final_record_data_without_deleted_rows(
     assert response.status_code == 200
     payload = submitted_payloads[0]
     assert payload["id"] == 701
-    assert [row["name"] for row in payload["recordData"]] == ["白鹭", "夜鹭", "人"]
-    assert all("id" not in row for row in payload["recordData"])
+    assert payload["recordData"] == [
+        {
+            "id": 7101,
+            "name": "白鹭",
+            "score": 0.91,
+            "detName": "鸟",
+            "detScore": 0.71,
+            "trackIds": "1001",
+            "spAmount": 1,
+            "minx": 1,
+            "miny": 2,
+            "maxx": 10,
+            "maxy": 12,
+        },
+        {
+            "id": 7102,
+            "name": "夜鹭",
+            "score": 0.8,
+            "detName": "鸟",
+            "detScore": 0.72,
+            "trackIds": "track-2",
+            "spAmount": 1,
+            "minx": 20,
+            "miny": 30,
+            "maxx": 40,
+            "maxy": 50,
+        },
+        {
+            "name": "人",
+            "score": 0,
+            "detName": "人",
+            "detScore": 0,
+            "trackIds": "",
+            "spAmount": 1,
+            "minx": 60,
+            "miny": 70,
+            "maxx": 80,
+            "maxy": 90,
+        },
+    ]
 
 
 def test_task_item_submit_remote_false_marks_failed(

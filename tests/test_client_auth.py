@@ -395,7 +395,7 @@ def test_client_api_retries_get_result_by_fileId_on_request_exception(
 
     assert response.status_code == 200
     assert len(calls) == 2
-    assert calls[0].endswith("/openApi/icFile/getResultByFileId1")
+    assert calls[0].endswith("/openApi/icFile/getResultDetByFileId")
 
 
 def test_client_api_updates_ai_polling_result(monkeypatch) -> None:

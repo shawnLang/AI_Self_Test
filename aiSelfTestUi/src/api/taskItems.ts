@@ -88,8 +88,12 @@ export type TaskItemSourceSize = {
 
 export type TaskItemReviewRow = {
   task_item_data_id: number;
+  source_id: number | null;
   source_name: string | null;
   llm_name: string | null;
+  det_name: string | null;
+  det_score: number;
+  llm_det_name: string | null;
   status: TaskItemDataStatus | string;
   track_ids: string;
   bbox: TaskItemBBox | null;
@@ -137,8 +141,12 @@ export type ReviewTaskOption = {
 
 export type ReviewRow = {
   recordId: number;
+  sourceId: number | null;
   originalName: string | null;
   aiName: string | null;
+  detName: string | null;
+  detScore: number;
+  llmDetName: string | null;
   decision: 'keep' | 'add' | 'rename' | 'exclude' | 'error';
   willSubmit: boolean;
   groundingStatus: string;
@@ -416,8 +424,12 @@ function toReviewRow(row: TaskItemReviewRow): ReviewRow {
 
   return {
     recordId: row.task_item_data_id,
+    sourceId: row.source_id,
     originalName: row.source_name,
     aiName: row.llm_name,
+    detName: row.det_name,
+    detScore: row.det_score,
+    llmDetName: row.llm_det_name,
     decision,
     willSubmit: ['默认', '新增', '修改'].includes(row.status),
     groundingStatus: '',

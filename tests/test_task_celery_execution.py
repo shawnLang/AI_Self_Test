@@ -111,6 +111,60 @@ def test_delete_running_task_is_blocked(
     assert response.json()["code"] == 3002
 
 
+def test_delete_task_cleans_re_recognition_batches(
+    app_client: TestClient,
+    db_session: Session,
+) -> None:
+    """删除任务时应先清理关联批量重识别记录，避免外键阻止删除。"""
+
+    task_id = _create_task(app_client)
+    task_model, task_item_model, task_item_data_model, batch_model = _import_task_delete_models()
+    task_item = task_item_model(
+        task_id=task_id,
+        name="image-1.jpg",
+        device_name="device-1",
+        file_num="file-1",
+        file_extension="jpg",
+        file_url="https://example.com/image-1.jpg",
+        file_id=7001,
+        file_fid="fid-7001",
+        sp_name_list="白鹭",
+        classify=1,
+        file_bmp=1,
+        result_file_data="",
+        id_type=0,
+        status="已创建",
+    )
+    db_session.add(task_item)
+    db_session.commit()
+    db_session.refresh(task_item)
+    task_item_data = task_item_data_model(
+        task_item_id=task_item.id,
+        name="白鹭",
+        score=0.9,
+        track_ids="1",
+        sp_amount=1,
+    )
+    batch = batch_model(
+        task_id=task_id,
+        scope="selected",
+        task_item_ids=str(task_item.id),
+        status="success",
+        total_count=1,
+    )
+    db_session.add(task_item_data)
+    db_session.add(batch)
+    db_session.commit()
+
+    response = app_client.delete(f"/api/tasks/delete/{task_id}")
+
+    assert response.status_code == 200
+    assert db_session.get(task_model, task_id) is None
+    assert db_session.exec(select(task_item_model).where(task_item_model.task_id == task_id)).all() == []
+    assert db_session.exec(select(task_item_data_model)).all() == []
+    assert db_session.exec(select(batch_model).where(batch_model.task_id == task_id)).all() == []
+
+
 def test_worker_executes_queued_record_successfully(
     app_client: TestClient,
     db_session: Session,
@@ -198,6 +252,62 @@ def test_beat_scan_submits_due_active_tasks(
     assert len(fake_celery_enqueue) == 1
 
 
+def test_task_execution_detail_rows_store_source_id_and_detection_fields(
+    app_client: TestClient,
+    db_session: Session,
+) -> None:
+    """上游详情行 ID、detName 和 detScore 应落库到 TaskItemData。"""
+
+    task_id = _create_task(app_client)
+    from aiSelfTest.services.task_execution import SourceTaskItemDetail, SourceTaskItemRecord, TaskExecutionRunner
+
+    class FakeSource:
+        def fetch_task_item_detail(self, session, task, task_item, source_record):
+            return SourceTaskItemDetail(
+                result_file_data="result-file-id",
+                record_data=[
+                    {
+                        "id": 8801,
+                        "name": "白鹭",
+                        "score": 0.91,
+                        "detName": "鸟",
+                        "detScore": 0.81,
+                        "trackIds": "1",
+                        "spAmount": 1,
+                        "minx": 1,
+                        "miny": 2,
+                        "maxx": 3,
+                        "maxy": 4,
+                    }
+                ],
+            )
+
+    runner = TaskExecutionRunner(db_session, task_id)
+    runner.source = FakeSource()
+    source_record = SourceTaskItemRecord(
+        name="image-1.jpg",
+        file_fid="fid-8801",
+        file_url="https://example.com/image-1.jpg",
+        file_bmp=1,
+        file_id=8801,
+    )
+    inserted_items, _ = runner._insert_new_task_items([source_record])
+    task_item, _ = inserted_items[0]
+
+    inserted_count = runner._insert_task_item_data_rows(task_item, source_record)
+
+    from aiSelfTest.models.task import TaskItemData
+
+    row = db_session.exec(select(TaskItemData).where(TaskItemData.task_item_id == task_item.id)).one()
+    db_session.refresh(task_item)
+    assert inserted_count == 1
+    assert task_item.result_file_data == "result-file-id"
+    assert row.source_id == 8801
+    assert row.det_name == "鸟"
+    assert row.det_score == 0.81
+    assert row.llm_det_name is None
+
+
 def _create_task(app_client: TestClient) -> int:
     client_id = _unwrap_success(
         app_client.post(
@@ -252,3 +362,9 @@ def _import_task_models():
     from aiSelfTest.models.task import Task, TaskExecution
 
     return Task, TaskExecution
+
+
+def _import_task_delete_models():
+    from aiSelfTest.models.task import Task, TaskItem, TaskItemData, TaskItemRecognitionBatch
+
+    return Task, TaskItem, TaskItemData, TaskItemRecognitionBatch

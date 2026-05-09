@@ -175,6 +175,11 @@ def delete_task_route(task_id: int, session: Session = Depends(get_session)) -> 
         task_items = session.exec(select(TaskItem).where(TaskItem.task_id == task_id)).all()
         task_item_ids = [row.id for row in task_items if row.id is not None]
         download_dirs = _resolve_task_download_dirs(task_items)
+        batches = session.exec(
+            select(TaskItemRecognitionBatch).where(TaskItemRecognitionBatch.task_id == task_id)
+        ).all()
+        for batch in batches:
+            session.delete(batch)
 
         if task_item_ids:
             task_item_data_rows = session.exec(
