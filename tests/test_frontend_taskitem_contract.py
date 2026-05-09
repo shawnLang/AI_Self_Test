@@ -169,6 +169,19 @@ def test_review_frontend_uses_videojson_video_overlay_contract() -> None:
     assert "renderVideoWithBboxOverlay(previewItem, 'max-h-[78vh] max-w-full rounded-md')" in review_text
 
 
+def test_review_frontend_video_overlay_uses_outer_frame_index() -> None:
+    """videojson 内部 index 不是帧序，叠框应使用外层数组下标。"""
+
+    review_text = read_frontend_file("components/Review.tsx")
+    parse_text = review_text.split("function parseVideoDetection", 1)[1].split(
+        "function findNearestFrameIndex",
+        1,
+    )[0]
+
+    assert "const frameIndex = fallbackIndex" in parse_text
+    assert "detection.index ?? fallbackIndex" not in parse_text
+
+
 def test_review_frontend_video_overlay_label_matches_review_row_index() -> None:
     """视频叠框编号应对应详细结果行，而不是当前帧 detection 顺序。"""
 
@@ -225,3 +238,20 @@ def test_review_frontend_fullscreens_video_overlay_container() -> None:
     assert "document.fullscreenElement === wrapperRef.current" in review_text
     assert "controlsList=\"nofullscreen\"" in review_text
     assert "aria-label={isFullscreen ? '退出全屏' : '全屏'}" in review_text
+
+
+def test_review_frontend_supports_batch_re_recognition() -> None:
+    """复核页应支持选中项和失败项批量重新识别。"""
+
+    api_text = read_frontend_file("api/taskItems.ts")
+    review_text = read_frontend_file("components/Review.tsx")
+
+    assert "/api/task-items/action-re-recognize-batch" in api_text
+    assert "/api/task-items/re-recognize-batch-detail/" in api_text
+    assert "reRecognizeTaskItems" in review_text
+    assert "getReRecognitionBatchDetail" in review_text
+    assert "重新识别选中" in review_text
+    assert "重新识别失败项" in review_text
+    assert "selectedReRecognizableIds" in review_text
+    assert "failedReRecognizableCount" in review_text
+    assert "renderReRecognitionProgress()" in review_text

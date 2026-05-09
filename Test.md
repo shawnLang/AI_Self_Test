@@ -221,6 +221,48 @@ rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 
 # 真实远端提交与整型 file_id 测试清单
 
+# 批量大模型重新识别测试清单
+
+## 目标
+
+- 复核页面支持按选中任务项批量重新识别。
+- 支持按任务重新识别所有 `llm_state=识别失败` 的任务项。
+- 批量重新识别异步执行，API 快速返回批量执行记录。
+- 批量执行可查询进度，包含总数、成功数、失败数、跳过数和当前任务项。
+- 已提交、已跳过、识别中、未下载的任务项不进入重新识别执行。
+- 重新识别前清理旧大模型结果和旧模型新增行，避免重复新增。
+- 单个任务项失败不影响同批次后续任务项。
+
+## 用例
+
+1. `POST /api/task-items/action-re-recognize-batch` 支持 `scope=selected` 和 `task_item_ids`。
+2. `scope=selected` 至少需要一个任务项 ID。
+3. `scope=failed` 通过 `task_id` 选择该任务下所有识别失败任务项。
+4. 批量记录包含 `queued/running/success/partial_failed/failed` 状态和进度计数。
+5. 创建批量记录后投递 Celery 任务，并返回 `batch_id` 和初始进度。
+6. `GET /api/task-items/re-recognize-batch-detail/{batch_id}` 返回批量进度。
+7. 已提交到远端的任务项自动跳过。
+8. 正在识别中的任务项自动跳过。
+9. 未下载或缺少本地文件的任务项记为失败。
+10. 重新识别会删除旧的 `新增` 行，并重置原始行的 `llm_name/status`。
+11. 重新识别成功后任务项进入 `识别完成/待复核`。
+12. 重新识别失败后任务项进入 `识别失败` 并写入 `llm_error`。
+13. 单项失败时批量继续处理后续项，最终状态为 `partial_failed`。
+14. 前端任务项列表支持多选并触发批量重新识别。
+15. 前端支持“重新识别失败项”，并展示批量进度。
+
+## 验证命令
+
+```bash
+.env/bin/python -m pytest tests/test_task_item_re_recognition.py tests/test_task_item_api.py
+```
+
+运行 pytest 后清理：
+
+```bash
+rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
+```
+
 ## 目标
 
 - `TaskItem.file_id` 保存上游文件整数 `id`，不再保存字符串。

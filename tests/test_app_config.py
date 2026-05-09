@@ -89,12 +89,13 @@ def test_settings_reads_model_chat_timeout_seconds(
 def test_settings_defaults_model_chat_timeout_seconds(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """大模型聊天调用默认超时为 120 秒。"""
+    """大模型聊天调用默认超时为 300 秒。"""
 
     monkeypatch.delenv("MODEL_CHAT_TIMEOUT_SECONDS", raising=False)
     config_module = _reload_config_module()
+    monkeypatch.setattr(config_module, "_load_env_file", lambda env_path: None)
 
-    assert config_module.get_settings().model_chat_timeout_seconds == 120
+    assert config_module.get_settings().model_chat_timeout_seconds == 300
 
 
 def test_lifespan_runs_alembic_migrations(
@@ -125,5 +126,21 @@ def test_lifespan_runs_alembic_migrations(
         "current_execution_id",
     }.issubset(task_columns)
 
+    batch_columns = {
+        column["name"]
+        for column in inspector.get_columns("task_item_recognition_batch")
+    }
+    assert {
+        "task_id",
+        "scope",
+        "task_item_ids",
+        "status",
+        "total_count",
+        "success_count",
+        "failed_count",
+        "skipped_count",
+        "current_task_item_id",
+    }.issubset(batch_columns)
+
     version = db_session.exec(text("select version_num from alembic_version")).one()
-    assert version[0] == "20260508_0000"
+    assert version[0] == "20260509_0001"

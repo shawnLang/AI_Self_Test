@@ -201,6 +201,24 @@ export type TaskItemServerBatchActionData = {
   results: Array<{ id: number; status: 'success' | 'failed'; message: string }>;
 };
 
+export type ReRecognitionScope = 'selected' | 'failed';
+
+export type TaskItemReRecognitionBatchData = {
+  batch_id: number;
+  task_id: number;
+  scope: ReRecognitionScope | string;
+  status: 'queued' | 'running' | 'success' | 'partial_failed' | 'failed' | string;
+  total_count: number;
+  success_count: number;
+  failed_count: number;
+  skipped_count: number;
+  current_task_item_id: number | null;
+  error_summary: string | null;
+  celery_task_id: string | null;
+  started_at: string | null;
+  finished_at: string | null;
+};
+
 const REVIEWABLE_TASK_STATUSES = new Set(['核查', '结束']);
 
 export async function listTasks(): Promise<TaskSummary[]> {
@@ -277,6 +295,25 @@ export async function submitTaskReviewItems(taskId: number): Promise<TaskItemBat
     failureCount: data.failure_count,
     results: data.results,
   };
+}
+
+export function reRecognizeTaskItems(params: {
+  scope: ReRecognitionScope;
+  taskId?: number;
+  taskItemIds?: number[];
+}): Promise<TaskItemReRecognitionBatchData> {
+  return fetchApi<TaskItemReRecognitionBatchData>('/api/task-items/action-re-recognize-batch', {
+    method: 'POST',
+    body: JSON.stringify({
+      scope: params.scope,
+      task_id: params.taskId ?? null,
+      task_item_ids: params.taskItemIds ?? [],
+    }),
+  });
+}
+
+export function getReRecognitionBatchDetail(batchId: number): Promise<TaskItemReRecognitionBatchData> {
+  return fetchApi<TaskItemReRecognitionBatchData>(`/api/task-items/re-recognize-batch-detail/${batchId}`);
 }
 
 export async function listReviewTaskOptions(): Promise<ReviewTaskOption[]> {

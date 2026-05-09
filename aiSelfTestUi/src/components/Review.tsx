@@ -1,12 +1,15 @@
 import React, { useMemo, useState } from 'react';
-import { AlertTriangle, Check, List, LayoutGrid, Image as ImageIcon, CheckSquare, ChevronLeft, ChevronRight, SkipForward, UploadCloud, Save, Maximize2, Minimize2, Pencil, Plus, Trash2 } from 'lucide-react';
+import { AlertTriangle, Check, List, LayoutGrid, Image as ImageIcon, CheckSquare, ChevronLeft, ChevronRight, SkipForward, UploadCloud, Save, Maximize2, Minimize2, Pencil, Plus, Trash2, RefreshCw } from 'lucide-react';
 import {
   confirmReviewItems,
+  getReRecognitionBatchDetail,
+  reRecognizeTaskItems,
   skipReviewItems,
   submitTaskItem,
   submitTaskReviewItems,
   updateTaskItemReviewRow,
   type TaskItemDataStatus,
+  type TaskItemReRecognitionBatchData,
   type ReviewItem,
   type ReviewRow,
   type VideoVideoJsonDetection,
@@ -28,6 +31,8 @@ const reviewStatusOptions: TaskItemDataStatus[] = ['默认', '新增', '修改',
 type RowDraft = { status: string; aiName: string };
 type ReviewConfirmFilter = 'all' | 'pending' | 'confirmed' | 'skipped';
 type RowWithDisplayIndex = ReviewRow & { displayIndex: number };
+const ACTIVE_RE_RECOGNITION_BATCH_STATUSES = new Set(['queued', 'running']);
+const FINISHED_RE_RECOGNITION_BATCH_STATUSES = new Set(['success', 'partial_failed', 'failed']);
 type VideoOverlayDetection = {
   frameIndex: number;
   trackId: string;
@@ -103,10 +108,10 @@ function parseVideoDetection(
   const trackId = String(detection.trackId ?? '').trim();
   if (!trackId) return null;
 
-  const frameIndex = Number(detection.index ?? fallbackIndex);
+  const frameIndex = fallbackIndex;
   const score = Number(detection.score ?? 0);
   const parsedBbox = bbox.map((value) => Number(value));
-  if (!Number.isFinite(frameIndex) || parsedBbox.some((value) => !Number.isFinite(value))) {
+  if (parsedBbox.some((value) => !Number.isFinite(value))) {
     return null;
   }
   if (parsedBbox[2] <= parsedBbox[0] || parsedBbox[3] <= parsedBbox[1]) {
@@ -114,7 +119,7 @@ function parseVideoDetection(
   }
 
   return {
-    frameIndex: Math.round(frameIndex),
+    frameIndex,
     trackId,
     bbox: [parsedBbox[0], parsedBbox[1], parsedBbox[2], parsedBbox[3]],
     score: Number.isFinite(score) ? score : 0,
@@ -345,6 +350,8 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
   const [previewItem, setPreviewItem] = useState<ReviewItem | null>(null);
   const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
   const [rowDrafts, setRowDrafts] = useState<Record<string, RowDraft>>({});
+  const [reRecognitionBatch, setReRecognitionBatch] = useState<TaskItemReRecognitionBatchData | null>(null);
+  const [isStartingReRecognition, setIsStartingReRecognition] = useState(false);
   const { data: taskOptions = [] } = useCompletedReviewTasks();
   const { data: items = [] } = useReviews(selectedTaskId);
   const { invalidateTasks, invalidateReviews } = useInvalidateReviews();
@@ -431,6 +438,45 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
     } catch (e) { console.error(e); }
   };
 
+  const handleReRecognizeSelected = async () => {
+    if (selectedReRecognizableIds.length === 0 || isStartingReRecognition) return;
+    if (!window.confirm(`将重新识别 ${selectedReRecognizableIds.length} 个任务项。该操作会覆盖当前大模型识别结果和未提交复核修改，已提交项不会处理。是否继续？`)) return;
+    setIsStartingReRecognition(true);
+    try {
+      const batch = await reRecognizeTaskItems({
+        scope: 'selected',
+        taskItemIds: selectedReRecognizableIds.map((id) => Number(id)),
+      });
+      setSelectedItemIds([]);
+      setReRecognitionBatch(batch);
+      await invalidateCurrentReview();
+    } catch (e) {
+      console.error(e);
+      window.alert((e as Error).message || '批量重新识别启动失败');
+    } finally {
+      setIsStartingReRecognition(false);
+    }
+  };
+
+  const handleReRecognizeFailed = async () => {
+    if (!selectedTaskId || failedReRecognizableCount === 0 || isStartingReRecognition) return;
+    if (!window.confirm(`将重新识别当前任务下 ${failedReRecognizableCount} 个识别失败项。该操作会覆盖这些任务项当前的大模型识别结果。是否继续？`)) return;
+    setIsStartingReRecognition(true);
+    try {
+      const batch = await reRecognizeTaskItems({
+        scope: 'failed',
+        taskId: Number(selectedTaskId),
+      });
+      setReRecognitionBatch(batch);
+      await invalidateCurrentReview();
+    } catch (e) {
+      console.error(e);
+      window.alert((e as Error).message || '重新识别失败项启动失败');
+    } finally {
+      setIsStartingReRecognition(false);
+    }
+  };
+
   const openPreview = (item: ReviewItem) => {
     setPreviewItem(item);
   };
@@ -462,7 +508,10 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
   const isSkippable = (item: ReviewItem) => item.confirmState === '待确认' && !isResultMatched(item);
   const isSubmittable = (item: ReviewItem) => item.confirmState === '已确认'
     && ['待提交', '提交失败'].includes(item.remoteState || '');
-  const isSelectable = (item: ReviewItem) => isConfirmable(item) || isSkippable(item) || isSubmittable(item);
+  const isReRecognizable = (item: ReviewItem) => !['已提交'].includes(item.remoteState || '')
+    && !['识别中'].includes(item.stepState?.llm || '')
+    && !['已跳过'].includes(item.confirmState || '');
+  const isSelectable = (item: ReviewItem) => isConfirmable(item) || isSkippable(item) || isSubmittable(item) || isReRecognizable(item);
   const isRowEditable = (item: ReviewItem) => !['已完成'].includes(item.status || '')
     && !['已提交'].includes(item.remoteState || '');
 
@@ -472,7 +521,9 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
   );
   const selectedConfirmableIds = selectedItems.filter(isConfirmable).map((item) => String(item.id));
   const selectedSkippableIds = selectedItems.filter(isSkippable).map((item) => String(item.id));
+  const selectedReRecognizableIds = selectedItems.filter(isReRecognizable).map((item) => String(item.id));
   const taskSubmittableIds = items.filter(isSubmittable).map((item) => String(item.id));
+  const failedReRecognizableCount = items.filter((item) => item.stepState?.llm === '识别失败' && isReRecognizable(item)).length;
 
   const toggleItemSelection = (id: string) => {
     setSelectedItemIds((current) => current.includes(id)
@@ -535,6 +586,24 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
     const validIds = new Set(items.map((item) => String(item.id)));
     setSelectedItemIds((current) => current.filter((id) => validIds.has(id)));
   }, [items]);
+
+  React.useEffect(() => {
+    if (!reRecognitionBatch || !ACTIVE_RE_RECOGNITION_BATCH_STATUSES.has(reRecognitionBatch.status)) return;
+
+    const timer = window.setInterval(async () => {
+      try {
+        const nextBatch = await getReRecognitionBatchDetail(reRecognitionBatch.batch_id);
+        setReRecognitionBatch(nextBatch);
+        if (FINISHED_RE_RECOGNITION_BATCH_STATUSES.has(nextBatch.status)) {
+          await invalidateCurrentReview();
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }, 2500);
+
+    return () => window.clearInterval(timer);
+  }, [reRecognitionBatch, invalidateCurrentReview]);
 
   const getActiveIndex = () => filteredItems.findIndex((item) => String(item.id) === activeItemId);
 
@@ -692,6 +761,40 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
       )}
     </div>
   );
+
+  const renderReRecognitionProgress = () => {
+    if (!reRecognitionBatch) return null;
+
+    const finishedCount = Number(reRecognitionBatch.success_count || 0)
+      + Number(reRecognitionBatch.failed_count || 0)
+      + Number(reRecognitionBatch.skipped_count || 0);
+    const total = Math.max(1, Number(reRecognitionBatch.total_count || 0));
+    const percent = Math.min(100, Math.round((finishedCount / total) * 100));
+    const isActive = ACTIVE_RE_RECOGNITION_BATCH_STATUSES.has(reRecognitionBatch.status);
+
+    return (
+      <div className="mb-4 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800 dark:border-blue-900/40 dark:bg-blue-900/20 dark:text-blue-200">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2 font-medium">
+            <RefreshCw className={`h-4 w-4 ${isActive ? 'animate-spin' : ''}`} />
+            <span>批量重新识别</span>
+            <span className="text-xs font-normal opacity-80">#{reRecognitionBatch.batch_id}</span>
+          </div>
+          <div className="text-xs">
+            成功 {reRecognitionBatch.success_count}，失败 {reRecognitionBatch.failed_count}，跳过 {reRecognitionBatch.skipped_count}
+          </div>
+        </div>
+        <div className="mt-3 h-2 overflow-hidden rounded-full bg-blue-100 dark:bg-blue-950">
+          <div className="h-full rounded-full bg-blue-600 transition-all" style={{ width: `${percent}%` }} />
+        </div>
+        {reRecognitionBatch.error_summary && (
+          <div className="mt-2 whitespace-pre-wrap text-xs text-red-700 dark:text-red-300">
+            {reRecognitionBatch.error_summary}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   const renderSelectionCheckbox = (item: ReviewItem) => {
     const id = String(item.id);
@@ -1234,8 +1337,30 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
           >
             批量提交远端 {taskSubmittableIds.length}
           </button>
+          <button
+            type="button"
+            onClick={handleReRecognizeSelected}
+            disabled={selectedReRecognizableIds.length === 0 || isStartingReRecognition}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:bg-gray-300 disabled:text-gray-500 inline-flex items-center gap-2"
+            title="重新识别选中的未提交任务项"
+          >
+            <RefreshCw className={`h-4 w-4 ${isStartingReRecognition ? 'animate-spin' : ''}`} />
+            重新识别选中 {selectedReRecognizableIds.length}
+          </button>
+          <button
+            type="button"
+            onClick={handleReRecognizeFailed}
+            disabled={failedReRecognizableCount === 0 || isStartingReRecognition}
+            className="bg-white dark:bg-gray-800 border border-indigo-300 dark:border-indigo-700 text-indigo-700 dark:text-indigo-300 px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-50 dark:hover:bg-indigo-900/20 disabled:opacity-50 transition-colors inline-flex items-center gap-2"
+            title="重新识别当前任务下全部识别失败项"
+          >
+            <RefreshCw className={`h-4 w-4 ${isStartingReRecognition ? 'animate-spin' : ''}`} />
+            重新识别失败项 {failedReRecognizableCount}
+          </button>
         </div>
       </div>
+
+      {renderReRecognitionProgress()}
 
       {filteredItems.length === 0 ? (
         <div className="py-16 text-center text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 border-dashed transition-colors">

@@ -18,6 +18,7 @@ from aiSelfTest.models.task import (
     TaskItemConfirmState,
     TaskItemData,
     TaskItemDataStatus,
+    TaskItemRecognitionBatch,
     TaskItemRemoteState,
     TaskItemStatus,
 )
@@ -34,6 +35,8 @@ from aiSelfTest.schemas.task import (
     TaskItemDetailData,
     TaskItemListData,
     TaskItemListRow,
+    TaskItemReRecognitionBatchData,
+    TaskItemReRecognitionBatchRequest,
     TaskItemRejectRequest,
     TaskItemReviewRow,
     TaskItemReviewRowUpdateRequest,
@@ -44,6 +47,7 @@ from aiSelfTest.schemas.task import (
     resolve_task_item_source_size,
 )
 from aiSelfTest.services.task_dispatch import ACTIVE_EXECUTION_STATUSES, TaskDispatchService
+from aiSelfTest.services.task_re_recognition import TaskItemReRecognitionService
 from aiSelfTest.services.task_review import apply_task_item_review_state, refresh_task_finish_state
 from aiSelfTest.services.task_submission import TaskSubmissionService
 from fastapi import APIRouter, Depends, Query, status
@@ -482,6 +486,46 @@ def submit_task_items_by_task_route(
         results=results,
     )
     return ApiResponse(code=0, message="success", data=data)
+
+
+@task_item_router.post("/action-re-recognize-batch", response_model=ApiResponse[TaskItemReRecognitionBatchData])
+def re_recognize_task_items_batch_route(
+        payload: TaskItemReRecognitionBatchRequest,
+        session: Session = Depends(get_session),
+) -> ApiResponse[TaskItemReRecognitionBatchData]:
+    """批量重新识别任务项。"""
+
+    service = TaskItemReRecognitionService(session)
+    batch = service.create_batch(
+        scope=payload.scope,
+        task_id=payload.task_id,
+        task_item_ids=payload.task_item_ids,
+    )
+    batch = service.enqueue_batch(batch)
+    logger.info(
+        "批量重新识别已入队 batch_id={} task_id={} scope={} total_count={}",
+        batch.id,
+        batch.task_id,
+        batch.scope,
+        batch.total_count,
+    )
+    return ApiResponse(code=0, message="success", data=TaskItemReRecognitionBatchData.from_model(batch))
+
+
+@task_item_router.get(
+    "/re-recognize-batch-detail/{batch_id}",
+    response_model=ApiResponse[TaskItemReRecognitionBatchData],
+)
+def get_re_recognition_batch_detail_route(
+        batch_id: int,
+        session: Session = Depends(get_session),
+) -> ApiResponse[TaskItemReRecognitionBatchData]:
+    """查询批量重新识别进度。"""
+
+    batch = session.get(TaskItemRecognitionBatch, batch_id)
+    if batch is None:
+        raise AppException(code=ErrorCode.NOT_FOUND, message="批量重新识别记录不存在", status_code=404)
+    return ApiResponse(code=0, message="success", data=TaskItemReRecognitionBatchData.from_model(batch))
 
 
 def _serialize_filters(filters: TaskFiltersPayload) -> str:

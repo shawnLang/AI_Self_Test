@@ -21,6 +21,7 @@ from aiSelfTest.models.task import (
     TaskItemData,
     TaskItemDataStatus,
     TaskItemLlmState,
+    TaskItemRecognitionBatch,
     TaskItemRemoteState,
     TaskItemTrainState,
 )
@@ -29,6 +30,7 @@ from aiSelfTest.models.task import (
 ExecutionModeValue = Literal["auto", "manual"]
 MediaTypeValue = Literal["image", "video"]
 ModuleValue = Literal["camera", "lure", "video"]
+ReRecognitionScopeValue = Literal["selected", "failed"]
 TASK_FILE_STATIC_PREFIX = "/api/task-files"
 ESTIMATABLE_TASK_STATUSES = {
     TaskExecutionStatus.DATA_LOAD.value,
@@ -300,6 +302,14 @@ class TaskItemSubmitTaskRequest(BaseModel):
     task_id: int = Field(gt=0, description="任务ID")
 
 
+class TaskItemReRecognitionBatchRequest(BaseModel):
+    """批量重新识别 TaskItem 请求。"""
+
+    scope: ReRecognitionScopeValue = Field(description="批量范围")
+    task_id: int | None = Field(default=None, gt=0, description="任务ID")
+    task_item_ids: list[int] = Field(default_factory=list, description="任务项ID列表")
+
+
 class TaskItemRejectRequest(TaskItemActionRequest):
     """TaskItem 拒绝动作请求。"""
 
@@ -551,3 +561,41 @@ class TaskItemBatchActionData(BaseModel):
     success_count: int
     failure_count: int
     results: list[TaskItemBatchActionRow]
+
+
+class TaskItemReRecognitionBatchData(BaseModel):
+    """TaskItem 批量重新识别进度响应体。"""
+
+    batch_id: int
+    task_id: int
+    scope: str
+    status: str
+    total_count: int
+    success_count: int
+    failed_count: int
+    skipped_count: int
+    current_task_item_id: int | None = None
+    error_summary: str | None = None
+    celery_task_id: str | None = None
+    started_at: datetime | None = None
+    finished_at: datetime | None = None
+
+    @classmethod
+    def from_model(cls, batch: TaskItemRecognitionBatch) -> "TaskItemReRecognitionBatchData":
+        """将批量重新识别记录转换为 API 响应。"""
+
+        return cls(
+            batch_id=batch.id or 0,
+            task_id=batch.task_id,
+            scope=batch.scope,
+            status=batch.status,
+            total_count=batch.total_count,
+            success_count=batch.success_count,
+            failed_count=batch.failed_count,
+            skipped_count=batch.skipped_count,
+            current_task_item_id=batch.current_task_item_id,
+            error_summary=batch.error_summary,
+            celery_task_id=batch.celery_task_id,
+            started_at=batch.started_at,
+            finished_at=batch.finished_at,
+        )

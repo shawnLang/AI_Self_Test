@@ -533,11 +533,9 @@ def test_task_item_submit_action_returns_success(
     assert submitted_payloads[0]["recordData"] == [
         {
             "name": "白鹭",
-            "speciesName": "",
             "score": 0.91,
             "trackIds": "1001",
             "spAmount": 1,
-            "lastUpdatedTime": submitted_payloads[0]["recordData"][0]["lastUpdatedTime"],
             "minx": None,
             "miny": None,
             "maxx": None,

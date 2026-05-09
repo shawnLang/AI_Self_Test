@@ -21,6 +21,7 @@ from aiSelfTest.models.task import (
 )
 from aiSelfTest.services.task_dispatch import TaskDispatchService
 from aiSelfTest.services.task_execution import run_task_execution
+from aiSelfTest.services.task_re_recognition import TaskItemReRecognitionService
 
 
 def main_worker() -> None:
@@ -119,6 +120,14 @@ def recover_stale_task_executions() -> dict[str, int]:
         queued = service.recover_stale_queued()
         running = service.recover_stale_running()
         return {"queued": queued, "running": running}
+
+
+@celery_app.task(name="aiSelfTest.execute_task_item_re_recognition_batch", bind=True)
+def execute_task_item_re_recognition_batch(self: Any, batch_id: int) -> None:
+    """执行任务项批量重新识别。"""
+
+    with Session(engine) as session:
+        TaskItemReRecognitionService(session).execute_batch(batch_id)
 
 
 celery_app.conf.beat_schedule = {

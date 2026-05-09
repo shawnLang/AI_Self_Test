@@ -64,6 +64,16 @@ class TaskExecutionRecordStatus(str, Enum):
     CANCELLED = "cancelled"
 
 
+class TaskItemRecognitionBatchStatus(str, Enum):
+    """批量重新识别执行状态。"""
+
+    QUEUED = "queued"
+    RUNNING = "running"
+    SUCCESS = "success"
+    PARTIAL_FAILED = "partial_failed"
+    FAILED = "failed"
+
+
 class TaskItemStatus(str, Enum):
     """任务项执行与复核状态。"""
 
@@ -174,6 +184,34 @@ class TaskExecution(SQLModel, table=True):
     last_heartbeat_at: Optional[datetime] = Field(default=None, description="Worker最近心跳时间")
     error: Optional[str] = Field(default=None, description="错误信息")
     retry_count: int = Field(default=0, description="补偿或重试次数")
+    created_at: datetime = Field(default_factory=datetime.now, description="创建时间")
+    updated_at: datetime = Field(default_factory=datetime.now, description="更新时间")
+
+
+class TaskItemRecognitionBatch(SQLModel, table=True):
+    """任务项批量重新识别执行记录。"""
+
+    __tablename__ = "task_item_recognition_batch"
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    task_id: int = Field(foreign_key="task.id", index=True, description="关联任务ID")
+    scope: str = Field(max_length=20, description="批量范围")
+    task_item_ids: str = Field(description="逗号分隔的任务项ID")
+    status: str = Field(
+        default=TaskItemRecognitionBatchStatus.QUEUED.value,
+        max_length=20,
+        index=True,
+        description="批量执行状态",
+    )
+    celery_task_id: Optional[str] = Field(default=None, max_length=100, index=True, description="Celery任务ID")
+    total_count: int = Field(default=0, description="总数量")
+    success_count: int = Field(default=0, description="成功数量")
+    failed_count: int = Field(default=0, description="失败数量")
+    skipped_count: int = Field(default=0, description="跳过数量")
+    current_task_item_id: Optional[int] = Field(default=None, index=True, description="当前处理任务项ID")
+    error_summary: Optional[str] = Field(default=None, description="错误摘要")
+    started_at: Optional[datetime] = Field(default=None, description="开始时间")
+    finished_at: Optional[datetime] = Field(default=None, description="结束时间")
     created_at: datetime = Field(default_factory=datetime.now, description="创建时间")
     updated_at: datetime = Field(default_factory=datetime.now, description="更新时间")
 
