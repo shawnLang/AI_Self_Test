@@ -422,7 +422,7 @@ class MultimodalGatewayClient:
                         candidate_url,
                         headers=headers,
                         json=payload,
-                        timeout=get_settings().request_timeout_seconds,
+                        timeout=get_settings().model_chat_timeout_seconds,
                     )
                 except RequestException as exc:
                     errors.append(f"{candidate_url}: {exc}")
@@ -459,7 +459,7 @@ class MultimodalGatewayClient:
                         candidate_url,
                         headers=headers,
                         json=payload,
-                        timeout=get_settings().request_timeout_seconds,
+                        timeout=get_settings().model_chat_timeout_seconds,
                         stream=True,
                     )
                 except RequestException as exc:

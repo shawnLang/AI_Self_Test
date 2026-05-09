@@ -60,6 +60,19 @@ def _env_int(name: str, default: int) -> int:
         raise RuntimeError(f"{name} 必须是整数") from exc
 
 
+def _env_choice(name: str, default: str, allowed_values: set[str]) -> str:
+    """读取枚举类环境变量。"""
+
+    value = os.getenv(name)
+    if value is None or value.strip() == "":
+        return default
+    normalized = value.strip()
+    if normalized not in allowed_values:
+        allowed_text = ", ".join(sorted(allowed_values))
+        raise RuntimeError(f"{name} 必须是以下值之一: {allowed_text}")
+    return normalized
+
+
 def _required_env(name: str) -> str:
     """读取必填环境变量。"""
 
@@ -89,6 +102,7 @@ class Settings:
     database_url: str
     redis_url: str
     request_timeout_seconds: int
+    model_chat_timeout_seconds: int
     cors_origins: list[str]
     task_worker_concurrency: int
     task_time_limit_seconds: int
@@ -96,6 +110,8 @@ class Settings:
     task_beat_scan_seconds: int
     task_running_stale_seconds: int
     task_queue_stale_seconds: int
+    video_recognition_mode: str
+    video_max_full_frames_per_video: int
 
 
 @lru_cache(maxsize=1)
@@ -124,6 +140,7 @@ def get_settings() -> Settings:
         database_url=_normalize_database_url(_required_env("DATABASE_URL")),
         redis_url=_required_env("REDIS_URL"),
         request_timeout_seconds=30,
+        model_chat_timeout_seconds=_env_int("MODEL_CHAT_TIMEOUT_SECONDS", 300),
         cors_origins=cors_origins,
         task_worker_concurrency=_env_int("TASK_WORKER_CONCURRENCY", 2),
         task_time_limit_seconds=_env_int("TASK_TIME_LIMIT_SECONDS", 21600),
@@ -131,4 +148,10 @@ def get_settings() -> Settings:
         task_beat_scan_seconds=_env_int("TASK_BEAT_SCAN_SECONDS", 60),
         task_running_stale_seconds=_env_int("TASK_RUNNING_STALE_SECONDS", 21600),
         task_queue_stale_seconds=_env_int("TASK_QUEUE_STALE_SECONDS", 600),
+        video_recognition_mode=_env_choice(
+            "VIDEO_RECOGNITION_MODE",
+            "full_frame",
+            {"full_frame", "crop_per_row"},
+        ),
+        video_max_full_frames_per_video=_env_int("VIDEO_MAX_FULL_FRAMES_PER_VIDEO", 30),
     )

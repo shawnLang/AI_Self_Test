@@ -51,7 +51,7 @@ from aiSelfTest.services.client import get_client_or_raise
 from aiSelfTest.services.client_auth import ClientApi, UPSTREAM_FILE_DETAIL_PATH, UPSTREAM_FILE_PAGE_PATH
 from aiSelfTest.services.multimodal_attachment import build_gateway_chat_payload
 from aiSelfTest.services.multimodal_gateway import GatewayResponseParser, MultimodalGatewayClient
-from aiSelfTest.services.task_steps.llm_result import LlmDetectionParser, LlmDetectionResult
+from aiSelfTest.services.task_steps.llm_result import BoundingBox, LlmDetectionParser, LlmDetectionResult
 from aiSelfTest.services.task_steps.matcher import TaskItemDataMatcher, VideoRecognitionChoice
 from aiSelfTest.services.task_steps.video_recognition import VideoFrameExtractor
 from aiSelfTest.services.task_review import apply_task_item_review_state, refresh_task_finish_state
@@ -448,7 +448,8 @@ class MultimodalTaskItemRecognizer:
         """初始化识别依赖。"""
 
         self.parser = LlmDetectionParser()
-        self.video_extractor = VideoFrameExtractor()
+        settings = get_settings()
+        self.video_extractor = VideoFrameExtractor(max_full_frames=settings.video_max_full_frames_per_video)
         self.gateway_client = MultimodalGatewayClient()
 
     def recognize(self, session: Session, task: Task, task_item: TaskItem,
@@ -464,6 +465,14 @@ class MultimodalTaskItemRecognizer:
 
     def _recognize_video(self, model: MultimodalModel, prompt: str, task_item: TaskItem,
                          data_rows: Sequence[TaskItemData]) -> TaskItemRecognitionResult:
+        """按配置选择视频识别策略。"""
+
+        if get_settings().video_recognition_mode == "crop_per_row":
+            return self._recognize_video_crop_per_row(model, prompt, task_item, data_rows)
+        return self._recognize_video_full_frame(model, prompt, task_item, data_rows)
+
+    def _recognize_video_crop_per_row(self, model: MultimodalModel, prompt: str, task_item: TaskItem,
+                                      data_rows: Sequence[TaskItemData]) -> TaskItemRecognitionResult:
         """按 TaskItemData.track_ids 抽取视频关键帧裁剪图并识别。"""
 
         file_path = Path(task_item.file_path) if task_item.file_path else None
@@ -488,6 +497,37 @@ class MultimodalTaskItemRecognizer:
                 VideoRecognitionChoice(name=detected.name, score=key_detections[0].score if key_detections else 0)
                 for detected in (result.data if result else [])
             ]
+        return TaskItemRecognitionResult(video_results=video_results)
+
+    def _recognize_video_full_frame(self, model: MultimodalModel, prompt: str, task_item: TaskItem,
+                                    data_rows: Sequence[TaskItemData]) -> TaskItemRecognitionResult:
+        """抽取视频原始整帧逐帧识别，并通过 bbox IoU 反查 trackId。"""
+
+        file_path = Path(task_item.file_path) if task_item.file_path else None
+        if file_path is None:
+            raise AppException(code=ErrorCode.TASK_FAILED, message="视频任务缺少本地文件", status_code=502)
+        result_files = sorted(file_path.parent.glob("*.videojson"))
+        if not result_files:
+            raise AppException(code=ErrorCode.TASK_FAILED, message="视频任务未找到 videojson 文件", status_code=502)
+
+        detections = self.video_extractor.load_detections(result_files[0])
+        selected_frames = self.video_extractor.select_full_frame_detections(data_rows, detections)
+        row_by_track_id = self._build_video_row_by_track_id(data_rows)
+        video_results: dict[int, list[VideoRecognitionChoice]] = {row.id or 0: [] for row in data_rows}
+
+        for frame_group in selected_frames:
+            attachment = self.video_extractor.build_full_frame_attachment(file_path, frame_group.frame_index)
+            result = self._call_model(model, prompt, task_item, data_rows, [attachment])
+            for detected in result.data if result else []:
+                matched_detection = self._match_detected_object_to_frame_detection(detected, frame_group.detections)
+                if matched_detection is None:
+                    continue
+                row = row_by_track_id.get(matched_detection.track_id)
+                if row is None:
+                    continue
+                video_results.setdefault(row.id or 0, []).append(
+                    VideoRecognitionChoice(name=detected.name, score=matched_detection.area)
+                )
         return TaskItemRecognitionResult(video_results=video_results)
 
     def _call_model(self, model: MultimodalModel, prompt: str, task_item: TaskItem,
@@ -518,6 +558,43 @@ class MultimodalTaskItemRecognizer:
                 status_code=502,
             )
         return self.parser.parse(reply)
+
+    @staticmethod
+    def _build_video_row_by_track_id(data_rows: Sequence[TaskItemData]) -> dict[str, TaskItemData]:
+        """构造 track_id 到 TaskItemData 的映射。"""
+
+        row_by_track_id: dict[str, TaskItemData] = {}
+        for row in data_rows:
+            for track_id in str(row.track_ids or "").split(","):
+                normalized = track_id.strip()
+                if normalized:
+                    row_by_track_id[normalized] = row
+        return row_by_track_id
+
+    @staticmethod
+    def _match_detected_object_to_frame_detection(
+        detected: Any,
+        detections: Sequence[Any],
+    ) -> Any | None:
+        """将模型返回 bbox 匹配到当前帧 videojson detection。"""
+
+        matcher = TaskItemDataMatcher()
+        best_detection = None
+        best_iou = 0.0
+        for detection in detections:
+            detection_bbox = getattr(detection, "bbox", None)
+            if detection_bbox is None:
+                continue
+            current_iou = matcher.calculate_iou(
+                detected.bbox,
+                BoundingBox.from_sequence(list(detection_bbox)),
+            )
+            if current_iou > best_iou:
+                best_iou = current_iou
+                best_detection = detection
+        if best_iou < matcher.image_iou_threshold:
+            return None
+        return best_detection
 
     @staticmethod
     def _get_default_multimodal_model(session: Session) -> MultimodalModel:

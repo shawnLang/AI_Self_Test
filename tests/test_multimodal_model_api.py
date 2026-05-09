@@ -237,6 +237,33 @@ def test_detect_multimodal_models_uses_bearer_authorization_only(
     ]
 
 
+def test_detect_multimodal_models_keeps_global_request_timeout(
+    app_client: TestClient,
+    monkeypatch,
+) -> None:
+    """模型探测继续使用全局请求超时。"""
+
+    service_module = importlib.import_module("aiSelfTest.services.multimodal_gateway")
+    timeouts_seen: list[int] = []
+
+    def fake_get(url: str, **kwargs: Any) -> FakeResponse:
+        timeouts_seen.append(kwargs["timeout"])
+        return FakeResponse(200, {"data": [{"id": "gpt-4.1-mini"}]})
+
+    monkeypatch.setattr(service_module.requests, "get", fake_get)
+
+    response = app_client.post(
+        "/api/multimodal-models/detect",
+        json={
+            "endpointUrl": "https://gateway.example.com",
+            "apiKey": "model-secret-key",
+        },
+    )
+
+    assert response.status_code == 200
+    assert timeouts_seen == [30]
+
+
 def test_chat_with_multimodal_model_normalizes_attachments_and_returns_reply(
     app_client: TestClient,
     db_session: Session,
@@ -253,6 +280,7 @@ def test_chat_with_multimodal_model_normalizes_attachments_and_returns_reply(
 
     def fake_post(url: str, **kwargs: Any) -> FakeResponse:
         assert url == "https://gateway.example.com/v1/chat/completions"
+        assert kwargs["timeout"] == 120
         captured_payloads.append(kwargs["json"])
         assert kwargs["headers"] == {"Authorization": "Bearer model-secret-key"}
         return FakeResponse(
@@ -352,6 +380,34 @@ def test_chat_with_multimodal_model_supports_output_text_response_shape(
     assert response.status_code == 200
     data = _unwrap_success(response.json())
     assert data["reply"] == "这是 output_text 回复"
+
+
+def test_gateway_chat_uses_configured_chat_timeout(
+    monkeypatch,
+) -> None:
+    """网关非流式聊天调用应使用大模型专用超时。"""
+
+    monkeypatch.setenv("MODEL_CHAT_TIMEOUT_SECONDS", "180")
+    config_module = importlib.import_module("aiSelfTest.config")
+    config_module.get_settings.cache_clear()
+    service_module = importlib.import_module("aiSelfTest.services.multimodal_gateway")
+    timeouts_seen: list[int] = []
+
+    def fake_post(url: str, **kwargs: Any) -> FakeResponse:
+        timeouts_seen.append(kwargs["timeout"])
+        return FakeResponse(200, {"output_text": "这是 output_text 回复"})
+
+    monkeypatch.setattr(service_module.requests, "post", fake_post)
+
+    client = service_module.MultimodalGatewayClient()
+    result = client.call_chat_endpoint(
+        "https://gateway.example.com",
+        "model-secret-key",
+        {"model": "qwen-vl-max", "messages": [{"role": "user", "content": "hello"}]},
+    )
+
+    assert result.payload == {"output_text": "这是 output_text 回复"}
+    assert timeouts_seen == [180]
 
 
 def test_chat_with_multimodal_model_supports_output_content_response_shape(
@@ -592,6 +648,7 @@ def test_stream_chat_with_multimodal_model_returns_sse_and_persists_messages(
 
     def fake_post(url: str, **kwargs: Any) -> FakeResponse:
         assert kwargs["json"]["stream"] is True
+        assert kwargs["timeout"] == 120
         return FakeResponse(
             200,
             headers={"Content-Type": "text/event-stream"},

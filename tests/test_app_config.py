@@ -47,6 +47,56 @@ def test_settings_reads_cors_origins_from_env(
     ]
 
 
+def test_settings_reads_video_recognition_mode_and_frame_limit(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """视频识别模式和整帧上限应支持环境变量配置。"""
+
+    monkeypatch.setenv("VIDEO_RECOGNITION_MODE", "crop_per_row")
+    monkeypatch.setenv("VIDEO_MAX_FULL_FRAMES_PER_VIDEO", "12")
+    config_module = _reload_config_module()
+
+    settings = config_module.get_settings()
+    assert settings.video_recognition_mode == "crop_per_row"
+    assert settings.video_max_full_frames_per_video == 12
+
+
+def test_settings_defaults_to_full_frame_video_recognition(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """视频识别默认使用整帧识别，最多 30 帧。"""
+
+    monkeypatch.delenv("VIDEO_RECOGNITION_MODE", raising=False)
+    monkeypatch.delenv("VIDEO_MAX_FULL_FRAMES_PER_VIDEO", raising=False)
+    config_module = _reload_config_module()
+
+    settings = config_module.get_settings()
+    assert settings.video_recognition_mode == "full_frame"
+    assert settings.video_max_full_frames_per_video == 30
+
+
+def test_settings_reads_model_chat_timeout_seconds(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """大模型聊天调用超时应支持环境变量配置。"""
+
+    monkeypatch.setenv("MODEL_CHAT_TIMEOUT_SECONDS", "180")
+    config_module = _reload_config_module()
+
+    assert config_module.get_settings().model_chat_timeout_seconds == 180
+
+
+def test_settings_defaults_model_chat_timeout_seconds(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """大模型聊天调用默认超时为 120 秒。"""
+
+    monkeypatch.delenv("MODEL_CHAT_TIMEOUT_SECONDS", raising=False)
+    config_module = _reload_config_module()
+
+    assert config_module.get_settings().model_chat_timeout_seconds == 120
+
+
 def test_lifespan_runs_alembic_migrations(
     app_client: TestClient,
     db_session: Session,

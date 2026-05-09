@@ -137,10 +137,13 @@ rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 - `TaskExecutionRunner.run` 按“分页拉取 -> 新增/跳过 -> 详情入库 -> 下载 -> 模型识别”顺序执行。
 - 大模型统一返回 `{width,height,data}`，不再按 `TaskItemData.id` 返回名称。
 - 图片分支整图识别后按 bbox IoU 匹配，支持默认、修改、删除、新增。
-- 视频分支按每条 `TaskItemData.track_ids` 从 `*.videojson` 抽取最多 5 帧裁剪图识别。
+- 视频识别方式支持配置开关，默认使用整帧识别，可切回旧的逐行裁剪识别。
+- 整帧视频分支按整个视频从 `*.videojson` 全局选择最多 30 帧原始整图。
+- 整帧视频分支尽量让每个 `track_id` 覆盖 3 帧，优先目标数量多和目标面积大的帧。
 - `*.videojson` 不发给大模型，其中 `name / errorName / detName` 不参与最终名称判定。
 - 视频分支不产生新增，只按每条 `TaskItemData` 判定默认、修改、删除。
 - 大模型识别阶段必须先处理所有图片任务项，再处理视频任务项。
+- 大模型聊天调用使用独立超时配置，避免整帧视频识别被 30 秒全局请求超时提前中断。
 
 ## 用例
 
@@ -155,14 +158,23 @@ rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 9. 图片模型返回 bbox 未命中任何原始 bbox，新增 `TaskItemData` 并标记为 `新增`。
 10. 图片模型返回空 `data`，原始行标记为 `删除`。
 11. 视频 `videojson` 二维数组可按 `TaskItemData.track_ids` 命中多条 track detection。
-12. 视频关键帧最多 5 帧，包含首帧、末帧、bbox 最大帧、score 最高帧、时间中位帧。
-13. 视频模型返回空 `data` 时，对应 `TaskItemData` 标记为 `删除`。
-14. 视频模型返回名称与 `TaskItemData.name` 不同时，对应行标记为 `修改`。
-15. 视频分支不创建 `新增` 行。
-16. 单个 TaskItem 大模型识别遇到网关临时异常时，最多重试 3 次。
-17. 某次识别重试成功后，任务继续执行并进入人工复核阶段。
-18. 多次重试仍失败时，仅该 TaskItem 标记为识别失败，任务整体按原逻辑失败并记录错误。
-19. 即使视频 TaskItem 先入库，大模型识别阶段也必须先识别全部图片，再识别视频。
+12. 环境变量 `VIDEO_RECOGNITION_MODE=full_frame` 时，视频默认走整帧识别。
+13. 环境变量 `VIDEO_RECOGNITION_MODE=crop_per_row` 时，视频切回旧的逐行裁剪识别。
+14. 整帧视频关键帧最多 30 帧，每帧抽取原始整图并单独调用一次大模型。
+15. 整帧视频关键帧尽量让每个 track 覆盖 3 次，优先选择覆盖未达标 track 多、
+    同帧目标数量多、bbox 面积大的帧。
+16. 整帧模型返回 bbox 与当前帧 videojson detection bbox IoU 命中后，反查 trackId 并写回对应 TaskItemData。
+17. 整帧视频多帧命中同一行时按名称投票，票数相同用 bbox 面积更大的命中结果。
+18. 旧裁剪视频关键帧最多 5 帧，包含首帧、末帧、bbox 最大帧、score 最高帧、时间中位帧。
+19. 视频模型返回空 `data` 时，对应 `TaskItemData` 标记为 `删除`。
+20. 视频模型返回名称与 `TaskItemData.name` 不同时，对应行标记为 `修改`。
+21. 视频分支不创建 `新增` 行。
+22. 单个 TaskItem 大模型识别遇到网关临时异常时，最多重试 3 次。
+23. 某次识别重试成功后，任务继续执行并进入人工复核阶段。
+24. 多次重试仍失败时，仅该 TaskItem 标记为识别失败，任务整体按原逻辑失败并记录错误。
+25. 即使视频 TaskItem 先入库，大模型识别阶段也必须先识别全部图片，再识别视频。
+26. 大模型聊天调用默认超时为 120 秒，并支持 `MODEL_CHAT_TIMEOUT_SECONDS` 环境变量覆盖。
+27. 模型探测、文件下载等其它请求继续使用全局 `request_timeout_seconds`，不受聊天超时影响。
 
 ## 验证命令
 
