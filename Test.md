@@ -47,6 +47,38 @@
 rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 ```
 
+# 提交训练保存目录重构测试清单
+
+## 目标
+
+- 提交训练成功后，训练文件保存到可配置的训练保存目录。
+- 训练保存目录按 `YYYYMMDD_AI自检_模块中文_保存/租户名称/设备名称` 分层。
+- 图片和视频均保存媒体文件同名主干的 `.datajson`。
+- 视频额外保存媒体文件同名主干的 `.videojson`；找不到源 `*.videojson` 时只记录警告，不影响保存成功。
+
+## 用例
+
+1. `AI_SELF_TEST_TRAINING_SAVE_DIR` 可覆盖默认训练保存目录。
+2. 未配置训练保存目录时，默认使用 `data_dir/training`。
+3. 图片提交训练后，保存到 `训练保存目录/YYYYMMDD_AI自检_红外相机_保存/租户名称/设备名称`。
+4. 图片 `.datajson` 文件名不带原媒体后缀，例如 `image.datajson`。
+5. `.datajson` 内容来自 `TaskItemData`，字段包含 `score`、`detScore`、`miny`、
+   `trackIds`、`minx`、`maxy`、`maxx`、`name`、`type`、`detName`，且 `type` 固定为 `0`。
+6. 视频提交训练后，额外把同目录 `*.videojson` 保存为媒体文件同名主干的 `.videojson`。
+7. 视频源目录缺少 `*.videojson` 时，仅记录警告，`train_state` 仍为 `已保存`。
+
+## 验证命令
+
+```bash
+.env/bin/python -m pytest tests/test_app_config.py tests/test_task_item_api.py
+```
+
+运行 pytest 后清理：
+
+```bash
+rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
+```
+
 # 客户端认证 expiresIn 绝对时间戳测试清单
 
 ## 目标

@@ -97,6 +97,7 @@ class Settings:
 
     package_dir: Path
     data_dir: Path
+    training_save_dir: Path
     log_dir: Path
     static_dir: Path
     database_url: str
@@ -127,6 +128,7 @@ def get_settings() -> Settings:
     _load_env_file(project_root / ENV_FILE_NAME)
 
     data_dir = _env_path("AI_SELF_TEST_DATA_DIR", package_dir / ".aiSelfTest")
+    training_save_dir = _env_path("AI_SELF_TEST_TRAINING_SAVE_DIR", data_dir / "training")
     log_dir = data_dir / "logs"
     cors_origins = _env_list(
         "AI_SELF_TEST_CORS_ORIGINS",
@@ -135,6 +137,7 @@ def get_settings() -> Settings:
     return Settings(
         package_dir=package_dir,
         data_dir=data_dir,
+        training_save_dir=training_save_dir,
         log_dir=log_dir,
         static_dir=package_dir / "static",
         database_url=_normalize_database_url(_required_env("DATABASE_URL")),

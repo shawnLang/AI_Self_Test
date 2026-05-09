@@ -98,6 +98,32 @@ def test_settings_defaults_model_chat_timeout_seconds(
     assert config_module.get_settings().model_chat_timeout_seconds == 300
 
 
+def test_settings_reads_training_save_dir(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path,
+) -> None:
+    """训练保存目录应支持环境变量配置。"""
+
+    target_dir = tmp_path / "training-output"
+    monkeypatch.setenv("AI_SELF_TEST_TRAINING_SAVE_DIR", str(target_dir))
+    config_module = _reload_config_module()
+
+    assert config_module.get_settings().training_save_dir == target_dir.resolve()
+
+
+def test_settings_defaults_training_save_dir(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """未配置训练保存目录时，应默认放在 data_dir/training。"""
+
+    monkeypatch.delenv("AI_SELF_TEST_TRAINING_SAVE_DIR", raising=False)
+    config_module = _reload_config_module()
+    monkeypatch.setattr(config_module, "_load_env_file", lambda env_path: None)
+
+    settings = config_module.get_settings()
+    assert settings.training_save_dir == settings.data_dir / "training"
+
+
 def test_lifespan_runs_alembic_migrations(
     app_client: TestClient,
     db_session: Session,
@@ -143,4 +169,4 @@ def test_lifespan_runs_alembic_migrations(
     }.issubset(batch_columns)
 
     version = db_session.exec(text("select version_num from alembic_version")).one()
-    assert version[0] == "20260509_0001"
+    assert version[0] == "20260509_0002"

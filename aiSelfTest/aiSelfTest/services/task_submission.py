@@ -10,6 +10,7 @@ from pathlib import Path
 
 from aiSelfTest.config import get_settings
 from aiSelfTest.exceptions import AppException, ErrorCode
+from aiSelfTest.models.client import Client
 from aiSelfTest.models.task import (
     Task,
     TaskItem,
@@ -22,6 +23,14 @@ from aiSelfTest.models.task import (
 from aiSelfTest.services.client_auth import ClientApi
 from loguru import logger
 from sqlmodel import Session, select
+
+
+MODULE_SAVE_NAME_MAP = {
+    "camera": "红外相机",
+    "video": "视频",
+    "lure": "喂鸟器",
+}
+PATH_UNSAFE_CHARS = ('/', "\\", ":", "*", "?", '"', "<", ">", "|")
 
 
 @dataclass(frozen=True)
@@ -85,65 +94,151 @@ class AiPollingPayloadBuilder:
 class TrainingArtifactWriter:
     """保存训练目录中的媒体文件副本与标注 JSON。"""
 
-    def save(self, task_item: TaskItem, data_rows: list[TaskItemData]) -> Path:
+    def save(
+        self,
+        session: Session,
+        task_item: TaskItem,
+        data_rows: list[TaskItemData],
+        saved_at: datetime,
+    ) -> Path:
         """保存训练目录中的媒体文件副本与标注 JSON。"""
 
-        target_dir = (
-            get_settings().data_dir
-            / "training"
-            / str(task_item.task_id)
-            / str(task_item.id or 0)
-        )
+        task = self._get_task_or_raise(session, task_item.task_id)
+        client = self._get_client_or_raise(session, task.client_id)
+        target_dir = self._build_target_dir(task, client, task_item, saved_at)
         target_dir.mkdir(parents=True, exist_ok=True)
 
-        self._copy_if_exists(task_item.file_path, target_dir)
-        if task_item.file_path:
-            result_path = Path(task_item.file_path).parent / "result.json"
-            self._copy_if_exists(result_path.as_posix(), target_dir)
+        source_media_path = self._resolve_media_file(task_item.file_path)
+        target_media_path = self._copy_media_file(source_media_path, target_dir)
+        datajson_path = target_dir / self._build_sidecar_name(target_media_path, "datajson")
+        self._write_datajson(datajson_path, data_rows)
 
-        annotation_path = target_dir / "annotation.json"
-        payload = {
-            "taskItemId": task_item.id or 0,
-            "taskId": task_item.task_id,
-            "fileFid": task_item.file_fid,
-            "fileName": task_item.name,
-            "mediaType": "video" if task_item.file_bmp == 2 else "image",
-            "recordData": [self._build_annotation_row(row) for row in data_rows],
-        }
-        annotation_path.write_text(
-            json.dumps(payload, ensure_ascii=False, indent=2),
-            encoding="utf-8",
-        )
-        return annotation_path
+        if task_item.file_bmp == 2:
+            self._copy_videojson_if_exists(source_media_path, target_media_path, target_dir)
+
+        return datajson_path
 
     @staticmethod
-    def _copy_if_exists(source_path: str | None, target_dir: Path) -> None:
-        """存在本地源文件时复制到训练目录。"""
+    def _get_task_or_raise(session: Session, task_id: int) -> Task:
+        """查询训练保存所需任务信息。"""
+
+        task = session.get(Task, task_id)
+        if task is None:
+            raise AppException(code=ErrorCode.NOT_FOUND, message="任务不存在", status_code=404)
+        return task
+
+    @staticmethod
+    def _get_client_or_raise(session: Session, client_id: int) -> Client:
+        """查询训练保存所需客户端信息。"""
+
+        client = session.get(Client, client_id)
+        if client is None:
+            raise AppException(code=ErrorCode.NOT_FOUND, message="客户端不存在", status_code=404)
+        return client
+
+    def _build_target_dir(
+        self,
+        task: Task,
+        client: Client,
+        task_item: TaskItem,
+        saved_at: datetime,
+    ) -> Path:
+        """按日期、模块、租户和设备生成训练保存目录。"""
+
+        module_name = MODULE_SAVE_NAME_MAP.get(self._resolve_task_module(task), "红外相机")
+        first_level = f"{saved_at:%Y%m%d}_AI自检_{module_name}_保存"
+        tenant_name = self._sanitize_path_part(client.tenant_name, "未知租户")
+        device_name = self._sanitize_path_part(task_item.device_name, "未知设备")
+        return get_settings().training_save_dir / first_level / tenant_name / device_name
+
+    @staticmethod
+    def _resolve_task_module(task: Task) -> str:
+        """从任务筛选条件中读取模块，缺省时按红外相机处理。"""
+
+        if not task.filters_json:
+            return "camera"
+        try:
+            payload = json.loads(task.filters_json)
+        except json.JSONDecodeError:
+            logger.warning("训练保存读取任务筛选条件失败 task_id={}", task.id)
+            return "camera"
+        if not isinstance(payload, dict):
+            return "camera"
+        module = str(payload.get("module") or "").strip()
+        return module or "camera"
+
+    @staticmethod
+    def _sanitize_path_part(value: str | None, default: str) -> str:
+        """清理目录名中的非法路径字符。"""
+
+        text = str(value or "").strip() or default
+        for char in PATH_UNSAFE_CHARS:
+            text = text.replace(char, "_")
+        return text or default
+
+    @staticmethod
+    def _resolve_media_file(source_path: str | None) -> Path:
+        """校验媒体文件并返回源路径。"""
 
         if not source_path:
-            return
+            raise AppException(code=ErrorCode.TASK_FAILED, message="训练保存缺少媒体文件路径", status_code=502)
         source = Path(source_path)
         if not source.exists() or not source.is_file():
-            return
-        shutil.copy2(source, target_dir / source.name)
+            raise AppException(code=ErrorCode.TASK_FAILED, message=f"训练保存媒体文件不存在: {source}", status_code=502)
+        return source
 
     @staticmethod
-    def _build_annotation_row(row: TaskItemData) -> dict[str, object]:
-        """构造训练标注中的单条识别结果。"""
+    def _copy_media_file(source: Path, target_dir: Path) -> Path:
+        """复制媒体文件并返回目标媒体路径。"""
+
+        target_path = target_dir / source.name
+        shutil.copy2(source, target_path)
+        return target_path
+
+    @staticmethod
+    def _build_sidecar_name(media_path: Path, extension: str) -> str:
+        """按媒体主干生成伴随文件名，不保留原媒体后缀。"""
+
+        return f"{media_path.stem}.{extension}"
+
+    def _write_datajson(self, datajson_path: Path, data_rows: list[TaskItemData]) -> None:
+        """写入 TaskItemData 训练明细。"""
+
+        datajson_path.write_text(
+            json.dumps(
+                [self._build_datajson_row(row) for row in data_rows],
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+
+    def _copy_videojson_if_exists(self, source_media_path: Path, target_media_path: Path, target_dir: Path) -> None:
+        """视频任务复制同目录 videojson，缺失时只记录警告。"""
+
+        videojson_files = sorted(source_media_path.parent.glob("*.videojson"))
+        if not videojson_files:
+            logger.warning("训练保存未找到视频结果文件 media_path={}", source_media_path)
+            return
+
+        target_path = target_dir / self._build_sidecar_name(target_media_path, "videojson")
+        shutil.copy2(videojson_files[0], target_path)
+
+    @staticmethod
+    def _build_datajson_row(row: TaskItemData) -> dict[str, object]:
+        """构造训练 datajson 中的单条识别结果。"""
 
         return {
-            "id": row.id or 0,
-            "sourceId": row.source_id,
-            "name": row.name,
             "score": row.score,
-            "detName": row.det_name,
             "detScore": row.det_score,
+            "miny": row.miny,
             "trackIds": row.track_ids,
-            "spAmount": row.sp_amount,
-            "bbox": [row.minx, row.miny, row.maxx, row.maxy],
-            "llmName": row.llm_name,
-            "llmDetName": row.llm_det_name,
-            "status": row.status,
+            "minx": row.minx,
+            "maxy": row.maxy,
+            "maxx": row.maxx,
+            "name": row.name,
+            "type": 0,
+            "detName": row.det_name,
         }
 
 
@@ -187,7 +282,7 @@ class TaskSubmissionService:
             ) from exc
 
         try:
-            annotation_path = self.artifact_writer.save(task_item, data_rows)
+            annotation_path = self.artifact_writer.save(self.session, task_item, data_rows, submitted_at)
             train_state = TaskItemTrainState.SAVED.value
         except Exception as exc:  # noqa: BLE001
             task_item.train_state = TaskItemTrainState.FAIL.value

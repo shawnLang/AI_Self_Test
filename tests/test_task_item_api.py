@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+from datetime import datetime
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
@@ -537,9 +539,16 @@ def test_task_item_submit_action_returns_success(
     monkeypatch,
 ) -> None:
     _, _, task_id = _create_base_entities(app_client)
+    from aiSelfTest.config import get_settings
+
+    source_dir = get_settings().data_dir / "submit-action-source"
+    source_dir.mkdir(parents=True, exist_ok=True)
+    media_path = source_dir / "video-1.mp4"
+    media_path.write_bytes(b"fake video")
     task_item, _ = _seed_task_item(
         db_session,
         task_id,
+        file_path=media_path.as_posix(),
         confirm_state=TaskItemConfirmState.CONFIRMED.value,
         status="已确认",
     )
@@ -571,7 +580,7 @@ def test_task_item_submit_action_returns_success(
             "maxy": None,
         }
     ]
-    assert _training_annotation_path(task_id, task_item.id).exists()
+    assert _training_datajson_path(task_item).exists()
 
 
 def test_task_item_submit_payload_uses_final_record_data_without_deleted_rows(
@@ -582,10 +591,17 @@ def test_task_item_submit_payload_uses_final_record_data_without_deleted_rows(
     """远端提交应提交最终 recordData，并仅为上游原始行附带明细 id。"""
 
     _, _, task_id = _create_base_entities(app_client)
+    from aiSelfTest.config import get_settings
+
+    source_dir = get_settings().data_dir / "payload-submit-source"
+    source_dir.mkdir(parents=True, exist_ok=True)
+    media_path = source_dir / "payload.mp4"
+    media_path.write_bytes(b"fake payload video")
     task_item, default_row = _seed_task_item(
         db_session,
         task_id,
         file_id=701,
+        file_path=media_path.as_posix(),
         confirm_state=TaskItemConfirmState.CONFIRMED.value,
         status="已确认",
     )
@@ -698,6 +714,198 @@ def test_task_item_submit_payload_uses_final_record_data_without_deleted_rows(
     ]
 
 
+def test_training_artifacts_use_configured_hierarchical_directory(
+    app_client: TestClient,
+    db_session: Session,
+    monkeypatch,
+) -> None:
+    """提交训练文件应按日期、模块、租户和设备分层保存。"""
+
+    from aiSelfTest.config import get_settings
+    from aiSelfTest.models.client import Client
+    from aiSelfTest.models.task import Task
+    from aiSelfTest.services.task_submission import TaskSubmissionService
+
+    _, _, task_id = _create_base_entities(app_client)
+    task = db_session.get(Task, task_id)
+    assert task is not None
+    task.filters_json = json.dumps({"module": "camera"}, ensure_ascii=False)
+    client = db_session.get(Client, task.client_id)
+    assert client is not None
+    client.tenant_name = "测试租户"
+    db_session.add(task)
+    db_session.add(client)
+
+    source_dir = get_settings().data_dir / "source-media"
+    source_dir.mkdir(parents=True, exist_ok=True)
+    media_path = source_dir / "image-1.jpg"
+    media_path.write_bytes(b"fake image")
+
+    task_item, row = _seed_task_item(
+        db_session,
+        task_id,
+        name="image-1.jpg",
+        device_name="设备A",
+        file_extension="jpg",
+        file_url="https://example.com/image.jpg",
+        file_id=901,
+        file_fid="fid-image-training",
+        file_bmp=1,
+        result_file_data="",
+        file_path=media_path.as_posix(),
+        confirm_state=TaskItemConfirmState.CONFIRMED.value,
+        status=TaskItemStatus.CONFIRMED.value,
+    )
+    row.status = TaskItemDataStatus.DEFAULT.value
+    row.minx = 1
+    row.miny = 2
+    row.maxx = 30
+    row.maxy = 40
+    db_session.add(row)
+    db_session.commit()
+    _install_submit_success_mock(monkeypatch)
+
+    result = TaskSubmissionService(db_session).submit_task_item_outputs(
+        task_item,
+        now=datetime(2026, 4, 30, 9, 10, 11),
+    )
+
+    target_dir = (
+        get_settings().training_save_dir
+        / "20260430_AI自检_红外相机_保存"
+        / "测试租户"
+        / "设备A"
+    )
+    copied_media_path = target_dir / "image-1.jpg"
+    datajson_path = target_dir / "image-1.datajson"
+    assert copied_media_path.read_bytes() == b"fake image"
+    assert Path(result.annotation_path) == datajson_path
+    assert json.loads(datajson_path.read_text(encoding="utf-8")) == [
+        {
+            "score": 0.91,
+            "detScore": 0.81,
+            "miny": 2,
+            "trackIds": "1001",
+            "minx": 1,
+            "maxy": 40,
+            "maxx": 30,
+            "name": "白鹭",
+            "type": 0,
+            "detName": "鸟",
+        }
+    ]
+
+
+def test_video_training_artifacts_copy_videojson_when_present(
+    app_client: TestClient,
+    db_session: Session,
+    monkeypatch,
+) -> None:
+    """视频训练保存应复制同目录 videojson，并按媒体主干命名。"""
+
+    from aiSelfTest.config import get_settings
+    from aiSelfTest.models.client import Client
+    from aiSelfTest.models.task import Task
+    from aiSelfTest.services.task_submission import TaskSubmissionService
+
+    _, _, task_id = _create_base_entities(app_client)
+    task = db_session.get(Task, task_id)
+    assert task is not None
+    task.filters_json = json.dumps({"module": "video"}, ensure_ascii=False)
+    client = db_session.get(Client, task.client_id)
+    assert client is not None
+    client.tenant_name = "视频租户"
+    db_session.add(task)
+    db_session.add(client)
+
+    source_dir = get_settings().data_dir / "source-video"
+    source_dir.mkdir(parents=True, exist_ok=True)
+    media_path = source_dir / "video-1.mp4"
+    media_path.write_bytes(b"fake video")
+    (source_dir / "upstream-result.videojson").write_text("[[]]", encoding="utf-8")
+
+    task_item, _ = _seed_task_item(
+        db_session,
+        task_id,
+        device_name="视频设备",
+        file_path=media_path.as_posix(),
+        confirm_state=TaskItemConfirmState.CONFIRMED.value,
+        status=TaskItemStatus.CONFIRMED.value,
+    )
+    db_session.commit()
+    _install_submit_success_mock(monkeypatch)
+
+    TaskSubmissionService(db_session).submit_task_item_outputs(
+        task_item,
+        now=datetime(2026, 4, 30, 9, 10, 11),
+    )
+
+    target_dir = (
+        get_settings().training_save_dir
+        / "20260430_AI自检_视频_保存"
+        / "视频租户"
+        / "视频设备"
+    )
+    assert (target_dir / "video-1.mp4").read_bytes() == b"fake video"
+    assert (target_dir / "video-1.videojson").read_text(encoding="utf-8") == "[[]]"
+    assert (target_dir / "video-1.datajson").is_file()
+
+
+def test_video_training_artifacts_missing_videojson_does_not_fail(
+    app_client: TestClient,
+    db_session: Session,
+    monkeypatch,
+) -> None:
+    """视频源目录没有 videojson 时，训练保存仍应成功。"""
+
+    from aiSelfTest.config import get_settings
+    from aiSelfTest.models.client import Client
+    from aiSelfTest.models.task import Task
+    from aiSelfTest.services.task_submission import TaskSubmissionService
+
+    _, _, task_id = _create_base_entities(app_client)
+    task = db_session.get(Task, task_id)
+    assert task is not None
+    client = db_session.get(Client, task.client_id)
+    assert client is not None
+    client.tenant_name = "缺失租户"
+    db_session.add(client)
+
+    source_dir = get_settings().data_dir / "source-video-missing-result"
+    source_dir.mkdir(parents=True, exist_ok=True)
+    media_path = source_dir / "video-missing.mp4"
+    media_path.write_bytes(b"fake video")
+
+    task_item, _ = _seed_task_item(
+        db_session,
+        task_id,
+        name="video-missing.mp4",
+        device_name="缺失设备",
+        file_id=902,
+        file_fid="fid-video-missing",
+        file_path=media_path.as_posix(),
+        confirm_state=TaskItemConfirmState.CONFIRMED.value,
+        status=TaskItemStatus.CONFIRMED.value,
+    )
+    db_session.commit()
+    _install_submit_success_mock(monkeypatch)
+
+    result = TaskSubmissionService(db_session).submit_task_item_outputs(
+        task_item,
+        now=datetime(2026, 4, 30, 9, 10, 11),
+    )
+
+    target_dir = (
+        get_settings().training_save_dir
+        / "20260430_AI自检_红外相机_保存"
+        / "缺失租户"
+        / "缺失设备"
+    )
+    assert Path(result.annotation_path) == target_dir / "video-missing.datajson"
+    assert (target_dir / "video-missing.mp4").is_file()
+    assert not (target_dir / "video-missing.videojson").exists()
+
+
 def test_task_item_submit_remote_false_marks_failed(
     app_client: TestClient,
     db_session: Session,
@@ -733,11 +941,20 @@ def test_task_item_submit_task_action_submits_all_confirmed_pending_items(
 ) -> None:
     _, _, task_id = _create_base_entities(app_client)
     task_item_model, _ = import_task_item_models()
+    from aiSelfTest.config import get_settings
+
+    source_dir = get_settings().data_dir / "batch-submit-source"
+    source_dir.mkdir(parents=True, exist_ok=True)
+    pending_path = source_dir / "pending.mp4"
+    retry_path = source_dir / "retry.mp4"
+    pending_path.write_bytes(b"fake pending")
+    retry_path.write_bytes(b"fake retry")
     pending_item, _ = _seed_task_item(
         db_session,
         task_id,
         file_id=501,
         file_fid="fid-pending-submit",
+        file_path=pending_path.as_posix(),
         confirm_state=TaskItemConfirmState.CONFIRMED.value,
         remote_state=TaskItemRemoteState.PENDING.value,
         status=TaskItemStatus.CONFIRMED.value,
@@ -747,6 +964,7 @@ def test_task_item_submit_task_action_submits_all_confirmed_pending_items(
         task_id,
         file_id=502,
         file_fid="fid-retry-submit",
+        file_path=retry_path.as_posix(),
         confirm_state=TaskItemConfirmState.CONFIRMED.value,
         remote_state=TaskItemRemoteState.FAIL.value,
         status=TaskItemStatus.CONFIRMED.value,
@@ -785,8 +1003,8 @@ def test_task_item_submit_task_action_submits_all_confirmed_pending_items(
     assert rows_by_id[skipped_item.id].status == TaskItemStatus.SKIPPED.value
     assert rows_by_id[pending_review_item.id].status == TaskItemStatus.VERIFY_PENDING.value
     assert [payload["id"] for payload in submitted_payloads] == [501, 502]
-    assert _training_annotation_path(task_id, pending_item.id).exists()
-    assert _training_annotation_path(task_id, retry_item.id).exists()
+    assert _training_datajson_path(pending_item).exists()
+    assert _training_datajson_path(retry_item).exists()
 
 
 def test_task_item_submit_unconfirmed_item_is_blocked(
@@ -831,11 +1049,18 @@ def test_task_finishes_after_confirmed_submit_and_skipped_items(
 ) -> None:
     _, _, task_id = _create_base_entities(app_client)
     task_model, task_item_model = import_task_and_item_models()
+    from aiSelfTest.config import get_settings
+
+    source_dir = get_settings().data_dir / "finish-submit-source"
+    source_dir.mkdir(parents=True, exist_ok=True)
+    media_path = source_dir / "finish.mp4"
+    media_path.write_bytes(b"fake finish video")
     first, _ = _seed_task_item(
         db_session,
         task_id,
         file_id=601,
         file_fid="fid-submit",
+        file_path=media_path.as_posix(),
         confirm_state=TaskItemConfirmState.CONFIRMED.value,
         status="已确认",
     )
@@ -902,7 +1127,10 @@ def _install_submit_success_mock(monkeypatch, response_json: Any = True) -> list
     return submitted_payloads
 
 
-def _training_annotation_path(task_id: int, task_item_id: int) -> Path:
+def _training_datajson_path(task_item: Any) -> Path:
     from aiSelfTest.config import get_settings
 
-    return get_settings().data_dir / "training" / str(task_id) / str(task_item_id) / "annotation.json"
+    media_stem = Path(task_item.file_path or task_item.name).stem
+    matches = list(get_settings().training_save_dir.rglob(f"{media_stem}.datajson"))
+    assert matches
+    return matches[0]
