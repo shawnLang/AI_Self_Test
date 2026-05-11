@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import json
+import inspect
 from datetime import datetime
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Any
+from typing import Annotated, Any, get_args, get_origin, get_type_hints
 
+from fastapi.params import Query
 from fastapi.testclient import TestClient
 from sqlmodel import Session, select
 
@@ -193,6 +195,41 @@ def test_task_item_list_filters_by_media_status_and_confirm_state(
     assert data["total"] == 1
     assert data["items"][0]["name"] == "image-confirmed.jpg"
     assert data["items"][0]["media_type"] == "image"
+
+
+def test_task_item_list_route_uses_annotated_query_metadata(app_client: TestClient) -> None:
+    """任务项列表查询参数不应把 FastAPI Query 对象作为函数默认值。"""
+
+    from aiSelfTest.api.task import list_task_items_route
+
+    signature = inspect.signature(list_task_items_route)
+    hints = get_type_hints(list_task_items_route, include_extras=True)
+    query_param_names = ("task_id", "media_type", "status", "confirm_state", "page", "page_size")
+
+    assert signature.parameters["task_id"].default is inspect.Signature.empty
+    for name in query_param_names:
+        parameter = signature.parameters[name]
+        assert not isinstance(parameter.default, Query)
+
+        hint = hints[name]
+        assert get_origin(hint) is Annotated
+        assert isinstance(get_args(hint)[1], Query)
+
+
+def test_task_item_list_rejects_invalid_query_params(app_client: TestClient) -> None:
+    """任务项列表接口应继续保留查询参数边界校验。"""
+
+    invalid_requests = (
+        {"task_id": 0},
+        {"task_id": 1, "page": 0},
+        {"task_id": 1, "page_size": 201},
+    )
+
+    for params in invalid_requests:
+        response = app_client.get("/api/task-items/list", params=params)
+
+        assert response.status_code == 400
+        assert response.json()["code"] == 1001
 
 
 def test_task_item_detail_returns_review_rows(

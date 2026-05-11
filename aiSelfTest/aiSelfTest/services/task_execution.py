@@ -230,7 +230,12 @@ class AuthenticatedTaskExecutionSource:
         try:
             payload = response.json()
         except ValueError as exc:
-            logger.warning("客户端[{}]接口返回非 JSON 数据: body={}", path, getattr(response, "text", ""))
+            logger.warning(
+                "客户端[{}]接口返回非 JSON 数据: status={}, body={}",
+                path,
+                getattr(response, "status_code", ""),
+                getattr(response, "text", ""),
+            )
             raise AppException(code=ErrorCode.TASK_FAILED, message=f"客户端[{path}]接口返回格式错误",
                                status_code=502) from exc
 
@@ -238,7 +243,14 @@ class AuthenticatedTaskExecutionSource:
             response_code = payload.get("code")
             if response_code not in (None, 0, "0", 200, "200"):
                 message = payload.get("message", "接口业务失败")
-                logger.warning(f"客户端[{path}]接口返回业务错误: code={response_code}, message={message}")
+                logger.warning(
+                    "客户端[{}]接口返回业务错误: status={}, code={}, message={}, body={}",
+                    path,
+                    getattr(response, "status_code", ""),
+                    response_code,
+                    message,
+                    getattr(response, "text", ""),
+                )
                 raise AppException(code=ErrorCode.TASK_FAILED, message=message, status_code=502)
             data = payload.get("data")
             if isinstance(data, (Mapping, list)):
@@ -404,6 +416,7 @@ class RequestsTaskFileDownloader:
     def _download_url(self, url: str, target_path: Path) -> None:
         """下载单个 URL 到目标路径。"""
 
+        logger.info("开始下载任务文件 url={} target_path={}", url, target_path)
         try:
             response = requests.get(
                 url,
@@ -418,9 +431,17 @@ class RequestsTaskFileDownloader:
             ) from exc
 
         if response.status_code != 200:
+            response_text = getattr(response, "text", "") or ""
+            response_summary = response_text[:500]
+            logger.warning(
+                "任务文件下载响应异常 url={} status_code={} response={}",
+                url,
+                response.status_code,
+                response_summary,
+            )
             raise AppException(
                 code=ErrorCode.TASK_FAILED,
-                message=f"文件下载失败: HTTP {response.status_code}",
+                message=f"文件下载失败: HTTP {response.status_code}, url={url}",
                 status_code=502,
             )
 
@@ -458,16 +479,51 @@ class MultimodalTaskItemRecognizer:
 
         model = self._get_default_multimodal_model(session)
         prompt = self._get_task_prompt(session, task.config_id)
+        logger.info(
+            "任务项大模型识别准备开始: task_id={} task_item_id={} media_type={} model_id={} model_name={} "
+            "data_row_count={} file_path={}",
+            task.id,
+            task_item.id,
+            "video" if task_item.file_bmp == 2 else "image",
+            model.id,
+            model.model_name,
+            len(data_rows),
+            task_item.file_path,
+        )
         if task_item.file_bmp == 2:
             return self._recognize_video(model, prompt, task_item, data_rows)
-        return TaskItemRecognitionResult(image_result=self._call_model(model, prompt, task_item, data_rows,
-                                                                       self._build_image_attachments(task_item)))
+        attachments = self._build_image_attachments(task_item)
+        logger.info(
+            "图片任务项准备调用大模型: task_id={} task_item_id={} attachment_count={} data_row_count={}",
+            task.id,
+            task_item.id,
+            len(attachments),
+            len(data_rows),
+        )
+        image_result = self._call_model(model, prompt, task_item, data_rows, attachments)
+        logger.info(
+            "图片任务项大模型识别完成: task_id={} task_item_id={} detected_count={} width={} height={}",
+            task.id,
+            task_item.id,
+            len(image_result.data),
+            image_result.width,
+            image_result.height,
+        )
+        return TaskItemRecognitionResult(image_result=image_result)
 
     def _recognize_video(self, model: MultimodalModel, prompt: str, task_item: TaskItem,
                          data_rows: Sequence[TaskItemData]) -> TaskItemRecognitionResult:
         """按配置选择视频识别策略。"""
 
-        if get_settings().video_recognition_mode == "crop_per_row":
+        mode = get_settings().video_recognition_mode
+        logger.info(
+            "视频任务项选择识别模式: task_item_id={} mode={} file_path={} data_row_count={}",
+            task_item.id,
+            mode,
+            task_item.file_path,
+            len(data_rows),
+        )
+        if mode == "crop_per_row":
             return self._recognize_video_crop_per_row(model, prompt, task_item, data_rows)
         return self._recognize_video_full_frame(model, prompt, task_item, data_rows)
 
@@ -482,21 +538,46 @@ class MultimodalTaskItemRecognizer:
         if not result_files:
             raise AppException(code=ErrorCode.TASK_FAILED, message="视频任务未找到 videojson 文件", status_code=502)
 
+        logger.info(
+            "视频裁剪识别开始: task_item_id={} video_path={} videojson_path={} data_row_count={}",
+            task_item.id,
+            file_path,
+            result_files[0],
+            len(data_rows),
+        )
         detections = self.video_extractor.load_detections(result_files[0])
+        logger.info("视频裁剪识别已加载 detections: task_item_id={} detection_count={}", task_item.id, len(detections))
         video_results: dict[int, list[VideoRecognitionChoice]] = {}
         for row in data_rows:
             row_detections = self.video_extractor.find_row_detections(row, detections)
             key_detections = self.video_extractor.select_key_detections(row_detections)
+            logger.info(
+                "视频裁剪识别明细抽帧: task_item_id={} row_id={} track_ids={} matched_detection_count={} "
+                "selected_frame_indexes={}",
+                task_item.id,
+                row.id,
+                row.track_ids,
+                len(row_detections),
+                [detection.frame_index for detection in key_detections],
+            )
             attachments = self.video_extractor.build_crop_attachments(file_path, key_detections)
             if not attachments:
                 video_results[row.id or 0] = []
                 logger.warning("视频任务明细未找到可识别关键帧 task_item_id={} row_id={}", task_item.id, row.id)
                 continue
             result = self._call_model(model, prompt, task_item, [row], attachments)
+            logger.info(
+                "视频裁剪识别明细完成: task_item_id={} row_id={} attachment_count={} detected_count={}",
+                task_item.id,
+                row.id,
+                len(attachments),
+                len(result.data if result else []),
+            )
             video_results[row.id or 0] = [
                 VideoRecognitionChoice(name=detected.name, score=key_detections[0].score if key_detections else 0)
                 for detected in (result.data if result else [])
             ]
+        logger.info("视频裁剪识别完成: task_item_id={} row_count={}", task_item.id, len(video_results))
         return TaskItemRecognitionResult(video_results=video_results)
 
     def _recognize_video_full_frame(self, model: MultimodalModel, prompt: str, task_item: TaskItem,
@@ -510,21 +591,58 @@ class MultimodalTaskItemRecognizer:
         if not result_files:
             raise AppException(code=ErrorCode.TASK_FAILED, message="视频任务未找到 videojson 文件", status_code=502)
 
+        logger.info(
+            "视频整帧识别开始: task_item_id={} video_path={} videojson_path={} data_row_count={}",
+            task_item.id,
+            file_path,
+            result_files[0],
+            len(data_rows),
+        )
         detections = self.video_extractor.load_detections(result_files[0])
         selected_frames = self.video_extractor.select_full_frame_detections(data_rows, detections)
+        logger.info(
+            "视频整帧识别抽帧完成: task_item_id={} detection_count={} selected_frame_count={} selected_frames={}",
+            task_item.id,
+            len(detections),
+            len(selected_frames),
+            [frame_group.frame_index for frame_group in selected_frames],
+        )
         row_by_track_id = self._build_video_row_by_track_id(data_rows)
         video_results: dict[int, list[VideoRecognitionChoice]] = {row.id or 0: [] for row in data_rows}
 
         for frame_group in selected_frames:
+            logger.info(
+                "视频整帧识别准备调用大模型: task_item_id={} frame_index={} detection_count={} track_ids={}",
+                task_item.id,
+                frame_group.frame_index,
+                frame_group.detection_count,
+                sorted(frame_group.track_ids),
+            )
             attachment = self.video_extractor.build_full_frame_attachment(file_path, frame_group.frame_index)
             result = self._call_model(model, prompt, task_item, data_rows, [attachment])
+            detected_count = len(result.data if result else [])
+            matched_count = 0
             for detected in result.data if result else []:
                 matched_detection = self._match_detected_object_to_frame_detection(detected, frame_group.detections)
                 if matched_detection is None:
+                    logger.info(
+                        "视频整帧识别目标未匹配到 videojson detection: task_item_id={} frame_index={} name={} bbox={}",
+                        task_item.id,
+                        frame_group.frame_index,
+                        detected.name,
+                        detected.bbox,
+                    )
                     continue
                 row = row_by_track_id.get(matched_detection.track_id)
                 if row is None:
+                    logger.info(
+                        "视频整帧识别匹配 track 但未找到 TaskItemData: task_item_id={} frame_index={} track_id={}",
+                        task_item.id,
+                        frame_group.frame_index,
+                        matched_detection.track_id,
+                    )
                     continue
+                matched_count += 1
                 video_results.setdefault(row.id or 0, []).append(
                     VideoRecognitionChoice(
                         name=detected.name,
@@ -532,6 +650,14 @@ class MultimodalTaskItemRecognizer:
                         score=matched_detection.area,
                     )
                 )
+            logger.info(
+                "视频整帧识别单帧完成: task_item_id={} frame_index={} detected_count={} matched_count={}",
+                task_item.id,
+                frame_group.frame_index,
+                detected_count,
+                matched_count,
+            )
+        logger.info("视频整帧识别完成: task_item_id={} row_count={}", task_item.id, len(video_results))
         return TaskItemRecognitionResult(video_results=video_results)
 
     def _call_model(self, model: MultimodalModel, prompt: str, task_item: TaskItem,
@@ -549,6 +675,14 @@ class MultimodalTaskItemRecognizer:
             messages=messages,
             stream=False,
         )
+        logger.info(
+            "调用大模型识别接口: task_item_id={} model_id={} model_name={} attachment_count={} data_row_count={}",
+            task_item.id,
+            model.id,
+            model.model_name,
+            len(attachments),
+            len(data_rows),
+        )
         result = self.gateway_client.call_chat_endpoint(
             endpoint_url=model.endpoint_url,
             api_key=model.api_key,
@@ -556,12 +690,27 @@ class MultimodalTaskItemRecognizer:
         )
         reply = GatewayResponseParser.extract_chat_reply(result.payload)
         if not reply:
+            logger.warning(
+                "大模型识别未返回可解析文本: task_item_id={} used_url={} payload={}",
+                task_item.id,
+                result.used_url,
+                result.payload,
+            )
             raise AppException(
                 code=ErrorCode.TASK_FAILED,
                 message="大模型未返回可解析的识别结果",
                 status_code=502,
             )
-        return self.parser.parse(reply)
+        parsed = self.parser.parse(reply)
+        logger.info(
+            "大模型识别响应解析完成: task_item_id={} used_url={} detected_count={} width={} height={}",
+            task_item.id,
+            result.used_url,
+            len(parsed.data),
+            parsed.width,
+            parsed.height,
+        )
+        return parsed
 
     @staticmethod
     def _build_video_row_by_track_id(data_rows: Sequence[TaskItemData]) -> dict[str, TaskItemData]:
@@ -660,6 +809,7 @@ class MultimodalTaskItemRecognizer:
         attachments: list[MultimodalAttachmentPayload] = []
         file_path = Path(task_item.file_path) if task_item.file_path else None
         if file_path and file_path.exists():
+            logger.info("构造图片识别附件: task_item_id={} file_path={} file_size={}", task_item.id, file_path, file_path.stat().st_size)
             attachments.append(
                 MultimodalAttachmentPayload(
                     name=file_path.name,
@@ -668,6 +818,8 @@ class MultimodalTaskItemRecognizer:
                     dataUrl=cls._file_to_data_url(file_path),
                 )
             )
+        else:
+            logger.warning("图片识别附件缺失: task_item_id={} file_path={}", task_item.id, file_path)
         return attachments
 
     @staticmethod
@@ -820,6 +972,7 @@ class TaskExecutionRunner:
     def _run_create_stage(self) -> None:
         """分页拉取上游文件并写入 TaskItem。"""
 
+        logger.info("任务执行阶段开始: task_id={} stage={}", self.task_id, TaskExecutionStatus.CREATE.value)
         self._set_task_stage(TaskExecutionStatus.CREATE, reset_processed=False)
         if self.window.should_fetch:
             source_records = self._fetch_source_records()
@@ -841,13 +994,29 @@ class TaskExecutionRunner:
         self.task.updated_at = self.execution_now
         self.session.add(self.task)
         self.session.commit()
+        logger.info(
+            "任务执行阶段结束: task_id={} stage={} total_count={} skipped_count={}",
+            self.task_id,
+            TaskExecutionStatus.CREATE.value,
+            self.task.total_count,
+            self.skipped_count,
+        )
 
     def _run_data_load_stage(self) -> None:
         """加载 TaskItem 详情并更新进度。"""
 
+        logger.info("任务执行阶段开始: task_id={} stage={}", self.task_id, TaskExecutionStatus.DATA_LOAD.value)
         self._set_task_stage(TaskExecutionStatus.DATA_LOAD, reset_processed=True)
         task_items = self._list_task_items()
         for task_item in task_items:
+            logger.info(
+                "任务项详情加载检查: task_id={} task_item_id={} status={} file_id={} has_result_file_data={}",
+                self.task_id,
+                task_item.id,
+                task_item.status,
+                task_item.file_id,
+                bool(task_item.result_file_data),
+            )
             if task_item.status == TaskItemStatus.FAILED.value:
                 task_item.status = TaskItemStatus.CREATED.value
             if self._has_task_item_data(task_item):
@@ -868,12 +1037,29 @@ class TaskExecutionRunner:
             self.session.commit()
             self._increment_processed_count()
         logger.info("任务执行 taskItemData入库完成 task_id={} 详情数量={}", self.task_id, self.detail_row_count)
+        logger.info(
+            "任务执行阶段结束: task_id={} stage={} processed_count={} detail_row_count={}",
+            self.task_id,
+            TaskExecutionStatus.DATA_LOAD.value,
+            self.task.processed_count,
+            self.detail_row_count,
+        )
 
     def _run_download_stage(self) -> None:
         """下载待处理文件并更新进度。"""
 
+        logger.info("任务执行阶段开始: task_id={} stage={}", self.task_id, TaskExecutionStatus.DOWN.value)
         self._set_task_stage(TaskExecutionStatus.DOWN, reset_processed=True)
         for task_item in self._list_task_items():
+            logger.info(
+                "任务项下载检查: task_id={} task_item_id={} status={} down_state={} file_url={} result_file_data={}",
+                self.task_id,
+                task_item.id,
+                task_item.status,
+                task_item.down_state,
+                task_item.file_url,
+                task_item.result_file_data,
+            )
             if task_item.down_state:
                 self._increment_processed_count()
                 continue
@@ -881,18 +1067,36 @@ class TaskExecutionRunner:
                 task_item.status = TaskItemStatus.DATA_LOADED.value
             source_record = self._source_record_from_task_item(task_item)
             if not self._download_task_item_file(task_item, source_record):
+                error_detail = task_item.down_error or "未知错误"
                 raise AppException(
                     code=ErrorCode.TASK_FAILED,
-                    message=f"任务项下载失败: task_item_id={task_item.id}",
+                    message=f"任务项下载失败: task_item_id={task_item.id}, error={error_detail}",
                     status_code=502,
                 )
             self._increment_processed_count()
+        logger.info(
+            "任务执行阶段结束: task_id={} stage={} processed_count={}",
+            self.task_id,
+            TaskExecutionStatus.DOWN.value,
+            self.task.processed_count,
+        )
 
     def _run_llm_stage(self) -> None:
         """执行大模型识别并更新进度。"""
 
+        logger.info("任务执行阶段开始: task_id={} stage={}", self.task_id, TaskExecutionStatus.LLM.value)
         self._set_task_stage(TaskExecutionStatus.LLM, reset_processed=True)
         for task_item in self._list_task_items_for_llm_stage():
+            logger.info(
+                "任务项大模型阶段检查: task_id={} task_item_id={} status={} down_state={} llm_state={} file_bmp={} file_path={}",
+                self.task_id,
+                task_item.id,
+                task_item.status,
+                task_item.down_state,
+                task_item.llm_state,
+                task_item.file_bmp,
+                task_item.file_path,
+            )
             if task_item.llm_state == TaskItemLlmState.SUCCESS.value:
                 self._increment_processed_count()
                 continue
@@ -909,6 +1113,12 @@ class TaskExecutionRunner:
                     status_code=502,
                 )
             self._increment_processed_count()
+        logger.info(
+            "任务执行阶段结束: task_id={} stage={} processed_count={}",
+            self.task_id,
+            TaskExecutionStatus.LLM.value,
+            self.task.processed_count,
+        )
 
     def _enter_verify_stage(self) -> None:
         """进入人工复核阶段，不重置进度。"""

@@ -9,6 +9,7 @@ from typing import Any
 
 import pytest
 from fastapi.testclient import TestClient
+from loguru import logger
 from requests.exceptions import ConnectTimeout
 from sqlmodel import Session, select
 
@@ -456,6 +457,40 @@ def test_client_api_retries_raise_app_exception_after_request_failures(
         api.get_result_by_fileId({"fileId": "file-001"})
 
     assert len(calls) == client_auth_module.UPSTREAM_REQUEST_RETRY_ATTEMPTS
+
+
+def test_client_api_logs_upstream_error_details(monkeypatch) -> None:
+    """上游接口失败日志应包含 URL、参数、状态码和响应内容。"""
+
+    client = SimpleNamespace(
+        id=1,
+        api_url="https://example.com",
+        status="启用",
+        access_token="cached-token",
+        refresh_token="refresh-token",
+        expires_at=_future_timestamp(),
+    )
+    client_auth_module = importlib.import_module("aiSelfTest.services.client_auth")
+    api = client_auth_module.ClientApi(object(), client.id)
+    api.client = client
+    logs: list[str] = []
+
+    def fake_post(url: str, **kwargs):
+        return FakeResponse(400, {"message": "bad request"}, text="bad request body")
+
+    monkeypatch.setattr(client_auth_module.requests, "post", fake_post)
+    sink_id = logger.add(lambda message: logs.append(str(message)), format="{message}")
+    try:
+        response = api.update_ai_polling_result({"id": 101, "recordData": [{"name": "白鹭"}]})
+    finally:
+        logger.remove(sink_id)
+
+    log_text = "\n".join(logs)
+    assert response.status_code == 400
+    assert "https://example.com/openApi/icFile/aiPollingResult" in log_text
+    assert "'id': 101" in log_text
+    assert "status=400" in log_text
+    assert "bad request body" in log_text
 
 
 def import_client_model():

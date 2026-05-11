@@ -25,5 +25,17 @@ def main(argv: Sequence[str] | None = None) -> int:
     return 0
 
 
+def main_worker() -> int:
+    """启动 Celery Worker 部署进程。"""
+
+    return main(["worker"])
+
+
+def main_beat() -> int:
+    """启动 Celery Beat 部署进程。"""
+
+    return main(["beat"])
+
+
 if __name__ == "__main__":
     raise SystemExit(main())

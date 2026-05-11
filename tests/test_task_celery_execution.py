@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta
+from pathlib import Path
 from typing import Any
 
 import pytest
@@ -506,6 +507,89 @@ def test_task_execution_detail_rows_store_source_id_and_detection_fields(
     assert row.det_name == "鸟"
     assert row.det_score == 0.81
     assert row.llm_det_name is None
+
+
+def test_file_download_error_contains_full_upstream_url(monkeypatch: pytest.MonkeyPatch) -> None:
+    """下载 HTTP 异常应带出完整上游 URL，便于定位拼接问题。"""
+
+    from aiSelfTest.exceptions import AppException
+    from aiSelfTest.services.task_execution import RequestsTaskFileDownloader
+
+    class FakeResponse:
+        status_code = 400
+        text = "bad request"
+
+    requested_urls: list[str] = []
+
+    def fake_get(url: str, **kwargs: Any) -> FakeResponse:
+        requested_urls.append(url)
+        return FakeResponse()
+
+    monkeypatch.setattr("aiSelfTest.services.task_execution.requests.get", fake_get)
+    url = "https://example.com/weed/task-file.jpg"
+
+    with pytest.raises(AppException) as exc_info:
+        RequestsTaskFileDownloader()._download_url(url, Path("/tmp/task-file.jpg"))
+
+    assert requested_urls == [url]
+    assert url in exc_info.value.message
+    assert "HTTP 400" in exc_info.value.message
+
+
+def test_download_stage_error_keeps_task_item_down_error(
+    app_client: TestClient,
+    db_session: Session,
+) -> None:
+    """下载阶段顶层异常应保留单项下载失败的详细原因。"""
+
+    from aiSelfTest.exceptions import AppException
+    from aiSelfTest.models.task import TaskItem
+    from aiSelfTest.services.task_execution import SourceTaskItemRecord, TaskExecutionRunner
+
+    task_id = _create_task(app_client)
+    task_item = TaskItem(
+        task_id=task_id,
+        name="image-fail.jpg",
+        device_name="device-1",
+        file_num="file-1",
+        file_extension="jpg",
+        file_url="image-fail.jpg",
+        file_id=9301,
+        file_fid="fid-9301",
+        sp_name_list="白鹭",
+        classify=1,
+        file_bmp=1,
+        result_file_data="",
+        id_type=0,
+        status="详情已加载",
+    )
+    db_session.add(task_item)
+    db_session.commit()
+    db_session.refresh(task_item)
+
+    class FailingDownloader:
+        def download(self, **kwargs: Any) -> None:
+            raise AppException(
+                code=3001,
+                message="文件下载失败: HTTP 400, url=https://example.com/weed/image-fail.jpg",
+                status_code=502,
+            )
+
+    runner = TaskExecutionRunner(db_session, task_id, downloader=FailingDownloader())
+    runner._source_record_from_task_item = lambda _task_item: SourceTaskItemRecord(
+        name="image-fail.jpg",
+        file_fid="fid-9301",
+        file_url="image-fail.jpg",
+        file_bmp=1,
+        file_id=9301,
+    )
+
+    with pytest.raises(AppException) as exc_info:
+        runner._run_download_stage()
+
+    assert "task_item_id" in exc_info.value.message
+    assert "HTTP 400" in exc_info.value.message
+    assert "https://example.com/weed/image-fail.jpg" in exc_info.value.message
 
 
 def _create_task(app_client: TestClient) -> int:

@@ -57,6 +57,14 @@ class TaskDispatchService:
         self._validate_trigger_type(trigger_type)
         now = datetime.now()
         task = self._get_task_or_raise(task_id)
+        logger.info(
+            "任务派发开始: task_id={} trigger_type={} task_status={} current_execution_id={} next_run_at={}",
+            task_id,
+            trigger_type,
+            task.execution_status,
+            task.current_execution_id,
+            task.next_run_at,
+        )
         existing_execution = self.get_active_execution(task_id)
         if existing_execution is not None:
             if trigger_type == TaskExecutionTriggerType.SCHEDULE.value:
@@ -89,6 +97,12 @@ class TaskDispatchService:
             self.session.commit()
         except IntegrityError as exc:
             self.session.rollback()
+            logger.warning(
+                "任务执行记录创建冲突: task_id={} trigger_type={} error={}",
+                task_id,
+                trigger_type,
+                exc,
+            )
             raise AppException(
                 code=ErrorCode.RESOURCE_BUSY,
                 message="任务正在执行或排队中",
@@ -98,10 +112,24 @@ class TaskDispatchService:
         self.session.refresh(task)
         self.session.refresh(execution)
         celery_task_id = self._build_celery_task_id(execution.id or 0)
+        logger.info(
+            "任务执行记录创建完成，准备投递 Celery: task_id={} execution_id={} celery_task_id={} trigger_type={}",
+            task_id,
+            execution.id,
+            celery_task_id,
+            trigger_type,
+        )
         try:
             self._enqueue_task(task_id, execution.id or 0, celery_task_id)
         except Exception as exc:
-            logger.exception("任务投递 Celery 失败: task_id={}, execution_id={}", task_id, execution.id)
+            logger.exception(
+                "任务投递 Celery 失败: task_id={} execution_id={} celery_task_id={} trigger_type={} error={}",
+                task_id,
+                execution.id,
+                celery_task_id,
+                trigger_type,
+                exc,
+            )
             self._mark_dispatch_failed(task, execution, str(exc))
             raise AppException(
                 code=ErrorCode.TASK_FAILED,
@@ -139,14 +167,37 @@ class TaskDispatchService:
             .where(TaskExecution.status == TaskExecutionRecordStatus.QUEUED.value)
             .where(TaskExecution.updated_at < threshold)
         ).all()
+        logger.info(
+            "扫描 queued 超时执行记录: threshold={} count={} max_retries={}",
+            threshold,
+            len(executions),
+            max_retries,
+        )
         recovered = 0
         for execution in executions:
             if execution.retry_count >= max_retries:
+                logger.warning(
+                    "queued 执行记录超过最大重试，标记失败: task_id={} execution_id={} retry_count={} updated_at={}",
+                    execution.task_id,
+                    execution.id,
+                    execution.retry_count,
+                    execution.updated_at,
+                )
                 self._finish_execution_as_failed(execution, "排队超时未被 Worker 接收", current)
                 recovered += 1
                 continue
 
             celery_task_id = self._build_celery_task_id(execution.id or 0)
+            logger.warning(
+                "queued 执行记录超时，重新投递 Celery: task_id={} execution_id={} retry_count={} celery_task_id={} "
+                "updated_at={} threshold={}",
+                execution.task_id,
+                execution.id,
+                execution.retry_count,
+                celery_task_id,
+                execution.updated_at,
+                threshold,
+            )
             self._enqueue_task(execution.task_id, execution.id or 0, celery_task_id)
             execution.celery_task_id = celery_task_id
             execution.retry_count += 1
@@ -167,7 +218,15 @@ class TaskDispatchService:
             .where(TaskExecution.status == TaskExecutionRecordStatus.RUNNING.value)
             .where(TaskExecution.last_heartbeat_at < threshold)
         ).all()
+        logger.info("扫描 running 心跳超时执行记录: threshold={} count={}", threshold, len(executions))
         for execution in executions:
+            logger.warning(
+                "running 执行记录心跳超时，标记失败: task_id={} execution_id={} last_heartbeat_at={} threshold={}",
+                execution.task_id,
+                execution.id,
+                execution.last_heartbeat_at,
+                threshold,
+            )
             self._finish_execution_as_failed(execution, "Worker 心跳超时，任务已恢复为失败", current)
         if executions:
             self.session.commit()
@@ -203,6 +262,13 @@ class TaskDispatchService:
         self.session.add(execution)
         self.session.add(task)
         self.session.commit()
+        logger.error(
+            "任务派发失败状态已回写: task_id={} execution_id={} error={} failed_at={}",
+            task.id,
+            execution.id,
+            error,
+            now,
+        )
 
     def _finish_execution_as_failed(self, execution: TaskExecution, error: str, now: datetime) -> None:
         """将执行记录和任务聚合状态标记为失败。"""
@@ -219,6 +285,13 @@ class TaskDispatchService:
             task.updated_at = now
             self.session.add(task)
         self.session.add(execution)
+        logger.error(
+            "执行记录已恢复为失败: task_id={} execution_id={} error={} failed_at={}",
+            execution.task_id,
+            execution.id,
+            error,
+            now,
+        )
 
     @staticmethod
     def _build_celery_task_id(execution_id: int) -> str:
@@ -232,4 +305,5 @@ class TaskDispatchService:
 
         from aiSelfTest.worker import execute_task
 
+        logger.info("调用 Celery apply_async: task_id={} execution_id={} celery_task_id={}", task_id, execution_id, celery_task_id)
         execute_task.apply_async(args=[task_id, execution_id], task_id=celery_task_id)

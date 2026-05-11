@@ -6,7 +6,9 @@ import importlib
 import json
 from typing import Any
 
+import pytest
 from fastapi.testclient import TestClient
+from loguru import logger
 from sqlmodel import Session, select
 
 
@@ -280,7 +282,7 @@ def test_chat_with_multimodal_model_normalizes_attachments_and_returns_reply(
 
     def fake_post(url: str, **kwargs: Any) -> FakeResponse:
         assert url == "https://gateway.example.com/v1/chat/completions"
-        assert kwargs["timeout"] == 120
+        assert kwargs["timeout"] == 300
         captured_payloads.append(kwargs["json"])
         assert kwargs["headers"] == {"Authorization": "Bearer model-secret-key"}
         return FakeResponse(
@@ -648,7 +650,7 @@ def test_stream_chat_with_multimodal_model_returns_sse_and_persists_messages(
 
     def fake_post(url: str, **kwargs: Any) -> FakeResponse:
         assert kwargs["json"]["stream"] is True
-        assert kwargs["timeout"] == 120
+        assert kwargs["timeout"] == 300
         return FakeResponse(
             200,
             headers={"Content-Type": "text/event-stream"},
@@ -705,6 +707,34 @@ def test_chat_with_multimodal_model_rejects_disabled_model(
     assert response.status_code == 400
     body = response.json()
     assert body["code"] == 1001
+
+
+def test_gateway_chat_logs_error_details(monkeypatch) -> None:
+    """大模型调用失败日志应包含 URL、请求负载、状态码和响应内容。"""
+
+    service_module = importlib.import_module("aiSelfTest.services.multimodal_gateway")
+    logs: list[str] = []
+
+    def fake_post(url: str, **kwargs: Any) -> FakeResponse:
+        return FakeResponse(400, {"error": {"message": "bad request"}}, text="model bad request")
+
+    monkeypatch.setattr(service_module.requests, "post", fake_post)
+    sink_id = logger.add(lambda message: logs.append(str(message)), format="{message}")
+    try:
+        with pytest.raises(service_module.AppException):
+            service_module.MultimodalGatewayClient().call_chat_endpoint(
+                "https://gateway.example.com",
+                "model-secret-key",
+                {"model": "qwen-vl-max", "messages": [{"role": "user", "content": "hello"}]},
+            )
+    finally:
+        logger.remove(sink_id)
+
+    log_text = "\n".join(logs)
+    assert "https://gateway.example.com/v1/chat/completions" in log_text
+    assert "'model': 'qwen-vl-max'" in log_text
+    assert "status=400" in log_text
+    assert "model bad request" in log_text
 
 
 def import_multimodal_model_class():

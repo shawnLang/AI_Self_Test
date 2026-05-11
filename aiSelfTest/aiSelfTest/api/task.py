@@ -6,6 +6,7 @@ import json
 import shutil
 from datetime import datetime
 from pathlib import Path
+from typing import Annotated
 
 from aiSelfTest.config import get_settings
 from aiSelfTest.database import get_session
@@ -297,12 +298,12 @@ def get_current_task_submission_route(
 
 @task_item_router.get("/list", response_model=ApiResponse[TaskItemListData])
 def list_task_items_route(
-        task_id: int = Query(gt=0),
-        media_type: str | None = Query(default=None),
-        status: str | None = Query(default=None),
-        confirm_state: str | None = Query(default=None),
-        page: int = Query(default=1, ge=1),
-        page_size: int = Query(default=20, ge=1, le=200),
+        task_id: Annotated[int, Query(gt=0)],
+        media_type: Annotated[str | None, Query()] = None,
+        status: Annotated[str | None, Query()] = None,
+        confirm_state: Annotated[str | None, Query()] = None,
+        page: Annotated[int, Query(ge=1)] = 1,
+        page_size: Annotated[int, Query(ge=1, le=200)] = 20,
         session: Session = Depends(get_session),
 ) -> ApiResponse[TaskItemListData]:
     """分页查询任务项列表。"""

@@ -395,6 +395,12 @@ class MultimodalGatewayClient:
                         timeout=get_settings().request_timeout_seconds,
                     )
                 except RequestException as exc:
+                    logger.warning(
+                        "模型列表探测请求异常: url={} headers={} error={}",
+                        candidate_url,
+                        headers,
+                        exc,
+                    )
                     errors.append(f"{candidate_url}: {exc}")
                     continue
 
@@ -402,6 +408,13 @@ class MultimodalGatewayClient:
                     payload = self.response_parser.safe_json(response)
                     return GatewayCallResult(payload=payload, used_url=candidate_url)
 
+                logger.warning(
+                    "模型列表探测失败: url={} headers={} status={} body={}",
+                    candidate_url,
+                    headers,
+                    response.status_code,
+                    response.text,
+                )
                 errors.append(self.response_parser.build_response_error(candidate_url, response))
 
         raise AppException(
@@ -425,6 +438,13 @@ class MultimodalGatewayClient:
                         timeout=get_settings().model_chat_timeout_seconds,
                     )
                 except RequestException as exc:
+                    logger.warning(
+                        "多模态模型调用请求异常: url={} headers={} payload={} error={}",
+                        candidate_url,
+                        headers,
+                        payload,
+                        exc,
+                    )
                     errors.append(f"{candidate_url}: {exc}")
                     continue
 
@@ -434,6 +454,14 @@ class MultimodalGatewayClient:
                         used_url=candidate_url,
                     )
 
+                logger.warning(
+                    "多模态模型调用失败: url={} headers={} payload={} status={} body={}",
+                    candidate_url,
+                    headers,
+                    payload,
+                    response.status_code,
+                    response.text,
+                )
                 errors.append(self.response_parser.build_response_error(candidate_url, response))
 
         raise AppException(
@@ -463,6 +491,13 @@ class MultimodalGatewayClient:
                         stream=True,
                     )
                 except RequestException as exc:
+                    logger.warning(
+                        "多模态模型流式调用请求异常: url={} headers={} payload={} error={}",
+                        candidate_url,
+                        headers,
+                        payload,
+                        exc,
+                    )
                     errors.append(f"{candidate_url}: {exc}")
                     continue
 
@@ -472,6 +507,14 @@ class MultimodalGatewayClient:
                         chunks=self.stream_parser.iter_chunks(response),
                     )
 
+                logger.warning(
+                    "多模态模型流式调用失败: url={} headers={} payload={} status={} body={}",
+                    candidate_url,
+                    headers,
+                    payload,
+                    response.status_code,
+                    response.text,
+                )
                 errors.append(self.response_parser.build_response_error(candidate_url, response))
 
         raise AppException(

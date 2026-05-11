@@ -142,17 +142,30 @@ class ClientApi:
             "password": self.client.password,
             "clientType": "WEB",
         }
+        login_url = ClientUtils.build_url(self.client.api_url, LOGIN_PATH)
         try:
-            response = requests.post(ClientUtils.build_url(self.client.api_url, LOGIN_PATH), json=login_payload,
-                                     timeout=get_settings().request_timeout_seconds)
+            logger.info("开始调用客户端登录接口: client_id={} url={} payload={}", self.client_id, login_url, login_payload)
+            response = requests.post(login_url, json=login_payload, timeout=get_settings().request_timeout_seconds)
         except RequestException as exc:
-            logger.warning(f"客户端登录请求异常: client_id={self.client_id}, error={exc}")
+            logger.warning(
+                "客户端登录请求异常: client_id={} url={} payload={} error={}",
+                self.client_id,
+                login_url,
+                login_payload,
+                exc,
+            )
             raise AppException(code=ErrorCode.INTERNAL_ERROR, message=f"客户端登录请求失败: {exc}",
                                status_code=502) from exc
 
         if response.status_code != 200:
             logger.warning(
-                f"客户端登录失败: client_id={self.client_id}, status={response.status_code}, bode={response.text}")
+                "客户端登录失败: client_id={} url={} payload={} status={} body={}",
+                self.client_id,
+                login_url,
+                login_payload,
+                response.status_code,
+                response.text,
+            )
             raise AppException(code=ErrorCode.AUTH_FAILED, message=f"客户端登录失败: {response.text}", status_code=401)
         self.update_client_tokens(response.json())
         return ClientAuthenticationResult(client=self.client, used_strategy="login")
@@ -165,16 +178,26 @@ class ClientApi:
             "Authorization": self.client.refresh_token
         }
         timeout = get_settings().request_timeout_seconds
+        refresh_url = ClientUtils.build_url(self.client.api_url, REFRESH_PATH)
         try:
-            response = requests.post(ClientUtils.build_url(self.client.api_url, REFRESH_PATH), headers=headers,
-                                     timeout=timeout)
+            logger.info("开始调用客户端刷新token接口: client_id={} url={} headers={}", self.client_id, refresh_url, headers)
+            response = requests.post(refresh_url, headers=headers, timeout=timeout)
             if response is not None and response.status_code == 200:
                 self.update_client_tokens(response.json())
                 return ClientAuthenticationResult(client=self.client, used_strategy="refresh")
         except RequestException as exc:
-            msg = f"客户端刷新token异常: client_id={self.client_id} error={exc}"
+            msg = f"客户端刷新token异常: client_id={self.client_id} url={refresh_url} headers={headers} error={exc}"
             logger.warning(msg)
             raise AppException(code=ErrorCode.INTERNAL_ERROR, message=msg, status_code=502)
+        if response is not None:
+            logger.warning(
+                "客户端刷新token失败: client_id={} url={} headers={} status={} body={}",
+                self.client_id,
+                refresh_url,
+                headers,
+                response.status_code,
+                response.text,
+            )
         return None
 
     def authenticate_client_model(self, force_reauthenticate: bool = False) -> ClientAuthenticationResult:
@@ -294,6 +317,15 @@ class ClientApi:
 
         for attempt in range(1, UPSTREAM_REQUEST_RETRY_ATTEMPTS + 1):
             try:
+                logger.info(
+                    "开始调用上游接口: client_id={} method={} path={} params={} attempt={}/{}",
+                    self.client_id,
+                    method.upper(),
+                    path,
+                    params,
+                    attempt,
+                    UPSTREAM_REQUEST_RETRY_ATTEMPTS,
+                )
                 if method.upper() == "GET":
                     response = requests.get(path, headers=headers, timeout=timeout, params=params)
                 else:
@@ -301,11 +333,16 @@ class ClientApi:
                 if response.status_code == 401 or ClientUtils.response_contains_token_error(response):
                     last_exception = RequestException("登录失效")
                     logger.warning(
-                        "客户端 token 已失效，准备重新登录后重试: client_id={}, path={}, attempt={}/{}",
+                        "客户端 token 已失效，准备重新登录后重试: client_id={}, method={}, path={}, "
+                        "params={}, attempt={}/{}, status={}, body={}",
                         self.client_id,
+                        method.upper(),
                         path,
+                        params,
                         attempt,
                         UPSTREAM_REQUEST_RETRY_ATTEMPTS,
+                        response.status_code,
+                        response.text,
                     )
                     self.clear_client_tokens()
                     auth_result = self.authenticate_client_model(force_reauthenticate=True)
@@ -314,9 +351,12 @@ class ClientApi:
             except RequestException as exc:
                 last_exception = exc
                 logger.warning(
-                    "客户端请求异常，将按需重试: client_id={}, path={}, attempt={}/{}, error={}",
+                    "客户端请求异常，将按需重试: client_id={}, method={}, path={}, params={}, "
+                    "attempt={}/{}, error={}",
                     self.client_id,
+                    method.upper(),
                     path,
+                    params,
                     attempt,
                     UPSTREAM_REQUEST_RETRY_ATTEMPTS,
                     exc,
@@ -324,13 +364,25 @@ class ClientApi:
                 continue
 
             if response.status_code not in UPSTREAM_RETRYABLE_STATUS_CODES:
+                if response.status_code != 200:
+                    logger.warning(
+                        "客户端接口返回非成功状态: client_id={}, method={}, path={}, params={}, status={}, body={}",
+                        self.client_id,
+                        method.upper(),
+                        path,
+                        params,
+                        response.status_code,
+                        response.text,
+                    )
                 return response
 
             logger.warning(
-                "客户端返回临时失败，将按需重试: client_id={}, path={}, "
-                "attempt={}/{}, status={}, body={}",
+                "客户端返回临时失败，将按需重试: client_id={}, method={}, path={}, "
+                "params={}, attempt={}/{}, status={}, body={}",
                 self.client_id,
+                method.upper(),
                 path,
+                params,
                 attempt,
                 UPSTREAM_REQUEST_RETRY_ATTEMPTS,
                 response.status_code,

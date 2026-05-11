@@ -17,12 +17,17 @@ if str(BACKEND_ROOT) not in sys.path:
     sys.path.insert(0, str(BACKEND_ROOT))
 
 
-def test_project_scripts_only_include_systemd_command() -> None:
-    """wheel 安装后只暴露 systemd 部署工具命令。"""
+def test_project_scripts_include_deploy_entrypoints() -> None:
+    """wheel 安装后应暴露部署运行所需的全部 CLI 命令。"""
 
     pyproject = tomllib.loads((BACKEND_ROOT / "pyproject.toml").read_text(encoding="utf-8"))
 
-    assert pyproject["project"]["scripts"] == {"aiSelfTestSystemd": "aiSelfTest.systemd:main"}
+    assert pyproject["project"]["scripts"] == {
+        "aiSelfTestApi": "aiSelfTest.server:main",
+        "aiSelfTestBeat": "aiSelfTest.worker_server:main_beat",
+        "aiSelfTestSystemd": "aiSelfTest.systemd:main",
+        "aiSelfTestWorker": "aiSelfTest.worker_server:main_worker",
+    }
 
 
 def test_default_config_uses_current_working_directory(monkeypatch, tmp_path) -> None:
@@ -36,7 +41,22 @@ def test_default_config_uses_current_working_directory(monkeypatch, tmp_path) ->
 
     assert config.deploy_dir == tmp_path
     assert config.env_file == tmp_path / "aiSelfTest.env"
-    assert config.bin_dir == Path(sys.executable).resolve().parent
+    assert config.bin_dir == Path(sys.executable).parent
+
+
+def test_default_config_keeps_virtualenv_bin_directory(monkeypatch, tmp_path) -> None:
+    """默认配置不应把虚拟环境解释器追踪成系统解释器路径。"""
+
+    from aiSelfTest.systemd import build_default_config
+
+    fake_executable = tmp_path / "venv" / "bin" / "python"
+    fake_executable.parent.mkdir(parents=True)
+    monkeypatch.setattr(sys, "executable", str(fake_executable))
+    monkeypatch.chdir(tmp_path)
+
+    config = build_default_config()
+
+    assert config.bin_dir == fake_executable.parent
 
 
 def test_env_file_defaults_to_deploy_dir(tmp_path) -> None:
@@ -54,7 +74,8 @@ def test_systemd_renderer_returns_three_services_with_shared_env_file(tmp_path) 
 
     from aiSelfTest.systemd import SystemdConfig, render_service_units
 
-    config = SystemdConfig(deploy_dir=tmp_path, env_file=tmp_path / "aiSelfTest.env")
+    bin_dir = tmp_path / "bin"
+    config = SystemdConfig(deploy_dir=tmp_path, env_file=tmp_path / "aiSelfTest.env", bin_dir=bin_dir)
     units = render_service_units(config)
 
     assert sorted(units) == [
@@ -62,9 +83,10 @@ def test_systemd_renderer_returns_three_services_with_shared_env_file(tmp_path) 
         "aiSelfTest-beat.service",
         "aiSelfTest-worker.service",
     ]
-    assert "python -m aiSelfTest.server" in units["aiSelfTest-api.service"]
-    assert "python -m aiSelfTest.worker_server worker" in units["aiSelfTest-worker.service"]
-    assert "python -m aiSelfTest.worker_server beat" in units["aiSelfTest-beat.service"]
+    assert f"ExecStart={tmp_path / 'bin' / 'aiSelfTestApi'}" in units["aiSelfTest-api.service"]
+    assert f"ExecStart={tmp_path / 'bin' / 'aiSelfTestWorker'}" in units["aiSelfTest-worker.service"]
+    assert f"ExecStart={tmp_path / 'bin' / 'aiSelfTestBeat'}" in units["aiSelfTest-beat.service"]
+    assert "python -m aiSelfTest" not in "\n".join(units.values())
 
     for content in units.values():
         assert f"EnvironmentFile={tmp_path / 'aiSelfTest.env'}" in content
@@ -145,6 +167,34 @@ def test_install_services_enables_services(monkeypatch, tmp_path) -> None:
     ]
     for service_name in systemd.SERVICE_NAMES:
         assert (config.service_dir / service_name).is_file()
+
+
+def test_install_services_keeps_existing_env_file(monkeypatch, tmp_path) -> None:
+    """install 遇到已存在的 aiSelfTest.env 时不应覆盖其内容。"""
+
+    from aiSelfTest import systemd
+
+    commands: list[list[str]] = []
+
+    def fake_run_command(command, *, check=True):
+        commands.append(list(command))
+
+    monkeypatch.setattr(systemd, "_run_command", fake_run_command)
+
+    config = systemd.SystemdConfig(
+        deploy_dir=tmp_path,
+        env_file=tmp_path / "aiSelfTest.env",
+        service_dir=tmp_path / "systemd",
+    )
+    config.env_file.write_text("EXISTING=1\n", encoding="utf-8")
+
+    systemd.install_services(config)
+
+    assert config.env_file.read_text(encoding="utf-8") == "EXISTING=1\n"
+    assert commands == [
+        ["systemctl", "daemon-reload"],
+        ["systemctl", "enable", *systemd.SERVICE_NAMES],
+    ]
 
 
 def test_start_stop_restart_use_ordered_systemctl_commands(monkeypatch) -> None:
@@ -300,7 +350,13 @@ def test_worker_server_configures_logging_before_start(monkeypatch) -> None:
 
     assert worker_server.main(["worker"]) == 0
     assert worker_server.main(["beat"]) == 0
+    assert worker_server.main_worker() == 0
+    assert worker_server.main_beat() == 0
     assert calls == [
+        ("log", "worker"),
+        ("start", "worker"),
+        ("log", "beat"),
+        ("start", "beat"),
         ("log", "worker"),
         ("start", "worker"),
         ("log", "beat"),

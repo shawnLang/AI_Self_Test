@@ -38,6 +38,9 @@ classifiers = [
 # 创建可执行脚本
 [project.scripts]
 aiSelfTestSystemd = "aiSelfTest.systemd:main"
+aiSelfTestApi = "aiSelfTest.server:main"
+aiSelfTestWorker = "aiSelfTest.worker_server:main_worker"
+aiSelfTestBeat = "aiSelfTest.worker_server:main_beat"
 
 
 

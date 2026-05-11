@@ -34,7 +34,7 @@ class SystemdConfig:
     app_name: str = "aiSelfTest"
     deploy_dir: Path = field(default_factory=lambda: Path.cwd().resolve())
     env_file: Path | None = None
-    bin_dir: Path = field(default_factory=lambda: Path(sys.executable).resolve().parent)
+    bin_dir: Path = field(default_factory=lambda: Path(sys.executable).parent)
     service_dir: Path = Path("/etc/systemd/system")
     user: str = "root"
     group: str = "root"
@@ -58,7 +58,7 @@ def build_default_config() -> SystemdConfig:
     deploy_dir = Path.cwd().resolve()
     return SystemdConfig(
         deploy_dir=deploy_dir,
-        bin_dir=Path(sys.executable).resolve().parent,
+        bin_dir=Path(sys.executable).parent,
     )
 
 
@@ -69,17 +69,17 @@ def render_service_units(config: SystemdConfig) -> dict[str, str]:
         "aiSelfTest-api.service": _render_service(
             description="aiSelfTest FastAPI service",
             config=config,
-            exec_start=f"{config.bin_dir / 'python'} -m aiSelfTest.server",
+            exec_start=f"{config.bin_dir / 'aiSelfTestApi'}",
         ),
         "aiSelfTest-worker.service": _render_service(
             description="aiSelfTest Celery worker service",
             config=config,
-            exec_start=f"{config.bin_dir / 'python'} -m aiSelfTest.worker_server worker",
+            exec_start=f"{config.bin_dir / 'aiSelfTestWorker'}",
         ),
         "aiSelfTest-beat.service": _render_service(
             description="aiSelfTest Celery beat service",
             config=config,
-            exec_start=f"{config.bin_dir / 'python'} -m aiSelfTest.worker_server beat",
+            exec_start=f"{config.bin_dir / 'aiSelfTestBeat'}",
         ),
     }
 
@@ -259,7 +259,7 @@ def _config_from_args(args: argparse.Namespace) -> SystemdConfig:
     return SystemdConfig(
         deploy_dir=deploy_dir,
         env_file=env_file,
-        bin_dir=Path(sys.executable).resolve().parent,
+        bin_dir=Path(sys.executable).parent,
         service_dir=args.service_dir,
         user=args.user,
         group=args.group,

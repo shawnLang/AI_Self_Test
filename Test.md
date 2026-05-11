@@ -47,6 +47,70 @@
 rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 ```
 
+# Cython 打包 FastAPI Query 参数回归测试清单
+
+## 目标
+
+- 打包后导入 `aiSelfTest.api.task` 不再因 `int = Query(...)` 参数默认值触发
+  `TypeError: Expected int, got Query`。
+- 任务项列表接口继续保留 `task_id`、`media_type`、`status`、`confirm_state`、
+  `page` 和 `page_size` 查询参数约束。
+
+## 用例
+
+1. `GET /api/task-items/list` 路由函数不再使用 `int = Query(...)`、
+   `str | None = Query(...)` 等 Cython 不兼容默认值写法。
+2. `GET /api/task-items/list` 路由函数使用 `Annotated[..., Query(...)]`
+   表达 FastAPI 查询参数校验。
+3. `task_id` 小于等于 0 时仍返回请求参数校验错误。
+4. `page` 小于 1 时仍返回请求参数校验错误。
+5. `page_size` 大于 200 时仍返回请求参数校验错误。
+6. 合法查询仍能返回任务项分页列表。
+
+## 验证命令
+
+```bash
+.env/bin/python -m pytest tests/test_task_item_api.py
+```
+
+运行 pytest 后清理：
+
+```bash
+rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
+```
+
+# 上游接口与大模型错误日志测试清单
+
+## 目标
+
+- 调用上游客户端接口失败时，日志包含完整请求地址、请求参数、HTTP 状态码和响应内容。
+- 调用大模型网关失败时，日志包含完整请求地址、请求负载、HTTP 状态码和响应内容。
+- 请求异常、非 JSON 响应、业务错误响应都能在日志中留下足够排查的信息。
+
+## 用例
+
+1. 客户端登录失败日志包含登录地址、请求参数、HTTP 状态码和响应内容。
+2. 客户端刷新 token 失败日志包含刷新地址、HTTP 状态码和响应内容。
+3. 通用上游接口请求异常日志包含请求地址、请求参数、请求方法和异常信息。
+4. 通用上游接口返回非 200 日志包含请求地址、请求参数、请求方法、HTTP 状态码和响应内容。
+5. 任务分页、详情接口解析非 JSON 或业务错误时，日志包含接口地址、响应状态和响应内容。
+6. 任务文件下载失败日志包含完整下载地址、HTTP 状态码和响应内容。
+7. 大模型探测请求异常日志包含候选地址、请求头和异常信息。
+8. 大模型非流式调用失败日志包含候选地址、请求负载、HTTP 状态码和响应内容。
+9. 大模型流式调用失败日志包含候选地址、请求负载、HTTP 状态码和响应内容。
+
+## 验证命令
+
+```bash
+.env/bin/python -m pytest tests/test_client_auth.py tests/test_multimodal_model_api.py tests/test_task_celery_execution.py
+```
+
+运行 pytest 后清理：
+
+```bash
+rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
+```
+
 # 任务级 Celery 后台提交保存测试清单
 
 ## 目标
@@ -909,20 +973,21 @@ rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 
 ## 目标
 
-- wheel 安装后提供 API、Celery Worker、Celery Beat 和 systemd 管理工具入口。
+- wheel 安装后提供 API、Celery Worker、Celery Beat 和 systemd 管理工具 CLI 入口。
 - systemd 管理工具生成三个独立服务，分别管理 API、Worker 和 Beat。
 - 三个服务统一读取 `/opt/aiSelfTest/aiSelfTest.env`，且该环境文件模板包含项目所有运行时配置。
 - 本次只做静态与单元级验证，不执行 `setup_build.py`，不安装 wheel。
 
 ## 用例
 
-1. `project.scripts` 只包含 `aiSelfTestSystemd` 部署工具入口。
+1. `project.scripts` 包含 `aiSelfTestApi`、`aiSelfTestWorker`、`aiSelfTestBeat`
+   和 `aiSelfTestSystemd` 四个 CLI 入口。
 2. systemd 工具能生成 `aiSelfTest-api.service`、`aiSelfTest-worker.service`
    和 `aiSelfTest-beat.service`。
 3. 三个 service 均引用同一个 `EnvironmentFile=/opt/aiSelfTest/aiSelfTest.env`。
-4. API service 使用 `python -m aiSelfTest.server` 专用入口启动。
-5. Worker service 使用 `celery -A aiSelfTest.worker worker` 启动。
-6. Beat service 使用 `celery -A aiSelfTest.worker beat` 启动。
+4. API service 使用 `aiSelfTestApi` CLI 启动。
+5. Worker service 使用 `aiSelfTestWorker` CLI 启动。
+6. Beat service 使用 `aiSelfTestBeat` CLI 启动。
 7. `install` 创建的 `aiSelfTest.env` 模板包含 `config.py` 中所有运行时配置变量。
 8. 默认 service 目录使用 `/etc/systemd/system`。
 9. `install` 写入 service 后自动执行 `systemctl enable` 开启自启。
@@ -939,6 +1004,7 @@ rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 20. 未设置 `DATABASE_URL`、`REDIS_URL` 等运行配置时，导入 `aiSelfTest.systemd` 不应触发运行时配置加载。
 21. 未设置运行配置时，`aiSelfTestSystemd install` 可渲染并写入 service/env 文件。
 22. 未设置运行配置时，`aiSelfTestSystemd uninstall/start/stop/restart` 只执行 systemctl 管理动作，不加载应用运行配置。
+23. `install` 遇到已存在的 `aiSelfTest.env` 时，不应重新创建或覆盖原文件内容。
 
 ## 验证命令
 

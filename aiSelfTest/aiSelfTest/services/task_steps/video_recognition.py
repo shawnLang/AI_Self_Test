@@ -87,25 +87,36 @@ class VideoFrameExtractor:
     def load_detections(self, videojson_path: Path) -> list[TrackDetection]:
         """读取二维数组格式 videojson。"""
 
+        logger.info("开始读取视频结果文件: path={}", videojson_path)
         try:
             payload = json.loads(videojson_path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError) as exc:
+            logger.exception("视频结果文件读取失败: path={}", videojson_path)
             raise AppException(
                 code=ErrorCode.TASK_FAILED,
                 message=f"视频结果文件读取失败: {videojson_path}",
                 status_code=502,
             ) from exc
         if not isinstance(payload, list):
+            logger.warning("视频结果文件格式错误: path={} payload_type={}", videojson_path, type(payload).__name__)
             raise AppException(code=ErrorCode.TASK_FAILED, message="视频结果文件格式必须是数组", status_code=502)
 
         detections: list[TrackDetection] = []
+        frame_count = len(payload)
         for frame_index, frame_payload in enumerate(payload):
             if not isinstance(frame_payload, list):
+                logger.warning(
+                    "跳过非法视频帧结果: path={} frame_index={} frame_payload_type={}",
+                    videojson_path,
+                    frame_index,
+                    type(frame_payload).__name__,
+                )
                 continue
             for row in frame_payload:
                 detection = self._parse_detection(row, frame_index)
                 if detection is not None:
                     detections.append(detection)
+        logger.info("视频结果文件读取完成: path={} frame_count={} detection_count={}", videojson_path, frame_count, len(detections))
         return detections
 
     def find_row_detections(self, data_row: TaskItemData,
@@ -113,12 +124,20 @@ class VideoFrameExtractor:
         """按 TaskItemData.track_ids 提取命中的 detection。"""
 
         track_ids = {part.strip() for part in str(data_row.track_ids or "").split(",") if part.strip()}
-        return [detection for detection in detections if detection.track_id in track_ids] if track_ids else []
+        matched = [detection for detection in detections if detection.track_id in track_ids] if track_ids else []
+        logger.info(
+            "视频明细匹配 track detections: row_id={} track_ids={} matched_count={}",
+            data_row.id,
+            sorted(track_ids),
+            len(matched),
+        )
+        return matched
 
     def select_key_detections(self, detections: Sequence[TrackDetection]) -> list[TrackDetection]:
         """选择首帧、末帧、最大面积、最高 score、时间中位帧。"""
 
         if not detections:
+            logger.info("视频关键帧选择跳过: detection_count=0")
             return []
         sorted_detections = sorted(detections, key=lambda item: item.frame_index)
         candidates = [
@@ -134,24 +153,55 @@ class VideoFrameExtractor:
             existing = by_frame.get(detection.frame_index)
             if existing is None or detection.area > existing.area:
                 by_frame[detection.frame_index] = detection
-        return sorted(by_frame.values(), key=lambda item: item.frame_index)[:self.max_keyframes]
+        selected = sorted(by_frame.values(), key=lambda item: item.frame_index)[:self.max_keyframes]
+        logger.info(
+            "视频关键帧选择完成: source_detection_count={} selected_count={} selected_frames={} track_ids={}",
+            len(detections),
+            len(selected),
+            [item.frame_index for item in selected],
+            [item.track_id for item in selected],
+        )
+        return selected
 
     def build_crop_attachments(self, video_path: Path,
                                detections: Sequence[TrackDetection]) -> list[MultimodalAttachmentPayload]:
         """按关键 detection 从视频抽帧并裁剪为图片附件。"""
 
         if not detections:
+            logger.info("视频裁剪附件构建跳过: video_path={} detection_count=0", video_path)
             return []
+        logger.info(
+            "开始构建视频裁剪附件: video_path={} detection_count={} frames={}",
+            video_path,
+            len(detections),
+            [detection.frame_index for detection in detections],
+        )
         capture = cv2.VideoCapture(video_path.as_posix())
         if not capture.isOpened():
+            logger.warning("视频文件无法打开: video_path={}", video_path)
             raise AppException(code=ErrorCode.TASK_FAILED, message=f"视频文件无法打开: {video_path}", status_code=502)
 
         attachments: list[MultimodalAttachmentPayload] = []
         try:
             for position, detection in enumerate(detections, start=1):
+                logger.info(
+                    "读取并裁剪视频关键帧: video_path={} frame_index={} track_id={} bbox={} score={} position={}",
+                    video_path,
+                    detection.frame_index,
+                    detection.track_id,
+                    detection.bbox,
+                    detection.score,
+                    position,
+                )
                 capture.set(cv2.CAP_PROP_POS_FRAMES, detection.frame_index)
                 success, frame = capture.read()
                 if not success or frame is None:
+                    logger.warning(
+                        "视频帧读取失败: video_path={} frame_index={} track_id={}",
+                        video_path,
+                        detection.frame_index,
+                        detection.track_id,
+                    )
                     raise AppException(
                         code=ErrorCode.TASK_FAILED,
                         message=f"视频帧读取失败: frame_index={detection.frame_index}",
@@ -160,6 +210,13 @@ class VideoFrameExtractor:
                 crop = self._crop_frame(frame, detection.bbox)
                 success, encoded = cv2.imencode(".jpg", crop)
                 if not success:
+                    logger.warning(
+                        "视频关键帧裁剪图编码失败: video_path={} frame_index={} track_id={} bbox={}",
+                        video_path,
+                        detection.frame_index,
+                        detection.track_id,
+                        detection.bbox,
+                    )
                     raise AppException(code=ErrorCode.TASK_FAILED, message="视频关键帧裁剪图编码失败", status_code=502)
                 data = base64.b64encode(encoded.tobytes()).decode("ascii")
                 attachments.append(
@@ -172,6 +229,7 @@ class VideoFrameExtractor:
                 )
         finally:
             capture.release()
+        logger.info("视频裁剪附件构建完成: video_path={} attachment_count={}", video_path, len(attachments))
         return attachments
 
     def select_full_frame_detections(
@@ -183,10 +241,17 @@ class VideoFrameExtractor:
 
         target_track_ids = self._collect_row_track_ids(data_rows)
         if not target_track_ids:
+            logger.info("视频整帧候选选择跳过: data_row_count={} target_track_ids=empty", len(data_rows))
             return []
 
         frame_groups = self._group_full_frame_detections(detections, target_track_ids)
         if not frame_groups:
+            logger.warning(
+                "视频整帧候选选择无匹配帧: data_row_count={} detection_count={} target_track_ids={}",
+                len(data_rows),
+                len(detections),
+                sorted(target_track_ids),
+            )
             return []
 
         selected: list[FullFrameDetectionGroup] = []
@@ -208,6 +273,16 @@ class VideoFrameExtractor:
         missing = {track_id: count for track_id, count in coverage.items() if count < target_count}
         if missing:
             logger.warning("视频整帧识别 track 覆盖不足: {}", missing)
+        logger.info(
+            "视频整帧候选选择完成: data_row_count={} detection_count={} frame_group_count={} selected_count={} "
+            "selected_frames={} coverage={}",
+            len(data_rows),
+            len(detections),
+            len(frame_groups),
+            len(selected),
+            [group.frame_index for group in selected],
+            coverage,
+        )
         return selected
 
     def build_full_frame_attachment(self, video_path: Path, frame_index: int) -> MultimodalAttachmentPayload:
@@ -215,11 +290,14 @@ class VideoFrameExtractor:
 
         capture = cv2.VideoCapture(video_path.as_posix())
         if not capture.isOpened():
+            logger.warning("视频文件无法打开: video_path={}", video_path)
             raise AppException(code=ErrorCode.TASK_FAILED, message=f"视频文件无法打开: {video_path}", status_code=502)
         try:
+            logger.info("开始抽取视频整帧: video_path={} frame_index={}", video_path, frame_index)
             capture.set(cv2.CAP_PROP_POS_FRAMES, frame_index)
             success, frame = capture.read()
             if not success or frame is None:
+                logger.warning("视频帧读取失败: video_path={} frame_index={}", video_path, frame_index)
                 raise AppException(
                     code=ErrorCode.TASK_FAILED,
                     message=f"视频帧读取失败: frame_index={frame_index}",
@@ -227,8 +305,10 @@ class VideoFrameExtractor:
                 )
             success, encoded = cv2.imencode(".jpg", frame)
             if not success:
+                logger.warning("视频整帧图片编码失败: video_path={} frame_index={}", video_path, frame_index)
                 raise AppException(code=ErrorCode.TASK_FAILED, message="视频整帧图片编码失败", status_code=502)
             data = base64.b64encode(encoded.tobytes()).decode("ascii")
+            logger.info("视频整帧附件构建完成: video_path={} frame_index={} encoded_size={}", video_path, frame_index, len(data))
             return MultimodalAttachmentPayload(
                 name=f"frame_{frame_index}.jpg",
                 mimeType="image/jpeg",
