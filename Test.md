@@ -884,3 +884,47 @@ rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 ```bash
 rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 ```
+
+# wheel 部署与 systemd 三服务测试清单
+
+## 目标
+
+- wheel 安装后提供 API、Celery Worker、Celery Beat 和 systemd 管理工具入口。
+- systemd 管理工具生成三个独立服务，分别管理 API、Worker 和 Beat。
+- 三个服务统一读取 `/opt/aiSelfTest/aiSelfTest.env`，且该环境文件模板包含项目所有运行时配置。
+- 本次只做静态与单元级验证，不执行 `setup_build.py`，不安装 wheel。
+
+## 用例
+
+1. `project.scripts` 只包含 `aiSelfTestSystemd` 部署工具入口。
+2. systemd 工具能生成 `aiSelfTest-api.service`、`aiSelfTest-worker.service`
+   和 `aiSelfTest-beat.service`。
+3. 三个 service 均引用同一个 `EnvironmentFile=/opt/aiSelfTest/aiSelfTest.env`。
+4. API service 使用 `python -m aiSelfTest.server` 专用入口启动。
+5. Worker service 使用 `celery -A aiSelfTest.worker worker` 启动。
+6. Beat service 使用 `celery -A aiSelfTest.worker beat` 启动。
+7. `install` 创建的 `aiSelfTest.env` 模板包含 `config.py` 中所有运行时配置变量。
+8. 默认 service 目录使用 `/etc/systemd/system`。
+9. `install` 写入 service 后自动执行 `systemctl enable` 开启自启。
+10. 工具只支持 `install`、`uninstall`、`start`、`stop` 和 `restart` 子命令。
+11. `start` 按 API、Worker、Beat 顺序启动三个服务。
+12. `stop` 按 Beat、Worker、API 顺序停止三个服务。
+13. `restart` 先按 Beat、Worker、API 顺序停止，再按 API、Worker、Beat 顺序启动。
+14. 专用 API 启动入口先执行一次 Alembic 迁移，再启动 uvicorn workers。
+15. FastAPI `lifespan` 不再执行数据库迁移，避免多 worker 重复迁移。
+16. 部署入口配置文件日志时移除 loguru 默认控制台输出。
+17. 部署入口分别写入 `logs/api.log`、`logs/worker.log` 和 `logs/beat.log`。
+18. 部署日志不传自定义 `format`，保持 loguru 默认格式。
+19. 开发入口不调用部署文件日志配置，保持默认控制台输出。
+
+## 验证命令
+
+```bash
+.env/bin/python -m pytest tests/test_systemd_deploy_static.py
+```
+
+运行 pytest 后清理：
+
+```bash
+rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
+```

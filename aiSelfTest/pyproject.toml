@@ -37,7 +37,7 @@ classifiers = [
 
 # 创建可执行脚本
 [project.scripts]
-aiSelfTest = "aiSelfTest:main"
+aiSelfTestSystemd = "aiSelfTest.systemd:main"
 
 
 

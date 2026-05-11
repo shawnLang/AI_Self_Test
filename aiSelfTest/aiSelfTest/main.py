@@ -18,7 +18,6 @@ from aiSelfTest.api.dashboard import router as dashboard_router
 from aiSelfTest.api.multimodal_model import router as multimodal_model_router
 from aiSelfTest.api.task import task_item_router, task_router
 from aiSelfTest.config import get_settings
-from aiSelfTest.database import run_migrations
 from aiSelfTest.exceptions import (
     AppException,
     app_exception_handler,
@@ -37,7 +36,6 @@ async def lifespan(app: FastAPI):
     settings.log_dir.mkdir(parents=True, exist_ok=True)
 
     logger.info("启动 aiSelfTest FastAPI 应用...")
-    run_migrations()
     try:
         yield
     finally:

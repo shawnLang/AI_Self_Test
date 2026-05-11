@@ -4,8 +4,8 @@
 主要用于本地开发或未安装控制台脚本时的兜底入口。
 """
 
-from aiSelfTest import main
+from aiSelfTest.server import main
 
 if __name__ == "__main__":
-    # 保持入口最小化，真实启动逻辑统一放在包级 main 中。
-    main()
+    # 开发启动保留 loguru 默认控制台输出，不配置部署文件日志。
+    main(configure_file_logging=False)
