@@ -29,7 +29,20 @@ from aiSelfTest.services.task_submission_job import TaskSubmissionJobService
 def main_worker() -> None:
     """启动 Celery Worker，便于 IDE 以 Python 脚本方式调试。"""
 
-    configure_deploy_logging("worker")
+    _start_worker(configure_logging=True)
+
+
+def start_worker_without_logging_config() -> None:
+    """启动 Celery Worker，供已完成日志配置的部署入口调用。"""
+
+    _start_worker(configure_logging=False)
+
+
+def _start_worker(*, configure_logging: bool) -> None:
+    """按需配置日志后启动 Celery Worker。"""
+
+    if configure_logging:
+        configure_deploy_logging("worker")
     settings = get_settings()
     celery_app.worker_main(
         [
@@ -44,7 +57,20 @@ def main_worker() -> None:
 def main_beat() -> None:
     """启动 Celery Beat，便于 IDE 以 Python 脚本方式调试。"""
 
-    configure_deploy_logging("beat")
+    _start_beat(configure_logging=True)
+
+
+def start_beat_without_logging_config() -> None:
+    """启动 Celery Beat，供已完成日志配置的部署入口调用。"""
+
+    _start_beat(configure_logging=False)
+
+
+def _start_beat(*, configure_logging: bool) -> None:
+    """按需配置日志后启动 Celery Beat。"""
+
+    if configure_logging:
+        configure_deploy_logging("beat")
     celery_app.start(
         [
             "beat",

@@ -5,8 +5,8 @@ from __future__ import annotations
 import argparse
 from typing import Sequence
 
-from aiSelfTest.logging import configure_deploy_file_logging
-from aiSelfTest.worker import main_beat, main_worker
+from aiSelfTest.logging import configure_deploy_logging
+from aiSelfTest.worker import start_beat_without_logging_config, start_worker_without_logging_config
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -16,12 +16,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("service", choices=("worker", "beat"))
     args = parser.parse_args(argv)
 
-    configure_deploy_file_logging(args.service)
+    configure_deploy_logging(args.service)
     if args.service == "worker":
-        main_worker()
+        start_worker_without_logging_config()
         return 0
 
-    main_beat()
+    start_beat_without_logging_config()
     return 0
 
 

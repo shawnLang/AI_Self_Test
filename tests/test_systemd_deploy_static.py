@@ -7,6 +7,8 @@ import tomllib
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 BACKEND_ROOT = PROJECT_ROOT / "aiSelfTest"
@@ -189,7 +191,7 @@ def test_api_server_runs_migrations_before_uvicorn(monkeypatch) -> None:
 
     monkeypatch.setattr(
         server,
-        "configure_deploy_file_logging",
+        "configure_deploy_logging",
         lambda service_name: calls.append(("log", service_name)),
     )
     monkeypatch.setattr(server, "run_migrations", lambda: calls.append(("migrate", None)))
@@ -197,7 +199,7 @@ def test_api_server_runs_migrations_before_uvicorn(monkeypatch) -> None:
     monkeypatch.setenv("AI_SELF_TEST_API_PORT", "3100")
     monkeypatch.setenv("AI_SELF_TEST_API_WORKERS", "3")
 
-    def fake_uvicorn_run(app_path, *, host, port, workers, reload):
+    def fake_uvicorn_run(app_path, *, host, port, workers, reload, log_config):
         calls.append(
             (
                 "uvicorn",
@@ -207,6 +209,7 @@ def test_api_server_runs_migrations_before_uvicorn(monkeypatch) -> None:
                     "port": port,
                     "workers": workers,
                     "reload": reload,
+                    "log_config": log_config,
                 },
             )
         )
@@ -226,6 +229,7 @@ def test_api_server_runs_migrations_before_uvicorn(monkeypatch) -> None:
                 "port": 3100,
                 "workers": 3,
                 "reload": False,
+                "log_config": None,
             },
         ),
     ]
@@ -280,11 +284,19 @@ def test_worker_server_configures_logging_before_start(monkeypatch) -> None:
 
     monkeypatch.setattr(
         worker_server,
-        "configure_deploy_file_logging",
+        "configure_deploy_logging",
         lambda service_name: calls.append(("log", service_name)),
     )
-    monkeypatch.setattr(worker_server, "main_worker", lambda: calls.append(("start", "worker")))
-    monkeypatch.setattr(worker_server, "main_beat", lambda: calls.append(("start", "beat")))
+    monkeypatch.setattr(
+        worker_server,
+        "start_worker_without_logging_config",
+        lambda: calls.append(("start", "worker")),
+    )
+    monkeypatch.setattr(
+        worker_server,
+        "start_beat_without_logging_config",
+        lambda: calls.append(("start", "beat")),
+    )
 
     assert worker_server.main(["worker"]) == 0
     assert worker_server.main(["beat"]) == 0
@@ -299,9 +311,9 @@ def test_worker_server_configures_logging_before_start(monkeypatch) -> None:
 def test_development_entrypoints_do_not_configure_deploy_file_logging() -> None:
     """开发启动脚本不应调用部署文件日志配置。"""
 
-    assert "configure_deploy_file_logging" not in (BACKEND_ROOT / "run.py").read_text(encoding="utf-8")
-    assert "configure_deploy_file_logging" not in (BACKEND_ROOT / "run_worker.py").read_text(encoding="utf-8")
-    assert "configure_deploy_file_logging" not in (BACKEND_ROOT / "run_beat.py").read_text(encoding="utf-8")
+    assert "configure_deploy_logging" not in (BACKEND_ROOT / "run.py").read_text(encoding="utf-8")
+    assert "configure_deploy_logging" not in (BACKEND_ROOT / "run_worker.py").read_text(encoding="utf-8")
+    assert "configure_deploy_logging" not in (BACKEND_ROOT / "run_beat.py").read_text(encoding="utf-8")
 
 
 def test_run_py_uses_api_server_without_deploy_logging() -> None:
@@ -311,3 +323,100 @@ def test_run_py_uses_api_server_without_deploy_logging() -> None:
 
     assert "from aiSelfTest.server import main" in source
     assert "main(configure_file_logging=False)" in source
+
+
+@pytest.mark.parametrize(
+    "command,expected_commands",
+    [
+        (
+            "install",
+            [
+                ["systemctl", "daemon-reload"],
+                [
+                    "systemctl",
+                    "enable",
+                    "aiSelfTest-api.service",
+                    "aiSelfTest-worker.service",
+                    "aiSelfTest-beat.service",
+                ],
+            ],
+        ),
+        (
+            "uninstall",
+            [
+                ["systemctl", "stop", "aiSelfTest-beat.service"],
+                ["systemctl", "stop", "aiSelfTest-worker.service"],
+                ["systemctl", "stop", "aiSelfTest-api.service"],
+                [
+                    "systemctl",
+                    "disable",
+                    "aiSelfTest-api.service",
+                    "aiSelfTest-worker.service",
+                    "aiSelfTest-beat.service",
+                ],
+                ["systemctl", "daemon-reload"],
+            ],
+        ),
+        (
+            "start",
+            [
+                ["systemctl", "start", "aiSelfTest-api.service"],
+                ["systemctl", "start", "aiSelfTest-worker.service"],
+                ["systemctl", "start", "aiSelfTest-beat.service"],
+            ],
+        ),
+        (
+            "stop",
+            [
+                ["systemctl", "stop", "aiSelfTest-beat.service"],
+                ["systemctl", "stop", "aiSelfTest-worker.service"],
+                ["systemctl", "stop", "aiSelfTest-api.service"],
+            ],
+        ),
+        (
+            "restart",
+            [
+                ["systemctl", "stop", "aiSelfTest-beat.service"],
+                ["systemctl", "stop", "aiSelfTest-worker.service"],
+                ["systemctl", "stop", "aiSelfTest-api.service"],
+                ["systemctl", "start", "aiSelfTest-api.service"],
+                ["systemctl", "start", "aiSelfTest-worker.service"],
+                ["systemctl", "start", "aiSelfTest-beat.service"],
+            ],
+        ),
+    ],
+)
+def test_systemd_commands_do_not_require_runtime_config(
+    command: str,
+    expected_commands: list[list[str]],
+    monkeypatch,
+    tmp_path,
+) -> None:
+    """systemd 管理命令不应要求数据库、Redis 等运行时配置。"""
+
+    monkeypatch.delenv("DATABASE_URL", raising=False)
+    monkeypatch.delenv("REDIS_URL", raising=False)
+
+    from aiSelfTest import systemd
+
+    commands: list[list[str]] = []
+    monkeypatch.setattr(
+        systemd,
+        "_run_command",
+        lambda command, *, check=True: commands.append(list(command)),
+    )
+
+    result = systemd.main(
+        [
+            "--deploy-dir",
+            str(tmp_path),
+            "--service-dir",
+            str(tmp_path / "systemd"),
+            command,
+        ]
+    )
+
+    assert result == 0
+    if command == "install":
+        assert (tmp_path / "aiSelfTest.env").is_file()
+    assert commands == expected_commands

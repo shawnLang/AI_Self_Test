@@ -43,10 +43,13 @@ def test_celery_logging_hijack_is_disabled() -> None:
     """Celery 不应覆盖 root logger，并应保留 stdout 重定向。"""
 
     source = (PROJECT_ROOT / "aiSelfTest" / "aiSelfTest" / "celery_app.py").read_text(encoding="utf-8")
-    worker_source = (PROJECT_ROOT / "aiSelfTest" / "aiSelfTest" / "worker.py").read_text(encoding="utf-8")
+    worker_server_source = (
+        PROJECT_ROOT / "aiSelfTest" / "aiSelfTest" / "worker_server.py"
+    ).read_text(encoding="utf-8")
 
     assert "worker_hijack_root_logger=False" in source
     assert "worker_redirect_stdouts=True" in source
     assert "worker_redirect_stdouts_level=\"INFO\"" in source
-    assert "configure_deploy_logging(\"worker\")" in worker_source
-    assert "configure_deploy_logging(\"beat\")" in worker_source
+    assert "configure_deploy_logging(args.service)" in worker_server_source
+    assert "start_worker_without_logging_config()" in worker_server_source
+    assert "start_beat_without_logging_config()" in worker_server_source

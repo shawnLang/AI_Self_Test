@@ -936,6 +936,9 @@ rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 17. 部署入口分别写入 `logs/api.log`、`logs/worker.log` 和 `logs/beat.log`。
 18. 部署日志不传自定义 `format`，保持 loguru 默认格式。
 19. 开发入口不调用部署文件日志配置，保持默认控制台输出。
+20. 未设置 `DATABASE_URL`、`REDIS_URL` 等运行配置时，导入 `aiSelfTest.systemd` 不应触发运行时配置加载。
+21. 未设置运行配置时，`aiSelfTestSystemd install` 可渲染并写入 service/env 文件。
+22. 未设置运行配置时，`aiSelfTestSystemd uninstall/start/stop/restart` 只执行 systemctl 管理动作，不加载应用运行配置。
 
 ## 验证命令
 
