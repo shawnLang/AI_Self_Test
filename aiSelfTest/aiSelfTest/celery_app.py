@@ -18,6 +18,9 @@ celery_app.conf.update(
     task_acks_late=True,
     task_reject_on_worker_lost=True,
     worker_prefetch_multiplier=1,
+    worker_hijack_root_logger=False,
+    worker_redirect_stdouts=True,
+    worker_redirect_stdouts_level="INFO",
     task_track_started=True,
     timezone="Asia/Shanghai",
 )

@@ -319,11 +319,18 @@ class VideoFrameExtractor:
                 best_group = group
         return best_group
 
-    def _crop_frame(self, frame: Any, bbox: tuple[float, float, float, float]) -> Any:
+    def _crop_frame(self, frame: Any, bbox: Sequence[float]) -> Any:
         """按 bbox 加 padding 裁剪 OpenCV 帧。"""
 
         height, width = frame.shape[:2]
-        xmin, ymin, xmax, ymax = bbox
+        bbox_values = list(bbox)
+        if len(bbox_values) != 4:
+            raise AppException(code=ErrorCode.TASK_FAILED, message="视频关键帧 bbox 坐标数量非法", status_code=502)
+
+        xmin = float(bbox_values[0])
+        ymin = float(bbox_values[1])
+        xmax = float(bbox_values[2])
+        ymax = float(bbox_values[3])
         box_width = max(1.0, xmax - xmin)
         box_height = max(1.0, ymax - ymin)
         pad_x = box_width * self.padding_ratio

@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 
 # 忽略的文件
-ignore_files = ['*.iml', 'setup_build.py', '.git*','CLAUDE.md','README.md']
+ignore_files = ['*.iml', 'setup_build.py', '.git*','CLAUDE.md','README.md',"run.py","run_beat.py","run_worker.py"]
 # 忽略的 文件夹
 ignore_folders = ['package', '__pycache__', '.git', '.idea', 'build', '*.egg-info', 'deploy', 'dist', 'lib','ui','.claude','.venv','.aiSelfTest']
 

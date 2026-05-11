@@ -8,14 +8,14 @@ import uvicorn
 from loguru import logger
 
 from aiSelfTest.database import run_migrations
-from aiSelfTest.logging import configure_deploy_file_logging
+from aiSelfTest.logging import configure_deploy_logging
 
 
 def main(*, configure_file_logging: bool = True) -> None:
     """先执行数据库迁移，再启动 FastAPI API 服务。"""
 
     if configure_file_logging:
-        configure_deploy_file_logging("api")
+        configure_deploy_logging("api")
     host = _env_str("AI_SELF_TEST_API_HOST", "0.0.0.0")
     port = _env_int("AI_SELF_TEST_API_PORT", 3001)
     workers = _env_int("AI_SELF_TEST_API_WORKERS", 1)
@@ -29,6 +29,7 @@ def main(*, configure_file_logging: bool = True) -> None:
         port=port,
         workers=workers,
         reload=False,
+        log_config=None,
     )
 
 

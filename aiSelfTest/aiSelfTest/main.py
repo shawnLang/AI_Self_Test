@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
-from contextlib import asynccontextmanager
+from types import TracebackType
 from uuid import uuid4
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from loguru import logger
 from pydantic import ValidationError
@@ -27,19 +28,39 @@ from aiSelfTest.exceptions import (
 from aiSelfTest.version import __version__
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """应用生命周期管理。"""
+class AppLifespan:
+    """应用生命周期管理器。"""
 
-    settings = get_settings()
-    settings.data_dir.mkdir(parents=True, exist_ok=True)
-    settings.log_dir.mkdir(parents=True, exist_ok=True)
+    def __init__(self, app: FastAPI) -> None:
+        """初始化生命周期管理器。"""
 
-    logger.info("启动 aiSelfTest FastAPI 应用...")
-    try:
-        yield
-    finally:
+        self.app = app
+
+    async def __aenter__(self) -> None:
+        """应用启动时准备运行目录。"""
+
+        settings = get_settings()
+        settings.data_dir.mkdir(parents=True, exist_ok=True)
+        settings.log_dir.mkdir(parents=True, exist_ok=True)
+
+        logger.info("启动 aiSelfTest FastAPI 应用...")
+        return None
+
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> None:
+        """应用关闭时记录生命周期日志。"""
+
         logger.info("关闭 aiSelfTest FastAPI 应用...")
+
+
+def lifespan(app: FastAPI) -> AppLifespan:
+    """创建 FastAPI 生命周期上下文管理器。"""
+
+    return AppLifespan(app)
 
 
 def create_app() -> FastAPI:
@@ -54,6 +75,9 @@ def create_app() -> FastAPI:
         description="AI 自检平台后端 API",
         version=__version__,
         lifespan=lifespan,
+        docs_url=None,
+        redoc_url=None,
+        openapi_url=None,
     )
 
     app.add_exception_handler(RequestValidationError, validation_exception_handler)
@@ -92,16 +116,13 @@ def create_app() -> FastAPI:
     app.include_router(task_router, prefix="/api", tags=["任务"])
     app.include_router(task_item_router, prefix="/api", tags=["任务项"])
     app.mount("/api/task-files", StaticFiles(directory=task_files_dir), name="task-files")
+    app.mount("/assets", StaticFiles(directory=settings.static_dir / "assets"), name="assets")
 
     @app.get("/")
-    async def root() -> dict[str, str]:
-        """返回 API 根路径的基础服务信息。"""
+    async def root() -> FileResponse:
+        """返回前端应用入口页面。"""
 
-        return {
-            "message": "AI 自检平台 API",
-            "version": __version__,
-            "docs": "/docs",
-        }
+        return FileResponse(settings.static_dir / "index.html")
 
     @app.get("/health")
     async def health_check() -> dict[str, str]:

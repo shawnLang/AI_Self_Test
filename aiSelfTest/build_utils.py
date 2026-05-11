@@ -26,6 +26,11 @@ except ImportError:  # pragma: no cover - 构建隔离环境可能尚未安装�
 
             return None
 
+        def warning(self, message: str, *args: object) -> None:
+            """将警告日志退化为 stderr 输出，保留构建警告线索。"""
+
+            print(message.format(*args), file=sys.stderr)
+
         def error(self, message: str, *args: object) -> None:
             """将错误日志退化为 stderr 输出，保留构建失败线索。"""
 
@@ -258,6 +263,25 @@ def glob_files(name: str, ignore_files: Sequence[str]) -> bool:
     return False
 
 
+def _is_benign_build_stderr_line(line: str) -> bool:
+    """判断 build 成功时 stderr 中的单行内容是否为无害进度信息。"""
+
+    stripped = line.strip()
+    if not stripped:
+        return True
+    return (
+        stripped.startswith("* ")
+        or stripped.startswith("- ")
+        or stripped.startswith("no previously-included directories found matching ")
+    )
+
+
+def _has_problem_build_stderr(error_msg: str) -> bool:
+    """判断 build 成功时 stderr 中是否包含需要关注的问题。"""
+
+    return any(not _is_benign_build_stderr_line(line) for line in error_msg.splitlines())
+
+
 def mv_to_packages(
     root_path: Path,
     package_path: Path,
@@ -317,13 +341,17 @@ def setup_build(package_path: Path) -> None:
                 decoded_output = output.decode('utf-8', errors='ignore')
             print(decoded_output, end='' if decoded_output[-1] == '\n' else '\n')
     error = process.stderr.read()
+    error_msg = ""
     if error:
         try:
             error_msg = error.decode(encoding)
         except UnicodeDecodeError:
             error_msg = error.decode('utf-8', errors='ignore')
-        logger.error("构建错误输出: {}", error_msg.strip())
     if process.poll() == 0:
+        if error_msg.strip() and _has_problem_build_stderr(error_msg):
+            logger.warning("构建警告输出: {}", error_msg.strip())
+        elif error_msg.strip():
+            logger.info("构建标准错误输出: {}", error_msg.strip())
         print('构建成功')
         logger.info("wheel 构建成功: package_path={}", package_path)
         package_dist_path = package_path / 'dist'
@@ -346,6 +374,8 @@ def setup_build(package_path: Path) -> None:
                 print(f'上传到共享目录: {file} -> {smb_full_path}')
                 logger.info("wheel 上传完成: file_name={} smb_path={}", file.name, smb_path)
     else:
+        if error_msg.strip():
+            logger.error("构建错误输出: {}", error_msg.strip())
         print('构建失败')
         logger.error("wheel 构建失败: package_path={} return_code={}", package_path, process.poll())
     shutil.rmtree(package_path)

@@ -622,31 +622,6 @@ cd aiSelfTestUi && npm run lint
 cd aiSelfTestUi && npm run lint
 ```
 
-# setup_build 使用当前 Python 环境测试清单
-
-## 目标
-
-- `setup_build` 构建 wheel 时使用当前运行环境的 Python 解释器。
-- 构建命令不再根据系统写死为 `python` 或 `python3`。
-
-## 用例
-
-1. `setup_build` 调用构建命令时，第一个参数等于 `sys.executable`。
-2. 构建命令参数包含 `-m build --wheel`，保持原有 wheel 构建行为。
-3. Linux 与 Windows 分支只影响输出解码编码，不影响 Python 解释器选择。
-
-## 验证命令
-
-```bash
-.env/bin/python -m pytest tests/test_build_utils.py
-```
-
-运行 pytest 后清理：
-
-```bash
-rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
-```
-
 # 任务管理按钮布局与语义测试清单
 
 ## 目标
@@ -666,6 +641,51 @@ rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 ```bash
 .env/bin/python -m pytest tests/test_frontend_contract_static.py
 cd aiSelfTestUi && npm run lint
+```
+
+# 运行日志接管测试清单
+
+## 目标
+
+- API 进程接管 Uvicorn 与 Alembic 的标准 logging 输出。
+- Celery Worker 与 Beat 进程接管 Celery 的标准 logging 输出。
+- API、Worker、Beat 继续分别写入 `api.log`、`worker.log`、`beat.log`。
+- 避免标准 logging 与 loguru 重复输出同一条日志。
+
+## 用例
+
+1. `configure_deploy_file_logging("api")` 配置文件日志后，可安装标准 logging 拦截器。
+2. 标准 logging 的 info 事件应转发到 loguru sink。
+3. 被接管的 logger 不保留原有 handler，避免重复输出。
+4. `server.main()` 启动 Uvicorn 时禁用默认 `log_config`。
+5. Celery 配置禁止 hijack root logger，并保留 stdout 重定向。
+
+## 验证命令
+
+```bash
+.env/bin/python -m pytest tests/test_logging_intercept.py tests/test_static_frontend_serving.py
+.env/bin/python -m py_compile aiSelfTest/aiSelfTest/logging.py aiSelfTest/aiSelfTest/server.py aiSelfTest/aiSelfTest/worker.py aiSelfTest/aiSelfTest/celery_app.py
+```
+
+# FastAPI 接口文档关闭测试清单
+
+## 目标
+
+- 生产运行不暴露 Swagger UI、ReDoc 和 OpenAPI JSON。
+- `/health` 与业务 `/api/...` 接口保持可用。
+- 前端根路径 `/` 继续返回静态页面。
+
+## 用例
+
+1. `/docs` 返回 404。
+2. `/redoc` 返回 404。
+3. `/openapi.json` 返回 404。
+4. `/health` 继续返回 `{"status": "ok"}`。
+
+## 验证命令
+
+```bash
+.env/bin/python -m pytest tests/test_client_api.py::test_fastapi_documentation_routes_are_disabled
 ```
 
 # 任务管理状态与运行指标测试清单

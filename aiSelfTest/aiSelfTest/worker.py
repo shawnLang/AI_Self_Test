@@ -12,6 +12,7 @@ from sqlmodel import Session, select
 from aiSelfTest.celery_app import celery_app
 from aiSelfTest.config import get_settings
 from aiSelfTest.database import engine
+from aiSelfTest.logging import configure_deploy_logging
 from aiSelfTest.models.task import (
     Task,
     TaskExecution,
@@ -28,6 +29,7 @@ from aiSelfTest.services.task_submission_job import TaskSubmissionJobService
 def main_worker() -> None:
     """启动 Celery Worker，便于 IDE 以 Python 脚本方式调试。"""
 
+    configure_deploy_logging("worker")
     settings = get_settings()
     celery_app.worker_main(
         [
@@ -42,6 +44,7 @@ def main_worker() -> None:
 def main_beat() -> None:
     """启动 Celery Beat，便于 IDE 以 Python 脚本方式调试。"""
 
+    configure_deploy_logging("beat")
     celery_app.start(
         [
             "beat",
