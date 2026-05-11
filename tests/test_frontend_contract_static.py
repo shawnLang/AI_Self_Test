@@ -62,6 +62,13 @@ def test_task_card_action_buttons_do_not_wrap_or_confuse_run_with_schedule() -> 
     assert "filters: TaskFiltersPayload" in source
     assert "模块" in source
     assert "formatModule(task.filters?.module)" in source
+    assert "compensation_limited_count: number" in source
+    assert "compensation_limited_count: number" in api_source
+    assert "resetTaskCompensation" in source
+    assert "resetTaskCompensation" in api_source
+    assert "/api/tasks/action-reset-compensation/" in api_source
+    assert "恢复补偿" in source
+    assert "compensationLimitedCount > 0 && !isExecutionActive" in source
     assert "计算中" in source
     assert "暂未估算" in source
     assert "约 ${totalSeconds} 秒" in source

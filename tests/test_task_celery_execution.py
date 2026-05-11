@@ -27,6 +27,7 @@ def fake_celery_enqueue(
     calls: dict[str, list[tuple[Any, ...]]] = {
         "task_execution": [],
         "task_submission": [],
+        "task_compensation": [],
     }
 
     def fake_enqueue(task_id: int, execution_id: int, celery_task_id: str) -> None:
@@ -35,10 +36,15 @@ def fake_celery_enqueue(
     def fake_submission_enqueue(submission_id: int, celery_task_id: str) -> None:
         calls["task_submission"].append((submission_id, celery_task_id))
 
+    def fake_compensation_enqueue(task_id: int, execution_id: int, celery_task_id: str) -> None:
+        calls["task_compensation"].append((task_id, execution_id, celery_task_id))
+
     from aiSelfTest.services.task_dispatch import TaskDispatchService
+    from aiSelfTest.services.task_item_compensation import TaskItemCompensationService
     from aiSelfTest.services.task_submission_job import TaskSubmissionJobService
 
     monkeypatch.setattr(TaskDispatchService, "_enqueue_task", staticmethod(fake_enqueue))
+    monkeypatch.setattr(TaskItemCompensationService, "_enqueue_compensation", staticmethod(fake_compensation_enqueue))
     monkeypatch.setattr(TaskSubmissionJobService, "_enqueue_submission", staticmethod(fake_submission_enqueue))
     return calls
 
@@ -104,6 +110,69 @@ def test_task_list_exposes_current_execution_fields(
     row = next(item for item in items if item["id"] == task_id)
     assert row["current_execution_status"] == "queued"
     assert row["display_status"] == "排队中"
+    assert row["compensation_limited_count"] == 0
+
+
+def test_task_list_exposes_compensation_limited_count(
+    app_client: TestClient,
+    db_session: Session,
+) -> None:
+    """任务列表应返回达到补偿上限且仍失败的任务项数量，供前端控制恢复入口。"""
+
+    from aiSelfTest.models.task import TaskItem, TaskItemStatus
+    from aiSelfTest.services.task_item_compensation import TASK_ITEM_COMPENSATION_MAX_ATTEMPTS
+
+    task_id = _create_task(app_client)
+    limited_item = TaskItem(
+        task_id=task_id,
+        name="image-limited-list.jpg",
+        device_name="device-1",
+        file_num="file-1",
+        file_extension="jpg",
+        file_url="image-limited-list.jpg",
+        file_id=9671,
+        file_fid="fid-9671",
+        sp_name_list="白鹭",
+        classify=1,
+        file_bmp=1,
+        result_file_data="",
+        id_type=0,
+        status=TaskItemStatus.FAILED.value,
+        down_state=False,
+        down_error="download failed",
+        compensation_count=TASK_ITEM_COMPENSATION_MAX_ATTEMPTS,
+        updated_at=datetime.now() - timedelta(seconds=600),
+    )
+    retryable_item = TaskItem(
+        task_id=task_id,
+        name="image-retryable-list.jpg",
+        device_name="device-1",
+        file_num="file-2",
+        file_extension="jpg",
+        file_url="image-retryable-list.jpg",
+        file_id=9672,
+        file_fid="fid-9672",
+        sp_name_list="白鹭",
+        classify=1,
+        file_bmp=1,
+        result_file_data="",
+        id_type=0,
+        status=TaskItemStatus.FAILED.value,
+        down_state=False,
+        down_error="download failed",
+        compensation_count=TASK_ITEM_COMPENSATION_MAX_ATTEMPTS - 1,
+        updated_at=datetime.now() - timedelta(seconds=600),
+    )
+    db_session.add(limited_item)
+    db_session.add(retryable_item)
+    db_session.commit()
+
+    response = app_client.get("/api/tasks/list")
+
+    assert response.status_code == 200
+    items = _unwrap_success(response.json())["items"]
+    row = next(item for item in items if item["id"] == task_id)
+    assert row["compensation_limited_count"] == 1
 
 
 def test_delete_running_task_is_blocked(
@@ -531,23 +600,23 @@ def test_file_download_error_contains_full_upstream_url(monkeypatch: pytest.Monk
     with pytest.raises(AppException) as exc_info:
         RequestsTaskFileDownloader()._download_url(url, Path("/tmp/task-file.jpg"))
 
-    assert requested_urls == [url]
+    assert requested_urls == [url, url, url]
     assert url in exc_info.value.message
     assert "HTTP 400" in exc_info.value.message
 
 
-def test_download_stage_error_keeps_task_item_down_error(
+def test_download_stage_keeps_task_item_error_and_continues(
     app_client: TestClient,
     db_session: Session,
 ) -> None:
-    """下载阶段顶层异常应保留单项下载失败的详细原因。"""
+    """下载阶段单项失败应保留错误并继续处理后续项。"""
 
     from aiSelfTest.exceptions import AppException
-    from aiSelfTest.models.task import TaskItem
+    from aiSelfTest.models.task import TaskItem, TaskItemStatus
     from aiSelfTest.services.task_execution import SourceTaskItemRecord, TaskExecutionRunner
 
     task_id = _create_task(app_client)
-    task_item = TaskItem(
+    failed_item = TaskItem(
         task_id=task_id,
         name="image-fail.jpg",
         device_name="device-1",
@@ -563,12 +632,35 @@ def test_download_stage_error_keeps_task_item_down_error(
         id_type=0,
         status="详情已加载",
     )
-    db_session.add(task_item)
+    success_item = TaskItem(
+        task_id=task_id,
+        name="image-ok.jpg",
+        device_name="device-1",
+        file_num="file-2",
+        file_extension="jpg",
+        file_url="image-ok.jpg",
+        file_id=9302,
+        file_fid="fid-9302",
+        sp_name_list="白鹭",
+        classify=1,
+        file_bmp=1,
+        result_file_data="",
+        id_type=0,
+        status="详情已加载",
+    )
+    db_session.add(failed_item)
+    db_session.add(success_item)
     db_session.commit()
-    db_session.refresh(task_item)
+    db_session.refresh(failed_item)
+    db_session.refresh(success_item)
 
     class FailingDownloader:
         def download(self, **kwargs: Any) -> None:
+            task_item = kwargs["task_item"]
+            if task_item.id == success_item.id:
+                from aiSelfTest.services.task_execution import TaskDownloadResult
+
+                return TaskDownloadResult(file_path="/tmp/image-ok.jpg")
             raise AppException(
                 code=3001,
                 message="文件下载失败: HTTP 400, url=https://example.com/weed/image-fail.jpg",
@@ -584,12 +676,572 @@ def test_download_stage_error_keeps_task_item_down_error(
         file_id=9301,
     )
 
-    with pytest.raises(AppException) as exc_info:
-        runner._run_download_stage()
+    runner._run_download_stage()
 
-    assert "task_item_id" in exc_info.value.message
-    assert "HTTP 400" in exc_info.value.message
-    assert "https://example.com/weed/image-fail.jpg" in exc_info.value.message
+    db_session.refresh(failed_item)
+    db_session.refresh(success_item)
+    assert failed_item.status == TaskItemStatus.FAILED.value
+    assert failed_item.down_state is False
+    assert "HTTP 400" in failed_item.down_error
+    assert "https://example.com/weed/image-fail.jpg" in failed_item.down_error
+    assert success_item.status == TaskItemStatus.DOWNLOADED.value
+    assert success_item.down_state is True
+    assert runner.download_failed_count == 1
+    assert runner.download_success_count == 1
+
+
+def test_llm_stage_single_item_failure_does_not_stop_batch(
+    app_client: TestClient,
+    db_session: Session,
+) -> None:
+    """大模型阶段单项失败不应阻断后续任务项识别。"""
+
+    from aiSelfTest.exceptions import AppException
+    from aiSelfTest.models.task import TaskItem, TaskItemLlmState, TaskItemStatus
+    from aiSelfTest.services.task_execution import TaskExecutionRunner, TaskItemRecognitionResult
+    from aiSelfTest.services.task_steps.llm_result import LlmDetectionResult
+
+    task_id = _create_task(app_client)
+    first = TaskItem(
+        task_id=task_id,
+        name="image-fail.jpg",
+        device_name="device-1",
+        file_num="file-1",
+        file_extension="jpg",
+        file_url="image-fail.jpg",
+        file_id=9401,
+        file_fid="fid-9401",
+        sp_name_list="白鹭",
+        classify=1,
+        file_bmp=1,
+        result_file_data="",
+        id_type=0,
+        status=TaskItemStatus.DOWNLOADED.value,
+        down_state=True,
+        file_path="/tmp/image-fail.jpg",
+    )
+    second = TaskItem(
+        task_id=task_id,
+        name="image-ok.jpg",
+        device_name="device-1",
+        file_num="file-2",
+        file_extension="jpg",
+        file_url="image-ok.jpg",
+        file_id=9402,
+        file_fid="fid-9402",
+        sp_name_list="白鹭",
+        classify=1,
+        file_bmp=1,
+        result_file_data="",
+        id_type=0,
+        status=TaskItemStatus.DOWNLOADED.value,
+        down_state=True,
+        file_path="/tmp/image-ok.jpg",
+    )
+    db_session.add(first)
+    db_session.add(second)
+    db_session.commit()
+    db_session.refresh(first)
+    db_session.refresh(second)
+
+    class FakeRecognizer:
+        def recognize(self, **kwargs: Any) -> TaskItemRecognitionResult:
+            task_item = kwargs["task_item"]
+            if task_item.id == first.id:
+                raise AppException(code=3001, message="模型接口失败", status_code=502)
+            return TaskItemRecognitionResult(image_result=LlmDetectionResult(width=100, height=100, data=[]))
+
+    runner = TaskExecutionRunner(db_session, task_id, recognizer=FakeRecognizer())
+
+    runner._run_llm_stage()
+
+    db_session.refresh(first)
+    db_session.refresh(second)
+    assert first.llm_state == TaskItemLlmState.FAIL.value
+    assert first.status == TaskItemStatus.FAILED.value
+    assert "模型接口失败" in first.llm_error
+    assert second.llm_state == TaskItemLlmState.SUCCESS.value
+    assert runner.llm_failed_count == 1
+    assert runner.llm_success_count == 1
+
+
+def test_task_execution_returns_fail_when_all_items_failed(
+    app_client: TestClient,
+    db_session: Session,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """整批没有可复核项时任务聚合状态为失败，Worker 执行记录也应失败。"""
+
+    from aiSelfTest.models.task import TaskExecution, TaskExecutionRecordStatus, TaskItem, TaskItemStatus
+
+    task_id = _create_task(app_client)
+    task_item = TaskItem(
+        task_id=task_id,
+        name="image-fail.jpg",
+        device_name="device-1",
+        file_num="file-1",
+        file_extension="jpg",
+        file_url="image-fail.jpg",
+        file_id=9501,
+        file_fid="fid-9501",
+        sp_name_list="白鹭",
+        classify=1,
+        file_bmp=1,
+        result_file_data="",
+        id_type=0,
+        status=TaskItemStatus.DATA_LOADED.value,
+    )
+    execution = TaskExecution(
+        task_id=task_id,
+        trigger_type="manual",
+        status=TaskExecutionRecordStatus.QUEUED.value,
+    )
+    db_session.add(task_item)
+    db_session.add(execution)
+    db_session.commit()
+    db_session.refresh(execution)
+
+    class FailingDownloader:
+        def download(self, **kwargs: Any) -> None:
+            raise RuntimeError("download boom")
+
+    import aiSelfTest.worker as worker_module
+    from aiSelfTest.services import task_execution
+
+    original_runner = task_execution.TaskExecutionRunner
+
+    class RunnerWithFailingDownloader(original_runner):
+        def __init__(self, session, task_id, downloader=None, recognizer=None, now=None):
+            super().__init__(session, task_id, downloader=FailingDownloader(), recognizer=recognizer, now=now)
+
+        def _run_create_stage(self) -> None:
+            self.task.total_count = self._count_task_items()
+            self.session.add(self.task)
+            self.session.commit()
+
+        def _run_data_load_stage(self) -> None:
+            return None
+
+    monkeypatch.setattr(
+        worker_module,
+        "run_task_execution",
+        lambda session, task_id: RunnerWithFailingDownloader(session, task_id).run(),
+    )
+
+    worker_module.execute_task.run(task_id, execution.id)
+
+    db_session.refresh(execution)
+    db_session.refresh(task_item)
+    assert execution.status == TaskExecutionRecordStatus.FAILED.value
+    assert execution.error == "下载失败任务项数量=1"
+    assert task_item.down_state is False
+    assert "download boom" in task_item.down_error
+
+
+def test_compensation_scan_enqueues_failed_task_items(
+    app_client: TestClient,
+    db_session: Session,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """补偿扫描应为存在失败项的任务创建 repair 执行记录。"""
+
+    from datetime import datetime, timedelta
+
+    from aiSelfTest.models.task import Task, TaskExecution, TaskItem, TaskItemStatus
+    from aiSelfTest.services.task_item_compensation import TaskItemCompensationService
+
+    task_id = _create_task(app_client)
+    task_item = TaskItem(
+        task_id=task_id,
+        name="image-fail.jpg",
+        device_name="device-1",
+        file_num="file-1",
+        file_extension="jpg",
+        file_url="image-fail.jpg",
+        file_id=9601,
+        file_fid="fid-9601",
+        sp_name_list="白鹭",
+        classify=1,
+        file_bmp=1,
+        result_file_data="",
+        id_type=0,
+        status=TaskItemStatus.FAILED.value,
+        down_state=False,
+        down_error="download failed",
+        updated_at=datetime.now() - timedelta(seconds=600),
+    )
+    db_session.add(task_item)
+    db_session.commit()
+
+    calls: list[tuple[int, int, str]] = []
+
+    def fake_enqueue(task_id: int, execution_id: int, celery_task_id: str) -> None:
+        calls.append((task_id, execution_id, celery_task_id))
+
+    monkeypatch.setattr(TaskItemCompensationService, "_enqueue_compensation", staticmethod(fake_enqueue))
+
+    submitted = TaskItemCompensationService(db_session).scan_and_enqueue()
+
+    task = db_session.get(Task, task_id)
+    execution = db_session.exec(select(TaskExecution).where(TaskExecution.task_id == task_id)).one()
+    assert submitted == 1
+    assert execution.trigger_type == "repair"
+    assert execution.status == "queued"
+    assert task.current_execution_id == execution.id
+    assert calls == [(task_id, execution.id, f"task-item-compensation-{execution.id}")]
+
+
+def test_compensation_scan_skips_items_reaching_max_attempts(
+    app_client: TestClient,
+    db_session: Session,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """达到最大补偿次数的失败任务项不应再次自动补偿。"""
+
+    from datetime import datetime, timedelta
+
+    from aiSelfTest.models.task import TaskExecution, TaskItem, TaskItemStatus
+    from aiSelfTest.services.task_item_compensation import (
+        TASK_ITEM_COMPENSATION_MAX_ATTEMPTS,
+        TaskItemCompensationService,
+    )
+
+    task_id = _create_task(app_client)
+    task_item = TaskItem(
+        task_id=task_id,
+        name="image-max-attempts.jpg",
+        device_name="device-1",
+        file_num="file-1",
+        file_extension="jpg",
+        file_url="image-max-attempts.jpg",
+        file_id=9651,
+        file_fid="fid-9651",
+        sp_name_list="白鹭",
+        classify=1,
+        file_bmp=1,
+        result_file_data="",
+        id_type=0,
+        status=TaskItemStatus.FAILED.value,
+        down_state=False,
+        down_error="download failed",
+        compensation_count=TASK_ITEM_COMPENSATION_MAX_ATTEMPTS,
+        updated_at=datetime.now() - timedelta(seconds=600),
+    )
+    db_session.add(task_item)
+    db_session.commit()
+
+    calls: list[tuple[int, int, str]] = []
+
+    def fake_enqueue(task_id: int, execution_id: int, celery_task_id: str) -> None:
+        calls.append((task_id, execution_id, celery_task_id))
+
+    monkeypatch.setattr(TaskItemCompensationService, "_enqueue_compensation", staticmethod(fake_enqueue))
+
+    submitted = TaskItemCompensationService(db_session).scan_and_enqueue()
+
+    executions = db_session.exec(select(TaskExecution).where(TaskExecution.task_id == task_id)).all()
+    assert submitted == 0
+    assert executions == []
+    assert calls == []
+
+
+def test_reset_task_compensation_requires_limited_failed_items(
+    app_client: TestClient,
+) -> None:
+    """任务没有达到补偿上限的失败项时，补偿恢复接口不可使用。"""
+
+    task_id = _create_task(app_client)
+
+    response = app_client.post(f"/api/tasks/action-reset-compensation/{task_id}")
+
+    assert response.status_code == 400
+    assert response.json()["code"] == 1001
+    assert "没有达到补偿上限" in response.json()["message"]
+
+
+def test_reset_task_compensation_resets_count_and_enqueues_repair(
+    app_client: TestClient,
+    db_session: Session,
+    fake_celery_enqueue: dict[str, list[tuple[Any, ...]]],
+) -> None:
+    """补偿恢复接口应重置达到上限的失败项，并立即投递 repair 执行。"""
+
+    from datetime import datetime, timedelta
+
+    from aiSelfTest.models.task import TaskExecution, TaskItem, TaskItemStatus
+    from aiSelfTest.services.task_item_compensation import TASK_ITEM_COMPENSATION_MAX_ATTEMPTS
+
+    task_id = _create_task(app_client)
+    limited_item = TaskItem(
+        task_id=task_id,
+        name="image-limited.jpg",
+        device_name="device-1",
+        file_num="file-1",
+        file_extension="jpg",
+        file_url="image-limited.jpg",
+        file_id=9661,
+        file_fid="fid-9661",
+        sp_name_list="白鹭",
+        classify=1,
+        file_bmp=1,
+        result_file_data="",
+        id_type=0,
+        status=TaskItemStatus.FAILED.value,
+        down_state=False,
+        down_error="download failed",
+        compensation_count=TASK_ITEM_COMPENSATION_MAX_ATTEMPTS,
+        updated_at=datetime.now() - timedelta(seconds=600),
+    )
+    normal_failed_item = TaskItem(
+        task_id=task_id,
+        name="image-normal-failed.jpg",
+        device_name="device-1",
+        file_num="file-2",
+        file_extension="jpg",
+        file_url="image-normal-failed.jpg",
+        file_id=9662,
+        file_fid="fid-9662",
+        sp_name_list="白鹭",
+        classify=1,
+        file_bmp=1,
+        result_file_data="",
+        id_type=0,
+        status=TaskItemStatus.FAILED.value,
+        down_state=False,
+        down_error="download failed",
+        compensation_count=1,
+        updated_at=datetime.now() - timedelta(seconds=600),
+    )
+    db_session.add(limited_item)
+    db_session.add(normal_failed_item)
+    db_session.commit()
+    db_session.refresh(limited_item)
+    db_session.refresh(normal_failed_item)
+
+    response = app_client.post(f"/api/tasks/action-reset-compensation/{task_id}")
+
+    assert response.status_code == 200
+    data = _unwrap_success(response.json())
+    execution = db_session.get(TaskExecution, data["execution_id"])
+    db_session.refresh(limited_item)
+    db_session.refresh(normal_failed_item)
+    assert data["task_id"] == task_id
+    assert data["reset_count"] == 1
+    assert data["execution_status"] == "queued"
+    assert execution.trigger_type == "repair"
+    assert limited_item.compensation_count == 0
+    assert normal_failed_item.compensation_count == 1
+    assert fake_celery_enqueue["task_execution"] == []
+    assert fake_celery_enqueue["task_compensation"] == [
+        (task_id, execution.id, f"task-item-compensation-{execution.id}")
+    ]
+    assert len(fake_celery_enqueue["task_submission"]) == 0
+
+
+def test_compensation_execute_recovers_download_and_llm_failure(
+    app_client: TestClient,
+    db_session: Session,
+) -> None:
+    """补偿执行应重新下载失败项，并重新识别已下载但识别失败项。"""
+
+    from datetime import datetime, timedelta
+
+    from aiSelfTest.models.task import (
+        Task,
+        TaskExecution,
+        TaskExecutionRecordStatus,
+        TaskItem,
+        TaskItemLlmState,
+        TaskItemStatus,
+    )
+    from aiSelfTest.services.task_execution import TaskDownloadResult, TaskItemRecognitionResult
+    from aiSelfTest.services.task_steps.llm_result import LlmDetectionResult
+    from aiSelfTest.services.task_item_compensation import TaskItemCompensationService
+
+    task_id = _create_task(app_client)
+    old_time = datetime.now() - timedelta(seconds=600)
+    download_failed = TaskItem(
+        task_id=task_id,
+        name="image-download-fail.jpg",
+        device_name="device-1",
+        file_num="file-1",
+        file_extension="jpg",
+        file_url="image-download-fail.jpg",
+        file_id=9701,
+        file_fid="fid-9701",
+        sp_name_list="白鹭",
+        classify=1,
+        file_bmp=1,
+        result_file_data="",
+        id_type=0,
+        status=TaskItemStatus.FAILED.value,
+        down_state=False,
+        down_error="download failed",
+        updated_at=old_time,
+    )
+    llm_failed = TaskItem(
+        task_id=task_id,
+        name="image-llm-fail.jpg",
+        device_name="device-1",
+        file_num="file-2",
+        file_extension="jpg",
+        file_url="image-llm-fail.jpg",
+        file_id=9702,
+        file_fid="fid-9702",
+        sp_name_list="白鹭",
+        classify=1,
+        file_bmp=1,
+        result_file_data="",
+        id_type=0,
+        status=TaskItemStatus.FAILED.value,
+        down_state=True,
+        file_path="/tmp/image-llm-fail.jpg",
+        llm_state=TaskItemLlmState.FAIL.value,
+        llm_error="llm failed",
+        updated_at=old_time,
+    )
+    execution = TaskExecution(
+        task_id=task_id,
+        trigger_type="repair",
+        status=TaskExecutionRecordStatus.QUEUED.value,
+    )
+    db_session.add(download_failed)
+    db_session.add(llm_failed)
+    db_session.add(execution)
+    db_session.commit()
+    db_session.refresh(download_failed)
+    db_session.refresh(llm_failed)
+    db_session.refresh(execution)
+    task = db_session.get(Task, task_id)
+    task.current_execution_id = execution.id
+    db_session.add(task)
+    db_session.commit()
+
+    class FakeDownloader:
+        def download(self, **kwargs: Any) -> TaskDownloadResult:
+            task_item = kwargs["task_item"]
+            return TaskDownloadResult(file_path=f"/tmp/{task_item.file_id}.jpg")
+
+    class FakeRecognizer:
+        def recognize(self, **kwargs: Any) -> TaskItemRecognitionResult:
+            return TaskItemRecognitionResult(image_result=LlmDetectionResult(width=100, height=100, data=[]))
+
+    service = TaskItemCompensationService(db_session)
+    runner = service
+
+    from aiSelfTest.services import task_item_compensation
+
+    original_runner = task_item_compensation.TaskExecutionRunner
+
+    class RunnerWithFakes(original_runner):
+        def __init__(self, session, task_id, downloader=None, recognizer=None, now=None):
+            super().__init__(session, task_id, downloader=FakeDownloader(), recognizer=FakeRecognizer(), now=now)
+
+    task_item_compensation.TaskExecutionRunner = RunnerWithFakes
+    try:
+        result = runner.execute(task_id, execution.id)
+    finally:
+        task_item_compensation.TaskExecutionRunner = original_runner
+
+    db_session.refresh(download_failed)
+    db_session.refresh(llm_failed)
+    db_session.refresh(execution)
+    db_session.refresh(task)
+    assert result.total_count == 2
+    assert result.success_count == 2
+    assert result.failed_count == 0
+    assert execution.status == TaskExecutionRecordStatus.SUCCESS.value
+    assert task.current_execution_id is None
+    assert task.execution_status == "核查"
+    assert download_failed.down_state is True
+    assert download_failed.llm_state == TaskItemLlmState.SUCCESS.value
+    assert llm_failed.llm_state == TaskItemLlmState.SUCCESS.value
+    assert download_failed.compensation_count == 1
+    assert llm_failed.compensation_count == 1
+
+
+def test_compensation_execute_stops_after_max_failed_attempts(
+    app_client: TestClient,
+    db_session: Session,
+) -> None:
+    """失败任务项达到最大补偿次数后，后续扫描不再投递补偿。"""
+
+    from datetime import datetime, timedelta
+
+    from aiSelfTest.models.task import Task, TaskExecution, TaskExecutionRecordStatus, TaskItem, TaskItemStatus
+    from aiSelfTest.services.task_item_compensation import (
+        TASK_ITEM_COMPENSATION_MAX_ATTEMPTS,
+        TaskItemCompensationService,
+    )
+
+    task_id = _create_task(app_client)
+    task_item = TaskItem(
+        task_id=task_id,
+        name="image-still-fail.jpg",
+        device_name="device-1",
+        file_num="file-1",
+        file_extension="jpg",
+        file_url="image-still-fail.jpg",
+        file_id=9751,
+        file_fid="fid-9751",
+        sp_name_list="白鹭",
+        classify=1,
+        file_bmp=1,
+        result_file_data="",
+        id_type=0,
+        status=TaskItemStatus.FAILED.value,
+        down_state=False,
+        down_error="download failed",
+        compensation_count=TASK_ITEM_COMPENSATION_MAX_ATTEMPTS - 1,
+        updated_at=datetime.now() - timedelta(seconds=600),
+    )
+    execution = TaskExecution(
+        task_id=task_id,
+        trigger_type="repair",
+        status=TaskExecutionRecordStatus.QUEUED.value,
+    )
+    db_session.add(task_item)
+    db_session.add(execution)
+    db_session.commit()
+    db_session.refresh(task_item)
+    db_session.refresh(execution)
+    task = db_session.get(Task, task_id)
+    task.current_execution_id = execution.id
+    db_session.add(task)
+    db_session.commit()
+
+    class FailingDownloader:
+        def download(self, **kwargs: Any) -> None:
+            raise RuntimeError("still failed")
+
+    from aiSelfTest.services import task_item_compensation
+
+    original_runner = task_item_compensation.TaskExecutionRunner
+
+    class RunnerWithFailingDownloader(original_runner):
+        def __init__(self, session, task_id, downloader=None, recognizer=None, now=None):
+            super().__init__(session, task_id, downloader=FailingDownloader(), recognizer=recognizer, now=now)
+
+    task_item_compensation.TaskExecutionRunner = RunnerWithFailingDownloader
+    try:
+        result = TaskItemCompensationService(db_session).execute(task_id, execution.id)
+    finally:
+        task_item_compensation.TaskExecutionRunner = original_runner
+
+    db_session.refresh(task_item)
+    db_session.refresh(execution)
+    db_session.refresh(task)
+    assert result.failed_count == 1
+    assert task_item.compensation_count == TASK_ITEM_COMPENSATION_MAX_ATTEMPTS
+    assert task_item.down_state is False
+    assert "still failed" in task_item.down_error
+    assert execution.status == TaskExecutionRecordStatus.FAILED.value
+    assert "达到补偿上限任务项数量=1" in task.last_error
+
+    task_item.updated_at = datetime.now() - timedelta(seconds=600)
+    db_session.add(task_item)
+    db_session.commit()
+    assert TaskItemCompensationService(db_session).scan_and_enqueue() == 0
 
 
 def _create_task(app_client: TestClient) -> int:

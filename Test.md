@@ -111,6 +111,54 @@ rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 ```
 
+# 任务项失败补偿与下载重试测试清单
+
+## 目标
+
+- 单个文件下载失败不再中断整批任务。
+- 单个大模型识别失败不再中断整批任务。
+- 文件下载失败统一重试 3 次，不按 HTTP 状态码区分是否重试。
+- 定时补偿任务能自动恢复下载失败和识别失败的任务项。
+- 补偿任务复用 `TaskExecution` 执行记录，并与普通任务互斥。
+- 单个任务项补偿达到最大次数后，不再继续自动补偿。
+
+## 用例
+
+1. 文件下载发生请求异常时，最多尝试 3 次，最终失败后记录完整错误。
+2. 文件下载返回任意非 200 状态码时，最多尝试 3 次，不区分 400 或 500。
+3. 单个 TaskItem 下载失败后，`down_state=False`、`status=失败`、`down_error` 有错误详情。
+4. 下载阶段遇到单项失败后继续处理后续 TaskItem，不抛出整批任务异常。
+5. 大模型阶段遇到未下载 TaskItem 时跳过该项，并继续处理后续 TaskItem。
+6. 单个 TaskItem 大模型识别失败后，`llm_state=识别失败`、`status=失败`、
+   `llm_error` 有错误详情。
+7. 识别阶段遇到单项失败后继续处理后续 TaskItem，不抛出整批任务异常。
+8. 主流程结束时若存在可复核项，任务进入 `核查`；若全部失败，任务进入 `失败`。
+9. Beat 扫描任务能发现存在下载失败或识别失败项的任务，并提交补偿执行。
+10. 补偿执行能重新下载 `down_state=False` 的任务项。
+11. 补偿执行能重新识别 `down_state=True` 且 `llm_state=识别失败` 的任务项。
+12. 补偿任务执行期间写入 `Task.current_execution_id`，避免和普通任务并发执行。
+13. 补偿任务结束后释放 `Task.current_execution_id` 并写入执行记录成功或失败状态。
+14. 补偿任务日志包含 task_id、execution_id、task_item_id、下载/识别结果和错误详情。
+15. 单个 TaskItem 每执行一次补偿，`compensation_count` 递增 1。
+16. `compensation_count >= 3` 的失败 TaskItem 不再被 Beat 补偿扫描命中。
+17. 所有失败 TaskItem 都达到补偿上限时，不再创建 `repair` 执行记录。
+18. `POST /api/tasks/action-reset-compensation/{task_id}` 只允许任务下存在达到补偿上限的失败项时调用。
+19. 补偿恢复接口会把达到上限的失败 TaskItem `compensation_count` 重置为 0。
+20. 补偿恢复接口成功后立即创建 `repair` 执行记录并投递补偿任务。
+21. 任务下没有达到补偿上限的失败项时，补偿恢复接口返回参数错误。
+
+## 验证命令
+
+```bash
+.env/bin/python -m pytest tests/test_task_celery_execution.py
+```
+
+运行 pytest 后清理：
+
+```bash
+rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
+```
+
 # 任务级 Celery 后台提交保存测试清单
 
 ## 目标

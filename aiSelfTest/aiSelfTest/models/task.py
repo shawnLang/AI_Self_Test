@@ -281,6 +281,7 @@ class TaskItem(SQLModel, table=True):
     status: str = Field(max_length=10, description="流程状态")
     created_at: datetime = Field(default_factory=datetime.now, description="创建时间")
     updated_at: datetime = Field(default_factory=datetime.now, description="更新时间")
+    compensation_count: int = Field(default=0, description="补偿执行次数")
     down_state: bool = Field(default=False, description="是否下载")
     down_error: Optional[str] = Field(default=None, description="下载错误")
     file_path: Optional[str] = Field(default=None, description="文件保存路径")

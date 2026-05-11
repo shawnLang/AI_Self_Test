@@ -209,6 +209,7 @@ class TaskResponse(BaseModel):
     processed_count: int
     skipped_count: int
     last_error: str | None
+    compensation_limited_count: int = 0
     estimated_remaining_seconds: int | None = None
     started_at: datetime | None = None
     finished_at: datetime | None = None
@@ -221,6 +222,7 @@ class TaskResponse(BaseModel):
         *,
         filters: TaskFiltersPayload,
         current_execution: TaskExecution | None = None,
+        compensation_limited_count: int = 0,
     ) -> "TaskResponse":
         """将任务数据库模型转换为 API 响应模型。"""
 
@@ -246,6 +248,7 @@ class TaskResponse(BaseModel):
             processed_count=task.processed_count,
             skipped_count=task.skipped_count,
             last_error=task.last_error,
+            compensation_limited_count=compensation_limited_count,
             estimated_remaining_seconds=estimate_task_remaining_seconds(task),
             started_at=task.started_at,
             finished_at=task.finished_at,
@@ -288,6 +291,35 @@ class TaskActionData(BaseModel):
             current_execution_id=current_execution_id,
             current_execution_status=current_execution_status,
             display_status=resolve_task_display_status(task, current_execution_status),
+        )
+
+
+class TaskCompensationResetData(BaseModel):
+    """任务补偿恢复响应体。"""
+
+    task_id: int
+    reset_count: int
+    execution_id: int
+    execution_status: str
+    celery_task_id: str | None = None
+    display_status: str
+
+    @classmethod
+    def from_models(
+        cls,
+        task: Task,
+        execution: TaskExecution,
+        reset_count: int,
+    ) -> "TaskCompensationResetData":
+        """将补偿恢复结果转换为响应体。"""
+
+        return cls(
+            task_id=task.id or 0,
+            reset_count=reset_count,
+            execution_id=execution.id or 0,
+            execution_status=execution.status,
+            celery_task_id=execution.celery_task_id,
+            display_status=resolve_task_display_status(task, execution.status),
         )
 
 

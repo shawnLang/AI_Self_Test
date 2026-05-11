@@ -67,6 +67,8 @@ RUNNING_TASK_STATUSES = {
 UPSTREAM_PAGE_SIZE = 100
 MAX_UPSTREAM_PAGE_COUNT = 500
 FILE_DOWNLOAD_PATH_PREFIX = "/weed/"
+FILE_DOWNLOAD_MAX_ATTEMPTS = 3
+FILE_DOWNLOAD_RETRY_DELAY_SECONDS = 1.0
 TASK_ITEM_RECOGNITION_MAX_ATTEMPTS = 3
 TASK_ITEM_RECOGNITION_RETRY_DELAY_SECONDS = 1.0
 CLASSIFY_NAME_MAP = {
@@ -416,50 +418,90 @@ class RequestsTaskFileDownloader:
     def _download_url(self, url: str, target_path: Path) -> None:
         """下载单个 URL 到目标路径。"""
 
-        logger.info("开始下载任务文件 url={} target_path={}", url, target_path)
-        try:
-            response = requests.get(
+        last_exception: Exception | None = None
+        for attempt in range(1, FILE_DOWNLOAD_MAX_ATTEMPTS + 1):
+            logger.info(
+                "开始下载任务文件 url={} target_path={} attempt={}/{}",
                 url,
-                stream=True,
-                timeout=get_settings().request_timeout_seconds,
+                target_path,
+                attempt,
+                FILE_DOWNLOAD_MAX_ATTEMPTS,
             )
-        except RequestException as exc:
-            raise AppException(
-                code=ErrorCode.TASK_FAILED,
-                message=f"文件下载失败: {url}",
-                status_code=502,
-            ) from exc
+            try:
+                response = requests.get(
+                    url,
+                    stream=True,
+                    timeout=get_settings().request_timeout_seconds,
+                )
+                try:
+                    if response.status_code != 200:
+                        response_text = getattr(response, "text", "") or ""
+                        response_summary = response_text[:500]
+                        raise AppException(
+                            code=ErrorCode.TASK_FAILED,
+                            message=(
+                                f"文件下载失败: HTTP {response.status_code}, "
+                                f"url={url}, response={response_summary}"
+                            ),
+                            status_code=502,
+                        )
 
-        if response.status_code != 200:
-            response_text = getattr(response, "text", "") or ""
-            response_summary = response_text[:500]
+                    with target_path.open("wb") as file_obj:
+                        iter_content = getattr(response, "iter_content", None)
+                        if callable(iter_content):
+                            for chunk in response.iter_content(chunk_size=1024 * 1024):
+                                if chunk:
+                                    file_obj.write(chunk)
+                        else:
+                            content = getattr(response, "content", b"")
+                            if isinstance(content, str):
+                                content = content.encode()
+                            file_obj.write(content)
+                    return
+                finally:
+                    close_func = getattr(response, "close", None)
+                    if callable(close_func):
+                        close_func()
+            except (RequestException, OSError, AppException) as exc:
+                last_exception = exc
+                if target_path.exists():
+                    try:
+                        target_path.unlink()
+                    except OSError as cleanup_exc:
+                        logger.warning(
+                            "清理失败下载残留文件异常 url={} target_path={} error={}",
+                            url,
+                            target_path,
+                            cleanup_exc,
+                        )
+                if attempt == FILE_DOWNLOAD_MAX_ATTEMPTS:
+                    break
+                logger.warning(
+                    "任务文件下载失败，准备重试 url={} target_path={} attempt={}/{} error={}",
+                    url,
+                    target_path,
+                    attempt,
+                    FILE_DOWNLOAD_MAX_ATTEMPTS,
+                    exc,
+                )
+                time.sleep(FILE_DOWNLOAD_RETRY_DELAY_SECONDS)
+
+        if last_exception is not None:
             logger.warning(
-                "任务文件下载响应异常 url={} status_code={} response={}",
+                "任务文件下载最终失败 url={} target_path={} attempts={} error={}",
                 url,
-                response.status_code,
-                response_summary,
+                target_path,
+                FILE_DOWNLOAD_MAX_ATTEMPTS,
+                last_exception,
             )
+            if isinstance(last_exception, AppException):
+                raise last_exception
             raise AppException(
                 code=ErrorCode.TASK_FAILED,
-                message=f"文件下载失败: HTTP {response.status_code}, url={url}",
+                message=f"文件下载失败: url={url}, error={last_exception}",
                 status_code=502,
-            )
-
-        with target_path.open("wb") as file_obj:
-            iter_content = getattr(response, "iter_content", None)
-            if callable(iter_content):
-                for chunk in response.iter_content(chunk_size=1024 * 1024):
-                    if chunk:
-                        file_obj.write(chunk)
-            else:
-                content = getattr(response, "content", b"")
-                if isinstance(content, str):
-                    content = content.encode()
-                file_obj.write(content)
-
-        close_func = getattr(response, "close", None)
-        if callable(close_func):
-            close_func()
+            ) from last_exception
+        raise AppException(code=ErrorCode.TASK_FAILED, message=f"文件下载未执行: url={url}", status_code=502)
 
 
 class MultimodalTaskItemRecognizer:
@@ -856,6 +898,12 @@ class TaskExecutionRunner:
         self.inserted_items: list[tuple[TaskItem, SourceTaskItemRecord]] = []
         self.skipped_count = 0
         self.detail_row_count = 0
+        self.download_success_count = 0
+        self.download_failed_count = 0
+        self.download_skipped_count = 0
+        self.llm_success_count = 0
+        self.llm_failed_count = 0
+        self.llm_skipped_count = 0
 
     @property
     def downloader(self) -> RequestsTaskFileDownloader:
@@ -935,15 +983,22 @@ class TaskExecutionRunner:
             self._run_data_load_stage()
             self._run_download_stage()
             self._run_llm_stage()
-            self._enter_verify_stage()
-            refresh_task_finish_state(self.session, self.task_id, now=self.execution_now)
+            self._finish_partial_task_execution()
             self.session.refresh(self.task)
             logger.info(
-                "任务执行 task进入复核阶段 task_id={} 新增Item数量={} 跳过数量={} 详情数量={} 处理数量={}",
+                "任务执行结束 task_id={} status={} 新增Item数量={} 跳过数量={} 详情数量={} "
+                "下载成功={} 下载失败={} 下载跳过={} 识别成功={} 识别失败={} 识别跳过={} 处理数量={}",
                 self.task_id,
+                self.task.execution_status,
                 len(self.inserted_items),
                 self.skipped_count,
                 self.detail_row_count,
+                self.download_success_count,
+                self.download_failed_count,
+                self.download_skipped_count,
+                self.llm_success_count,
+                self.llm_failed_count,
+                self.llm_skipped_count,
                 self.task.processed_count,
             )
             return TaskExecutionResult(
@@ -1050,6 +1105,9 @@ class TaskExecutionRunner:
 
         logger.info("任务执行阶段开始: task_id={} stage={}", self.task_id, TaskExecutionStatus.DOWN.value)
         self._set_task_stage(TaskExecutionStatus.DOWN, reset_processed=True)
+        self.download_success_count = 0
+        self.download_failed_count = 0
+        self.download_skipped_count = 0
         for task_item in self._list_task_items():
             logger.info(
                 "任务项下载检查: task_id={} task_item_id={} status={} down_state={} file_url={} result_file_data={}",
@@ -1061,6 +1119,7 @@ class TaskExecutionRunner:
                 task_item.result_file_data,
             )
             if task_item.down_state:
+                self.download_skipped_count += 1
                 self._increment_processed_count()
                 continue
             if task_item.status == TaskItemStatus.FAILED.value:
@@ -1068,17 +1127,25 @@ class TaskExecutionRunner:
             source_record = self._source_record_from_task_item(task_item)
             if not self._download_task_item_file(task_item, source_record):
                 error_detail = task_item.down_error or "未知错误"
-                raise AppException(
-                    code=ErrorCode.TASK_FAILED,
-                    message=f"任务项下载失败: task_item_id={task_item.id}, error={error_detail}",
-                    status_code=502,
+                self.download_failed_count += 1
+                logger.warning(
+                    "任务项下载失败，继续处理后续任务项: task_id={} task_item_id={} error={}",
+                    self.task_id,
+                    task_item.id,
+                    error_detail,
                 )
+                self._increment_processed_count()
+                continue
+            self.download_success_count += 1
             self._increment_processed_count()
         logger.info(
-            "任务执行阶段结束: task_id={} stage={} processed_count={}",
+            "任务执行阶段结束: task_id={} stage={} processed_count={} success={} failed={} skipped={}",
             self.task_id,
             TaskExecutionStatus.DOWN.value,
             self.task.processed_count,
+            self.download_success_count,
+            self.download_failed_count,
+            self.download_skipped_count,
         )
 
     def _run_llm_stage(self) -> None:
@@ -1086,6 +1153,9 @@ class TaskExecutionRunner:
 
         logger.info("任务执行阶段开始: task_id={} stage={}", self.task_id, TaskExecutionStatus.LLM.value)
         self._set_task_stage(TaskExecutionStatus.LLM, reset_processed=True)
+        self.llm_success_count = 0
+        self.llm_failed_count = 0
+        self.llm_skipped_count = 0
         for task_item in self._list_task_items_for_llm_stage():
             logger.info(
                 "任务项大模型阶段检查: task_id={} task_item_id={} status={} down_state={} llm_state={} file_bmp={} file_path={}",
@@ -1098,26 +1168,76 @@ class TaskExecutionRunner:
                 task_item.file_path,
             )
             if task_item.llm_state == TaskItemLlmState.SUCCESS.value:
+                self.llm_skipped_count += 1
                 self._increment_processed_count()
                 continue
             if not task_item.down_state:
-                raise AppException(
-                    code=ErrorCode.TASK_FAILED,
-                    message=f"任务项未下载，无法识别: task_item_id={task_item.id}",
-                    status_code=502,
+                self.llm_skipped_count += 1
+                logger.warning(
+                    "任务项未下载，跳过本次大模型识别: task_id={} task_item_id={} down_error={}",
+                    self.task_id,
+                    task_item.id,
+                    task_item.down_error,
                 )
+                self._increment_processed_count()
+                continue
             if not self._advance_task_item_recognition(task_item):
-                raise AppException(
-                    code=ErrorCode.TASK_FAILED,
-                    message=f"任务项模型识别失败: task_item_id={task_item.id}",
-                    status_code=502,
+                self.llm_failed_count += 1
+                logger.warning(
+                    "任务项模型识别失败，继续处理后续任务项: task_id={} task_item_id={} error={}",
+                    self.task_id,
+                    task_item.id,
+                    task_item.llm_error,
                 )
+                self._increment_processed_count()
+                continue
+            self.llm_success_count += 1
             self._increment_processed_count()
         logger.info(
-            "任务执行阶段结束: task_id={} stage={} processed_count={}",
+            "任务执行阶段结束: task_id={} stage={} processed_count={} success={} failed={} skipped={}",
             self.task_id,
             TaskExecutionStatus.LLM.value,
             self.task.processed_count,
+            self.llm_success_count,
+            self.llm_failed_count,
+            self.llm_skipped_count,
+        )
+
+    def _finish_partial_task_execution(self) -> None:
+        """按任务项局部成功情况结束主流程。"""
+
+        reviewable_count = self._count_reviewable_task_items()
+        failure_summary = self._build_partial_failure_summary()
+        if reviewable_count > 0:
+            self._enter_verify_stage()
+            refresh_task_finish_state(self.session, self.task_id, now=self.execution_now)
+            self.session.refresh(self.task)
+            if failure_summary:
+                self.task.last_error = failure_summary
+                self.task.updated_at = datetime.now()
+                self.session.add(self.task)
+                self.session.commit()
+            logger.info(
+                "任务执行存在可复核任务项，进入核查阶段: task_id={} reviewable_count={} failure_summary={}",
+                self.task_id,
+                reviewable_count,
+                failure_summary,
+            )
+            return
+
+        now = datetime.now()
+        self.task.execution_status = TaskExecutionStatus.FAIL.value
+        self.task.finished_at = now
+        self.task.stage_started_at = None
+        self.task.last_progress_at = None
+        self.task.last_error = failure_summary or "没有可复核的任务项"
+        self.task.updated_at = now
+        self.session.add(self.task)
+        self.session.commit()
+        logger.error(
+            "任务执行全部任务项均未进入复核，任务标记失败: task_id={} failure_summary={}",
+            self.task_id,
+            self.task.last_error,
         )
 
     def _enter_verify_stage(self) -> None:
@@ -1182,6 +1302,42 @@ class TaskExecutionRunner:
         self.task.updated_at = now
         self.session.add(self.task)
         self.session.commit()
+
+    def _count_reviewable_task_items(self) -> int:
+        """统计已经完成大模型识别、可进入复核链路的任务项。"""
+
+        return len(
+            self.session.exec(
+                select(TaskItem.id)
+                .where(TaskItem.task_id == self.task_id)
+                .where(TaskItem.llm_state == TaskItemLlmState.SUCCESS.value)
+            ).all()
+        )
+
+    def _build_partial_failure_summary(self) -> str | None:
+        """构造下载或识别部分失败摘要。"""
+
+        parts: list[str] = []
+        download_failed_count = len(
+            self.session.exec(
+                select(TaskItem.id)
+                .where(TaskItem.task_id == self.task_id)
+                .where(TaskItem.down_state == False)  # noqa: E712
+                .where(TaskItem.down_error != None)  # noqa: E711
+            ).all()
+        )
+        llm_failed_count = len(
+            self.session.exec(
+                select(TaskItem.id)
+                .where(TaskItem.task_id == self.task_id)
+                .where(TaskItem.llm_state == TaskItemLlmState.FAIL.value)
+            ).all()
+        )
+        if download_failed_count:
+            parts.append(f"下载失败任务项数量={download_failed_count}")
+        if llm_failed_count:
+            parts.append(f"识别失败任务项数量={llm_failed_count}")
+        return "；".join(parts) if parts else None
 
     def _count_task_items(self) -> int:
         """统计任务下全部 TaskItem 数量。"""

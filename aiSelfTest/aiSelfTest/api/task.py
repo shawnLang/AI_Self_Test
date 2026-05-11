@@ -19,13 +19,16 @@ from aiSelfTest.models.task import (
     TaskItemConfirmState,
     TaskItemData,
     TaskItemDataStatus,
+    TaskItemLlmState,
     TaskItemRecognitionBatch,
+    TaskItemRemoteState,
     TaskItemStatus,
     TaskSubmission,
 )
 from aiSelfTest.schemas.common import ApiResponse
 from aiSelfTest.schemas.task import (
     TaskActionData,
+    TaskCompensationResetData,
     TaskCreateRequest,
     TaskDeleteData,
     TaskFiltersPayload,
@@ -46,11 +49,16 @@ from aiSelfTest.schemas.task import (
     resolve_task_item_source_size,
 )
 from aiSelfTest.services.task_dispatch import ACTIVE_EXECUTION_STATUSES, TaskDispatchService
+from aiSelfTest.services.task_item_compensation import (
+    TASK_ITEM_COMPENSATION_MAX_ATTEMPTS,
+    TaskItemCompensationService,
+)
 from aiSelfTest.services.task_re_recognition import TaskItemReRecognitionService
 from aiSelfTest.services.task_review import apply_task_item_review_state, refresh_task_finish_state
 from aiSelfTest.services.task_submission_job import TaskSubmissionJobService
 from fastapi import APIRouter, Depends, Query, status
 from loguru import logger
+from sqlalchemy import or_
 from sqlmodel import Session, select
 
 task_router = APIRouter(prefix="/tasks")
@@ -62,11 +70,13 @@ def list_tasks_route(session: Session = Depends(get_session)) -> ApiResponse[Tas
     """查询任务列表。"""
 
     rows = session.exec(select(Task).order_by(Task.id.desc())).all()
+    limited_counts = _count_compensation_limited_items(session, [task.id or 0 for task in rows])
     items = [
         TaskResponse.from_model(
             task,
             filters=_deserialize_filters(task.filters_json),
             current_execution=_get_active_execution(session, task.id or 0),
+            compensation_limited_count=limited_counts.get(task.id or 0, 0),
         )
         for task in rows
     ]
@@ -117,10 +127,12 @@ def get_task_detail_route(task_id: int, session: Session = Depends(get_session))
     """查询任务详情。"""
 
     task = _get_task_or_raise(session, task_id)
+    limited_counts = _count_compensation_limited_items(session, [task_id])
     data = TaskResponse.from_model(
         task,
         filters=_deserialize_filters(task.filters_json),
         current_execution=_get_active_execution(session, task_id),
+        compensation_limited_count=limited_counts.get(task_id, 0),
     )
     return ApiResponse(code=0, message="success", data=data)
 
@@ -268,6 +280,28 @@ def submit_task_outputs_route(task_id: int, session: Session = Depends(get_sessi
     result = TaskSubmissionJobService(session).submit(task_id)
     logger.info("任务提交保存已入队 task_id={} submission_id={}", task_id, result.submission.id)
     return ApiResponse(code=0, message="success", data=TaskSubmissionData.from_model(result.submission))
+
+
+@task_router.post("/action-reset-compensation/{task_id}", response_model=ApiResponse[TaskCompensationResetData])
+def reset_task_compensation_route(
+    task_id: int,
+    session: Session = Depends(get_session),
+) -> ApiResponse[TaskCompensationResetData]:
+    """恢复已达到补偿上限的任务项，并立即投递补偿。"""
+
+    result = TaskItemCompensationService(session).reset_task_limited_items(task_id)
+    logger.info(
+        "任务补偿恢复已入队 task_id={} execution_id={} reset_count={}",
+        task_id,
+        result.execution.id,
+        result.reset_count,
+    )
+    data = TaskCompensationResetData.from_models(
+        result.task,
+        result.execution,
+        result.reset_count,
+    )
+    return ApiResponse(code=0, message="success", data=data)
 
 
 @task_router.get("/submission-detail/{submission_id}", response_model=ApiResponse[TaskSubmissionData])
@@ -566,6 +600,33 @@ def _get_task_item_or_raise(session: Session, task_item_id: int) -> TaskItem:
             status_code=404,
         )
     return task_item
+
+
+def _count_compensation_limited_items(session: Session, task_ids: list[int]) -> dict[int, int]:
+    """按任务统计达到补偿上限且仍失败的任务项数量。"""
+
+    if not task_ids:
+        return {}
+
+    rows = session.exec(
+        select(TaskItem)
+        .where(TaskItem.task_id.in_(task_ids))
+        .where(TaskItem.compensation_count >= TASK_ITEM_COMPENSATION_MAX_ATTEMPTS)
+        .where(
+            or_(
+                (TaskItem.down_state == False)  # noqa: E712
+                & (TaskItem.down_error != None),  # noqa: E711
+                TaskItem.llm_state == TaskItemLlmState.FAIL.value,
+            )
+        )
+        .where(TaskItem.remote_state != TaskItemRemoteState.SUCCESS.value)
+        .where(TaskItem.confirm_state != TaskItemConfirmState.SKIPPED.value)
+        .where(TaskItem.status.notin_({TaskItemStatus.SKIPPED.value, TaskItemStatus.FINISHED.value}))
+    ).all()
+    counts: dict[int, int] = {}
+    for row in rows:
+        counts[row.task_id] = counts.get(row.task_id, 0) + 1
+    return counts
 
 
 def _get_active_execution(session: Session, task_id: int) -> TaskExecution | None:

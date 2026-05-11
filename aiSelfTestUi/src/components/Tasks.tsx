@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Clock, Settings2, Trash2, Pause, AlertTriangle, CheckSquare, Play } from 'lucide-react';
+import { Plus, Clock, Settings2, Trash2, Pause, AlertTriangle, CheckSquare, Play, RotateCcw } from 'lucide-react';
 import { moduleOptions } from '../constants/taskFilters';
+import { resetTaskCompensation } from '../api/taskItems';
 import { fetchApi } from '../utils/api';
 
 type TaskFiltersPayload = {
@@ -24,6 +25,7 @@ type TaskItem = {
   processed_count: number;
   skipped_count: number;
   last_error: string | null;
+  compensation_limited_count: number;
   estimated_remaining_seconds: number | null;
   started_at?: string | null;
   filters: TaskFiltersPayload;
@@ -65,6 +67,7 @@ export default function Tasks({
 }) {
   const [tasks, setTasks] = useState<TaskItem[]>([]);
   const [runningNowTaskId, setRunningNowTaskId] = useState<number | null>(null);
+  const [resettingCompensationTaskId, setResettingCompensationTaskId] = useState<number | null>(null);
   const [error, setError] = useState('');
 
   const fetchTasks = async () => {
@@ -130,6 +133,30 @@ export default function Tasks({
     }
   };
 
+  const handleResetCompensation = async (task: TaskItem) => {
+    const limitedCount = Number(task.compensation_limited_count || 0);
+    if (limitedCount <= 0) return;
+    const confirmed = window.confirm(
+      [
+        `确认恢复任务「${task.name}」的补偿执行吗？`,
+        '',
+        `将重置 ${limitedCount} 个达到补偿上限的失败任务项，并立即重新投递补偿任务。`,
+      ].join('\n')
+    );
+    if (!confirmed) return;
+
+    setResettingCompensationTaskId(task.id);
+    try {
+      await resetTaskCompensation(task.id);
+      await fetchTasks();
+    } catch (e) {
+      console.error(e);
+      alert(`恢复补偿失败：${(e as Error).message || '未知错误'}`);
+    } finally {
+      setResettingCompensationTaskId(null);
+    }
+  };
+
   return (
     <div className="p-8">
       <div className="flex justify-between items-center mb-6">
@@ -163,8 +190,10 @@ export default function Tasks({
               onStatusChange={(active: boolean) => updateTaskStatus(task.id, active)}
               onRunNow={() => runTaskNow(task.id)}
               runningNow={runningNowTaskId === task.id}
+              resettingCompensation={resettingCompensationTaskId === task.id}
               onQueryData={() => onQueryData(task.id)}
               onReview={() => onReview(task.id)}
+              onResetCompensation={() => handleResetCompensation(task)}
             />
           ))
         )}
@@ -179,8 +208,10 @@ type TaskMonitorCardProps = {
   onStatusChange: (active: boolean) => void;
   onRunNow: () => void;
   runningNow: boolean;
+  resettingCompensation: boolean;
   onQueryData: () => void;
   onReview: () => void;
+  onResetCompensation: () => void;
 };
 
 const TaskMonitorCard: React.FC<TaskMonitorCardProps> = ({
@@ -189,8 +220,10 @@ const TaskMonitorCard: React.FC<TaskMonitorCardProps> = ({
   onStatusChange,
   onRunNow,
   runningNow,
+  resettingCompensation,
   onQueryData,
   onReview,
+  onResetCompensation,
 }) => {
   const isRunning = task.active;
   const isExecutionActive = activeExecutionStatuses.has(task.current_execution_status || '');
@@ -198,6 +231,8 @@ const TaskMonitorCard: React.FC<TaskMonitorCardProps> = ({
   const total = Number(task.total_count || 0);
   const progress = total > 0 ? Math.min(100, Math.round((processed / total) * 100)) : 0;
   const canReview = task.execution_status === '核查' || task.execution_status === '结束';
+  const compensationLimitedCount = Number(task.compensation_limited_count || 0);
+  const canResetCompensation = compensationLimitedCount > 0 && !isExecutionActive;
   const isPreparing = task.execution_status === '创建' && Boolean(task.started_at);
   const isExecuting = isExecutionActive || isPreparing || runningExecutionStatuses.has(task.execution_status);
   const statusText = task.display_status || (isPreparing ? '准备中' : statusTextMap[task.execution_status] || task.execution_status || '未开始');
@@ -265,6 +300,19 @@ const TaskMonitorCard: React.FC<TaskMonitorCardProps> = ({
             >
               <CheckSquare className="w-4 h-4" />
               结果复核
+            </button>
+          )}
+
+          {canResetCompensation && (
+            <button
+              onClick={onResetCompensation}
+              disabled={resettingCompensation}
+              aria-disabled={resettingCompensation}
+              className="inline-flex whitespace-nowrap px-3 py-2 text-sm font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 disabled:bg-gray-100 disabled:text-gray-400 dark:text-amber-300 dark:bg-amber-900/20 dark:hover:bg-amber-900/40 dark:disabled:bg-gray-800 dark:disabled:text-gray-500 border border-amber-200 dark:border-amber-800 rounded-lg items-center gap-2 transition-colors"
+              title={`恢复 ${compensationLimitedCount} 个达到补偿上限的失败项`}
+            >
+              <RotateCcw className="w-4 h-4" />
+              {resettingCompensation ? '恢复中' : '恢复补偿'}
             </button>
           )}
           

@@ -187,7 +187,7 @@ class TaskDispatchService:
                 recovered += 1
                 continue
 
-            celery_task_id = self._build_celery_task_id(execution.id or 0)
+            celery_task_id = self._build_celery_task_id_by_trigger(execution.id or 0, execution.trigger_type)
             logger.warning(
                 "queued 执行记录超时，重新投递 Celery: task_id={} execution_id={} retry_count={} celery_task_id={} "
                 "updated_at={} threshold={}",
@@ -198,7 +198,12 @@ class TaskDispatchService:
                 execution.updated_at,
                 threshold,
             )
-            self._enqueue_task(execution.task_id, execution.id or 0, celery_task_id)
+            self._enqueue_task_by_trigger(
+                execution.task_id,
+                execution.id or 0,
+                celery_task_id,
+                execution.trigger_type,
+            )
             execution.celery_task_id = celery_task_id
             execution.retry_count += 1
             execution.updated_at = current
@@ -300,6 +305,14 @@ class TaskDispatchService:
         return f"task-execution-{execution_id}"
 
     @staticmethod
+    def _build_celery_task_id_by_trigger(execution_id: int, trigger_type: str) -> str:
+        """按触发来源构造 Celery task id。"""
+
+        if trigger_type == TaskExecutionTriggerType.REPAIR.value:
+            return f"task-item-compensation-{execution_id}"
+        return TaskDispatchService._build_celery_task_id(execution_id)
+
+    @staticmethod
     def _enqueue_task(task_id: int, execution_id: int, celery_task_id: str) -> None:
         """投递 Celery 任务。"""
 
@@ -307,3 +320,21 @@ class TaskDispatchService:
 
         logger.info("调用 Celery apply_async: task_id={} execution_id={} celery_task_id={}", task_id, execution_id, celery_task_id)
         execute_task.apply_async(args=[task_id, execution_id], task_id=celery_task_id)
+
+    @staticmethod
+    def _enqueue_task_by_trigger(task_id: int, execution_id: int, celery_task_id: str, trigger_type: str) -> None:
+        """按触发来源投递 Celery 任务。"""
+
+        if trigger_type == TaskExecutionTriggerType.REPAIR.value:
+            from aiSelfTest.worker import execute_task_item_compensation
+
+            logger.info(
+                "调用 Celery apply_async 恢复投递任务项补偿: task_id={} execution_id={} celery_task_id={}",
+                task_id,
+                execution_id,
+                celery_task_id,
+            )
+            execute_task_item_compensation.apply_async(args=[task_id, execution_id], task_id=celery_task_id)
+            return
+
+        TaskDispatchService._enqueue_task(task_id, execution_id, celery_task_id)

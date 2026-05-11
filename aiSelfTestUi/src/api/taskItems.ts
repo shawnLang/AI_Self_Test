@@ -33,6 +33,7 @@ export type TaskSummary = {
   processed_count: number;
   skipped_count: number;
   last_error: string | null;
+  compensation_limited_count: number;
   estimated_remaining_seconds: number | null;
   started_at?: string | null;
   finished_at?: string | null;
@@ -49,6 +50,15 @@ export type TaskActionData = {
   execution_status: string;
   current_execution_id: number | null;
   current_execution_status: string | null;
+  display_status: string;
+};
+
+export type TaskCompensationResetData = {
+  task_id: number;
+  reset_count: number;
+  execution_id: number;
+  execution_status: string;
+  celery_task_id: string | null;
   display_status: string;
 };
 
@@ -249,6 +259,12 @@ export function getTaskDetail(taskId: number): Promise<TaskSummary> {
 
 export function runTaskNow(taskId: number): Promise<TaskActionData> {
   return fetchApi<TaskActionData>(`/api/tasks/action-run/${taskId}`, { method: 'POST' });
+}
+
+export function resetTaskCompensation(taskId: number): Promise<TaskCompensationResetData> {
+  return fetchApi<TaskCompensationResetData>(`/api/tasks/action-reset-compensation/${taskId}`, {
+    method: 'POST',
+  });
 }
 
 export function listTaskItems(params: {

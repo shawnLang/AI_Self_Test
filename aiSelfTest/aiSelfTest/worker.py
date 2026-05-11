@@ -22,6 +22,7 @@ from aiSelfTest.models.task import (
 )
 from aiSelfTest.services.task_dispatch import TaskDispatchService
 from aiSelfTest.services.task_execution import run_task_execution
+from aiSelfTest.services.task_item_compensation import TaskItemCompensationService
 from aiSelfTest.services.task_re_recognition import TaskItemReRecognitionService
 from aiSelfTest.services.task_submission_job import TaskSubmissionJobService
 
@@ -134,7 +135,18 @@ def execute_task(self: Any, task_id: int, execution_id: int) -> None:
         )
 
         try:
-            run_task_execution(session, task_id)
+            result = run_task_execution(session, task_id)
+            if getattr(result, "execution_status", None) == TaskExecutionStatus.FAIL.value:
+                task = session.get(Task, task_id)
+                error = task.last_error if task is not None and task.last_error else "任务执行失败"
+                _mark_execution_failed(session, task_id, execution_id, error)
+                logger.error(
+                    "Celery 任务执行完成但任务状态为失败: task_id={} execution_id={} error={}",
+                    task_id,
+                    execution_id,
+                    error,
+                )
+                return
             _mark_execution_success(session, task_id, execution_id)
             logger.info("Celery 任务执行成功: task_id={}, execution_id={}", task_id, execution_id)
         except SoftTimeLimitExceeded as exc:
@@ -222,6 +234,40 @@ def recover_stale_task_executions() -> dict[str, int]:
         return {"queued": queued, "running": running}
 
 
+@celery_app.task(name="aiSelfTest.scan_failed_task_items_for_compensation")
+def scan_failed_task_items_for_compensation() -> int:
+    """扫描下载或识别失败的任务项并提交补偿。"""
+
+    with Session(engine) as session:
+        logger.info("任务项失败补偿扫描 Celery 入口")
+        submitted = TaskItemCompensationService(session).scan_and_enqueue()
+        logger.info("任务项失败补偿扫描 Celery 完成: submitted={}", submitted)
+        return submitted
+
+
+@celery_app.task(name="aiSelfTest.execute_task_item_compensation", bind=True)
+def execute_task_item_compensation(self: Any, task_id: int, execution_id: int) -> dict[str, int | str | None]:
+    """执行单个任务的失败任务项补偿。"""
+
+    logger.info("Celery 任务项补偿入口: task_id={} execution_id={}", task_id, execution_id)
+    with Session(engine) as session:
+        try:
+            result = TaskItemCompensationService(session).execute(task_id, execution_id)
+            logger.info(
+                "Celery 任务项补偿完成: task_id={} execution_id={} total={} success={} failed={} skipped={}",
+                task_id,
+                execution_id,
+                result.total_count,
+                result.success_count,
+                result.failed_count,
+                result.skipped_count,
+            )
+            return result.as_dict()
+        except Exception:
+            logger.exception("Celery 任务项补偿失败: task_id={} execution_id={}", task_id, execution_id)
+            raise
+
+
 @celery_app.task(name="aiSelfTest.execute_task_item_re_recognition_batch", bind=True)
 def execute_task_item_re_recognition_batch(self: Any, batch_id: int) -> None:
     """执行任务项批量重新识别。"""
@@ -257,6 +303,10 @@ celery_app.conf.beat_schedule = {
     },
     "recover-stale-task-executions": {
         "task": "aiSelfTest.recover_stale_task_executions",
+        "schedule": max(60, get_settings().task_beat_scan_seconds),
+    },
+    "scan-failed-task-items-for-compensation": {
+        "task": "aiSelfTest.scan_failed_task_items_for_compensation",
         "schedule": max(60, get_settings().task_beat_scan_seconds),
     },
 }
