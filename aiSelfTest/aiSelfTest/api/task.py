@@ -19,8 +19,8 @@ from aiSelfTest.models.task import (
     TaskItemData,
     TaskItemDataStatus,
     TaskItemRecognitionBatch,
-    TaskItemRemoteState,
     TaskItemStatus,
+    TaskSubmission,
 )
 from aiSelfTest.schemas.common import ApiResponse
 from aiSelfTest.schemas.task import (
@@ -30,8 +30,6 @@ from aiSelfTest.schemas.task import (
     TaskFiltersPayload,
     TaskItemActionData,
     TaskItemActionRequest,
-    TaskItemBatchActionData,
-    TaskItemBatchActionRow,
     TaskItemDetailData,
     TaskItemListData,
     TaskItemListRow,
@@ -40,16 +38,16 @@ from aiSelfTest.schemas.task import (
     TaskItemRejectRequest,
     TaskItemReviewRow,
     TaskItemReviewRowUpdateRequest,
-    TaskItemSubmitTaskRequest,
     TaskListData,
     TaskResponse,
+    TaskSubmissionData,
     TaskUpdateRequest,
     resolve_task_item_source_size,
 )
 from aiSelfTest.services.task_dispatch import ACTIVE_EXECUTION_STATUSES, TaskDispatchService
 from aiSelfTest.services.task_re_recognition import TaskItemReRecognitionService
 from aiSelfTest.services.task_review import apply_task_item_review_state, refresh_task_finish_state
-from aiSelfTest.services.task_submission import TaskSubmissionService
+from aiSelfTest.services.task_submission_job import TaskSubmissionJobService
 from fastapi import APIRouter, Depends, Query, status
 from loguru import logger
 from sqlmodel import Session, select
@@ -180,6 +178,10 @@ def delete_task_route(task_id: int, session: Session = Depends(get_session)) -> 
         ).all()
         for batch in batches:
             session.delete(batch)
+        submissions = session.exec(select(TaskSubmission).where(TaskSubmission.task_id == task_id)).all()
+        for submission in submissions:
+            session.delete(submission)
+        session.flush()
 
         if task_item_ids:
             task_item_data_rows = session.exec(
@@ -255,6 +257,41 @@ def run_task_route(task_id: int, session: Session = Depends(get_session)) -> Api
     )
     logger.info("任务手动执行已入队 task_id={} execution_id={}", task_id, dispatch_result.execution.id)
     data = TaskActionData.from_model(dispatch_result.task, dispatch_result.execution)
+    return ApiResponse(code=0, message="success", data=data)
+
+
+@task_router.post("/action-submit/{task_id}", response_model=ApiResponse[TaskSubmissionData])
+def submit_task_outputs_route(task_id: int, session: Session = Depends(get_session)) -> ApiResponse[TaskSubmissionData]:
+    """提交任务下已确认结果到远端并后台保存训练数据。"""
+
+    result = TaskSubmissionJobService(session).submit(task_id)
+    logger.info("任务提交保存已入队 task_id={} submission_id={}", task_id, result.submission.id)
+    return ApiResponse(code=0, message="success", data=TaskSubmissionData.from_model(result.submission))
+
+
+@task_router.get("/submission-detail/{submission_id}", response_model=ApiResponse[TaskSubmissionData])
+def get_task_submission_detail_route(
+    submission_id: int,
+    session: Session = Depends(get_session),
+) -> ApiResponse[TaskSubmissionData]:
+    """查询任务级提交保存进度。"""
+
+    submission = session.get(TaskSubmission, submission_id)
+    if submission is None:
+        raise AppException(code=ErrorCode.NOT_FOUND, message="任务提交保存记录不存在", status_code=404)
+    return ApiResponse(code=0, message="success", data=TaskSubmissionData.from_model(submission))
+
+
+@task_router.get("/submission-current/{task_id}", response_model=ApiResponse[TaskSubmissionData | None])
+def get_current_task_submission_route(
+    task_id: int,
+    session: Session = Depends(get_session),
+) -> ApiResponse[TaskSubmissionData | None]:
+    """查询任务当前排队或运行中的提交保存进度。"""
+
+    _get_task_or_raise(session, task_id)
+    submission = TaskSubmissionJobService(session).get_active_submission(task_id)
+    data = TaskSubmissionData.from_model(submission) if submission else None
     return ApiResponse(code=0, message="success", data=data)
 
 
@@ -394,102 +431,6 @@ def update_task_item_review_row_route(
         data_row.status,
     )
     data = TaskItemActionData(id=task_item.id or 0, confirm_state=task_item.confirm_state)
-    return ApiResponse(code=0, message="success", data=data)
-
-
-@task_item_router.post("/action-submit", response_model=ApiResponse[TaskItemActionData])
-def submit_task_item_route(payload: TaskItemActionRequest, session: Session = Depends(get_session)) -> ApiResponse[
-    TaskItemActionData]:
-    """提交任务项到远端。"""
-
-    task_item = _get_task_item_or_raise(session, payload.task_item_id)
-    if task_item.confirm_state != TaskItemConfirmState.CONFIRMED.value:
-        raise AppException(
-            code=ErrorCode.PARAM_INVALID,
-            message="任务项必须人工确认后才能提交",
-            status_code=400,
-        )
-    if task_item.remote_state not in {
-        TaskItemRemoteState.PENDING.value,
-        TaskItemRemoteState.FAIL.value,
-    }:
-        raise AppException(
-            code=ErrorCode.PARAM_INVALID,
-            message="任务项当前远端状态不能提交",
-            status_code=400,
-        )
-
-    result = TaskSubmissionService(session).submit_task_item_outputs(task_item)
-    refresh_task_finish_state(session, task_item.task_id)
-    logger.info(
-        "任务项提交完成 task_item_id={} remote_state={} train_state={}",
-        task_item.id,
-        result.remote_state,
-        result.train_state,
-    )
-    data = TaskItemActionData(
-        id=task_item.id or 0,
-        remote_state=result.remote_state,
-        train_state=result.train_state,
-    )
-    return ApiResponse(code=0, message="success", data=data)
-
-
-@task_item_router.post("/action-submit-task", response_model=ApiResponse[TaskItemBatchActionData])
-def submit_task_items_by_task_route(
-        payload: TaskItemSubmitTaskRequest,
-        session: Session = Depends(get_session),
-) -> ApiResponse[TaskItemBatchActionData]:
-    """按任务提交所有可提交任务项到远端。"""
-
-    _get_task_or_raise(session, payload.task_id)
-    task_items = session.exec(
-        select(TaskItem).where(
-            TaskItem.task_id == payload.task_id,
-            TaskItem.confirm_state == TaskItemConfirmState.CONFIRMED.value,
-            TaskItem.remote_state.in_({
-                TaskItemRemoteState.PENDING.value,
-                TaskItemRemoteState.FAIL.value,
-            }),
-        ).order_by(TaskItem.id.asc())
-    ).all()
-
-    results: list[TaskItemBatchActionRow] = []
-    for task_item in task_items:
-        try:
-            submit_payload = TaskItemActionRequest(task_item_id=task_item.id or 0)
-            submit_task_item_route(submit_payload, session)
-            results.append(
-                TaskItemBatchActionRow(
-                    id=task_item.id or 0,
-                    status="success",
-                    message=f"任务项 {task_item.id} 已提交远端",
-                )
-            )
-        except Exception as exc:  # noqa: BLE001
-            logger.warning("任务级提交远端失败 task_id={} task_item_id={} error={}", payload.task_id, task_item.id, exc)
-            results.append(
-                TaskItemBatchActionRow(
-                    id=task_item.id or 0,
-                    status="failed",
-                    message=str(exc),
-                )
-            )
-
-    success_count = len([row for row in results if row.status == "success"])
-    failure_count = len(results) - success_count
-    logger.info(
-        "任务级提交远端完成 task_id={} submit_count={} success_count={} failure_count={}",
-        payload.task_id,
-        len(task_items),
-        success_count,
-        failure_count,
-    )
-    data = TaskItemBatchActionData(
-        success_count=success_count,
-        failure_count=failure_count,
-        results=results,
-    )
     return ApiResponse(code=0, message="success", data=data)
 
 

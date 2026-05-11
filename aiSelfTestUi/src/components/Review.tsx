@@ -2,14 +2,16 @@ import React, { useMemo, useState } from 'react';
 import { AlertTriangle, Check, List, LayoutGrid, Image as ImageIcon, CheckSquare, ChevronLeft, ChevronRight, SkipForward, UploadCloud, Save, Maximize2, Minimize2, Pencil, Plus, Trash2, RefreshCw } from 'lucide-react';
 import {
   confirmReviewItems,
+  getCurrentTaskSubmission,
   getReRecognitionBatchDetail,
+  getTaskSubmissionDetail,
   reRecognizeTaskItems,
   skipReviewItems,
-  submitTaskItem,
   submitTaskReviewItems,
   updateTaskItemReviewRow,
   type TaskItemDataStatus,
   type TaskItemReRecognitionBatchData,
+  type TaskSubmissionData,
   type ReviewItem,
   type ReviewRow,
   type VideoVideoJsonDetection,
@@ -33,6 +35,7 @@ type ReviewConfirmFilter = 'all' | 'pending' | 'confirmed' | 'skipped';
 type RowWithDisplayIndex = ReviewRow & { displayIndex: number };
 const ACTIVE_RE_RECOGNITION_BATCH_STATUSES = new Set(['queued', 'running']);
 const FINISHED_RE_RECOGNITION_BATCH_STATUSES = new Set(['success', 'partial_failed', 'failed']);
+const ACTIVE_SUBMISSION_STATUSES = new Set(['queued', 'running']);
 type VideoOverlayDetection = {
   frameIndex: number;
   trackId: string;
@@ -351,7 +354,9 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
   const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
   const [rowDrafts, setRowDrafts] = useState<Record<string, RowDraft>>({});
   const [reRecognitionBatch, setReRecognitionBatch] = useState<TaskItemReRecognitionBatchData | null>(null);
+  const [taskSubmission, setTaskSubmission] = useState<TaskSubmissionData | null>(null);
   const [isStartingReRecognition, setIsStartingReRecognition] = useState(false);
+  const [isStartingSubmission, setIsStartingSubmission] = useState(false);
   const { data: taskOptions = [] } = useCompletedReviewTasks();
   const { data: items = [] } = useReviews(selectedTaskId);
   const { invalidateTasks, invalidateReviews } = useInvalidateReviews();
@@ -370,6 +375,24 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
     }
     setSelectedItemIds([]);
   }, [taskOptions, initialTaskId]);
+
+  React.useEffect(() => {
+    if (!selectedTaskId) {
+      setTaskSubmission(null);
+      return;
+    }
+
+    let cancelled = false;
+    getCurrentTaskSubmission(Number(selectedTaskId))
+      .then((submission) => {
+        if (!cancelled) setTaskSubmission(submission);
+      })
+      .catch((error) => console.error(error));
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedTaskId]);
 
   const invalidateCurrentReview = async () => {
     await invalidateReviews(selectedTaskId);
@@ -400,14 +423,6 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
     } catch (e) { console.error(e); }
   };
 
-  const handleSubmit = async (id: string) => {
-    try {
-      await submitTaskItem(Number(id));
-      setSelectedItemIds((current) => current.filter((itemId) => itemId !== id));
-      await invalidateCurrentReview();
-    } catch (e) { console.error(e); }
-  };
-
   const handleBatchConfirm = async () => {
     if (!selectedConfirmableIds.length) return;
     try {
@@ -429,13 +444,25 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
     } catch (e) { console.error(e); }
   };
 
-  const handleBatchSubmit = async () => {
-    if (!selectedTaskId || taskSubmittableIds.length === 0) return;
+  const handleTaskSubmit = async () => {
+    if (!selectedTaskId || taskSubmittableIds.length === 0 || isStartingSubmission) return;
+    setIsStartingSubmission(true);
     try {
       const data = await submitTaskReviewItems(Number(selectedTaskId));
-      handleBatchResult(data, '批量提交远端');
+      setTaskSubmission(data);
+      setSelectedItemIds([]);
       await invalidateCurrentReview();
-    } catch (e) { console.error(e); }
+    } catch (e) {
+      console.error(e);
+      const maybeData = (e as any)?.data as TaskSubmissionData | undefined;
+      if (maybeData?.submission_id) {
+        setTaskSubmission(maybeData);
+      } else {
+        window.alert((e as Error).message || '提交保存启动失败');
+      }
+    } finally {
+      setIsStartingSubmission(false);
+    }
   };
 
   const handleReRecognizeSelected = async () => {
@@ -511,7 +538,7 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
   const isReRecognizable = (item: ReviewItem) => !['已提交'].includes(item.remoteState || '')
     && !['识别中'].includes(item.stepState?.llm || '')
     && !['已跳过'].includes(item.confirmState || '');
-  const isSelectable = (item: ReviewItem) => isConfirmable(item) || isSkippable(item) || isSubmittable(item) || isReRecognizable(item);
+  const isSelectable = (item: ReviewItem) => isConfirmable(item) || isSkippable(item) || isReRecognizable(item);
   const isRowEditable = (item: ReviewItem) => !['已完成'].includes(item.status || '')
     && !['已提交'].includes(item.remoteState || '');
 
@@ -604,6 +631,24 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
 
     return () => window.clearInterval(timer);
   }, [reRecognitionBatch, invalidateCurrentReview]);
+
+  React.useEffect(() => {
+    if (!taskSubmission || !ACTIVE_SUBMISSION_STATUSES.has(taskSubmission.status)) return;
+
+    const timer = window.setInterval(async () => {
+      try {
+        const nextSubmission = await getTaskSubmissionDetail(taskSubmission.submission_id);
+        setTaskSubmission(nextSubmission);
+        if (!ACTIVE_SUBMISSION_STATUSES.has(nextSubmission.status)) {
+          await invalidateCurrentReview();
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }, 2000);
+
+    return () => window.clearInterval(timer);
+  }, [taskSubmission, invalidateCurrentReview]);
 
   const getActiveIndex = () => filteredItems.findIndex((item) => String(item.id) === activeItemId);
 
@@ -796,6 +841,43 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
     );
   };
 
+  const renderTaskSubmissionProgress = () => {
+    if (!taskSubmission) return null;
+
+    const finishedCount = Number(taskSubmission.success_count || 0)
+      + Number(taskSubmission.failed_count || 0)
+      + Number(taskSubmission.skipped_count || 0);
+    const total = Math.max(1, Number(taskSubmission.total_count || 0));
+    const percent = Math.min(100, Math.round((finishedCount / total) * 100));
+    const isActive = ACTIVE_SUBMISSION_STATUSES.has(taskSubmission.status);
+    const borderClass = taskSubmission.status === 'failed' || taskSubmission.status === 'partial_failed'
+      ? 'border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900/40 dark:bg-amber-900/20 dark:text-amber-200'
+      : 'border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900/40 dark:bg-emerald-900/20 dark:text-emerald-200';
+
+    return (
+      <div className={`mb-4 rounded-lg border px-4 py-3 text-sm ${borderClass}`}>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2 font-medium">
+            <UploadCloud className={`h-4 w-4 ${isActive ? 'animate-pulse' : ''}`} />
+            <span>任务提交保存</span>
+            <span className="text-xs font-normal opacity-80">#{taskSubmission.submission_id}</span>
+          </div>
+          <div className="text-xs">
+            成功 {taskSubmission.success_count}，失败 {taskSubmission.failed_count}，跳过 {taskSubmission.skipped_count}
+          </div>
+        </div>
+        <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/60 dark:bg-black/20">
+          <div className="h-full rounded-full bg-emerald-600 transition-all" style={{ width: `${percent}%` }} />
+        </div>
+        {taskSubmission.error_summary && (
+          <div className="mt-2 whitespace-pre-wrap text-xs text-red-700 dark:text-red-300">
+            {taskSubmission.error_summary}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const renderSelectionCheckbox = (item: ReviewItem) => {
     const id = String(item.id);
     const selectable = isSelectable(item);
@@ -820,7 +902,7 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
       return isResultMatched(item) ? '自动跳过' : '已跳过';
     }
     if (item.confirmState === '已确认') {
-      return item.remoteState === '提交失败' ? '待重试提交' : '待提交远端';
+      return item.remoteState === '提交失败' ? '待重试保存' : '待提交保存';
     }
     return '待复核';
   };
@@ -851,16 +933,6 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
           >
             <SkipForward className="w-4 h-4" />
             跳过
-          </button>
-        )}
-        {isSubmittable(item) && (
-          <button
-            type="button"
-            onClick={() => handleSubmit(String(item.id))}
-            className={`${buttonClass} inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-3 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors`}
-          >
-            <UploadCloud className="w-4 h-4" />
-            {item.remoteState === '提交失败' ? '重试提交远端' : '提交远端'}
           </button>
         )}
         {!isSelectable(item) && (
@@ -1177,8 +1249,8 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
     <div className="p-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">结果复核（TaskItem Actions）</h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">确认不提交远端；提交远端是独立操作。可编辑识别名称和状态，并对选中项批量处理。</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">结果复核</h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">确认只更新复核状态；提交保存按任务后台执行，并同步提交远端和保存训练数据。</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <select
@@ -1336,12 +1408,13 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
           </button>
           <button
             type="button"
-            onClick={handleBatchSubmit}
-            disabled={taskSubmittableIds.length === 0}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:bg-gray-300 disabled:text-gray-500"
-            title="提交当前任务下全部已确认且待提交或提交失败的复核项"
+            onClick={handleTaskSubmit}
+            disabled={taskSubmittableIds.length === 0 || isStartingSubmission || Boolean(taskSubmission && ACTIVE_SUBMISSION_STATUSES.has(taskSubmission.status))}
+            className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:bg-gray-300 disabled:text-gray-500 inline-flex items-center gap-2"
+            title="后台提交当前任务下全部已确认且待提交或提交失败的复核项，并保存训练数据"
           >
-            批量提交远端 {taskSubmittableIds.length}
+            <UploadCloud className={`h-4 w-4 ${isStartingSubmission ? 'animate-pulse' : ''}`} />
+            提交保存 {taskSubmittableIds.length}
           </button>
           <button
             type="button"
@@ -1366,6 +1439,7 @@ export default function Review({ initialTaskId = null }: { initialTaskId?: numbe
         </div>
       </div>
 
+      {renderTaskSubmissionProgress()}
       {renderReRecognitionProgress()}
 
       {filteredItems.length === 0 ? (

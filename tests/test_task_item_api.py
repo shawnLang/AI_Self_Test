@@ -533,90 +533,65 @@ def test_task_item_delete_action_is_not_registered(app_client: TestClient) -> No
     assert response.status_code == 404
 
 
-def test_task_item_submit_action_returns_success(
+def test_task_item_submit_actions_are_not_registered(
     app_client: TestClient,
-    db_session: Session,
-    monkeypatch,
 ) -> None:
-    _, _, task_id = _create_base_entities(app_client)
-    from aiSelfTest.config import get_settings
+    """旧单个提交和旧批量提交接口应删除。"""
 
-    source_dir = get_settings().data_dir / "submit-action-source"
-    source_dir.mkdir(parents=True, exist_ok=True)
-    media_path = source_dir / "video-1.mp4"
-    media_path.write_bytes(b"fake video")
-    task_item, _ = _seed_task_item(
-        db_session,
-        task_id,
-        file_path=media_path.as_posix(),
-        confirm_state=TaskItemConfirmState.CONFIRMED.value,
-        status="已确认",
+    single_response = app_client.post(
+        "/api/task-items/action-submit",
+        json={"task_item_id": 1},
     )
-    task_item_model, _ = import_task_item_models()
-    submitted_payloads = _install_submit_success_mock(monkeypatch)
+    batch_response = app_client.post(
+        "/api/task-items/action-submit-task",
+        json={"task_id": 1},
+    )
 
-    response = app_client.post("/api/task-items/action-submit", json={"task_item_id": task_item.id})
-
-    assert response.status_code == 200
-    assert response.json()["code"] == 0
-    db_session.expire_all()
-    stored = db_session.exec(select(task_item_model).where(task_item_model.id == task_item.id)).one()
-    assert stored.remote_state == TaskItemRemoteState.SUCCESS.value
-    assert stored.train_state == TaskItemTrainState.SAVED.value
-    assert stored.status == "已完成"
-    assert submitted_payloads[0]["id"] == 101
-    assert submitted_payloads[0]["recordData"] == [
-        {
-            "id": 9001,
-            "name": "白鹭",
-            "score": 0.91,
-            "detName": "鸟",
-            "detScore": 0.81,
-            "trackIds": "1001",
-            "spAmount": 1,
-            "minx": None,
-            "miny": None,
-            "maxx": None,
-            "maxy": None,
-        }
-    ]
-    assert _training_datajson_path(task_item).exists()
+    assert single_response.status_code == 404
+    assert batch_response.status_code == 404
 
 
-def test_task_item_submit_payload_uses_final_record_data_without_deleted_rows(
-    app_client: TestClient,
-    db_session: Session,
-    monkeypatch,
-) -> None:
+def test_task_item_submit_payload_uses_final_record_data_without_deleted_rows() -> None:
     """远端提交应提交最终 recordData，并仅为上游原始行附带明细 id。"""
 
-    _, _, task_id = _create_base_entities(app_client)
-    from aiSelfTest.config import get_settings
+    from aiSelfTest.models.task import TaskItemData
+    from aiSelfTest.services.task_submission import AiPollingPayloadBuilder
 
-    source_dir = get_settings().data_dir / "payload-submit-source"
-    source_dir.mkdir(parents=True, exist_ok=True)
-    media_path = source_dir / "payload.mp4"
-    media_path.write_bytes(b"fake payload video")
-    task_item, default_row = _seed_task_item(
-        db_session,
-        task_id,
+    task_item_model, task_item_data_model = import_task_item_models()
+    task_item = task_item_model(
+        task_id=1,
+        name="payload.mp4",
+        device_name="device-1",
+        file_num="file-001",
+        file_extension="mp4",
+        file_url="https://example.com/video.mp4",
         file_id=701,
-        file_path=media_path.as_posix(),
-        confirm_state=TaskItemConfirmState.CONFIRMED.value,
-        status="已确认",
+        file_fid="fid-payload",
+        sp_name_list="白鹭",
+        classify=1,
+        file_bmp=2,
+        result_file_data="",
+        id_type=0,
+        status=TaskItemStatus.CONFIRMED.value,
     )
-    _, task_item_data_model = import_task_item_models()
-    default_row.source_id = 7101
-    default_row.det_name = "鸟"
-    default_row.det_score = 0.71
-    default_row.llm_det_name = "兽"
-    default_row.status = TaskItemDataStatus.DEFAULT.value
-    default_row.minx = 1
-    default_row.miny = 2
-    default_row.maxx = 10
-    default_row.maxy = 12
+    default_row = TaskItemData(
+        task_item_id=1,
+        source_id=7101,
+        name="白鹭",
+        score=0.91,
+        det_name="鸟",
+        det_score=0.71,
+        track_ids="1001",
+        sp_amount=1,
+        minx=1,
+        miny=2,
+        maxx=10,
+        maxy=12,
+        llm_det_name="兽",
+        status=TaskItemDataStatus.DEFAULT.value,
+    )
     update_row = task_item_data_model(
-        task_item_id=task_item.id,
+        task_item_id=1,
         source_id=7102,
         name="苍鹭",
         score=0.8,
@@ -633,7 +608,7 @@ def test_task_item_submit_payload_uses_final_record_data_without_deleted_rows(
         status=TaskItemDataStatus.UPDATE.value,
     )
     add_row = task_item_data_model(
-        task_item_id=task_item.id,
+        task_item_id=1,
         name="",
         score=0,
         det_name="",
@@ -649,7 +624,7 @@ def test_task_item_submit_payload_uses_final_record_data_without_deleted_rows(
         status=TaskItemDataStatus.ADD.value,
     )
     delete_row = task_item_data_model(
-        task_item_id=task_item.id,
+        task_item_id=1,
         source_id=7103,
         name="车",
         score=0.7,
@@ -660,17 +635,13 @@ def test_task_item_submit_payload_uses_final_record_data_without_deleted_rows(
         llm_name=None,
         status=TaskItemDataStatus.DELETE.value,
     )
-    db_session.add(default_row)
-    db_session.add(update_row)
-    db_session.add(add_row)
-    db_session.add(delete_row)
-    db_session.commit()
-    submitted_payloads = _install_submit_success_mock(monkeypatch)
 
-    response = app_client.post("/api/task-items/action-submit", json={"task_item_id": task_item.id})
+    payload = AiPollingPayloadBuilder().build_payload(
+        task_item,
+        [default_row, update_row, add_row, delete_row],
+        datetime(2026, 4, 30, 9, 10, 11),
+    )
 
-    assert response.status_code == 200
-    payload = submitted_payloads[0]
     assert payload["id"] == 701
     assert payload["recordData"] == [
         {
@@ -906,108 +877,72 @@ def test_video_training_artifacts_missing_videojson_does_not_fail(
     assert not (target_dir / "video-missing.videojson").exists()
 
 
-def test_task_item_submit_remote_false_marks_failed(
+def test_task_submit_route_enqueues_submission(
     app_client: TestClient,
     db_session: Session,
     monkeypatch,
 ) -> None:
-    """远端返回 false 时不能标记为已完成。"""
+    """任务级提交接口只入队并返回提交保存记录。"""
 
     _, _, task_id = _create_base_entities(app_client)
-    task_item, _ = _seed_task_item(
+    _seed_task_item(
         db_session,
         task_id,
-        file_id=801,
         confirm_state=TaskItemConfirmState.CONFIRMED.value,
         status=TaskItemStatus.CONFIRMED.value,
     )
-    task_item_model, _ = import_task_item_models()
-    _install_submit_success_mock(monkeypatch, response_json=False)
+    enqueued: list[tuple[int, str]] = []
 
-    response = app_client.post("/api/task-items/action-submit", json={"task_item_id": task_item.id})
+    from aiSelfTest.services.task_submission_job import TaskSubmissionJobService
 
-    assert response.status_code == 502
-    db_session.expire_all()
-    stored = db_session.exec(select(task_item_model).where(task_item_model.id == task_item.id)).one()
-    assert stored.remote_state == TaskItemRemoteState.FAIL.value
-    assert stored.remote_error
-    assert stored.status == TaskItemStatus.CONFIRMED.value
-
-
-def test_task_item_submit_task_action_submits_all_confirmed_pending_items(
-    app_client: TestClient,
-    db_session: Session,
-    monkeypatch,
-) -> None:
-    _, _, task_id = _create_base_entities(app_client)
-    task_item_model, _ = import_task_item_models()
-    from aiSelfTest.config import get_settings
-
-    source_dir = get_settings().data_dir / "batch-submit-source"
-    source_dir.mkdir(parents=True, exist_ok=True)
-    pending_path = source_dir / "pending.mp4"
-    retry_path = source_dir / "retry.mp4"
-    pending_path.write_bytes(b"fake pending")
-    retry_path.write_bytes(b"fake retry")
-    pending_item, _ = _seed_task_item(
-        db_session,
-        task_id,
-        file_id=501,
-        file_fid="fid-pending-submit",
-        file_path=pending_path.as_posix(),
-        confirm_state=TaskItemConfirmState.CONFIRMED.value,
-        remote_state=TaskItemRemoteState.PENDING.value,
-        status=TaskItemStatus.CONFIRMED.value,
-    )
-    retry_item, _ = _seed_task_item(
-        db_session,
-        task_id,
-        file_id=502,
-        file_fid="fid-retry-submit",
-        file_path=retry_path.as_posix(),
-        confirm_state=TaskItemConfirmState.CONFIRMED.value,
-        remote_state=TaskItemRemoteState.FAIL.value,
-        status=TaskItemStatus.CONFIRMED.value,
-    )
-    skipped_item, _ = _seed_task_item(
-        db_session,
-        task_id,
-        file_id=503,
-        file_fid="fid-skipped",
-        confirm_state=TaskItemConfirmState.SKIPPED.value,
-        status=TaskItemStatus.SKIPPED.value,
-    )
-    pending_review_item, _ = _seed_task_item(
-        db_session,
-        task_id,
-        file_id=504,
-        file_fid="fid-pending-review",
-        confirm_state=TaskItemConfirmState.PENDING.value,
-        status=TaskItemStatus.VERIFY_PENDING.value,
+    monkeypatch.setattr(
+        TaskSubmissionJobService,
+        "_enqueue_submission",
+        staticmethod(lambda submission_id, celery_task_id: enqueued.append((submission_id, celery_task_id))),
     )
 
-    submitted_payloads = _install_submit_success_mock(monkeypatch)
-
-    response = app_client.post("/api/task-items/action-submit-task", json={"task_id": task_id})
+    response = app_client.post(f"/api/tasks/action-submit/{task_id}")
 
     assert response.status_code == 200
     data = _unwrap_success(response.json())
-    assert data["success_count"] == 2
-    assert data["failure_count"] == 0
-    assert {row["id"] for row in data["results"]} == {pending_item.id, retry_item.id}
-    db_session.expire_all()
-    rows = db_session.exec(select(task_item_model).where(task_item_model.task_id == task_id)).all()
-    rows_by_id = {row.id: row for row in rows}
-    assert rows_by_id[pending_item.id].status == TaskItemStatus.FINISHED.value
-    assert rows_by_id[retry_item.id].remote_state == TaskItemRemoteState.SUCCESS.value
-    assert rows_by_id[skipped_item.id].status == TaskItemStatus.SKIPPED.value
-    assert rows_by_id[pending_review_item.id].status == TaskItemStatus.VERIFY_PENDING.value
-    assert [payload["id"] for payload in submitted_payloads] == [501, 502]
-    assert _training_datajson_path(pending_item).exists()
-    assert _training_datajson_path(retry_item).exists()
+    assert data["task_id"] == task_id
+    assert data["status"] == "queued"
+    assert data["total_count"] == 1
+    assert enqueued == [(data["submission_id"], f"task-submission-{data['submission_id']}")]
+
+    detail_response = app_client.get(f"/api/tasks/submission-detail/{data['submission_id']}")
+    current_response = app_client.get(f"/api/tasks/submission-current/{task_id}")
+    assert _unwrap_success(detail_response.json())["submission_id"] == data["submission_id"]
+    assert _unwrap_success(current_response.json())["submission_id"] == data["submission_id"]
 
 
-def test_task_item_submit_unconfirmed_item_is_blocked(
+def test_task_submit_route_rejects_duplicate_running_submission(
+    app_client: TestClient,
+    db_session: Session,
+    monkeypatch,
+) -> None:
+    _, _, task_id = _create_base_entities(app_client)
+    enqueued: list[tuple[int, str]] = []
+
+    from aiSelfTest.services.task_submission_job import TaskSubmissionJobService
+
+    monkeypatch.setattr(
+        TaskSubmissionJobService,
+        "_enqueue_submission",
+        staticmethod(lambda submission_id, celery_task_id: enqueued.append((submission_id, celery_task_id))),
+    )
+
+    first_response = app_client.post(f"/api/tasks/action-submit/{task_id}")
+    second_response = app_client.post(f"/api/tasks/action-submit/{task_id}")
+
+    assert first_response.status_code == 200
+    assert second_response.status_code == 409
+    assert second_response.json()["code"] == 3002
+    assert second_response.json()["data"]["submission_id"] == _unwrap_success(first_response.json())["submission_id"]
+    assert len(enqueued) == 1
+
+
+def test_task_item_submit_unconfirmed_item_is_not_registered(
     app_client: TestClient,
     db_session: Session,
 ) -> None:
@@ -1016,13 +951,12 @@ def test_task_item_submit_unconfirmed_item_is_blocked(
 
     response = app_client.post("/api/task-items/action-submit", json={"task_item_id": task_item.id})
 
-    assert response.status_code == 400
-    assert response.json()["code"] == 1001
+    assert response.status_code == 404
     db_session.refresh(task_item)
     assert task_item.remote_state == TaskItemRemoteState.PENDING.value
 
 
-def test_task_item_submit_skipped_item_is_blocked(
+def test_task_item_submit_skipped_item_is_not_registered(
     app_client: TestClient,
     db_session: Session,
 ) -> None:
@@ -1036,13 +970,12 @@ def test_task_item_submit_skipped_item_is_blocked(
 
     response = app_client.post("/api/task-items/action-submit", json={"task_item_id": task_item.id})
 
-    assert response.status_code == 400
-    assert response.json()["code"] == 1001
+    assert response.status_code == 404
     db_session.refresh(task_item)
     assert task_item.remote_state == TaskItemRemoteState.PENDING.value
 
 
-def test_task_finishes_after_confirmed_submit_and_skipped_items(
+def test_task_finish_state_refreshes_after_submission_worker(
     app_client: TestClient,
     db_session: Session,
     monkeypatch,
@@ -1084,10 +1017,15 @@ def test_task_finishes_after_confirmed_submit_and_skipped_items(
         "/api/task-items/action-reject",
         json={"task_item_id": second.id, "reason": "无需提交"},
     )
-    submit_response = app_client.post("/api/task-items/action-submit", json={"task_item_id": first.id})
+    from aiSelfTest.services.task_submission_job import TaskSubmissionJobService
+
+    monkeypatch.setattr(TaskSubmissionJobService, "_enqueue_submission", staticmethod(lambda *_args: None))
+    TaskSubmissionJobService(db_session).submit(first.task_id)
+    submission_model = _import_task_submission_model()
+    submission = db_session.exec(select(submission_model).where(submission_model.task_id == task_id)).one()
+    TaskSubmissionJobService(db_session).execute(submission.id)
 
     assert skip_response.status_code == 200
-    assert submit_response.status_code == 200
     db_session.expire_all()
     stored_task = db_session.get(task_model, task_id)
     stored_items = db_session.exec(select(task_item_model).where(task_item_model.task_id == task_id)).all()
@@ -1105,6 +1043,12 @@ def import_task_and_item_models():
     from aiSelfTest.models.task import Task, TaskItem
 
     return Task, TaskItem
+
+
+def _import_task_submission_model():
+    from aiSelfTest.models.task import TaskSubmission
+
+    return TaskSubmission
 
 
 def _install_submit_success_mock(monkeypatch, response_json: Any = True) -> list[dict[str, Any]]:

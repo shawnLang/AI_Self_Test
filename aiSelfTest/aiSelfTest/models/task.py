@@ -74,6 +74,16 @@ class TaskItemRecognitionBatchStatus(str, Enum):
     FAILED = "failed"
 
 
+class TaskSubmissionStatus(str, Enum):
+    """任务级提交保存执行状态。"""
+
+    QUEUED = "queued"
+    RUNNING = "running"
+    SUCCESS = "success"
+    PARTIAL_FAILED = "partial_failed"
+    FAILED = "failed"
+
+
 class TaskItemStatus(str, Enum):
     """任务项执行与复核状态。"""
 
@@ -202,6 +212,32 @@ class TaskItemRecognitionBatch(SQLModel, table=True):
         max_length=20,
         index=True,
         description="批量执行状态",
+    )
+    celery_task_id: Optional[str] = Field(default=None, max_length=100, index=True, description="Celery任务ID")
+    total_count: int = Field(default=0, description="总数量")
+    success_count: int = Field(default=0, description="成功数量")
+    failed_count: int = Field(default=0, description="失败数量")
+    skipped_count: int = Field(default=0, description="跳过数量")
+    current_task_item_id: Optional[int] = Field(default=None, index=True, description="当前处理任务项ID")
+    error_summary: Optional[str] = Field(default=None, description="错误摘要")
+    started_at: Optional[datetime] = Field(default=None, description="开始时间")
+    finished_at: Optional[datetime] = Field(default=None, description="结束时间")
+    created_at: datetime = Field(default_factory=datetime.now, description="创建时间")
+    updated_at: datetime = Field(default_factory=datetime.now, description="更新时间")
+
+
+class TaskSubmission(SQLModel, table=True):
+    """任务级提交远端与训练保存执行记录。"""
+
+    __tablename__ = "task_submission"
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    task_id: int = Field(foreign_key="task.id", index=True, description="关联任务ID")
+    status: str = Field(
+        default=TaskSubmissionStatus.QUEUED.value,
+        max_length=20,
+        index=True,
+        description="提交保存状态",
     )
     celery_task_id: Optional[str] = Field(default=None, max_length=100, index=True, description="Celery任务ID")
     total_count: int = Field(default=0, description="总数量")

@@ -203,13 +203,22 @@ export type TaskItemBatchActionResult = {
   results: Array<{ id: number; status: 'success' | 'failed'; message: string }>;
 };
 
-export type TaskItemServerBatchActionData = {
-  success_count: number;
-  failure_count: number;
-  results: Array<{ id: number; status: 'success' | 'failed'; message: string }>;
-};
-
 export type ReRecognitionScope = 'selected' | 'failed';
+
+export type TaskSubmissionData = {
+  submission_id: number;
+  task_id: number;
+  status: 'queued' | 'running' | 'success' | 'partial_failed' | 'failed' | string;
+  total_count: number;
+  success_count: number;
+  failed_count: number;
+  skipped_count: number;
+  current_task_item_id: number | null;
+  error_summary: string | null;
+  celery_task_id: string | null;
+  started_at: string | null;
+  finished_at: string | null;
+};
 
 export type TaskItemReRecognitionBatchData = {
   batch_id: number;
@@ -286,23 +295,18 @@ export function updateTaskItemReviewRow(payload: TaskItemReviewRowUpdateRequest)
   });
 }
 
-export function submitTaskItem(taskItemId: number): Promise<TaskItemActionData> {
-  return fetchApi<TaskItemActionData>('/api/task-items/action-submit', {
+export function submitTaskReviewItems(taskId: number): Promise<TaskSubmissionData> {
+  return fetchApi<TaskSubmissionData>(`/api/tasks/action-submit/${taskId}`, {
     method: 'POST',
-    body: JSON.stringify({ task_item_id: taskItemId }),
   });
 }
 
-export async function submitTaskReviewItems(taskId: number): Promise<TaskItemBatchActionResult> {
-  const data = await fetchApi<TaskItemServerBatchActionData>('/api/task-items/action-submit-task', {
-    method: 'POST',
-    body: JSON.stringify({ task_id: taskId }),
-  });
-  return {
-    successCount: data.success_count,
-    failureCount: data.failure_count,
-    results: data.results,
-  };
+export function getTaskSubmissionDetail(submissionId: number): Promise<TaskSubmissionData> {
+  return fetchApi<TaskSubmissionData>(`/api/tasks/submission-detail/${submissionId}`);
+}
+
+export function getCurrentTaskSubmission(taskId: number): Promise<TaskSubmissionData | null> {
+  return fetchApi<TaskSubmissionData | null>(`/api/tasks/submission-current/${taskId}`);
 }
 
 export function reRecognizeTaskItems(params: {

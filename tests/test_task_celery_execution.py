@@ -20,24 +20,32 @@ def _unwrap_success(response_json: dict[str, Any]) -> Any:
 def fake_celery_enqueue(
     app_client: TestClient,
     monkeypatch: pytest.MonkeyPatch,
-) -> list[tuple[int, int, str]]:
+) -> dict[str, list[tuple[Any, ...]]]:
     """拦截 Celery 投递，避免单元测试连接真实 Redis。"""
 
-    calls: list[tuple[int, int, str]] = []
+    calls: dict[str, list[tuple[Any, ...]]] = {
+        "task_execution": [],
+        "task_submission": [],
+    }
 
     def fake_enqueue(task_id: int, execution_id: int, celery_task_id: str) -> None:
-        calls.append((task_id, execution_id, celery_task_id))
+        calls["task_execution"].append((task_id, execution_id, celery_task_id))
+
+    def fake_submission_enqueue(submission_id: int, celery_task_id: str) -> None:
+        calls["task_submission"].append((submission_id, celery_task_id))
 
     from aiSelfTest.services.task_dispatch import TaskDispatchService
+    from aiSelfTest.services.task_submission_job import TaskSubmissionJobService
 
     monkeypatch.setattr(TaskDispatchService, "_enqueue_task", staticmethod(fake_enqueue))
+    monkeypatch.setattr(TaskSubmissionJobService, "_enqueue_submission", staticmethod(fake_submission_enqueue))
     return calls
 
 
 def test_action_run_returns_queued_execution(
     app_client: TestClient,
     db_session: Session,
-    fake_celery_enqueue: list[tuple[int, int, str]],
+    fake_celery_enqueue: dict[str, list[tuple[Any, ...]]],
 ) -> None:
     """立即执行只入队并快速返回，不同步跑执行主干。"""
 
@@ -51,7 +59,7 @@ def test_action_run_returns_queued_execution(
     assert data["current_execution_id"] is not None
     assert data["current_execution_status"] == "queued"
     assert data["display_status"] == "排队中"
-    assert len(fake_celery_enqueue) == 1
+    assert len(fake_celery_enqueue["task_execution"]) == 1
 
     task_model, execution_model = _import_task_models()
     task = db_session.get(task_model, task_id)
@@ -66,7 +74,7 @@ def test_action_run_returns_queued_execution(
 
 def test_duplicate_action_run_returns_resource_busy(
     app_client: TestClient,
-    fake_celery_enqueue: list[tuple[int, int, str]],
+    fake_celery_enqueue: dict[str, list[tuple[Any, ...]]],
 ) -> None:
     """同一任务已有 queued 执行实例时，重复立即执行被后端拒绝。"""
 
@@ -77,7 +85,7 @@ def test_duplicate_action_run_returns_resource_busy(
     assert first.status_code == 200
     assert second.status_code == 409
     assert second.json()["code"] == 3002
-    assert len(fake_celery_enqueue) == 1
+    assert len(fake_celery_enqueue["task_execution"]) == 1
 
 
 def test_task_list_exposes_current_execution_fields(
@@ -115,10 +123,10 @@ def test_delete_task_cleans_re_recognition_batches(
     app_client: TestClient,
     db_session: Session,
 ) -> None:
-    """删除任务时应先清理关联批量重识别记录，避免外键阻止删除。"""
+    """删除任务时应先清理后台关联记录，避免外键阻止删除。"""
 
     task_id = _create_task(app_client)
-    task_model, task_item_model, task_item_data_model, batch_model = _import_task_delete_models()
+    task_model, task_item_model, task_item_data_model, batch_model, submission_model = _import_task_delete_models()
     task_item = task_item_model(
         task_id=task_id,
         name="image-1.jpg",
@@ -152,8 +160,15 @@ def test_delete_task_cleans_re_recognition_batches(
         status="success",
         total_count=1,
     )
+    submission = submission_model(
+        task_id=task_id,
+        status="success",
+        total_count=1,
+        success_count=1,
+    )
     db_session.add(task_item_data)
     db_session.add(batch)
+    db_session.add(submission)
     db_session.commit()
 
     response = app_client.delete(f"/api/tasks/delete/{task_id}")
@@ -163,6 +178,7 @@ def test_delete_task_cleans_re_recognition_batches(
     assert db_session.exec(select(task_item_model).where(task_item_model.task_id == task_id)).all() == []
     assert db_session.exec(select(task_item_data_model)).all() == []
     assert db_session.exec(select(batch_model).where(batch_model.task_id == task_id)).all() == []
+    assert db_session.exec(select(submission_model).where(submission_model.task_id == task_id)).all() == []
 
 
 def test_worker_executes_queued_record_successfully(
@@ -223,10 +239,194 @@ def test_worker_marks_execution_failed_on_error(
     assert execution.error == "boom"
 
 
+def test_submission_worker_processes_confirmed_task_items(
+    app_client: TestClient,
+    db_session: Session,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """提交保存 Worker 只处理已确认可提交项，并写入提交进度。"""
+
+    task_id = _create_task(app_client)
+    task_model, task_item_model, _, _, submission_model = _import_task_delete_models()
+    confirmed_item = task_item_model(
+        task_id=task_id,
+        name="image-confirmed.jpg",
+        device_name="device-1",
+        file_num="file-1",
+        file_extension="jpg",
+        file_url="https://example.com/image-confirmed.jpg",
+        file_id=7101,
+        file_fid="fid-confirmed",
+        sp_name_list="白鹭",
+        classify=1,
+        file_bmp=1,
+        result_file_data="",
+        id_type=0,
+        status="已确认",
+        confirm_state="已确认",
+        remote_state="待提交",
+        train_state="待保存",
+    )
+    pending_item = task_item_model(
+        task_id=task_id,
+        name="image-pending.jpg",
+        device_name="device-1",
+        file_num="file-2",
+        file_extension="jpg",
+        file_url="https://example.com/image-pending.jpg",
+        file_id=7102,
+        file_fid="fid-pending",
+        sp_name_list="白鹭",
+        classify=1,
+        file_bmp=1,
+        result_file_data="",
+        id_type=0,
+        status="待复核",
+        confirm_state="待确认",
+        remote_state="待提交",
+        train_state="待保存",
+    )
+    task = db_session.get(task_model, task_id)
+    task.execution_status = "核查"
+    db_session.add(task)
+    db_session.add(confirmed_item)
+    db_session.add(pending_item)
+    db_session.commit()
+    db_session.refresh(confirmed_item)
+    db_session.refresh(pending_item)
+
+    submission = submission_model(task_id=task_id, status="queued")
+    db_session.add(submission)
+    db_session.commit()
+    db_session.refresh(submission)
+
+    from aiSelfTest.services.task_submission import TaskSubmissionService
+
+    processed_ids: list[int] = []
+
+    def fake_submit(self: TaskSubmissionService, task_item: Any) -> None:
+        processed_ids.append(task_item.id)
+        task_item.status = "已完成"
+        task_item.remote_state = "已提交"
+        task_item.train_state = "已保存"
+        self.session.add(task_item)
+        self.session.commit()
+
+    monkeypatch.setattr(TaskSubmissionService, "submit_task_item_outputs", fake_submit)
+
+    import aiSelfTest.worker as worker_module
+
+    worker_module.execute_task_submission.run(submission.id)
+
+    db_session.expire_all()
+    stored_submission = db_session.get(submission_model, submission.id)
+    stored_confirmed = db_session.get(task_item_model, confirmed_item.id)
+    stored_pending = db_session.get(task_item_model, pending_item.id)
+    stored_task = db_session.get(task_model, task_id)
+    assert processed_ids == [confirmed_item.id]
+    assert stored_submission.status == "success"
+    assert stored_submission.total_count == 1
+    assert stored_submission.success_count == 1
+    assert stored_submission.failed_count == 0
+    assert stored_submission.finished_at is not None
+    assert stored_confirmed.status == "已完成"
+    assert stored_confirmed.remote_state == "已提交"
+    assert stored_pending.status == "待复核"
+    assert stored_task.execution_status == "核查"
+
+
+def test_submission_worker_records_partial_failure(
+    app_client: TestClient,
+    db_session: Session,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """提交保存 Worker 单项失败时记录失败数和错误摘要，不中断整批任务。"""
+
+    task_id = _create_task(app_client)
+    _, task_item_model, _, _, submission_model = _import_task_delete_models()
+    first_item = task_item_model(
+        task_id=task_id,
+        name="image-ok.jpg",
+        device_name="device-1",
+        file_num="file-1",
+        file_extension="jpg",
+        file_url="https://example.com/image-ok.jpg",
+        file_id=7201,
+        file_fid="fid-ok",
+        sp_name_list="白鹭",
+        classify=1,
+        file_bmp=1,
+        result_file_data="",
+        id_type=0,
+        status="已确认",
+        confirm_state="已确认",
+        remote_state="待提交",
+        train_state="待保存",
+    )
+    second_item = task_item_model(
+        task_id=task_id,
+        name="image-fail.jpg",
+        device_name="device-1",
+        file_num="file-2",
+        file_extension="jpg",
+        file_url="https://example.com/image-fail.jpg",
+        file_id=7202,
+        file_fid="fid-fail",
+        sp_name_list="白鹭",
+        classify=1,
+        file_bmp=1,
+        result_file_data="",
+        id_type=0,
+        status="已确认",
+        confirm_state="已确认",
+        remote_state="待提交",
+        train_state="待保存",
+    )
+    db_session.add(first_item)
+    db_session.add(second_item)
+    db_session.commit()
+    db_session.refresh(first_item)
+    db_session.refresh(second_item)
+
+    submission = submission_model(task_id=task_id, status="queued")
+    db_session.add(submission)
+    db_session.commit()
+    db_session.refresh(submission)
+
+    from aiSelfTest.services.task_submission import TaskSubmissionService
+
+    def fake_submit(self: TaskSubmissionService, task_item: Any) -> None:
+        if task_item.id == second_item.id:
+            raise RuntimeError("submit failed")
+        task_item.status = "已完成"
+        task_item.remote_state = "已提交"
+        task_item.train_state = "已保存"
+        self.session.add(task_item)
+        self.session.commit()
+
+    monkeypatch.setattr(TaskSubmissionService, "submit_task_item_outputs", fake_submit)
+
+    import aiSelfTest.worker as worker_module
+
+    worker_module.execute_task_submission.run(submission.id)
+
+    db_session.expire_all()
+    stored_submission = db_session.get(submission_model, submission.id)
+    stored_first = db_session.get(task_item_model, first_item.id)
+    stored_second = db_session.get(task_item_model, second_item.id)
+    assert stored_submission.status == "partial_failed"
+    assert stored_submission.total_count == 2
+    assert stored_submission.success_count == 1
+    assert stored_submission.failed_count == 1
+    assert f"TaskItem {second_item.id}: submit failed" in stored_submission.error_summary
+    assert stored_first.status == "已完成"
+    assert stored_second.remote_state == "待提交"
+
+
 def test_beat_scan_submits_due_active_tasks(
     app_client: TestClient,
     db_session: Session,
-    fake_celery_enqueue: list[tuple[int, int, str]],
+    fake_celery_enqueue: dict[str, list[tuple[Any, ...]]],
 ) -> None:
     """Beat 扫描 active 且到期的任务并提交 schedule 执行。"""
 
@@ -249,7 +449,7 @@ def test_beat_scan_submits_due_active_tasks(
     assert execution.status == "queued"
     assert task.next_run_at is not None
     assert task.next_run_at > datetime.now()
-    assert len(fake_celery_enqueue) == 1
+    assert len(fake_celery_enqueue["task_execution"]) == 1
 
 
 def test_task_execution_detail_rows_store_source_id_and_detection_fields(
@@ -365,6 +565,6 @@ def _import_task_models():
 
 
 def _import_task_delete_models():
-    from aiSelfTest.models.task import Task, TaskItem, TaskItemData, TaskItemRecognitionBatch
+    from aiSelfTest.models.task import Task, TaskItem, TaskItemData, TaskItemRecognitionBatch, TaskSubmission
 
-    return Task, TaskItem, TaskItemData, TaskItemRecognitionBatch
+    return Task, TaskItem, TaskItemData, TaskItemRecognitionBatch, TaskSubmission

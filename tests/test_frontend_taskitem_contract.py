@@ -66,16 +66,18 @@ def test_review_uses_task_item_actions_for_basic_confirmation() -> None:
     assert "../api/review" not in review_text
     assert "/api/task-items/action-confirm" in api_text
     assert "/api/task-items/action-reject" in api_text
-    assert "/api/task-items/action-submit" in api_text
-    assert "/api/task-items/action-submit-task" in api_text
+    assert "/api/task-items/action-submit" not in api_text
+    assert "/api/task-items/action-submit-task" not in api_text
+    assert "/api/tasks/action-submit/" in api_text
+    assert "/api/tasks/submission-detail/" in api_text
+    assert "/api/tasks/submission-current/" in api_text
     assert "/api/task-items/action-update-row" in api_text
     assert "/api/task-items/action-delete" not in api_text
     assert "/api/task-items/detail/" in api_text
-    assert "确认不提交远端" in review_text
-    assert "提交远端" in review_text
+    assert "确认只更新复核状态" in review_text
+    assert "提交保存" in review_text
     assert "跳过" in review_text
     assert "批量跳过" in review_text
-    assert "批量提交远端" in review_text
     assert "submitTaskReviewItems(Number(selectedTaskId))" in review_text
     assert "taskSubmittableIds" in review_text
     assert "submitReviewItems" not in review_text

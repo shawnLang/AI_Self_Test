@@ -31,12 +31,13 @@ class ErrorCode(IntEnum):
 class AppException(Exception):
     """统一业务异常。"""
 
-    def __init__(self, code: Union[ErrorCode, int], message: str, status_code: int) -> None:
+    def __init__(self, code: Union[ErrorCode, int], message: str, status_code: int, data: Any = None) -> None:
         """保存业务错误码、用户可读消息和 HTTP 状态码。"""
 
         self.code = int(code)
         self.message = message
         self.status_code = status_code
+        self.data = data
         super().__init__(message)
 
 
@@ -218,6 +219,6 @@ async def app_exception_handler(
         content={
             "code": exc.code,
             "message": exc.message,
-            "data": None,
+            "data": exc.data,
         },
     )

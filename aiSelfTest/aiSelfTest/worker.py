@@ -22,6 +22,7 @@ from aiSelfTest.models.task import (
 from aiSelfTest.services.task_dispatch import TaskDispatchService
 from aiSelfTest.services.task_execution import run_task_execution
 from aiSelfTest.services.task_re_recognition import TaskItemReRecognitionService
+from aiSelfTest.services.task_submission_job import TaskSubmissionJobService
 
 
 def main_worker() -> None:
@@ -128,6 +129,14 @@ def execute_task_item_re_recognition_batch(self: Any, batch_id: int) -> None:
 
     with Session(engine) as session:
         TaskItemReRecognitionService(session).execute_batch(batch_id)
+
+
+@celery_app.task(name="aiSelfTest.execute_task_submission", bind=True)
+def execute_task_submission(self: Any, submission_id: int) -> None:
+    """执行任务级提交远端与训练保存。"""
+
+    with Session(engine) as session:
+        TaskSubmissionJobService(session).execute(submission_id)
 
 
 celery_app.conf.beat_schedule = {

@@ -10,13 +10,15 @@ export class ApiError extends Error {
   code?: number;
   status?: number;
   kind: ApiErrorKind;
+  data?: unknown;
 
-  constructor(message: string, options: { code?: number; status?: number; kind: ApiErrorKind }) {
+  constructor(message: string, options: { code?: number; status?: number; kind: ApiErrorKind; data?: unknown }) {
     super(message);
     this.name = 'ApiError';
     this.code = options.code;
     this.status = options.status;
     this.kind = options.kind;
+    this.data = options.data;
   }
 }
 
@@ -75,6 +77,7 @@ export async function fetchApi<T>(input: RequestInfo | URL, init?: ApiRequestIni
       code: payload?.code,
       status: response.status,
       kind: 'http',
+      data: payload?.data,
     });
   }
 
@@ -83,6 +86,7 @@ export async function fetchApi<T>(input: RequestInfo | URL, init?: ApiRequestIni
       code: payload?.code,
       status: response.status,
       kind: 'business',
+      data: payload?.data,
     });
   }
 

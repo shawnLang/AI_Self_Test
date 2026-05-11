@@ -47,6 +47,40 @@
 rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
 ```
 
+# 任务级 Celery 后台提交保存测试清单
+
+## 目标
+
+- 远端提交和训练数据保存统一按任务发起，不再提供单个 TaskItem 提交或旧批量提交接口。
+- API 只创建任务级提交记录并投递 Celery，实际提交保存由后台 Worker 执行。
+- 前端复核页使用任务级“提交保存”入口，并轮询任务提交进度。
+
+## 用例
+
+1. `POST /api/tasks/action-submit/{task_id}` 创建 `TaskSubmission`，立即返回 `queued` 状态。
+2. 同一任务已有 `queued/running` 提交流程时，再次提交返回 409，并带回当前提交记录。
+3. Celery 执行任务级提交时，只处理已确认且 `remote_state` 为 `待提交` 或 `提交失败` 的 TaskItem。
+4. 单个 TaskItem 提交失败不阻断后续项，最终状态按成功/失败/跳过统计生成。
+5. `GET /api/tasks/submission-detail/{submission_id}` 返回进度、当前处理项和错误摘要。
+6. `GET /api/tasks/submission-current/{task_id}` 返回当前未结束提交流程；没有时返回空。
+7. `POST /api/task-items/action-submit` 和 `POST /api/task-items/action-submit-task` 不再注册，访问返回 404。
+8. 删除任务时同步删除对应 `TaskSubmission`，避免外键阻塞。
+9. 前端不再引用旧 TaskItem 提交接口，不再展示单条提交远端或批量提交远端。
+10. 前端复核页展示任务级提交保存按钮和后台进度。
+
+## 验证命令
+
+```bash
+.env/bin/python -m pytest tests/test_task_item_api.py tests/test_task_celery_execution.py tests/test_frontend_taskitem_contract.py
+cd aiSelfTestUi && npm run lint
+```
+
+运行 pytest 后清理：
+
+```bash
+rm -rf .pytest_cache .pytest_tmp pytest-cache-files-*
+```
+
 # 提交训练保存目录重构测试清单
 
 ## 目标

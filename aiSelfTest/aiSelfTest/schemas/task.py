@@ -24,6 +24,7 @@ from aiSelfTest.models.task import (
     TaskItemRecognitionBatch,
     TaskItemRemoteState,
     TaskItemTrainState,
+    TaskSubmission,
 )
 
 
@@ -296,12 +297,6 @@ class TaskItemActionRequest(BaseModel):
     task_item_id: int = Field(gt=0, description="任务项ID")
 
 
-class TaskItemSubmitTaskRequest(BaseModel):
-    """按任务提交所有可提交 TaskItem 请求。"""
-
-    task_id: int = Field(gt=0, description="任务ID")
-
-
 class TaskItemReRecognitionBatchRequest(BaseModel):
     """批量重新识别 TaskItem 请求。"""
 
@@ -555,22 +550,6 @@ class TaskItemActionData(BaseModel):
     train_state: str | None = None
 
 
-class TaskItemBatchActionRow(BaseModel):
-    """TaskItem 批量动作单项结果。"""
-
-    id: int
-    status: str
-    message: str
-
-
-class TaskItemBatchActionData(BaseModel):
-    """TaskItem 批量动作响应体。"""
-
-    success_count: int
-    failure_count: int
-    results: list[TaskItemBatchActionRow]
-
-
 class TaskItemReRecognitionBatchData(BaseModel):
     """TaskItem 批量重新识别进度响应体。"""
 
@@ -606,4 +585,40 @@ class TaskItemReRecognitionBatchData(BaseModel):
             celery_task_id=batch.celery_task_id,
             started_at=batch.started_at,
             finished_at=batch.finished_at,
+        )
+
+
+class TaskSubmissionData(BaseModel):
+    """任务级提交保存进度响应体。"""
+
+    submission_id: int
+    task_id: int
+    status: str
+    total_count: int
+    success_count: int
+    failed_count: int
+    skipped_count: int
+    current_task_item_id: int | None = None
+    error_summary: str | None = None
+    celery_task_id: str | None = None
+    started_at: datetime | None = None
+    finished_at: datetime | None = None
+
+    @classmethod
+    def from_model(cls, submission: TaskSubmission) -> "TaskSubmissionData":
+        """将任务级提交保存记录转换为 API 响应。"""
+
+        return cls(
+            submission_id=submission.id or 0,
+            task_id=submission.task_id,
+            status=submission.status,
+            total_count=submission.total_count,
+            success_count=submission.success_count,
+            failed_count=submission.failed_count,
+            skipped_count=submission.skipped_count,
+            current_task_item_id=submission.current_task_item_id,
+            error_summary=submission.error_summary,
+            celery_task_id=submission.celery_task_id,
+            started_at=submission.started_at,
+            finished_at=submission.finished_at,
         )

@@ -25,6 +25,8 @@ from aiSelfTest.models.task import (
     TaskItemRemoteState,
     TaskItemStatus,
     TaskItemTrainState,
+    TaskSubmission,
+    TaskSubmissionStatus,
 )
 
 __all__ = [
@@ -52,4 +54,6 @@ __all__ = [
     "TaskItemRemoteState",
     "TaskItemStatus",
     "TaskItemTrainState",
+    "TaskSubmission",
+    "TaskSubmissionStatus",
 ]
